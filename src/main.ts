@@ -16,6 +16,9 @@ import { createEchoReplayTimer } from './app/chronicleEchoTimer'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 
+/** Compiled once — applied on every chess HUD tick when AI persona is present. */
+const BOSS_PROFILE_RE = /(Apex|Advisor|Counterpart|Strategos|Boss)/i
+
 /* ─── Helpers ─────────────────────────────────────────────────────────── */
 
 function labelForSpeaker(s: string): string {
@@ -444,6 +447,11 @@ function mount() {
   let currentSceneType: Scene['type'] | null = null
   let showEvalBar = false
   let prevSanLen = 0
+  /** Skip redundant DOM writes when RAF batching emits the same chess snapshot. */
+  let lastLedgerHtml = ''
+  let lastCapturedFen = ''
+  let lastCalKey = ''
+  let lastEvalScore = Number.NaN
   let prevSessionRecovered = false
   let latestResolvedForRecap: ChessUiPayload | null = null
   let pendingChapterPrompt: { completedTitle: string; nextTitle: string | null } | null = null
@@ -534,6 +542,9 @@ function mount() {
     }
     prevSanLen = p.sanLog.length
 
+    const isCheckmate = p.chess.isCheckmate()
+    const isGameOver = p.chess.isGameOver()
+
     /* Status pill */
     if (p.aiThinking) {
       boardStatus.textContent = 'Thinking…'
@@ -556,11 +567,11 @@ function mount() {
       p.matchOutcome === 'win',
     )
     boardStage.classList.toggle('board-stage--loss', p.matchOutcome === 'loss')
-    boardStage.classList.toggle('board-stage--finisher', p.matchOutcome === 'win' && p.chess.isCheckmate())
-    const gameActive = !p.matchOutcome && !p.chess.isGameOver()
+    boardStage.classList.toggle('board-stage--finisher', p.matchOutcome === 'win' && isCheckmate)
+    const gameActive = !p.matchOutcome && !isGameOver
     boardStage.classList.toggle('board-stage--white-turn', gameActive && p.chess.turn() === 'w')
     boardStage.classList.toggle('board-stage--black-turn', gameActive && p.chess.turn() === 'b')
-    const bossProfile = Boolean(p.aiPersona && /(Apex|Advisor|Counterpart|Strategos|Boss)/i.test(p.aiPersona))
+    const bossProfile = Boolean(p.aiPersona && BOSS_PROFILE_RE.test(p.aiPersona))
     boardStage.classList.toggle('board-stage--boss', bossProfile)
     boardStage.classList.toggle(
       'board-stage--neutral',
@@ -602,17 +613,26 @@ function mount() {
     }
 
     btnUndo.disabled = !p.canUndo
-    moveLedger.innerHTML = formatMoveLedger(p.sanLog, p.sanQuality)
-    moveLedger.scrollTop = moveLedger.scrollHeight
+    const ledgerHtml = formatMoveLedger(p.sanLog, p.sanQuality)
+    if (ledgerHtml !== lastLedgerHtml) {
+      lastLedgerHtml = ledgerHtml
+      moveLedger.innerHTML = ledgerHtml
+      moveLedger.scrollTop = moveLedger.scrollHeight
+    }
 
     if (p.calibration) {
+      const calKey = `${p.calibration.current}\t${p.calibration.target}`
+      if (calKey !== lastCalKey) {
+        lastCalKey = calKey
+        const { current, target } = p.calibration
+        calibrationTrack.innerHTML = Array.from({ length: target }, (_, i) => {
+          const filled = i < current
+          return `<span class="cal-dot ${filled ? 'cal-dot--on' : ''}" aria-hidden="true"></span>`
+        }).join('')
+      }
       calibrationRail.classList.remove('hidden')
-      const { current, target } = p.calibration
-      calibrationTrack.innerHTML = Array.from({ length: target }, (_, i) => {
-        const filled = i < current
-        return `<span class="cal-dot ${filled ? 'cal-dot--on' : ''}" aria-hidden="true"></span>`
-      }).join('')
     } else {
+      lastCalKey = ''
       calibrationRail.classList.add('hidden')
     }
 
@@ -633,25 +653,28 @@ function mount() {
       coachTipEl.classList.add('hidden')
     }
 
-    /* Eval bar */
+    /* Eval bar + captured material (match mode) — skip DOM when score/FEN unchanged (RAF batching). */
     if (showEvalBar) {
-      const clamped = Math.max(-600, Math.min(600, p.evalScore))
-      const pct = 50 + clamped / 12
-      evalBarFill.style.height = `${Math.max(3, Math.min(97, pct))}%`
-      const abs = Math.abs(p.evalScore)
-      if (abs < 15) {
-        evalBarScore.textContent = '0.0'
-      } else {
-        const val = (Math.abs(p.evalScore) / 100).toFixed(1)
-        evalBarScore.textContent = p.evalScore > 0 ? `+${val}` : `-${val}`
+      if (lastEvalScore !== p.evalScore) {
+        lastEvalScore = p.evalScore
+        const clamped = Math.max(-600, Math.min(600, p.evalScore))
+        const pct = 50 + clamped / 12
+        evalBarFill.style.height = `${Math.max(3, Math.min(97, pct))}%`
+        const abs = Math.abs(p.evalScore)
+        if (abs < 15) {
+          evalBarScore.textContent = '0.0'
+        } else {
+          const val = (Math.abs(p.evalScore) / 100).toFixed(1)
+          evalBarScore.textContent = p.evalScore > 0 ? `+${val}` : `-${val}`
+        }
       }
-    }
-
-    /* Captured pieces */
-    if (showEvalBar) {
-      const { byWhite, byBlack } = getCaptured(p.chess)
-      capturedTop.innerHTML = capturedRow(byWhite, 'b')
-      capturedBot.innerHTML = capturedRow(byBlack, 'w')
+      const fen = p.chess.fen()
+      if (fen !== lastCapturedFen) {
+        lastCapturedFen = fen
+        const { byWhite, byBlack } = getCaptured(p.chess)
+        capturedTop.innerHTML = capturedRow(byWhite, 'b')
+        capturedBot.innerHTML = capturedRow(byBlack, 'w')
+      }
     }
 
     if (p.matchOutcome) latestResolvedForRecap = p
@@ -1284,6 +1307,10 @@ function mount() {
     lessonNote.textContent = ''
     coachTipEl.classList.add('hidden')
     prevSanLen = 0
+    lastLedgerHtml = ''
+    lastCapturedFen = ''
+    lastCalKey = ''
+    lastEvalScore = Number.NaN
     btnReset.disabled = true
     btnNextHint.textContent = ''
     const showBoard = flow.sceneUsesBoard(scene)
@@ -1309,6 +1336,8 @@ function mount() {
       capturedBot.innerHTML = ''
       evalBarScore.textContent = '0.0'
       evalBarFill.style.height = '50%'
+      lastCapturedFen = ''
+      lastEvalScore = Number.NaN
     }
 
     boardStage.classList.remove('board-stage--victory', 'board-stage--loss')

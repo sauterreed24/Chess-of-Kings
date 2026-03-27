@@ -4,6 +4,8 @@ import type { PieceSkinId } from '../types'
 import { glyphForSkin } from './skins'
 
 const FILES = 'abcdefgh'
+/** Avoid allocating `[...FILES].reverse()` on every square-order walk. */
+const FILES_REV = 'hgfedcba'
 
 const PROMO_NAMES: Record<PieceSymbol, string> = {
   q: 'Queen', r: 'Rook', b: 'Bishop', n: 'Knight', p: '', k: '',
@@ -79,9 +81,10 @@ export class BoardView {
   private squareOrder(): Square[] {
     const out: Square[] = []
     const ranks = this.orientation === 'w' ? [8, 7, 6, 5, 4, 3, 2, 1] : [1, 2, 3, 4, 5, 6, 7, 8]
+    const files = this.orientation === 'w' ? FILES : FILES_REV
     for (const r of ranks) {
-      for (const f of this.orientation === 'w' ? FILES : [...FILES].reverse()) {
-        out.push(`${f}${r}` as Square)
+      for (let fi = 0; fi < 8; fi++) {
+        out.push(`${files[fi]}${r}` as Square)
       }
     }
     return out
@@ -264,7 +267,8 @@ export class BoardView {
     if (last) this.lastMove = { from: last.from, to: last.to }
 
     /* Clean up any leftover fly sprites or pending promotions */
-    for (const el of document.querySelectorAll('.piece-fly')) el.remove()
+    for (const el of this.pieceFlyEls) el.remove()
+    this.pieceFlyEls.length = 0
     this.root.querySelectorAll<HTMLElement>('.piece--fly-pending').forEach((el) =>
       el.classList.remove('piece--fly-pending'),
     )
@@ -330,6 +334,8 @@ export class BoardView {
       )
       anim.onfinish = () => {
         fly.remove()
+        const ix = this.pieceFlyEls.indexOf(fly)
+        if (ix >= 0) this.pieceFlyEls.splice(ix, 1)
         if (gen !== this.flyGen) return
         toSpan?.classList.remove('piece--fly-pending')
       }
