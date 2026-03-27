@@ -1,0 +1,24 @@
+{
+  "name": "chess-of-kings",
+  "private": true,
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui-smoke": "vitest run src/app/rewardOverlayController.test.ts src/app/escapeKeyRouting.test.ts src/app/chronicleEchoTimer.test.ts src/app/uiEscape.smoke.test.ts"
+  },
+  "devDependencies": {
+    "jsdom": "^29.0.1",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.1",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "chess.js": "^1.4.0"
+  }
+}
