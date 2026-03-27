@@ -1513,11 +1513,20 @@ function mount() {
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
 
   let advanceTicker = 0
-  const tickAdvance = () => {
-    if (!document.hidden) updateAdvance(flow)
-    advanceTicker = window.setTimeout(tickAdvance, 350)
+  const scheduleAdvanceTick = () => {
+    if (advanceTicker) window.clearTimeout(advanceTicker)
+    const delay = document.hidden ? 2500 : 350
+    advanceTicker = window.setTimeout(runAdvanceTick, delay)
   }
-  tickAdvance()
+  const runAdvanceTick = () => {
+    advanceTicker = 0
+    if (!document.hidden) updateAdvance(flow)
+    scheduleAdvanceTick()
+  }
+  runAdvanceTick()
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) updateAdvance(flow)
+  })
   window.addEventListener('beforeunload', () => {
     if (advanceTicker) window.clearTimeout(advanceTicker)
     closeRewardOverlay()

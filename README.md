@@ -27,6 +27,10 @@ Features campaign progression, Duel Archive mode, adaptive AI personalities, rew
 
 See `docs/STORE_MOBILE.md` for the shortest path to Google Play / App Store packaging (TWA or Capacitor), plus required store checklist items.
 
+## Ship checklist (local)
+
+After changes: `npm run build` and `npm test`, then commit and push to `main`.
+
 ## License
 
 MIT (see `LICENSE`).
