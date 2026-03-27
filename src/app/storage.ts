@@ -198,6 +198,7 @@ export function loadSave(): SaveData | null {
     const unlockedSkins = Array.isArray(o.cosmetics?.unlockedPieceSkins)
       ? [...new Set(o.cosmetics!.unlockedPieceSkins.map(normalizeSkin))].slice(0, 16)
       : [...base.cosmetics.unlockedPieceSkins]
+    if (!unlockedSkins.includes('classic-royal')) unlockedSkins.unshift('classic-royal')
     if (!unlockedSkins.includes(selectedSkin)) unlockedSkins.unshift(selectedSkin)
 
     return {
@@ -301,11 +302,19 @@ export function loadSave(): SaveData | null {
 }
 
 export function writeSave(data: SaveData) {
-  localStorage.setItem(KEY, JSON.stringify(data))
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data))
+  } catch {
+    // Persist failures (quota/privacy mode) should not crash active gameplay.
+  }
 }
 
 export function clearSave() {
-  localStorage.removeItem(KEY)
+  try {
+    localStorage.removeItem(KEY)
+  } catch {
+    // Ignore storage removal failures; callers expect best-effort semantics.
+  }
 }
 
 export function hasSave(): boolean {

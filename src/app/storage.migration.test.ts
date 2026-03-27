@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { clearSave, loadSave, writeSave } from './storage'
 
 describe('storage v3 migration and defaults', () => {
@@ -136,5 +136,44 @@ describe('storage v3 migration and defaults', () => {
     const s = loadSave()
     expect(s?.inProgress?.mode).toBe('match')
     expect(s?.inProgress?.sanLog[0]).toBe('e4')
+  })
+
+  it('writeSave does not throw when storage setItem fails', () => {
+    const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota exceeded')
+    })
+    expect(() =>
+      writeSave({
+        version: 3,
+        chapterIndex: 0,
+        sceneIndex: 0,
+        highestUnlockedChapter: 0,
+        lastScreen: 'title',
+        chapter1Complete: false,
+        completedSceneIds: [],
+        completedPuzzleIds: [],
+        stratarchiaUnlocked: false,
+        duelUnlockedOpponentIds: [],
+        unlockedDuelVariantIds: ['alexion-mentor'],
+        codexUnlocks: [],
+        titleUnlocks: [],
+        chronicleEchoes: [],
+        rankPoints: 0,
+        cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+        tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+        matchHistory: [],
+        rivalMemory: {},
+        inProgress: null,
+      }),
+    ).not.toThrow()
+    spy.mockRestore()
+  })
+
+  it('clearSave does not throw when storage removeItem fails', () => {
+    const spy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+      throw new Error('privacy mode block')
+    })
+    expect(() => clearSave()).not.toThrow()
+    spy.mockRestore()
   })
 })
