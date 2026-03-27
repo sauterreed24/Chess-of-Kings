@@ -74,6 +74,12 @@ html, body {
 }
 #app { min-height: 100vh; position: relative; }
 
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ambient .ambient__bloom { animation: none !important; }
+  .screen { animation: none !important; }
+}
+
 /* ───── Ambient atmosphere ───── */
 .ambient {
   position: fixed; inset: 0;

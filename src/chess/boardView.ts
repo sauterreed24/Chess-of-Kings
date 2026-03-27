@@ -275,9 +275,12 @@ export class BoardView {
     this.dismissPromo()
 
     const isCastle = last?.isKingsideCastle() || last?.isQueensideCastle()
+    const reduceMotion =
+      typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
     const doFly =
       last &&
       !isCastle &&
+      !reduceMotion &&
       typeof document !== 'undefined' &&
       typeof document.body.animate === 'function'
 

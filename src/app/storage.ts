@@ -302,10 +302,29 @@ export function loadSave(): SaveData | null {
 }
 
 export function writeSave(data: SaveData) {
+  const serialized = JSON.stringify(data)
   try {
-    localStorage.setItem(KEY, JSON.stringify(data))
-  } catch {
-    // Persist failures (quota/privacy mode) should not crash active gameplay.
+    localStorage.setItem(KEY, serialized)
+  } catch (e) {
+    const quota =
+      e instanceof DOMException &&
+      (e.name === 'QuotaExceededError' || e.code === 22)
+    if (quota) {
+      try {
+        const lean: SaveData = {
+          ...data,
+          matchHistory: data.matchHistory.slice(-32),
+          rivalMemory:
+            Object.keys(data.rivalMemory).length > 24
+              ? Object.fromEntries(Object.entries(data.rivalMemory).slice(-24))
+              : data.rivalMemory,
+        }
+        localStorage.setItem(KEY, JSON.stringify(lean))
+      } catch {
+        // Second failure — keep session playable; user may clear site data.
+      }
+    }
+    // Other persist failures (privacy mode, disabled storage) should not crash gameplay.
   }
 }
 

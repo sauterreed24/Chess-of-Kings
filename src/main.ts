@@ -322,7 +322,7 @@ function mount() {
                   <div class="instrument-header">
                     <span class="instrument-eyebrow">Simulation surface</span>
                     <div class="status-pill-wrap">
-                      <span class="status-pill" id="board-status"></span>
+                      <span class="status-pill" id="board-status" role="status" aria-live="polite"></span>
                     </div>
                     <p class="ai-persona hidden" id="ai-persona"></p>
                     <p class="ai-flavor hidden" id="ai-flavor"></p>
@@ -361,8 +361,8 @@ function mount() {
                     <div class="captured-row captured-row--bot" id="captured-bot" aria-label="Pieces captured by Black"></div>
                   </div>
                   <div class="move-ledger-wrap">
-                    <span class="ledger-heading">Move ledger</span>
-                    <div class="move-ledger" id="move-ledger"></div>
+                    <span class="ledger-heading" id="move-ledger-label">Move ledger</span>
+                    <div class="move-ledger" id="move-ledger" role="region" aria-labelledby="move-ledger-label"></div>
                   </div>
                   <div class="board-tools">
                     <button type="button" class="ghost ghost--tool" id="btn-undo" disabled>Take back</button>
@@ -448,7 +448,7 @@ function mount() {
   let showEvalBar = false
   let prevSanLen = 0
   /** Skip redundant DOM writes when RAF batching emits the same chess snapshot. */
-  let lastLedgerHtml = ''
+  let lastLedgerKey = ''
   let lastCapturedFen = ''
   let lastCalKey = ''
   let lastEvalScore = Number.NaN
@@ -613,9 +613,10 @@ function mount() {
     }
 
     btnUndo.disabled = !p.canUndo
-    const ledgerHtml = formatMoveLedger(p.sanLog, p.sanQuality)
-    if (ledgerHtml !== lastLedgerHtml) {
-      lastLedgerHtml = ledgerHtml
+    const ledgerKey = `${p.fen}|${p.ledgerFp}`
+    if (ledgerKey !== lastLedgerKey) {
+      lastLedgerKey = ledgerKey
+      const ledgerHtml = formatMoveLedger(p.sanLog, p.sanQuality)
       moveLedger.innerHTML = ledgerHtml
       moveLedger.scrollTop = moveLedger.scrollHeight
     }
@@ -668,7 +669,7 @@ function mount() {
           evalBarScore.textContent = p.evalScore > 0 ? `+${val}` : `-${val}`
         }
       }
-      const fen = p.chess.fen()
+      const fen = p.fen
       if (fen !== lastCapturedFen) {
         lastCapturedFen = fen
         const { byWhite, byBlack } = getCaptured(p.chess)
@@ -1307,7 +1308,7 @@ function mount() {
     lessonNote.textContent = ''
     coachTipEl.classList.add('hidden')
     prevSanLen = 0
-    lastLedgerHtml = ''
+    lastLedgerKey = ''
     lastCapturedFen = ''
     lastCalKey = ''
     lastEvalScore = Number.NaN
@@ -1452,13 +1453,22 @@ function mount() {
     return 'Complete'
   }
 
+  let lastAdvanceSig = ''
   function updateAdvance(g: GameFlow) {
     const ok = g.canAdvance()
+    const hint =
+      ok && currentSceneType !== 'dialogue' && currentSceneType !== 'interlude' && currentSceneType !== 'codex'
+        ? nextSceneHint()
+        : ''
+    const sig = `${ok}|${currentSceneType ?? ''}|${hint}|${g.sceneIndex}|${g.chapterIndex}`
+    if (sig === lastAdvanceSig) return
+    lastAdvanceSig = sig
     btnNext.disabled = !ok
     btnNext.classList.toggle('primary--ready', ok)
     if (ok && currentSceneType !== 'dialogue' && currentSceneType !== 'interlude' && currentSceneType !== 'codex') {
-      const hint = nextSceneHint()
-      if (hint) btnNextHint.textContent = `→ ${hint}`
+      btnNextHint.textContent = hint ? `→ ${hint}` : ''
+    } else {
+      btnNextHint.textContent = ''
     }
   }
 

@@ -22,6 +22,7 @@ import type {
   MatchHistoryEntry,
   RivalMemoryEntry,
 } from '../types'
+import { ledgerContentFingerprint } from './ledgerFingerprint'
 import { loadSave, writeSave, type LastScreen, type SaveData } from './storage'
 import { DUEL_ROSTER } from '../data/duelRoster'
 import { CHAPTER_CLEAR_REWARDS, BASE_VICTORY_REWARDS } from '../data/rewards'
@@ -43,10 +44,14 @@ export type MoveQuality = 'brilliant' | 'good' | 'ok' | 'inaccuracy' | 'mistake'
 
 export type ChessUiPayload = {
   chess: Chess
+  /** Position key for UI memoization (material / captured rows) without extra `chess.fen()` calls. */
+  fen: string
   status: string
   canUndo: boolean
   sanLog: string[]
   sanQuality: MoveQuality[]
+  /** Fingerprint of SAN + quality; pair with `fen` to detect ledger HTML changes cheaply. */
+  ledgerFp: number
   calibration?: { current: number; target: number }
   inCheck: boolean
   aiThinking: boolean
@@ -663,12 +668,16 @@ export class GameFlow {
         ? { current: this.calibrationMoves, target: this.calibrationScene.minMovesByPlayer }
         : undefined
     const matchOutcome = this.computeMatchOutcome()
+    const fen = this.chess.fen()
+    const ledgerFp = ledgerContentFingerprint(this.sanLog, this.sanQuality)
     this.handlers.onChessUpdate({
       chess: this.chess,
+      fen,
       status: this.statusLine(sc),
       canUndo,
       sanLog: [...this.sanLog],
       sanQuality: [...this.sanQuality],
+      ledgerFp,
       calibration,
       inCheck: chessy && this.chess.inCheck() && !this.isSceneTerminalForCurrentMode(),
       aiThinking: this.aiThinking,

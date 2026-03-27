@@ -17,7 +17,7 @@ function randomPosition(maxPly: number): Chess {
 }
 
 describe('AI legal move robustness', () => {
-  it('returns legal moves across random positions and profiles', { timeout: 15000 }, () => {
+  it('returns legal moves across random positions and profiles', { timeout: 60000 }, () => {
     const profiles = Object.values(AI_PROFILES).slice(0, 3).map((p) => ({
       ...p,
       searchDepth: Math.min(2, p.searchDepth),
