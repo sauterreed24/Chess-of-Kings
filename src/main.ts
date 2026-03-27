@@ -233,7 +233,7 @@ function mount() {
       <div class="ambient__vignette"></div>
     </div>
 
-    <main id="shell" aria-label="The Calculus of Kings">
+    <main id="shell" tabindex="-1" aria-label="The Calculus of Kings">
       <header class="top-bar">
         <div class="top-bar__brand">
           <span class="mark">The Calculus of Kings</span>

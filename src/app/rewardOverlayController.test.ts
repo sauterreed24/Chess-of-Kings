@@ -51,4 +51,45 @@ describe('createRewardOverlayController', () => {
     c.close()
     expect(b).toHaveBeenCalledTimes(1)
   })
+
+  it('focuses first control on open and restores focus on close', async () => {
+    const trigger = document.createElement('button')
+    trigger.id = 'trigger'
+    document.body.appendChild(trigger)
+    trigger.focus()
+
+    const el = document.createElement('div')
+    el.classList.add('hidden')
+    document.body.appendChild(el)
+    const c = createRewardOverlayController(el)
+    c.open('<button type="button" id="inner">OK</button>')
+
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('inner'))
+
+    c.close()
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('trigger'))
+
+    trigger.remove()
+    el.remove()
+  })
+
+  it('keeps original restore target when open is called again without close', async () => {
+    const trigger = document.createElement('button')
+    trigger.id = 'outer'
+    document.body.appendChild(trigger)
+    trigger.focus()
+
+    const el = document.createElement('div')
+    el.classList.add('hidden')
+    document.body.appendChild(el)
+    const c = createRewardOverlayController(el)
+    c.open('<p>step one</p>')
+    c.open('<button type="button" id="inner">OK</button>')
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('inner'))
+    c.close()
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('outer'))
+
+    trigger.remove()
+    el.remove()
+  })
 })

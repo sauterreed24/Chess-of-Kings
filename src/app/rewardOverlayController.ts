@@ -2,6 +2,14 @@
  * Centralized reward / modal overlay lifecycle: content swap, visibility, and cleanup
  * (timers, etc.) so tests can assert behavior without the full app shell.
  */
+
+function focusFirstOverlayControl(root: HTMLElement) {
+  const sel =
+    'button:not([disabled]), [href], input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  const el = root.querySelector<HTMLElement>(sel)
+  if (el) el.focus()
+}
+
 export type RewardOverlayController = {
   close: () => void
   open: (html: string, setup?: (root: HTMLDivElement) => void, cleanup?: () => void) => void
@@ -15,6 +23,7 @@ export type RewardOverlayController = {
 
 export function createRewardOverlayController(el: HTMLDivElement): RewardOverlayController {
   let onCleanup: (() => void) | null = null
+  let focusBeforeOpen: HTMLElement | null = null
 
   const runCleanup = () => {
     if (!onCleanup) return
@@ -32,20 +41,32 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
       el.classList.add('hidden')
       el.setAttribute('aria-hidden', 'true')
       el.innerHTML = ''
+      const prev = focusBeforeOpen
+      focusBeforeOpen = null
+      queueMicrotask(() => {
+        if (prev && document.contains(prev)) prev.focus()
+      })
     },
 
     open(html: string, setup?: (root: HTMLDivElement) => void, cleanup?: () => void) {
       runCleanup()
+      const wasHidden = el.classList.contains('hidden')
+      if (wasHidden) {
+        const ae = document.activeElement
+        focusBeforeOpen = ae instanceof HTMLElement && ae !== el ? ae : null
+      }
       el.innerHTML = html
       el.classList.remove('hidden')
       el.setAttribute('aria-hidden', 'false')
       onCleanup = cleanup ?? null
       setup?.(el)
+      queueMicrotask(() => focusFirstOverlayControl(el))
     },
 
     replaceInner(html: string, setup?: (root: HTMLDivElement) => void) {
       el.innerHTML = html
       setup?.(el)
+      queueMicrotask(() => focusFirstOverlayControl(el))
     },
 
     reveal() {

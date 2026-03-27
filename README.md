@@ -21,7 +21,7 @@ Features campaign progression, Duel Archive mode, adaptive AI personalities, rew
 - TypeScript + Vite production build.
 - Full Vitest suite (engine, progression/storage, legality, UI smoke modules).
 - GitHub Actions workflow on push/PR:
-  - build + tests.
+  - production build, full test suite, and UI smoke tests (`test:ui-smoke`).
 
 Performance notes: transposition table keys avoid extra string allocation; heuristic move scoring shares a single piece-count pass; the board view skips DOM writes on unchanged squares and avoids document-wide queries for fly animations.
 

@@ -1,3 +1,4 @@
+import { escapeHtml } from '../app/htmlEscape'
 import {
   HUB_SITES,
   HUB_NPCS,
@@ -125,8 +126,8 @@ export function createWorldRunner(opts: WorldRunnerOptions) {
     opts.dialogueEl.classList.remove('hidden')
     opts.dialogueEl.innerHTML = `
       <div class="world-dialogue">
-        <p class="world-dialogue__who"><span class="world-dialogue__name">${npc.name}</span> · ${npc.title}</p>
-        <p class="world-dialogue__text">${text}</p>
+        <p class="world-dialogue__who"><span class="world-dialogue__name">${escapeHtml(npc.name)}</span> · ${escapeHtml(npc.title)}</p>
+        <p class="world-dialogue__text">${escapeHtml(text)}</p>
         <p class="world-dialogue__hint"><span class="world-prompt__key">E</span> ${last ? 'Close' : 'Next'} · <kbd>Esc</kbd> close</p>
       </div>`
   }
@@ -217,7 +218,7 @@ export function createWorldRunner(opts: WorldRunnerOptions) {
       opts.promptEl.innerHTML = `<span class="world-prompt__key">E</span> <span class="world-prompt__action">Speak — ${nearestNpc.name}</span>`
     } else if (nearestSite) {
       activeSite = nearestSite
-      opts.promptEl.innerHTML = `<span class="world-prompt__key">E</span> <span class="world-prompt__action">Engage — ${nearestSite.title}</span>`
+      opts.promptEl.innerHTML = `<span class="world-prompt__key">E</span> <span class="world-prompt__action">Engage — ${escapeHtml(nearestSite.title)}</span>`
     } else {
       opts.promptEl.textContent = 'Walk the vestibule. Seek scholars, plinths, and lit columns.'
     }
