@@ -38,7 +38,9 @@ If you prefer loading a **hosted HTTPS URL** instead of bundling `dist/`, use a 
 
 ## Privacy policy
 
-Host a short page (even on GitHub Pages): data stored on device, no account required, contact email. Link it in both stores.
+The repo ships a static page at **`public/privacy.html`** (served as **`/privacy.html`** after build). Deploy the same site you use for the game, or host that file on GitHub Pages, and use that URL in **Play Console** and **App Store Connect**. The title screen links to it for players.
+
+Regenerate store listing text from that page if you change data practices; keep contact info aligned with your store listing.
 
 ## In-app purchases
 

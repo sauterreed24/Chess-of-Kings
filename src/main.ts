@@ -261,6 +261,9 @@ function mount() {
             <button type="button" class="primary" id="btn-enter-archive">Enter the Archive</button>
           </div>
           <p class="mvp-note" id="mvp-flag"></p>
+          <p class="title-privacy">
+            <a class="title-privacy__link" href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
+          </p>
         </div>
       </section>
 

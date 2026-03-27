@@ -242,6 +242,17 @@ html, body {
 
 .mvp-note { margin-top: 2rem; font-size: 0.9rem; color: var(--gold-dim); line-height: 1.5; }
 
+.title-privacy { margin: 0.75rem 0 0; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.title-privacy__link {
+  color: var(--gold-dim);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(125, 106, 56, 0.35);
+}
+.title-privacy__link:hover {
+  color: var(--gold);
+  border-bottom-color: rgba(201, 169, 98, 0.45);
+}
+
 /* ═══════════════════════════════
    CHAPTERS
    ═══════════════════════════════ */

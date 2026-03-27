@@ -33,6 +33,8 @@ Tests: Vitest runs with `MODE=test`, so deferred save/HUD emission is **synchron
 
 **Capacitor** is configured (`capacitor.config.ts`, `android/`, `ios/`). Run **`npm run cap:sync`**, then **`npm run cap:open:android`** or **`npm run cap:open:ios`**. See `docs/STORE_MOBILE.md` for signing, Play Console, and App Store Connect.
 
+**Store icons / splashes:** after updating `public/favicon.svg`, run **`npm run assets:generate`** (writes `assets/icon.png`, then `@capacitor/assets` for **iOS + Android only** so `public/manifest.webmanifest` and the SVG favicon stay as-is), then **`npm run cap:sync`**. **Privacy:** `public/privacy.html` is the bundled policy page at **`/privacy.html`** for listings and the in-app link.
+
 ## Ship checklist (local)
 
 After changes: `npm run build` and `npm test`, then commit and push to `main`.
