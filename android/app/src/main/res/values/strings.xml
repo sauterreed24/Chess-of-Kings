@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Calculus of Kings</string>
+    <string name="title_activity_main">Calculus of Kings</string>
+    <string name="package_name">games.calculusofkings.app</string>
+    <string name="custom_url_scheme">games.calculusofkings.app</string>
+</resources>

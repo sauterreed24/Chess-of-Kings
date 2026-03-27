@@ -34,6 +34,7 @@ import {
 } from '../chess/aiProfiles'
 import { chooseOpeningBookMove } from '../chess/openings'
 import { detectTacticalMotifs } from '../chess/motifs'
+import { lossRecoveryMentorLine } from '../game/trainingTips'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
@@ -849,7 +850,7 @@ export class GameFlow {
     const fairnessSoften = rivalryPressure >= 2 ? Math.min(0.18, rivalryPressure * 0.05) : 0
     const momentumHarden = mem && mem.wins - mem.losses >= 2 ? Math.min(0.1, (mem.wins - mem.losses) * 0.03) : 0
     const tiltStreak = this.recentLossStreak(match.id)
-    const antiTiltRelief = tiltStreak >= 2 ? Math.min(0.16, tiltStreak * 0.04) : 0
+    const antiTiltRelief = tiltStreak >= 2 ? Math.min(tiltStreak >= 4 ? 0.22 : 0.18, tiltStreak * 0.045) : 0
     return {
       ...base,
       searchDepth: Math.min(7, base.searchDepth + Math.floor((diff - 1) / 2)),
@@ -942,7 +943,25 @@ export class GameFlow {
     return streak
   }
 
+  private countQuality(q: MoveQuality): number {
+    let n = 0
+    for (const x of this.sanQuality) if (x === q) n++
+    return n
+  }
+
   private computeMentorInsight(): string | null {
+    if (this.mode === 'match' || this.mode === 'duel') {
+      if (this.computeMatchOutcome() === 'loss') {
+        const oid = this.mode === 'duel' ? this.duelSession?.roster.opponentId : this.matchScene?.id
+        return lossRecoveryMentorLine({
+          lossStreakVsOpponent: this.recentLossStreak(oid),
+          sceneTendencies: this.sceneTendencies,
+          blunderCount: this.countQuality('blunder'),
+          mistakeCount: this.countQuality('mistake'),
+          moveCount: this.sanLog.length,
+        })
+      }
+    }
     const tilt = this.recentLossStreak()
     if (tilt >= 3) {
       return 'Mentor Insight: stability protocol engaged. Simplify exchanges, castle early, and deny tactical chaos for five moves.'

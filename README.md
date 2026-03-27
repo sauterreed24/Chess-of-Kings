@@ -31,7 +31,7 @@ Tests: Vitest runs with `MODE=test`, so deferred save/HUD emission is **synchron
 
 ## Packaging Toward Stores
 
-See `docs/STORE_MOBILE.md` for the shortest path to Google Play / App Store packaging (TWA or Capacitor), plus required store checklist items.
+**Capacitor** is configured (`capacitor.config.ts`, `android/`, `ios/`). Run **`npm run cap:sync`**, then **`npm run cap:open:android`** or **`npm run cap:open:ios`**. See `docs/STORE_MOBILE.md` for signing, Play Console, and App Store Connect.
 
 ## Ship checklist (local)
 
