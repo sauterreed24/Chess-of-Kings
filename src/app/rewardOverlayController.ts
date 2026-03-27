@@ -30,6 +30,7 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
     close() {
       runCleanup()
       el.classList.add('hidden')
+      el.setAttribute('aria-hidden', 'true')
       el.innerHTML = ''
     },
 
@@ -37,6 +38,7 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
       runCleanup()
       el.innerHTML = html
       el.classList.remove('hidden')
+      el.setAttribute('aria-hidden', 'false')
       onCleanup = cleanup ?? null
       setup?.(el)
     },
@@ -48,6 +50,7 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
 
     reveal() {
       el.classList.remove('hidden')
+      el.setAttribute('aria-hidden', 'false')
     },
 
     isOpen() {

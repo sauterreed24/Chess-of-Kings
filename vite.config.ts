@@ -8,5 +8,7 @@ export default defineConfig({
   build: {
     /** Skip gzip size reporting — small win for CI and local builds. */
     reportCompressedSize: false,
+    /** Main bundle is intentionally monolithic; avoid noisy warnings on ~180kB JS. */
+    chunkSizeWarningLimit: 600,
   },
 })

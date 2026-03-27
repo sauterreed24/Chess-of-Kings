@@ -20,9 +20,11 @@ describe('createRewardOverlayController', () => {
     const cleanup = vi.fn()
     const c = createRewardOverlayController(el)
     c.open('<p>x</p>', undefined, cleanup)
+    expect(el.getAttribute('aria-hidden')).toBe('false')
     c.close()
     expect(cleanup).toHaveBeenCalled()
     expect(c.isOpen()).toBe(false)
+    expect(el.getAttribute('aria-hidden')).toBe('true')
     expect(el.innerHTML).toBe('')
   })
 

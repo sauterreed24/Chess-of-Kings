@@ -378,7 +378,7 @@ function mount() {
         </div>
       </div>
 
-      <div id="reward-overlay" class="reward-overlay hidden" aria-live="polite"></div>
+      <div id="reward-overlay" class="reward-overlay hidden" role="dialog" aria-modal="true" aria-live="polite" aria-label="Rewards and unlocks" aria-hidden="true"></div>
     </main>
   `
 
@@ -1350,6 +1350,7 @@ function mount() {
     if (!showBoard) {
       boardStatus.textContent = ''
       moveLedger.innerHTML = ''
+      lastLedgerKey = ''
       calibrationRail.classList.add('hidden')
       flow.board?.setCheckSquare(null)
     }

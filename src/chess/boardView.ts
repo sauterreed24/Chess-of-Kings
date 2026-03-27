@@ -104,7 +104,7 @@ export class BoardView {
       const rank = Number(sq[1]) - 1
       const light = (file + rank) % 2 !== 0
       btn.classList.add(light ? 'sq-light' : 'sq-dark')
-      btn.setAttribute('aria-label', sq)
+      btn.setAttribute('aria-label', `Square ${sq}`)
       btn.addEventListener('click', () => this.clickSquare(sq as Square))
       this.cells.set(sq as Square, btn)
       this.root.appendChild(btn)
