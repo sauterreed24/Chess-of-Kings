@@ -36,6 +36,7 @@ This project is a **Vite + TypeScript** web app. App stores expect a **native sh
 | **Deep links** | Optional; for `https://yourdomain/...` routes if you add routing later. |
 | **Privacy** | Publish a privacy policy page (even if “no server, local storage only”). |
 | **Payments** | If you sell IAP, use platform billing APIs; web billing inside WebView may violate policies. |
+| **WebView lifecycle** | The game debounces `localStorage` writes and batches HUD updates to `requestAnimationFrame`; `pagehide` / `beforeunload` call `flushDeferredIO()` so the latest board state is saved when the user leaves. Test backgrounding and kill-app flows in your wrapper. |
 
 ## Suggested order of work
 
