@@ -39,6 +39,10 @@ export class BoardView {
   private guardFrom: Square | null = null
   private guardTo: Square | null = null
   private guardStamp = 0
+  /** Tracks flying-piece overlays for O(1) cleanup instead of document-wide queries. */
+  private pieceFlyEls: HTMLElement[] = []
+  /** Skip rewriting unchanged squares (majority of cells on typical moves). */
+  private lastPieceSig = new Map<Square, string>()
 
   constructor(opts: BoardViewOptions) {
     this.root = opts.root
@@ -85,6 +89,7 @@ export class BoardView {
 
   private buildGrid() {
     this.root.innerHTML = ''
+    this.lastPieceSig.clear()
     this.root.classList.add('board-wrap', 'chess-grid')
     this.cells.clear()
     for (const sq of this.squareOrder()) {
@@ -289,11 +294,15 @@ export class BoardView {
     }
 
     for (const [sq, btn] of this.cells) {
-      /* Preserve label spans, replace only piece content */
-      const labels = [...btn.querySelectorAll('.sq-label')]
       const p = chess.get(sq)
+      const sig = p ? `${p.color}${p.type}` : ''
+      const prevKnown = this.lastPieceSig.has(sq)
+      const prev = this.lastPieceSig.get(sq) ?? ''
+      if (prevKnown && prev === sig) continue
+      this.lastPieceSig.set(sq, sig)
+      const labels = [...btn.querySelectorAll('.sq-label')]
       btn.innerHTML = p ? this.pieceSpanHtml(p) : ''
-      btn.dataset.piece = p ? `${p.color}${p.type}` : ''
+      btn.dataset.piece = sig
       for (const l of labels) btn.appendChild(l)
     }
 
@@ -310,6 +319,7 @@ export class BoardView {
       const x1 = toRect.left + toRect.width / 2
       const y1 = toRect.top + toRect.height / 2
       document.body.appendChild(fly)
+      this.pieceFlyEls.push(fly)
 
       const anim = fly.animate(
         [

@@ -24,10 +24,15 @@ const TT = new Map<string, TTEntry>()
 const TT_MAX = 200_000
 
 function ttKeyFromFen(fen: string): string {
-  // Ignore halfmove/fullmove counters for stronger TT reuse.
-  const parts = fen.split(' ')
-  if (parts.length < 4) return fen
-  return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`
+  // Ignore halfmove/fullmove counters for stronger TT reuse (no split allocation).
+  let spaces = 0
+  for (let i = 0; i < fen.length; i++) {
+    if (fen.charCodeAt(i) === 32) {
+      spaces++
+      if (spaces === 4) return fen.slice(0, i)
+    }
+  }
+  return fen
 }
 
 function ttProbe(
@@ -131,9 +136,9 @@ function hasFriendlyPassedPawn(chess: Chess, color: Color): boolean {
   return false
 }
 
-function rookEndgameDoctrineBonus(chessAfter: Chess, move: Move, mover: Color): number {
+function rookEndgameDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, nNonKing: number): number {
   if (move.piece !== 'r') return 0
-  if (nonKingPieceCount(chessAfter) > 8) return 0
+  if (nNonKing > 8) return 0
   let score = 0
   const targetRank = move.to[1]
   if ((mover === 'w' && targetRank === '7') || (mover === 'b' && targetRank === '2')) {
@@ -167,9 +172,9 @@ function findKingSquare(chess: Chess, color: Color): string | null {
   return null
 }
 
-function kingOppositionDoctrineBonus(chessAfter: Chess, move: Move, mover: Color): number {
+function kingOppositionDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, nNonKing: number): number {
   if (move.piece !== 'k') return 0
-  if (nonKingPieceCount(chessAfter) > 8) return 0
+  if (nNonKing > 8) return 0
   const enemy: Color = mover === 'w' ? 'b' : 'w'
   const myKing = move.to
   const enemyKing = findKingSquare(chessAfter, enemy)
@@ -182,9 +187,9 @@ function kingOppositionDoctrineBonus(chessAfter: Chess, move: Move, mover: Color
   return 0
 }
 
-function passedPawnPushDoctrineBonus(chessAfter: Chess, move: Move, mover: Color): number {
+function passedPawnPushDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, nNonKing: number): number {
   if (move.piece !== 'p') return 0
-  if (nonKingPieceCount(chessAfter) > 10) return 0
+  if (nNonKing > 10) return 0
   const file = move.to.charCodeAt(0) - 97
   const rank = Number(move.to[1]) - 1
   const dir = mover === 'w' ? 1 : -1
@@ -498,12 +503,13 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
   const baseMobility = moves.length
   return moves.map((move) => {
     chess.move(move)
+    const nNonKing = nonKingPieceCount(chess)
     const staticEval = materialAndPst(chess, mover)
     const oppMobility = chess.moves({ verbose: true }).length
     const motifs = detectTacticalMotifs(chess, move, mover)
-    const rookDoctrine = rookEndgameDoctrineBonus(chess, move, mover)
-    const oppositionDoctrine = kingOppositionDoctrineBonus(chess, move, mover)
-    const passedPawnDoctrine = passedPawnPushDoctrineBonus(chess, move, mover)
+    const rookDoctrine = rookEndgameDoctrineBonus(chess, move, mover, nNonKing)
+    const oppositionDoctrine = kingOppositionDoctrineBonus(chess, move, mover, nNonKing)
+    const passedPawnDoctrine = passedPawnPushDoctrineBonus(chess, move, mover, nNonKing)
     const repetitionPenalty = chess.isThreefoldRepetition()
       ? Math.round(14 + profile.conversionStrictness * 26)
       : 0

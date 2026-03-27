@@ -23,6 +23,8 @@ Features campaign progression, Duel Archive mode, adaptive AI personalities, rew
 - GitHub Actions workflow on push/PR:
   - build + tests.
 
+Performance notes: transposition table keys avoid extra string allocation; heuristic move scoring shares a single piece-count pass; the board view skips DOM writes on unchanged squares and avoids document-wide queries for fly animations.
+
 ## Packaging Toward Stores
 
 See `docs/STORE_MOBILE.md` for the shortest path to Google Play / App Store packaging (TWA or Capacitor), plus required store checklist items.
