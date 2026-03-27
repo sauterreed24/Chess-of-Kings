@@ -1,0 +1,17 @@
+{
+  "name": "The Calculus of Kings",
+  "short_name": "Calculus of Kings",
+  "description": "Narrative chess odyssey: campaign, duel archive, adaptive AI.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0908",
+  "theme_color": "#0a0908",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
