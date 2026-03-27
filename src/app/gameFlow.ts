@@ -662,9 +662,10 @@ export class GameFlow {
       this.mode === 'calibration' && this.calibrationScene
         ? { current: this.calibrationMoves, target: this.calibrationScene.minMovesByPlayer }
         : undefined
+    const matchOutcome = this.computeMatchOutcome()
     this.handlers.onChessUpdate({
       chess: this.chess,
-      status: this.statusLine(),
+      status: this.statusLine(sc),
       canUndo,
       sanLog: [...this.sanLog],
       sanQuality: [...this.sanQuality],
@@ -672,7 +673,7 @@ export class GameFlow {
       inCheck: chessy && this.chess.inCheck() && !this.isSceneTerminalForCurrentMode(),
       aiThinking: this.aiThinking,
       coachTip: this.lastCoachTip,
-      matchOutcome: this.computeMatchOutcome(),
+      matchOutcome,
       evalScore: chessy ? materialAndPst(this.chess, 'w') : 0,
       mentorInsight: this.computeMentorInsight(),
       aiPersona: this.currentAiPersona(),
@@ -1180,8 +1181,8 @@ export class GameFlow {
     return null
   }
 
-  private statusLine(): string {
-    if (this.mode !== 'duel' && !this.sceneUsesBoard(this.currentScene())) return ''
+  private statusLine(scene: Scene = this.currentScene()): string {
+    if (this.mode !== 'duel' && !this.sceneUsesBoard(scene)) return ''
     if (this.isBareKingLockmate()) return 'Checkmate — lone king sealed.'
     if (this.chess.isCheckmate()) return 'Checkmate.'
     if (this.mode === 'match' || this.mode === 'duel') {
