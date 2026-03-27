@@ -233,7 +233,7 @@ function mount() {
       <div class="ambient__vignette"></div>
     </div>
 
-    <div id="shell">
+    <main id="shell" aria-label="The Calculus of Kings">
       <header class="top-bar">
         <div class="top-bar__brand">
           <span class="mark">The Calculus of Kings</span>
@@ -315,6 +315,7 @@ function mount() {
                     <span class="btn-advance-label">Advance</span>
                     <span class="btn-advance-hint" id="btn-next-hint"></span>
                   </button>
+                  <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances when focus is not on the board.</p>
                 </div>
               </article>
               <aside class="instrument-column" id="board-panel">
@@ -355,7 +356,7 @@ function mount() {
                         <div class="board-brass__corner board-brass__corner--tr"></div>
                         <div class="board-brass__corner board-brass__corner--bl"></div>
                         <div class="board-brass__corner board-brass__corner--br"></div>
-                        <div id="chess-root" class="board-wrap"></div>
+                        <div id="chess-root" class="board-wrap" role="region" aria-label="Chess board"></div>
                       </div>
                     </div>
                     <div class="captured-row captured-row--bot" id="captured-bot" aria-label="Pieces captured by Black"></div>
@@ -378,10 +379,10 @@ function mount() {
       </div>
 
       <div id="reward-overlay" class="reward-overlay hidden" aria-live="polite"></div>
-    </div>
+    </main>
   `
 
-  const shell = app.querySelector<HTMLDivElement>('#shell')!
+  const shell = app.querySelector<HTMLElement>('#shell')!
   const labOverlay = app.querySelector<HTMLDivElement>('#lab-overlay')!
   const screenTitle = app.querySelector('#screen-title')!
   const screenChapters = app.querySelector('#screen-chapters')!
@@ -452,6 +453,8 @@ function mount() {
   let lastCapturedFen = ''
   let lastCalKey = ''
   let lastEvalScore = Number.NaN
+  /** Invalidated in renderScene so Advance button state always refreshes on passage change. */
+  let lastAdvanceSig = ''
   let prevSessionRecovered = false
   let latestResolvedForRecap: ChessUiPayload | null = null
   let pendingChapterPrompt: { completedTitle: string; nextTitle: string | null } | null = null
@@ -1312,6 +1315,7 @@ function mount() {
     lastCapturedFen = ''
     lastCalKey = ''
     lastEvalScore = Number.NaN
+    lastAdvanceSig = ''
     btnReset.disabled = true
     btnNextHint.textContent = ''
     const showBoard = flow.sceneUsesBoard(scene)
@@ -1453,7 +1457,6 @@ function mount() {
     return 'Complete'
   }
 
-  let lastAdvanceSig = ''
   function updateAdvance(g: GameFlow) {
     const ok = g.canAdvance()
     const hint =
@@ -1564,7 +1567,8 @@ function mount() {
   }
   runAdvanceTick()
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) updateAdvance(flow)
+    if (document.hidden) flow.flushDeferredIO()
+    else updateAdvance(flow)
   })
   window.addEventListener('beforeunload', () => {
     if (advanceTicker) window.clearTimeout(advanceTicker)
