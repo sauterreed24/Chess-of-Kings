@@ -234,4 +234,21 @@ describe('GameFlow depth systems', () => {
     flow.newGame()
     expect(flow.consumePendingRewards()).toEqual([])
   })
+
+  it('flushDeferredIO flushes pending UI emit and does not throw', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 1
+    flow.jumpToScene(1, 2)
+    onChessUpdate.mockClear()
+    expect(() => flow.flushDeferredIO()).not.toThrow()
+    expect(onChessUpdate).toHaveBeenCalled()
+  })
 })

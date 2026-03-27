@@ -34,6 +34,10 @@ import {
 import { chooseOpeningBookMove } from '../chess/openings'
 import { detectTacticalMotifs } from '../chess/motifs'
 
+/** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
+const SYNC_IO = import.meta.env.MODE === 'test'
+const PERSIST_DEBOUNCE_MS = 180
+
 export type MatchOutcome = 'win' | 'loss' | 'draw' | null
 export type MoveQuality = 'brilliant' | 'good' | 'ok' | 'inaccuracy' | 'mistake' | 'blunder' | null
 
@@ -134,6 +138,8 @@ export class GameFlow {
   private pendingInProgressSnapshot: InProgressSnapshot | null = null
   private sessionRecoveredNotice = false
   private lastDuelSetup: LastDuelSetup | null = null
+  private persistTimer: ReturnType<typeof setTimeout> | null = null
+  private emitRafId = 0
 
   constructor(chapters: Chapter[], handlers: FlowHandlers) {
     this.chapters = chapters
@@ -169,7 +175,27 @@ export class GameFlow {
     this.persist()
   }
 
+  /**
+   * Debounced localStorage write (production) to avoid hammering storage during rapid play.
+   * Tests use synchronous writes (see SYNC_IO).
+   */
   persist() {
+    if (SYNC_IO) {
+      this.flushPersist()
+      return
+    }
+    if (this.persistTimer !== null) window.clearTimeout(this.persistTimer)
+    this.persistTimer = window.setTimeout(() => {
+      this.persistTimer = null
+      this.flushPersist()
+    }, PERSIST_DEBOUNCE_MS)
+  }
+
+  private flushPersist() {
+    if (this.persistTimer !== null) {
+      window.clearTimeout(this.persistTimer)
+      this.persistTimer = null
+    }
     const data: SaveData = {
       version: 3,
       chapterIndex: this.chapterIndex,
@@ -196,6 +222,20 @@ export class GameFlow {
       inProgress: this.buildInProgressSnapshot(),
     }
     writeSave(data)
+  }
+
+  /** Flush pending debounced save + any pending UI emission (tab close / visibility). */
+  flushDeferredIO() {
+    this.flushPersist()
+    this.flushEmit()
+  }
+
+  private flushEmit() {
+    if (this.emitRafId !== 0) {
+      cancelAnimationFrame(this.emitRafId)
+      this.emitRafId = 0
+    }
+    this.emitChessNow()
   }
 
   private buildInProgressSnapshot(): InProgressSnapshot | null {
@@ -600,7 +640,20 @@ export class GameFlow {
     this.emitChess()
   }
 
+  /** Coalesce multiple state updates into one RAF for smoother HUD / less main-thread work. */
   private emitChess() {
+    if (SYNC_IO) {
+      this.emitChessNow()
+      return
+    }
+    if (this.emitRafId !== 0) cancelAnimationFrame(this.emitRafId)
+    this.emitRafId = requestAnimationFrame(() => {
+      this.emitRafId = 0
+      this.emitChessNow()
+    })
+  }
+
+  private emitChessNow() {
     const sc = this.currentScene()
     const chessy = this.mode === 'duel' || this.sceneUsesBoard(sc)
     const canUndo =

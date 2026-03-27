@@ -1530,6 +1530,10 @@ function mount() {
   window.addEventListener('beforeunload', () => {
     if (advanceTicker) window.clearTimeout(advanceTicker)
     closeRewardOverlay()
+    flow.flushDeferredIO()
+  })
+  window.addEventListener('pagehide', () => {
+    flow.flushDeferredIO()
   })
   btnSfx.textContent = `Sound: ${sfxEnabled ? 'On' : 'Off'}`
   btnMoveGuard.textContent = `Move Guard: ${moveGuardEnabled ? 'On' : 'Off'}`
