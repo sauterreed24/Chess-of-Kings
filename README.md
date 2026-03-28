@@ -13,6 +13,8 @@ Features campaign progression, Duel Archive mode, adaptive AI personalities, rew
   - `npm run build`
 - Run tests:
   - `npm test`
+- Lint TypeScript:
+  - `npm run lint`
 - Run focused UI smoke checks:
   - `npm run test:ui-smoke`
 
@@ -37,7 +39,9 @@ Tests: Vitest runs with `MODE=test`, so deferred save/HUD emission is **synchron
 
 ## Ship checklist (local)
 
-After changes: `npm run build`, `npm test`, and `npm run test:ui-smoke`, then commit and push to `main`.
+After changes: `npm run lint`, `npm run build`, `npm test`, and `npm run test:ui-smoke`, then commit and push to `main`.
+
+App shell markup and narrative/ledger HTML helpers live under `src/app/shellMarkup.ts` and `src/app/mainUiFormatters.ts`; `src/main.ts` wires behavior and DOM events.
 
 ## License
 

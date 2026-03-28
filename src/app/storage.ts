@@ -106,8 +106,7 @@ function isMoveQuality(v: unknown): v is SavedMoveQuality {
 function isFen(v: unknown): v is string {
   if (typeof v !== 'string' || !v.trim()) return false
   try {
-    // eslint-disable-next-line no-new
-    new Chess(v)
+    void new Chess(v)
     return true
   } catch {
     return false

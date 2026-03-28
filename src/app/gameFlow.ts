@@ -1309,7 +1309,7 @@ export class GameFlow {
     if (this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'duel') {
       const evalAfter = materialAndPst(this.chess, this.playerColor)
       const delta = evalAfter - evalBefore
-      let quality: MoveQuality = 'ok'
+      let quality: MoveQuality
       if (delta >= 200) quality = 'brilliant'
       else if (delta >= 30) quality = 'good'
       else if (delta >= -50) quality = 'ok'

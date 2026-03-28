@@ -36,6 +36,7 @@ export class BoardView {
   private flyGen = 0
   private promoBackdrop: HTMLElement | null = null
   private promoPanel: HTMLElement | null = null
+  private readonly onBoardKeyDown = (e: KeyboardEvent) => this.handleBoardArrowKeys(e)
   private skin: PieceSkinId = 'classic-royal'
   private moveGuard = false
   private guardFrom: Square | null = null
@@ -109,7 +110,45 @@ export class BoardView {
       this.cells.set(sq as Square, btn)
       this.root.appendChild(btn)
     }
+    this.root.addEventListener('keydown', this.onBoardKeyDown)
     this.renderLabels()
+  }
+
+  /** Screen-oriented navigation: DOM order matches visual rows (8×8). */
+  private handleBoardArrowKeys(e: KeyboardEvent) {
+    if (this.promoPanel || this.root.classList.contains('chess-grid--locked')) return
+    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return
+    const target = e.target
+    if (!(target instanceof HTMLElement) || !target.classList.contains('sq')) return
+    const sq = target.dataset.square as Square | undefined
+    if (!sq) return
+    const order = this.squareOrder()
+    const idx = order.indexOf(sq)
+    if (idx < 0) return
+    let next: number
+    switch (e.key) {
+      case 'ArrowUp':
+        next = idx - 8
+        break
+      case 'ArrowDown':
+        next = idx + 8
+        break
+      case 'ArrowLeft':
+        if (idx % 8 === 0) return
+        next = idx - 1
+        break
+      case 'ArrowRight':
+        if (idx % 8 === 7) return
+        next = idx + 1
+        break
+      default:
+        return
+    }
+    if (next < 0 || next >= 64) return
+    e.preventDefault()
+    e.stopPropagation()
+    const nextSq = order[next]!
+    this.cells.get(nextSq)?.focus()
   }
 
   private renderLabels() {
@@ -258,6 +297,18 @@ export class BoardView {
     return `<span class="piece piece--${p.color}" aria-hidden="true">${glyph}</span>`
   }
 
+  private squareAriaLabel(sq: Square, p: { color: Color; type: PieceSymbol } | null): string {
+    if (!p) return `Square ${sq}, empty`
+    const name =
+      p.type === 'k'
+        ? 'King'
+        : p.type === 'p'
+          ? 'Pawn'
+          : PROMO_NAMES[p.type] || p.type
+    const colorWord = p.color === 'w' ? 'White' : 'Black'
+    return `${sq}, ${colorWord} ${name}`
+  }
+
   draw(chess: Chess, last?: Move | null, pick?: { mode: BoardPickMode; soloColor?: 'w' | 'b' }) {
     this.pendingChess = chess
     if (pick) {
@@ -310,6 +361,7 @@ export class BoardView {
       const labels = [...btn.querySelectorAll('.sq-label')]
       btn.innerHTML = p ? this.pieceSpanHtml(p) : ''
       btn.dataset.piece = sig
+      btn.setAttribute('aria-label', this.squareAriaLabel(sq, p ?? null))
       for (const l of labels) btn.appendChild(l)
     }
 
