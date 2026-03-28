@@ -83,6 +83,46 @@ describe('GameFlow depth systems', () => {
     expect(mem['c1-match-test']?.games).toBe(1)
   })
 
+  it('adjudicates crushing sealed stalemate as win for stronger side (story rule)', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.chess.load('8/8/8/3Q1Q2/3bk3/8/5PK1/8 b - - 0 1')
+    const f = flow as unknown as {
+      mode: 'match'
+      playerColor: 'w'
+      computeMatchOutcome: () => 'win' | 'loss' | 'draw' | null
+    }
+    f.mode = 'match'
+    f.playerColor = 'w'
+    const staleSpy = vi.spyOn(flow.chess, 'isStalemate').mockReturnValue(true)
+    expect(f.computeMatchOutcome()).toBe('win')
+    staleSpy.mockRestore()
+  })
+
+  it('does not upgrade marginal sealed stalemate to a win (single queen vs minor)', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.chess.load('8/8/8/3Q4/3bk3/8/5PK1/8 b - - 0 1')
+    const f = flow as unknown as {
+      mode: 'match'
+      playerColor: 'w'
+      computeMatchOutcome: () => 'win' | 'loss' | 'draw' | null
+    }
+    f.mode = 'match'
+    f.playerColor = 'w'
+    const staleSpy = vi.spyOn(flow.chess, 'isStalemate').mockReturnValue(true)
+    expect(f.computeMatchOutcome()).toBe('draw')
+    staleSpy.mockRestore()
+  })
+
   it('recommends duel difficulty from recent rivalry outcomes', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

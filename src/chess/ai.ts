@@ -84,6 +84,14 @@ function moveKey(move: Move): string {
   return `${move.from}${move.to}${move.promotion ?? ''}`
 }
 
+function pickAvoidingRepeat(chosen: Move | null, avoid: string | null | undefined, alts: Move[]): Move | null {
+  if (!chosen || !avoid || moveKey(chosen) !== avoid) return chosen
+  const other = alts.find((m) => moveKey(m) !== avoid)
+  return other ?? chosen
+}
+
+export type ProfileMoveOptions = { avoidMoveKey?: string | null }
+
 function nonKingPieceCount(chess: Chess): number {
   let n = 0
   for (const row of chess.board()) {
@@ -530,13 +538,20 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
   }).sort((a, b) => b.score - a.score)
 }
 
-export function findBestMoveWithProfile(chess: Chess, profile: AiProfile): Move | null {
+export function findBestMoveWithProfile(
+  chess: Chess,
+  profile: AiProfile,
+  opts?: ProfileMoveOptions,
+): Move | null {
   const moves = chess.moves({ verbose: true })
   if (!moves.length) return null
   if (moves.length === 1) return moves[0]!
 
+  const avoid = opts?.avoidMoveKey ?? null
+  const altPool = (): Move[] => moves
+
   if (Math.random() < profile.blunderRate) {
-    return findRandomMove(chess)
+    return pickAvoidingRepeat(findRandomMove(chess, avoid), avoid, altPool())
   }
 
   // Candidate pool keeps variety for weaker personalities while preserving quality.
@@ -550,7 +565,7 @@ export function findBestMoveWithProfile(chess: Chess, profile: AiProfile): Move 
   /* Separate draw so risky play is not shadowed by the blunder branch (single-roll bands overlapped). */
   if (Math.random() < profile.riskAppetite * 0.18) {
     const risky = pickRiskyMove(chess, profile.style)
-    if (risky) return risky
+    if (risky) return pickAvoidingRepeat(risky, avoid, altPool())
   }
 
   const personalityVariance =
@@ -560,7 +575,8 @@ export function findBestMoveWithProfile(chess: Chess, profile: AiProfile): Move 
         ? 0.12
         : 0.18
   if (pool.length > 1 && Math.random() < Math.max(0.03, personalityVariance - strictness * 0.12)) {
-    return pool[Math.floor(Math.random() * pool.length)]!.move
+    const m = pool[Math.floor(Math.random() * pool.length)]!.move
+    return pickAvoidingRepeat(m, avoid, pool.map((c) => c.move))
   }
 
   // Stronger profiles get deeper search; weaker ones can still play sensible heuristics.
@@ -577,9 +593,13 @@ export function findBestMoveWithProfile(chess: Chess, profile: AiProfile): Move 
     const guardThreshold = Math.round(30 + strictness * 95 + profile.tacticalAlertness * 20)
     // Blunder guard: strong/technical profiles avoid large heuristic drops.
     if (selectedScore !== undefined && selectedScore + guardThreshold < bestScore) {
-      return pool[0]!.move
+      return pickAvoidingRepeat(pool[0]!.move, avoid, pool.map((c) => c.move))
     }
-    return engineMove
+    return pickAvoidingRepeat(
+      engineMove,
+      avoid,
+      [...pool.map((c) => c.move), ...candidates.slice(0, 12).map((c) => c.move)],
+    )
   }
 
   // Engine fallback: choose among top pool with quality-weighted randomness.
@@ -589,9 +609,9 @@ export function findBestMoveWithProfile(chess: Chess, profile: AiProfile): Move 
       move: c.move,
       weight: Math.max(1, 1 + Math.round(top - c.score <= 45 ? 8 : top - c.score <= 120 ? 3 : 1)),
     }))
-    return weightedPick(weights).move
+    return pickAvoidingRepeat(weightedPick(weights).move, avoid, pool.map((c) => c.move))
   }
-  return pool[0]!.move
+  return pickAvoidingRepeat(pool[0]!.move, avoid, altPool())
 }
 
 /** Material value of a piece, used by GameFlow draw adjudication. */
@@ -601,8 +621,10 @@ export { PIECE_VALUES }
 export { materialAndPst as materialAdvantage } from './evaluate'
 
 /** Pick a random legal move — used as a fallback when the engine fails. */
-export function findRandomMove(chess: Chess): Move | null {
+export function findRandomMove(chess: Chess, avoidMoveKey?: string | null): Move | null {
   const moves = chess.moves({ verbose: true })
   if (!moves.length) return null
-  return moves[Math.floor(Math.random() * moves.length)]!
+  const pool = avoidMoveKey ? moves.filter((m) => moveKey(m) !== avoidMoveKey) : moves
+  const pickFrom = pool.length ? pool : moves
+  return pickFrom[Math.floor(Math.random() * pickFrom.length)]!
 }

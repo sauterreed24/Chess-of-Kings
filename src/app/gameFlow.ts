@@ -1,6 +1,12 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
 import type { Move, Square, PieceSymbol } from 'chess.js'
-import { findBestMove, findBestMoveWithProfile, findRandomMove, materialAdvantage } from '../chess/ai'
+import {
+  findBestMove,
+  findBestMoveWithProfile,
+  findRandomMove,
+  materialAdvantage,
+  PIECE_VALUES,
+} from '../chess/ai'
 import type { AIStyle } from '../chess/evaluate'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
@@ -142,6 +148,8 @@ export class GameFlow {
     repeatedChecksWithoutGain: 0,
   }
   private lastTacticalPulse: string | null = null
+  /** Last engine ply (from+to+promotion) — used to discourage immediate duplicate AI moves. */
+  private lastAiMoveKey: string | null = null
   private pendingInProgressSnapshot: InProgressSnapshot | null = null
   private sessionRecoveredNotice = false
   private lastDuelSetup: LastDuelSetup | null = null
@@ -530,6 +538,7 @@ export class GameFlow {
     this.history = [this.chess.fen()]
     this.sanLog = []
     this.sanQuality = []
+    this.lastAiMoveKey = null
     this.lastCoachTip = null
     this.board?.setOrientation(this.playerColor)
     this.board?.setSkin(this.selectedPieceSkin)
@@ -597,6 +606,7 @@ export class GameFlow {
     this.history = []
     this.sanLog = []
     this.sanQuality = []
+    this.lastAiMoveKey = null
 
     if (sc.type === 'puzzle') {
       this.mode = 'puzzle'
@@ -711,6 +721,7 @@ export class GameFlow {
     this.history = [stableFen]
     this.sanLog = []
     this.sanQuality = []
+    this.lastAiMoveKey = null
     this.lastTacticalPulse = null
     this.lastResolvedOutcomeKey = null
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
@@ -1173,6 +1184,17 @@ export class GameFlow {
     return true
   }
 
+  private sideMaterialCpExcludingKing(color: 'w' | 'b'): number {
+    let s = 0
+    for (const row of this.chess.board()) {
+      for (const piece of row) {
+        if (!piece || piece.color !== color || piece.type === 'k') continue
+        s += PIECE_VALUES[piece.type]
+      }
+    }
+    return s
+  }
+
   /**
    * Story rule: if a lone king is fully trapped, count it as a win.
    * This prevents anti-climactic "stalemate with only king left" endings.
@@ -1184,10 +1206,25 @@ export class GameFlow {
     return this.sideHasOnlyKing(defender) && !this.sideHasOnlyKing(attacker)
   }
 
+  /**
+   * Story rule: sealed stalemate while massively ahead in force (e.g. multiple queens vs a minor)
+   * counts as a win for the stronger side — not a dead draw.
+   */
+  private isDominanceSealedStalemate(): boolean {
+    if (!this.chess.isStalemate()) return false
+    const defender = this.chess.turn()
+    const attacker = defender === 'w' ? 'b' : 'w'
+    const defMat = this.sideMaterialCpExcludingKing(defender)
+    const atkMat = this.sideMaterialCpExcludingKing(attacker)
+    if (defMat > 700) return false
+    return atkMat - defMat >= 800
+  }
+
   private isTerminalMatchPosition(): boolean {
     return (
       this.chess.isCheckmate() ||
       this.isBareKingLockmate() ||
+      this.isDominanceSealedStalemate() ||
       this.chess.isStalemate() ||
       this.chess.isInsufficientMaterial()
     )
@@ -1206,6 +1243,9 @@ export class GameFlow {
     if (this.isBareKingLockmate()) {
       return this.chess.turn() !== this.playerColor ? 'win' : 'loss'
     }
+    if (this.isDominanceSealedStalemate()) {
+      return this.chess.turn() !== this.playerColor ? 'win' : 'loss'
+    }
     if (this.chess.isInsufficientMaterial() || this.chess.isStalemate()) return 'draw'
     return null
   }
@@ -1213,6 +1253,7 @@ export class GameFlow {
   private statusLine(scene: Scene = this.currentScene()): string {
     if (this.mode !== 'duel' && !this.sceneUsesBoard(scene)) return ''
     if (this.isBareKingLockmate()) return 'Checkmate — lone king sealed.'
+    if (this.isDominanceSealedStalemate()) return 'Victory — field sealed; decision goes to the stronger force.'
     if (this.chess.isCheckmate()) return 'Checkmate.'
     if (this.mode === 'match' || this.mode === 'duel') {
       if (this.chess.isInsufficientMaterial()) return 'Stalemate — insufficient force to mate.'
@@ -1381,8 +1422,13 @@ export class GameFlow {
     this.sanLog.push(result.san)
     this.sanQuality.push(null)
     this.history.push(this.chess.fen())
+    this.lastAiMoveKey = `${result.from}${result.to}${result.promotion ?? ''}`
     this.board?.draw(this.chess, result, drawPick)
     return result
+  }
+
+  private profileMoveOpts() {
+    return { avoidMoveKey: this.lastAiMoveKey }
   }
 
   /**
@@ -1503,7 +1549,7 @@ export class GameFlow {
       }
       try {
         if (!openingPlayed) {
-          const mv = findBestMoveWithProfile(this.chess, profile)
+          const mv = findBestMoveWithProfile(this.chess, profile, this.profileMoveOpts())
           if (mv) {
             this.commitEnginePliesOrThrow(this.chess.move(mv), {
               mode: 'solo',
@@ -1513,7 +1559,7 @@ export class GameFlow {
         }
       } catch {
         try {
-          const rm = findRandomMove(this.chess)
+          const rm = findRandomMove(this.chess, this.lastAiMoveKey)
           if (rm) {
             this.commitEnginePliesOrThrow(
               this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
@@ -1582,11 +1628,15 @@ export class GameFlow {
 
       if (!lastSan) {
         try {
-          const best = findBestMoveWithProfile(this.chess, {
-            ...profile,
-            searchDepth: Math.max(profile.searchDepth, m.aiDepth),
-            style: m.aiStyle ?? profile.style,
-          })
+          const best = findBestMoveWithProfile(
+            this.chess,
+            {
+              ...profile,
+              searchDepth: Math.max(profile.searchDepth, m.aiDepth),
+              style: m.aiStyle ?? profile.style,
+            },
+            this.profileMoveOpts(),
+          )
           if (best) {
             const result = this.commitEnginePliesOrThrow(this.chess.move(best), {
               mode: 'solo',
@@ -1596,7 +1646,7 @@ export class GameFlow {
           }
         } catch {
           try {
-            const rm = findRandomMove(this.chess)
+            const rm = findRandomMove(this.chess, this.lastAiMoveKey)
             if (rm) {
               const result = this.commitEnginePliesOrThrow(
                 this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
@@ -1753,6 +1803,7 @@ export class GameFlow {
     this.scriptedMoveIndex = 0
     this.sanLog = []
     this.sanQuality = []
+    this.lastAiMoveKey = null
     this.history = [this.chess.fen()]
     this.board?.draw(this.chess, null, {
       mode: this.mode === 'duel' ? 'solo' : sc.type === 'freeplay' ? 'free' : 'solo',
@@ -1776,6 +1827,7 @@ export class GameFlow {
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
+    this.lastAiMoveKey = null
 
     const twoStepUndo =
       (this.mode === 'duel' || sc.type === 'match' || sc.type === 'calibration' || sc.type === 'puzzle') &&
@@ -1886,6 +1938,7 @@ export class GameFlow {
     if (sc.type === 'match') {
       if (this.chess.isCheckmate()) return this.chess.turn() !== this.playerColor
       if (this.isBareKingLockmate()) return this.chess.turn() !== this.playerColor
+      if (this.isDominanceSealedStalemate()) return this.chess.turn() !== this.playerColor
       if (this.chess.isStalemate()) return false
       if (this.chess.isInsufficientMaterial()) return false
       return false
@@ -1949,6 +2002,7 @@ export class GameFlow {
     this.history = []
     this.sanLog = []
     this.sanQuality = []
+    this.lastAiMoveKey = null
     this.persist()
     this.refreshScene()
   }

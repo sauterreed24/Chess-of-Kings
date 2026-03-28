@@ -193,13 +193,17 @@ export function mountApp(app: HTMLDivElement) {
     }
     prevSanLen = p.sanLog.length
 
-    const isCheckmate = p.chess.isCheckmate()
     const isGameOver = p.chess.isGameOver()
 
     /* Status pill */
     if (p.aiThinking) {
       boardStatus.textContent = 'Thinking…'
-      boardStatus.classList.remove('status-pill--check', 'status-pill--win', 'status-pill--loss')
+      boardStatus.classList.remove(
+        'status-pill--check',
+        'status-pill--win',
+        'status-pill--loss',
+        'status-pill--draw',
+      )
       boardStatus.classList.add('status-pill--thinking')
     } else {
       boardStatus.textContent = p.status
@@ -210,6 +214,7 @@ export function mountApp(app: HTMLDivElement) {
         p.matchOutcome === 'win',
       )
       boardStatus.classList.toggle('status-pill--loss', p.matchOutcome === 'loss')
+      boardStatus.classList.toggle('status-pill--draw', p.matchOutcome === 'draw')
     }
 
     /* Board-stage outcome flash */
@@ -218,7 +223,7 @@ export function mountApp(app: HTMLDivElement) {
       p.matchOutcome === 'win',
     )
     boardStage.classList.toggle('board-stage--loss', p.matchOutcome === 'loss')
-    boardStage.classList.toggle('board-stage--finisher', p.matchOutcome === 'win' && isCheckmate)
+    boardStage.classList.toggle('board-stage--finisher', p.matchOutcome === 'win')
     const gameActive = !p.matchOutcome && !isGameOver
     boardStage.classList.toggle('board-stage--white-turn', gameActive && p.chess.turn() === 'w')
     boardStage.classList.toggle('board-stage--black-turn', gameActive && p.chess.turn() === 'b')
