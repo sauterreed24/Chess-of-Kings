@@ -52,7 +52,7 @@ Selling digital goods requires **Play Billing** / **StoreKit** (or Capacitor plu
 
 ## Accessibility
 
-The web shell includes a **skip link** to `#shell`, reward overlays **restore focus** on close, and narrative/dialogue copy is **HTML-escaped** when injected. The chess grid supports **arrow-key focus** between squares (and richer **square labels** for assistive tech). Keep that pattern when adding UI.
+The web shell includes a **skip link** to `#shell`, reward overlays **restore focus** on close, and narrative/dialogue copy is **HTML-escaped** when injected. The chess grid supports **roving tabindex** (one square in tab order, default **e4**), **arrow keys**, **Home/End**, and richer **square labels** for assistive tech. The board `region` references the narrative keyboard hint via **`aria-describedby`**. Keep that pattern when adding UI.
 
 ## WebView lifecycle
 

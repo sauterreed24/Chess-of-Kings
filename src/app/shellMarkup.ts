@@ -95,7 +95,7 @@ export function getShellMarkup(): string {
                     <span class="btn-advance-label">Advance</span>
                     <span class="btn-advance-hint" id="btn-next-hint"></span>
                   </button>
-                  <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances when focus is not on the board. Arrow keys move between squares when a square is focused.</p>
+                  <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances when focus is not on the board. The board uses one square in the tab order at a time (starts at e4); arrow keys move, Home and End jump to the near corners; Enter or Space activates the focused square.</p>
                 </div>
               </article>
               <aside class="instrument-column" id="board-panel">
@@ -136,7 +136,7 @@ export function getShellMarkup(): string {
                         <div class="board-brass__corner board-brass__corner--tr"></div>
                         <div class="board-brass__corner board-brass__corner--bl"></div>
                         <div class="board-brass__corner board-brass__corner--br"></div>
-                        <div id="chess-root" class="board-wrap" role="region" aria-label="Chess board. Arrow keys move between squares when a square is focused; Enter or Space activates the focused square."></div>
+                        <div id="chess-root" class="board-wrap" role="region" aria-label="Chess board" aria-describedby="narrative-kbd-hint"></div>
                       </div>
                     </div>
                     <div class="captured-row captured-row--bot" id="captured-bot" aria-label="Pieces captured by Black"></div>

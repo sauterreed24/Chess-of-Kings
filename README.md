@@ -41,7 +41,7 @@ Tests: Vitest runs with `MODE=test`, so deferred save/HUD emission is **synchron
 
 After changes: `npm run lint`, `npm run build`, `npm test`, and `npm run test:ui-smoke`, then commit and push to `main`.
 
-App shell markup and narrative/ledger HTML helpers live under `src/app/shellMarkup.ts` and `src/app/mainUiFormatters.ts`; `src/main.ts` wires behavior and DOM events.
+App shell markup and narrative/ledger HTML helpers live under `src/app/shellMarkup.ts` and `src/app/mainUiFormatters.ts`. The Vite entry `src/main.ts` loads styles and calls `mountApp()` in `src/app/mountApp.ts`, which wires DOM queries, `GameFlow`, and all UI events.
 
 ## License
 

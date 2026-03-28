@@ -36,7 +36,7 @@ export class BoardView {
   private flyGen = 0
   private promoBackdrop: HTMLElement | null = null
   private promoPanel: HTMLElement | null = null
-  private readonly onBoardKeyDown = (e: KeyboardEvent) => this.handleBoardArrowKeys(e)
+  private readonly onBoardKeyDown = (e: KeyboardEvent) => this.handleBoardKeyNav(e)
   private skin: PieceSkinId = 'classic-royal'
   private moveGuard = false
   private guardFrom: Square | null = null
@@ -105,6 +105,7 @@ export class BoardView {
       const rank = Number(sq[1]) - 1
       const light = (file + rank) % 2 !== 0
       btn.classList.add(light ? 'sq-light' : 'sq-dark')
+      btn.tabIndex = -1
       btn.setAttribute('aria-label', `Square ${sq}`)
       btn.addEventListener('click', () => this.clickSquare(sq as Square))
       this.cells.set(sq as Square, btn)
@@ -112,12 +113,23 @@ export class BoardView {
     }
     this.root.addEventListener('keydown', this.onBoardKeyDown)
     this.renderLabels()
+    const order = this.squareOrder()
+    const start = order.includes('e4') ? ('e4' as Square) : order[0]!
+    this.applyRovingTabindex(start)
+  }
+
+  /** One square participates in the tab order (0); the rest are −1 (roving tabindex pattern). */
+  private applyRovingTabindex(active: Square) {
+    for (const [s, btn] of this.cells) {
+      btn.tabIndex = s === active ? 0 : -1
+    }
   }
 
   /** Screen-oriented navigation: DOM order matches visual rows (8×8). */
-  private handleBoardArrowKeys(e: KeyboardEvent) {
+  private handleBoardKeyNav(e: KeyboardEvent) {
     if (this.promoPanel || this.root.classList.contains('chess-grid--locked')) return
-    if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return
+    const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End']
+    if (!keys.includes(e.key)) return
     const target = e.target
     if (!(target instanceof HTMLElement) || !target.classList.contains('sq')) return
     const sq = target.dataset.square as Square | undefined
@@ -141,6 +153,12 @@ export class BoardView {
         if (idx % 8 === 7) return
         next = idx + 1
         break
+      case 'Home':
+        next = 0
+        break
+      case 'End':
+        next = 63
+        break
       default:
         return
     }
@@ -148,6 +166,7 @@ export class BoardView {
     e.preventDefault()
     e.stopPropagation()
     const nextSq = order[next]!
+    this.applyRovingTabindex(nextSq)
     this.cells.get(nextSq)?.focus()
   }
 
@@ -190,6 +209,7 @@ export class BoardView {
   private clickSquare(sq: Square) {
     const ch = this.pendingChess
     if (!ch || this.root.classList.contains('chess-grid--locked')) return
+    this.applyRovingTabindex(sq)
 
     if (this.legalTargets.has(sq) && this.selected) {
       const from = this.selected
@@ -419,6 +439,7 @@ export class BoardView {
     const moves = chess.moves({ square: from, verbose: true })
     for (const m of moves) this.legalTargets.add(m.to)
     this.updateHighlights()
+    this.cells.get(from)?.focus()
   }
 
   private updateHighlights() {
