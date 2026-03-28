@@ -1384,6 +1384,51 @@ export class GameFlow {
     return result
   }
 
+  /**
+   * Mirror of the increments in `tryPlayerMove` so undo does not leave coaching / tendency stats inflated.
+   */
+  private revertTendencyIncrementsForUndonePly(
+    san: string,
+    halfMoveCountAfterThisPly: number,
+    fenBeforeThisPly: string,
+  ) {
+    const c = new Chess(fenBeforeThisPly)
+    const verbose = c.moves({ verbose: true }).find((m) => m.san === san)
+    if (!verbose) return
+    const piece = c.get(verbose.from)
+    if (!piece) return
+
+    let decFlank = false
+    if (
+      (verbose.from[0] === 'a' || verbose.from[0] === 'h') &&
+      piece.type === 'p' &&
+      halfMoveCountAfterThisPly <= 16
+    ) {
+      decFlank = true
+    }
+    let decQueen = false
+    if (piece.type === 'q' && halfMoveCountAfterThisPly <= 20) {
+      decQueen = true
+    }
+    const decCheckSpam = san.includes('+') && !san.includes('x')
+
+    if (decFlank) {
+      this.tendencies.flankPawnPushes = Math.max(0, this.tendencies.flankPawnPushes - 1)
+      this.sceneTendencies.flankPawnPushes = Math.max(0, this.sceneTendencies.flankPawnPushes - 1)
+    }
+    if (decQueen) {
+      this.tendencies.earlyQueenMoves = Math.max(0, this.tendencies.earlyQueenMoves - 1)
+      this.sceneTendencies.earlyQueenMoves = Math.max(0, this.sceneTendencies.earlyQueenMoves - 1)
+    }
+    if (decCheckSpam) {
+      this.tendencies.repeatedChecksWithoutGain = Math.max(0, this.tendencies.repeatedChecksWithoutGain - 1)
+      this.sceneTendencies.repeatedChecksWithoutGain = Math.max(
+        0,
+        this.sceneTendencies.repeatedChecksWithoutGain - 1,
+      )
+    }
+  }
+
   private scheduleAiMove() {
     const sc = this.currentScene()
     if (this.mode !== 'duel' && sc.type === 'freeplay') return
@@ -1450,22 +1495,20 @@ export class GameFlow {
         if (!openingPlayed) {
           const mv = findBestMoveWithProfile(this.chess, profile)
           if (mv) {
-            const result = this.chess.move(mv)
-            this.sanLog.push(result.san)
-            this.sanQuality.push(null)
-            this.history.push(this.chess.fen())
-            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
+            this.commitEnginePliesOrThrow(this.chess.move(mv), {
+              mode: 'solo',
+              soloColor: this.playerColor,
+            })
           }
         }
       } catch {
         try {
           const rm = findRandomMove(this.chess)
           if (rm) {
-            const result = this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion })
-            this.sanLog.push(result.san)
-            this.sanQuality.push(null)
-            this.history.push(this.chess.fen())
-            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
+            this.commitEnginePliesOrThrow(
+              this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
+              { mode: 'solo', soloColor: this.playerColor },
+            )
           }
         } catch { /* no legal move */ }
       }
@@ -1728,6 +1771,17 @@ export class GameFlow {
       (this.mode === 'duel' || sc.type === 'match' || sc.type === 'calibration' || sc.type === 'puzzle') &&
       this.history.length > 2
 
+    const nSans = this.sanLog.length
+    let undonePlayerSan: string | null = null
+    let halfMoveCountAfterPlayerPly = 0
+    if (twoStepUndo && nSans >= 2) {
+      undonePlayerSan = this.sanLog[nSans - 2]!
+      halfMoveCountAfterPlayerPly = nSans - 1
+    } else if (!twoStepUndo && nSans >= 1) {
+      undonePlayerSan = this.sanLog[nSans - 1]!
+      halfMoveCountAfterPlayerPly = nSans
+    }
+
     this.history.pop()
     if (this.sanLog.length > 0) this.sanLog.pop()
     if (this.sanQuality.length > 0) this.sanQuality.pop()
@@ -1744,6 +1798,10 @@ export class GameFlow {
 
     const fen = this.history[this.history.length - 1]!
     this.chess.load(fen)
+
+    if (undonePlayerSan) {
+      this.revertTendencyIncrementsForUndonePly(undonePlayerSan, halfMoveCountAfterPlayerPly, fen)
+    }
 
     this.board?.draw(this.chess, null, {
       mode: this.mode === 'duel' ? 'solo' : sc.type === 'freeplay' ? 'free' : 'solo',

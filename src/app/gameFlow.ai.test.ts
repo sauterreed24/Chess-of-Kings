@@ -91,4 +91,21 @@ describe('GameFlow AI / puzzles', () => {
     priv.scheduleAiMove()
     expect(priv.aiTimer).toBe(beforeTimer)
   })
+
+  it('undo after flank pawn restores scene tendency counters', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
+    flow.tryPlayerMove('a2', 'a4')
+    const st = flow as unknown as { sceneTendencies: { flankPawnPushes: number } }
+    expect(st.sceneTendencies.flankPawnPushes).toBe(1)
+    flow.undo()
+    expect(st.sceneTendencies.flankPawnPushes).toBe(0)
+  })
 })
