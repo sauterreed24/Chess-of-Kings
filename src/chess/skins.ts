@@ -12,8 +12,8 @@ const HIGH_CONTRAST: Record<Color, Record<PieceSymbol, string>> = {
 }
 
 const ORNATE: Record<Color, Record<PieceSymbol, string>> = {
-  w: { p: '♙', n: '♘', b: '♗', r: '♖', q: '♛', k: '♔' },
-  b: { p: '♟', n: '♞', b: '♝', r: '♜', q: '♕', k: '♚' },
+  w: { p: '♙', n: '♘', b: '♗', r: '♖', q: '♕', k: '♔' },
+  b: { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚' },
 }
 
 const NEON: Record<Color, Record<PieceSymbol, string>> = {
