@@ -1,3 +1,4 @@
+import { devWarn } from './devLog'
 import type {
   CosmeticInventory,
   InProgressSnapshot,
@@ -320,7 +321,7 @@ export function writeSave(data: SaveData) {
         }
         localStorage.setItem(KEY, JSON.stringify(lean))
       } catch {
-        // Second failure — keep session playable; user may clear site data.
+        devWarn('writeSave: persist failed even after trimming history/rivalMemory')
       }
     }
     // Other persist failures (privacy mode, disabled storage) should not crash gameplay.

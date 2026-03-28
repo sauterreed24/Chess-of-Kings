@@ -276,7 +276,10 @@ export function mountApp(app: HTMLDivElement) {
       const calKey = `${p.calibration.current}\t${p.calibration.target}`
       if (calKey !== lastCalKey) {
         lastCalKey = calKey
-        const { current, target } = p.calibration
+        const rawTarget = Math.floor(Number(p.calibration.target))
+        const rawCurrent = Math.floor(Number(p.calibration.current))
+        const target = Number.isFinite(rawTarget) ? Math.max(0, Math.min(120, rawTarget)) : 0
+        const current = Number.isFinite(rawCurrent) ? Math.max(0, Math.min(target, rawCurrent)) : 0
         calibrationTrack.innerHTML = Array.from({ length: target }, (_, i) => {
           const filled = i < current
           return `<span class="cal-dot ${filled ? 'cal-dot--on' : ''}" aria-hidden="true"></span>`

@@ -51,4 +51,10 @@ describe('chronicleReplay', () => {
     const cells = html.match(/class="echo-sq echo-sq--/g)
     expect(cells?.length).toBe(64)
   })
+
+  it('renderEchoBoardFen recovers from invalid FEN', () => {
+    const html = renderEchoBoardFen('not-a-fen-at-all', 'classic-royal')
+    const cells = html.match(/class="echo-sq echo-sq--/g)
+    expect(cells?.length).toBe(64)
+  })
 })

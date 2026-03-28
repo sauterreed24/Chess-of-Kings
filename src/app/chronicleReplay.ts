@@ -1,6 +1,7 @@
 import { Chess } from 'chess.js'
 import type { MatchHistoryEntry, PieceSkinId } from '../types'
 import { glyphForSkin } from '../chess/skins'
+import { devWarn } from './devLog'
 import { escapeHtml } from './htmlEscape'
 
 export function buildReplayFens(entry: MatchHistoryEntry): string[] {
@@ -35,7 +36,13 @@ export function formatEchoTimeline(entry: MatchHistoryEntry, plyIndex: number): 
 }
 
 export function renderEchoBoardFen(fen: string, skin: PieceSkinId): string {
-  const c = new Chess(fen)
+  let c: Chess
+  try {
+    c = new Chess(fen)
+  } catch {
+    devWarn('renderEchoBoardFen: invalid FEN, using start position', fen)
+    c = new Chess()
+  }
   const board = c.board()
   let html = '<div class="echo-board">'
   for (let r = 7; r >= 0; r--) {

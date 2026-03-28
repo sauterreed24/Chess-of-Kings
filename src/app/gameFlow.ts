@@ -1,5 +1,5 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
-import type { Square, PieceSymbol } from 'chess.js'
+import type { Move, Square, PieceSymbol } from 'chess.js'
 import { findBestMove, findBestMoveWithProfile, findRandomMove, materialAdvantage } from '../chess/ai'
 import type { AIStyle } from '../chess/evaluate'
 import { materialAndPst } from '../chess/evaluate'
@@ -24,6 +24,7 @@ import type {
 } from '../types'
 import { ledgerContentFingerprint } from './ledgerFingerprint'
 import { loadSave, writeSave, type LastScreen, type SaveData } from './storage'
+import { devWarn } from './devLog'
 import { DUEL_ROSTER } from '../data/duelRoster'
 import { CHAPTER_CLEAR_REWARDS, BASE_VICTORY_REWARDS } from '../data/rewards'
 import {
@@ -1281,6 +1282,10 @@ export class GameFlow {
       : 0
 
     const last = this.chess.move({ from, to, promotion: promotion ?? match.promotion })
+    if (!last) {
+      devWarn('tryPlayerMove: rejected move', { from, to, promotion })
+      return
+    }
     this.sanLog.push(last.san)
     this.history.push(this.chess.fen())
     if ((from[0] === 'a' || from[0] === 'h') && piece.type === 'p' && this.sanLog.length <= 16) {
@@ -1361,6 +1366,24 @@ export class GameFlow {
     this.scheduleAiMove()
   }
 
+  /**
+   * Apply an engine ply; throws if `chess.js` rejected the move so outer `catch` blocks can fall back (e.g. random move).
+   */
+  private commitEnginePliesOrThrow(
+    result: Move | null,
+    drawPick: { mode: BoardPickMode; soloColor?: 'w' | 'b' },
+  ): Move {
+    if (!result) {
+      devWarn('chess.move returned null (illegal SAN or bad verbose move)')
+      throw new Error('cok-null-move')
+    }
+    this.sanLog.push(result.san)
+    this.sanQuality.push(null)
+    this.history.push(this.chess.fen())
+    this.board?.draw(this.chess, result, drawPick)
+    return result
+  }
+
   private scheduleAiMove() {
     const sc = this.currentScene()
     if (this.mode !== 'duel' && sc.type === 'freeplay') return
@@ -1413,11 +1436,10 @@ export class GameFlow {
         const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.sanLog.length + 1)
         if (bookSan) {
           try {
-            const result = this.chess.move(bookSan)
-            this.sanLog.push(result.san)
-            this.sanQuality.push(null)
-            this.history.push(this.chess.fen())
-            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
+            this.commitEnginePliesOrThrow(this.chess.move(bookSan), {
+              mode: 'solo',
+              soloColor: this.playerColor,
+            })
             openingPlayed = true
           } catch {
             openingPlayed = false
@@ -1479,13 +1501,12 @@ export class GameFlow {
       if (shouldUseScript && script) {
         const san = script[this.scriptedMoveIndex]!
         try {
-          const result = this.chess.move(san)
+          const result = this.commitEnginePliesOrThrow(this.chess.move(san), {
+            mode: 'solo',
+            soloColor: this.playerColor,
+          })
           lastSan = result.san
           this.scriptedMoveIndex++
-          this.sanLog.push(result.san)
-          this.sanQuality.push(null)
-          this.history.push(this.chess.fen())
-          this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
         } catch {
           /* scripted move illegal — fall through to engine */
         }
@@ -1495,12 +1516,11 @@ export class GameFlow {
         const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.sanLog.length + 1)
         if (bookSan) {
           try {
-            const result = this.chess.move(bookSan)
+            const result = this.commitEnginePliesOrThrow(this.chess.move(bookSan), {
+              mode: 'solo',
+              soloColor: this.playerColor,
+            })
             lastSan = result.san
-            this.sanLog.push(result.san)
-            this.sanQuality.push(null)
-            this.history.push(this.chess.fen())
-            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
           } catch {
             // fall through to engine
           }
@@ -1515,25 +1535,25 @@ export class GameFlow {
             style: m.aiStyle ?? profile.style,
           })
           if (best) {
-            const result = this.chess.move(best)
+            const result = this.commitEnginePliesOrThrow(this.chess.move(best), {
+              mode: 'solo',
+              soloColor: this.playerColor,
+            })
             lastSan = result.san
-            this.sanLog.push(result.san)
-            this.sanQuality.push(null)
-            this.history.push(this.chess.fen())
-            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
           }
         } catch {
           try {
             const rm = findRandomMove(this.chess)
             if (rm) {
-              const result = this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion })
+              const result = this.commitEnginePliesOrThrow(
+                this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
+                { mode: 'solo', soloColor: this.playerColor },
+              )
               lastSan = result.san
-              this.sanLog.push(result.san)
-              this.sanQuality.push(null)
-              this.history.push(this.chess.fen())
-              this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
             }
-          } catch { /* exhausted */ }
+          } catch {
+            /* exhausted */
+          }
         }
       }
 
@@ -1561,26 +1581,28 @@ export class GameFlow {
       try {
         const best = findBestMove(this.chess, depth, style)
         if (best) {
-          const result = this.chess.move(best)
-          this.sanLog.push(result.san)
-          this.sanQuality.push(null)
-          this.history.push(this.chess.fen())
-          this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
+          this.commitEnginePliesOrThrow(this.chess.move(best), {
+            mode: 'solo',
+            soloColor: this.playerColor,
+          })
           played = true
         }
-      } catch { /* fall through */ }
+      } catch {
+        /* fall through */
+      }
       if (!played) {
         try {
           const rm = findRandomMove(this.chess)
           if (rm) {
-            const result = this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion })
-            this.sanLog.push(result.san)
-            this.sanQuality.push(null)
-            this.history.push(this.chess.fen())
-            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: this.playerColor })
+            this.commitEnginePliesOrThrow(
+              this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
+              { mode: 'solo', soloColor: this.playerColor },
+            )
             played = true
           }
-        } catch { /* no legal moves */ }
+        } catch {
+          /* no legal moves */
+        }
       }
 
       if (this.puzzleSolved()) {
@@ -1607,9 +1629,13 @@ export class GameFlow {
         const rm = findRandomMove(this.chess)
         if (rm) {
           const result = this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion })
-          this.sanLog.push(result.san)
-          this.history.push(this.chess.fen())
-          this.board?.draw(this.chess, result, { mode: 'solo', soloColor: 'w' })
+          if (!result) {
+            devWarn('calibration: random black move returned null')
+          } else {
+            this.sanLog.push(result.san)
+            this.history.push(this.chess.fen())
+            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: 'w' })
+          }
         }
       } catch {
         /* Random calibration move failed (illegal position); ignore and continue. */
