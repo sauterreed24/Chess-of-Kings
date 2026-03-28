@@ -14,6 +14,14 @@ describe('opening books', () => {
     }
   })
 
+  it('books odd plies index black replies — ply 1 after 1.e4, not ply 2', () => {
+    const c = new Chess()
+    c.move('e4')
+    expect(c.turn()).toBe('b')
+    expect(chooseOpeningBookMove(c, 'alexion_mentor', 1)).not.toBeNull()
+    expect(chooseOpeningBookMove(c, 'alexion_mentor', 2)).toBeNull()
+  })
+
   it('returns null when profile or ply has no line', () => {
     const c = new Chess()
     expect(chooseOpeningBookMove(c, 'unknown_profile', 1)).toBeNull()

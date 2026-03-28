@@ -1385,6 +1385,14 @@ export class GameFlow {
   }
 
   /**
+   * Opening books use odd keys (1, 3, 5, …) for the AI's 1st, 2nd, 3rd… replies in the booked lines.
+   * When the AI is black, that is `sanLog.length` (1, 3, 5, …) at its turn; when the AI is white, `sanLog.length + 1`.
+   */
+  private openingBookPlyIndex(): number {
+    return this.chess.turn() === 'b' ? this.sanLog.length : this.sanLog.length + 1
+  }
+
+  /**
    * Mirror of the increments in `tryPlayerMove` so undo does not leave coaching / tendency stats inflated.
    */
   private revertTendencyIncrementsForUndonePly(
@@ -1393,7 +1401,8 @@ export class GameFlow {
     fenBeforeThisPly: string,
   ) {
     const c = new Chess(fenBeforeThisPly)
-    const verbose = c.moves({ verbose: true }).find((m) => m.san === san)
+    const norm = (s: string) => s.replace(/[+#]+$/g, '')
+    const verbose = c.moves({ verbose: true }).find((m) => m.san === san || norm(m.san) === norm(san))
     if (!verbose) return
     const piece = c.get(verbose.from)
     if (!piece) return
@@ -1478,7 +1487,7 @@ export class GameFlow {
       )
       let openingPlayed = false
       if (this.sanLog.length < 18) {
-        const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.sanLog.length + 1)
+        const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.openingBookPlyIndex())
         if (bookSan) {
           try {
             this.commitEnginePliesOrThrow(this.chess.move(bookSan), {
@@ -1556,7 +1565,7 @@ export class GameFlow {
       }
 
       if (!lastSan && this.sanLog.length < 20) {
-        const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.sanLog.length + 1)
+        const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.openingBookPlyIndex())
         if (bookSan) {
           try {
             const result = this.commitEnginePliesOrThrow(this.chess.move(bookSan), {
@@ -1782,6 +1791,12 @@ export class GameFlow {
       halfMoveCountAfterPlayerPly = nSans
     }
 
+    /* FEN before the undone player ply — read before mutating `history` (must match `sanLog` / `history` pairing). */
+    const fenBeforeUndonePlayerPly =
+      undonePlayerSan && this.history.length >= (twoStepUndo ? 3 : 2)
+        ? this.history[this.history.length - (twoStepUndo ? 3 : 2)]!
+        : null
+
     this.history.pop()
     if (this.sanLog.length > 0) this.sanLog.pop()
     if (this.sanQuality.length > 0) this.sanQuality.pop()
@@ -1799,8 +1814,12 @@ export class GameFlow {
     const fen = this.history[this.history.length - 1]!
     this.chess.load(fen)
 
-    if (undonePlayerSan) {
-      this.revertTendencyIncrementsForUndonePly(undonePlayerSan, halfMoveCountAfterPlayerPly, fen)
+    if (undonePlayerSan && fenBeforeUndonePlayerPly) {
+      this.revertTendencyIncrementsForUndonePly(
+        undonePlayerSan,
+        halfMoveCountAfterPlayerPly,
+        fenBeforeUndonePlayerPly,
+      )
     }
 
     this.board?.draw(this.chess, null, {
