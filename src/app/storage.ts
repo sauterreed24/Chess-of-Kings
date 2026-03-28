@@ -148,20 +148,27 @@ function sanitizeInProgress(v: unknown): InProgressSnapshot | null {
   const duel = (() => {
     const d = x.duel
     if (!d || typeof d !== 'object') return undefined
-    const dx = d as Partial<NonNullable<InProgressSnapshot['duel']>>
+    const dx = d as Partial<NonNullable<InProgressSnapshot['duel']>> & { fen?: string }
+    const startFen =
+      typeof dx.startFen === 'string' && isFen(dx.startFen)
+        ? dx.startFen
+        : typeof dx.fen === 'string' && isFen(dx.fen)
+          ? dx.fen
+          : null
     if (
       typeof dx.opponentId !== 'string' ||
       typeof dx.variantId !== 'string' ||
       (dx.difficulty !== 'novice' && dx.difficulty !== 'balanced' && dx.difficulty !== 'relentless') ||
       (dx.playerColor !== 'w' && dx.playerColor !== 'b') ||
-      !isFen(dx.fen)
-    ) return undefined
+      !startFen
+    )
+      return undefined
     return {
       opponentId: dx.opponentId,
       variantId: dx.variantId,
       difficulty: dx.difficulty,
       playerColor: dx.playerColor,
-      fen: dx.fen,
+      startFen,
     }
   })()
   return {

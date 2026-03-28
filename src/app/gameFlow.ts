@@ -270,7 +270,7 @@ export class GameFlow {
         variantId: this.duelSession.variant.id,
         difficulty: this.duelSession.difficulty,
         playerColor: this.duelSession.playerColor,
-        fen: this.duelSession.fen,
+        startFen: this.duelSession.fen,
       }
     }
     return snap
@@ -294,7 +294,7 @@ export class GameFlow {
         roster,
         variant,
         playerColor: snap.duel.playerColor,
-        fen: snap.duel.fen,
+        fen: snap.duel.startFen,
         difficulty: snap.duel.difficulty,
       }
       this.playerColor = snap.playerColor
@@ -1187,9 +1187,9 @@ export class GameFlow {
   private isTerminalMatchPosition(): boolean {
     return (
       this.chess.isCheckmate() ||
+      this.isBareKingLockmate() ||
       this.chess.isStalemate() ||
-      this.chess.isInsufficientMaterial() ||
-      this.isBareKingLockmate()
+      this.chess.isInsufficientMaterial()
     )
   }
 

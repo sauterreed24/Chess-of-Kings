@@ -249,7 +249,8 @@ export interface InProgressDuelSnapshot {
   variantId: string
   difficulty: 'novice' | 'balanced' | 'relentless'
   playerColor: 'w' | 'b'
-  fen: string
+  /** Opening / reset FEN for this duel (`duelSession.fen`). Board position lives on `InProgressSnapshot.fen`. */
+  startFen: string
 }
 
 export interface InProgressSnapshot {
