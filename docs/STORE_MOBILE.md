@@ -48,7 +48,11 @@ Selling digital goods requires **Play Billing** / **StoreKit** (or Capacitor plu
 
 ## PWA note
 
-`public/manifest.webmanifest` helps “Add to Home Screen”; it does **not** replace a store binary.
+`public/manifest.webmanifest` helps “Add to Home Screen”; it does **not** replace a store binary. The manifest includes a stable **`id`** (`/`) so updates replace the same installed app where supported.
+
+## Accessibility
+
+The web shell includes a **skip link** to `#shell`, reward overlays **restore focus** on close, and narrative/dialogue copy is **HTML-escaped** when injected. Keep that pattern when adding UI.
 
 ## WebView lifecycle
 

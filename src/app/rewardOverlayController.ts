@@ -72,6 +72,7 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
     reveal() {
       el.classList.remove('hidden')
       el.setAttribute('aria-hidden', 'false')
+      queueMicrotask(() => focusFirstOverlayControl(el))
     },
 
     isOpen() {

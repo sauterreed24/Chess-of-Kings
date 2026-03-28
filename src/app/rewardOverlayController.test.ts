@@ -73,6 +73,19 @@ describe('createRewardOverlayController', () => {
     el.remove()
   })
 
+  it('reveal focuses first control after content was prepared while hidden', async () => {
+    const el = document.createElement('div')
+    el.classList.add('hidden')
+    el.setAttribute('aria-hidden', 'true')
+    document.body.appendChild(el)
+    const c = createRewardOverlayController(el)
+    c.replaceInner('<button type="button" id="echo-btn">OK</button>')
+    c.reveal()
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('echo-btn'))
+    c.close()
+    el.remove()
+  })
+
   it('keeps original restore target when open is called again without close', async () => {
     const trigger = document.createElement('button')
     trigger.id = 'outer'

@@ -215,7 +215,7 @@ export function createWorldRunner(opts: WorldRunnerOptions) {
       opts.promptEl.innerHTML = ''
     } else if (nearestNpc && (!nearestSite || nearestNpcD <= nearestSiteD)) {
       activeNpc = nearestNpc
-      opts.promptEl.innerHTML = `<span class="world-prompt__key">E</span> <span class="world-prompt__action">Speak — ${nearestNpc.name}</span>`
+      opts.promptEl.innerHTML = `<span class="world-prompt__key">E</span> <span class="world-prompt__action">Speak — ${escapeHtml(nearestNpc.name)}</span>`
     } else if (nearestSite) {
       activeSite = nearestSite
       opts.promptEl.innerHTML = `<span class="world-prompt__key">E</span> <span class="world-prompt__action">Engage — ${escapeHtml(nearestSite.title)}</span>`

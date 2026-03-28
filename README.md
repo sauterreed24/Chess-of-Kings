@@ -37,7 +37,7 @@ Tests: Vitest runs with `MODE=test`, so deferred save/HUD emission is **synchron
 
 ## Ship checklist (local)
 
-After changes: `npm run build` and `npm test`, then commit and push to `main`.
+After changes: `npm run build`, `npm test`, and `npm run test:ui-smoke`, then commit and push to `main`.
 
 ## License
 

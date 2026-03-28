@@ -1611,7 +1611,9 @@ export class GameFlow {
           this.history.push(this.chess.fen())
           this.board?.draw(this.chess, result, { mode: 'solo', soloColor: 'w' })
         }
-      } catch { /* skip */ }
+      } catch {
+        /* Random calibration move failed (illegal position); ignore and continue. */
+      }
 
       if (this.chess.isGameOver()) {
         this.board?.setInteraction(false)
