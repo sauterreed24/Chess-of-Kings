@@ -12,7 +12,7 @@ import { Chess } from 'chess.js'
 
 const KEY = 'calculus-of-kings-progress-v3'
 
-export type LastScreen = 'title' | 'chapters' | 'play' | 'world'
+export type LastScreen = 'title' | 'chapters' | 'play'
 
 export interface SaveData {
   version: 3
@@ -207,10 +207,7 @@ export function loadSave(): SaveData | null {
       sceneIndex: o.sceneIndex,
       highestUnlockedChapter: Math.max(0, Math.min(highest, 99)),
       lastScreen:
-        o.lastScreen === 'chapters' ||
-        o.lastScreen === 'play' ||
-        o.lastScreen === 'title' ||
-        o.lastScreen === 'world'
+        o.lastScreen === 'chapters' || o.lastScreen === 'play' || o.lastScreen === 'title'
           ? o.lastScreen
           : 'chapters',
       chapter1Complete: Boolean(o.chapter1Complete),

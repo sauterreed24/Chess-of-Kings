@@ -1240,8 +1240,6 @@ export function mountApp(app: HTMLDivElement) {
     if (flow.lastScreen === 'play') {
       showChapters()
       openLab()
-    } else if (flow.lastScreen === 'world') {
-      showChapters()
     } else if (flow.lastScreen === 'chapters') {
       showChapters()
     } else {

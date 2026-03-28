@@ -1277,9 +1277,10 @@ export class GameFlow {
     if (!match) return
 
     /* Snapshot eval before the move (from player's perspective) */
-    const evalBefore = (this.mode === 'match' || this.mode === 'puzzle')
-      ? materialAndPst(this.chess, this.playerColor)
-      : 0
+    const evalBefore =
+      this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'duel'
+        ? materialAndPst(this.chess, this.playerColor)
+        : 0
 
     const last = this.chess.move({ from, to, promotion: promotion ?? match.promotion })
     if (!last) {

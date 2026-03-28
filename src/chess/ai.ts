@@ -535,8 +535,7 @@ export function findBestMoveWithProfile(chess: Chess, profile: AiProfile): Move 
   if (!moves.length) return null
   if (moves.length === 1) return moves[0]!
 
-  const roll = Math.random()
-  if (roll < profile.blunderRate) {
+  if (Math.random() < profile.blunderRate) {
     return findRandomMove(chess)
   }
 
@@ -548,7 +547,8 @@ export function findBestMoveWithProfile(chess: Chess, profile: AiProfile): Move 
   const candidateScoreByKey = new Map<string, number>()
   for (const c of candidates) candidateScoreByKey.set(moveKey(c.move), c.score)
 
-  if (roll < profile.blunderRate + profile.riskAppetite * 0.18) {
+  /* Separate draw so risky play is not shadowed by the blunder branch (single-roll bands overlapped). */
+  if (Math.random() < profile.riskAppetite * 0.18) {
     const risky = pickRiskyMove(chess, profile.style)
     if (risky) return risky
   }
