@@ -1,6 +1,19 @@
 import { defineConfig } from 'vite'
 
+/**
+ * GitHub Pages project sites are served from `/<repo>/` (not `/`).
+ * `GITHUB_REPOSITORY` is set in GitHub Actions as `owner/repo`.
+ */
+function pagesBase(): string {
+  if (process.env.GITHUB_ACTIONS && process.env.GITHUB_REPOSITORY) {
+    const repo = process.env.GITHUB_REPOSITORY.split('/')[1]
+    if (repo) return `/${repo}/`
+  }
+  return '/'
+}
+
 export default defineConfig({
+  base: pagesBase(),
   server: {
     /** Expose on LAN for mobile / device smoke testing (store prep). */
     host: true,

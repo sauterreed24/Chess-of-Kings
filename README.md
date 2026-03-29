@@ -6,6 +6,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/sauterreed24/Chess-of-Kings)](https://github.com/sauterreed24/Chess-of-Kings/releases)
 
+## Live demo (GitHub Pages)
+
+Deploys automatically via **`.github/workflows/pages.yml`** on push to `main`. One-time: **Settings → Pages → Source: GitHub Actions**.
+
+**https://sauterreed24.github.io/Chess-of-Kings/**
+
+The production build uses Vite `base` = `/<repo>/` in GitHub Actions so scripts and assets load (fixes blank page / 404 on nested paths). If you opened a **different** `*.github.io/...` URL (for example another repo) or an old short link, use the link above or `https://github.com/sauterreed24/Chess-of-Kings`.
+
 **[Play it now — no install required](https://sauterreed24.github.io/Chess-of-Kings/)**
 
 Built solo by **Reed Sauter** — self-taught developer and chess enthusiast. Chess of Kings is a demonstration of what's possible when AI-assisted development meets genuine game design thinking.
