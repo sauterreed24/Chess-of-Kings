@@ -1,48 +1,110 @@
 # Chess of Kings
 
-Story-driven chess RPG built with Vite + TypeScript.  
-Features campaign progression, Duel Archive mode, adaptive AI personalities, reward unlocks, and robust recovery UX.
+> **A story-driven chess RPG with adaptive AI, campaign progression, and genuine depth.**
 
-## Quick Start
+[![Live Demo](https://img.shields.io/badge/Play%20Now-GitHub%20Pages-brightgreen)](https://sauterreed24.github.io/Chess-of-Kings/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/sauterreed24/Chess-of-Kings)](https://github.com/sauterreed24/Chess-of-Kings/releases)
 
-- Install dependencies:
-  - `npm install`
-- Run locally:
-  - `npm run dev`
-- Build production:
-  - `npm run build`
-- Run tests:
-  - `npm test`
-- Lint TypeScript:
-  - `npm run lint`
-- Run focused UI smoke checks:
-  - `npm run test:ui-smoke`
+**[Play it now — no install required](https://sauterreed24.github.io/Chess-of-Kings/)**
 
-## Current Quality Gates
+Built solo by **Reed Sauter** — self-taught developer and chess enthusiast. Chess of Kings is a demonstration of what's possible when AI-assisted development meets genuine game design thinking.
 
-- TypeScript + Vite production build.
-- Full Vitest suite (engine, progression/storage, legality, UI smoke modules).
-- GitHub Actions workflow on push/PR:
-  - production build, full test suite, and UI smoke tests (`test:ui-smoke`).
+---
 
-Performance notes: transposition table keys avoid extra string allocation; heuristic move scoring shares a single piece-count pass; the board view skips DOM writes on unchanged squares and avoids document-wide queries for fly animations.
+## What is Chess of Kings?
 
-Runtime UX: game flow **debounces saves** to `localStorage` and **batches HUD updates** on `requestAnimationFrame`; `pagehide` / `beforeunload` call `flushDeferredIO()` so the latest position is persisted when leaving the tab.
+Chess of Kings is more than a chess engine. It wraps the deep strategy of chess inside a **narrative campaign** with unique AI opponents, character-driven storytelling, and meaningful progression. Think chess meets RPG.
 
-Tests: Vitest runs with `MODE=test`, so deferred save/HUD emission is **synchronous** for deterministic assertions.
+---
 
-## Packaging Toward Stores
+## Features
 
-**Capacitor** is configured (`capacitor.config.ts`, `android/`, `ios/`). Run **`npm run cap:sync`**, then **`npm run cap:open:android`** or **`npm run cap:open:ios`**. See `docs/STORE_MOBILE.md` for signing, Play Console, and App Store Connect.
+### Gameplay Modes
+- **Story / Campaign Mode** — Progress through a cast of unique AI opponents, each with distinct personalities and escalating difficulty. Unlock rewards as you advance.
+- **Duel Archive Mode** — Jump into standalone matches at any skill level.
 
-**Store icons / splashes:** after updating `public/favicon.svg`, run **`npm run assets:generate`** (writes `assets/icon.png`, then `@capacitor/assets` for **iOS + Android only** so `public/manifest.webmanifest` and the SVG favicon stay as-is), then **`npm run cap:sync`**. **Privacy:** `public/privacy.html` is the bundled policy page at **`/privacy.html`** for listings and the in-app link.
+### AI Engine
+- **Adaptive AI personalities** — Each opponent plays differently: aggressive, defensive, chaotic, positional.
+- **Dominance-sealed stalemate detection** — If one side seals total positional dominance, stalemate resolves as a win — a fresh strategic wrinkle unique to this game.
+- **Move variety system** — The AI avoids repetitive patterns, keeping every match fresh.
+- **Transposition table** with heuristic move scoring for high-quality, performant search.
 
-## Ship checklist (local)
+### Progression & UX
+- Campaign progression with **reward unlocks** and persistent save state via `localStorage`.
+- **Loss mentor tips** — After a defeat, coaching insights help players improve.
+- **Debounced saves** and **RAF-batched HUD updates** for smooth, responsive gameplay.
+- `pagehide` / `beforeunload` flush — your game is never lost on tab close.
+- Full **keyboard navigation** — arrow keys, Home/End, roving tabindex on the board.
+- **Accessible** — ARIA labels on every square, focus-visible buttons, screen reader friendly.
+- **PWA-ready** — Works offline after first load.
 
-After changes: `npm run lint`, `npm run build`, `npm test`, and `npm run test:ui-smoke`, then commit and push to `main`.
+### Engineering
+- Written in **TypeScript** with strict typing throughout.
+- Full **Vitest test suite** — engine logic, progression/storage, move legality, UI smoke.
+- **GitHub Actions CI** — build, lint, and full test suite on every push.
+- **Capacitor** scaffolded for future iOS + Android store releases.
+- **MIT licensed** — open to forks, contributions, and remixes.
 
-App shell markup and narrative/ledger HTML helpers live under `src/app/shellMarkup.ts` and `src/app/mainUiFormatters.ts`. The Vite entry `src/main.ts` loads styles and calls `mountApp()` in `src/app/mountApp.ts`, which wires DOM queries, `GameFlow`, and all UI events.
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | TypeScript |
+| Build | Vite |
+| Testing | Vitest |
+| CI | GitHub Actions |
+| Mobile (future) | Capacitor (iOS/Android) |
+| Hosting | GitHub Pages |
+| License | MIT |
+
+---
+
+## Quick Start (Local Dev)
+
+```bash
+npm install       # Install dependencies
+npm run dev       # Run locally
+npm run build     # Build for production
+npm test          # Run full test suite
+npm run lint      # Lint TypeScript
+npm run test:ui-smoke  # UI smoke checks
+```
+
+---
+
+## Project Structure
+
+- `src/` — All game logic, AI engine, UI, and app shell
+- `docs/` — Production build (served via GitHub Pages)
+- `android/` / `ios/` — Capacitor mobile scaffolding
+- `assets/` — Store icons and splash screens
+- `scripts/` — Asset generation scripts
+- `.github/workflows/` — CI configuration
+
+---
+
+## What's Next
+
+- [ ] Additional campaign chapters and AI personalities
+- [ ] Native iOS and Android releases via Capacitor
+- [ ] Online Duel mode
+- [ ] Leaderboard / ELO tracking
+
+---
+
+## About the Creator
+
+I'm **Reed Sauter**, an SDR at Artemis Distribution and a self-taught developer based in Indiana. I built Chess of Kings as a solo project to explore AI-assisted development, game design, and software engineering — without a traditional CS background.
+
+If you're an AI company, startup, or engineering team looking for someone who ships — I'd love to connect.
+
+- GitHub: [@sauterreed24](https://github.com/sauterreed24)
+
+---
 
 ## License
 
-MIT (see `LICENSE`).
+MIT — see [LICENSE](LICENSE).
