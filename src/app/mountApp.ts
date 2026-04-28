@@ -32,6 +32,7 @@ import { buildChapterRail, buildLadderTrack } from './play/chapterRail'
 import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
 import { recordToday as recordStreakToday, readStreak } from './session/streak'
 import { pickDailyCalculus } from './session/dailyCalculus'
+import { deriveCalibrationLens } from './duel/calibrationLens'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -700,6 +701,17 @@ export function mountApp(app: HTMLDivElement) {
           return lines.slice(0, 3)
         })()
         const trainingPlan = flow.getAdaptiveTrainingPlan(rival.opponentId)
+        const lens = deriveCalibrationLens(history, rivalMem)
+        const lensTicks = ['Forgiving', 'Measured', 'Balanced', 'Sharpened', 'Relentless']
+        const lensTickHtml = lensTicks
+          .map((t, i) => {
+            const fillIdx = Math.round(lens.dialPosition * 4)
+            const cls = i === fillIdx ? 'cal-lens__tick cal-lens__tick--current'
+              : i < fillIdx ? 'cal-lens__tick cal-lens__tick--filled'
+              : 'cal-lens__tick'
+            return `<span class="${cls}" aria-hidden="true" title="${escapeHtml(t)}"></span>`
+          })
+          .join('')
         const openingWatch = (variantId: string) => {
           const variant = unlockedVariants.find((v) => v.id === variantId) ?? unlockedVariants[0]
           if (!variant) return []
@@ -723,6 +735,14 @@ export function mountApp(app: HTMLDivElement) {
               <span><strong>${losses}</strong><small>Losses</small></span>
               <span><strong>${draws}</strong><small>Draws</small></span>
               <span><strong>${dominantGrade}</strong><small>Common grade</small></span>
+            </div>
+            <div class="cal-lens" role="group" aria-label="Calibration Lens for ${escapeHtml(rival.opponentName)}">
+              <div class="cal-lens__head">
+                <span class="cal-lens__label">Calibration Lens</span>
+                <strong class="cal-lens__level">${escapeHtml(lens.level)}</strong>
+              </div>
+              <div class="cal-lens__dial" aria-hidden="true">${lensTickHtml}</div>
+              <p class="cal-lens__hint">${escapeHtml(lens.hint)}</p>
             </div>
             <p class="opponent-note"><strong>Strengths:</strong> ${escapeHtml(rival.strengths)}</p>
             <p class="opponent-note"><strong>Weaknesses:</strong> ${escapeHtml(rival.weaknesses)}</p>
@@ -770,6 +790,10 @@ export function mountApp(app: HTMLDivElement) {
             <label class="teach-label">Piece Skin</label>
             <select id="duel-skin" class="duel-select">${skinOptions}</select>
             <button type="button" class="primary" id="btn-start-duel">Start Duel</button>
+            <button type="button" class="ghost" id="btn-mastery-trial"
+              aria-label="Begin a Mastery Trial against ${escapeHtml(rival.opponentName)} at ceiling difficulty">
+              Mastery Trial · Ceiling
+            </button>
             <button type="button" class="ghost" id="btn-preview-skin">Preview Skin In Board</button>
           </div>`
         duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
@@ -897,6 +921,19 @@ export function mountApp(app: HTMLDivElement) {
           const skin = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? flow.getSelectedPieceSkin()) as PieceSkinId
           flow.setPieceSkin(skin)
           const ok = flow.startDuel(rival.opponentId, variantId, color, undefined, difficulty)
+          if (ok) {
+            openLab()
+          }
+        })
+        duelPanel.querySelector<HTMLButtonElement>('#btn-mastery-trial')?.addEventListener('click', () => {
+          /* Mastery Trial: lock to ceiling, pick the highest-tier
+           * unlocked variant, hand them the player's chosen color from
+           * the dropdown if any, otherwise White. */
+          const variantId = unlockedVariants[unlockedVariants.length - 1]!.id
+          const color = (duelPanel.querySelector<HTMLSelectElement>('#duel-color')?.value ?? 'w') as 'w' | 'b'
+          const skin = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? flow.getSelectedPieceSkin()) as PieceSkinId
+          flow.setPieceSkin(skin)
+          const ok = flow.startDuel(rival.opponentId, variantId, color, undefined, 'relentless')
           if (ok) {
             openLab()
           }
