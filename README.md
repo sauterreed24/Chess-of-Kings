@@ -38,7 +38,7 @@ A maximum-effort polish pass across the whole project. Highlights:
 - **`?` keyboard atlas.** Pressing `?` anywhere outside a form opens a parchment-styled overlay listing every shortcut.
 - **`aria-live` outcome announcer.** Match outcomes (won / lost / drawn against rival) and reward inscriptions are announced once per resolution to assistive tech.
 - **Engine property tests + engine-vs-engine smoke.** 12 random positions × 9 profiles assert legal moves and no throws; a strong profile must beat random on a majority of short games.
-- **Architecture documentation** at `src/ARCHITECTURE.md` (164 lines): directory map, Mermaid data-flow, persistence model, recipe table.
+- **Architecture documentation** at `src/ARCHITECTURE.md` (184 lines): directory map, Mermaid data-flow, persistence model, recipe table.
 
 Full details are in [`CHANGELOG.md`](./CHANGELOG.md).
 
@@ -72,7 +72,7 @@ Full details are in [`CHANGELOG.md`](./CHANGELOG.md).
 
 ## For engineers
 
-The codebase is intentionally small: **~6,000 LOC TypeScript** across 47 files plus one CSS file. No React, no router, no state library — plain DOM, custom shell, and `chess.js` as the legality oracle.
+The codebase is intentionally direct: plain TypeScript + DOM (no React, no router, no state library), with `chess.js` as the legality oracle. Current footprint is approximately **11.5k non-blank TypeScript lines** across **73 `.ts` files** plus one CSS file (`src/style.css`).
 
 ```mermaid
 flowchart LR
@@ -91,7 +91,7 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` runs all 214 cases (~50s on this machine). The categories are:
+**Testing scopes.** `npm test` currently runs **216 tests across 34 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
@@ -112,15 +112,20 @@ CI gates: `npm run lint`, `npm test`, `npm run build`, `npm run test:ui-smoke`.
 project: The Calculus of Kings
 language: TypeScript (strict)
 framework: none (custom DOM, Vite + Vitest)
-runtime_dependencies: 1 (chess.js, the legality oracle)
-loc: ~6000 (src/), single CSS file ~2200 lines
+runtime_dependencies: chess.js (+ Capacitor packages for native shells)
+loc: ~11.5k non-blank TypeScript lines (src/), single CSS file ~2244 non-blank lines
 deploy_target: GitHub Pages (PWA, installable on iOS/Android)
 license: MIT
-tests: 214 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
+tests: 216 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
 performance_budget:
-  js_gzipped: < 90 KB (current ~60 KB)
-  css_gzipped: < 12 KB (current ~12 KB)
-  tti_target: < 2 s on iPhone 13 Pro Max / 4G
+  js_gzipped: < 90 KB (current 63.1 KB from dist/assets/index-DmvzhHvU.js)
+  css_gzipped: < 12 KB (current 11.8 KB from dist/assets/index-BA41UJwP.css)
+lighthouse_snapshot_mobile:
+  report: docs/lighthouse-mobile.json
+  performance: 86
+  accessibility: 100
+  best_practices: 96
+  seo: 100
 engineering_signals:
   - SSR-free PWA, installable on iOS without an app store
   - Custom DOM, no React, no virtual DOM

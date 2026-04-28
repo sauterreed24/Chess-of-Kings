@@ -11,14 +11,22 @@ level (the save format has its own version field — see
 
 ## [Unreleased] — Maximum Effort Pass
 
-A multi-pass polish, refactor, and test push. Every commit boundary in
-this pass passes lint, the full test suite (214 cases), the production
-build, and the UI smoke gate.
+A multi-pass polish, refactor, and test push. Current gate status in
+this branch: lint, typecheck, full tests (216 cases), build, and UI
+smoke are all passing.
 
 ### Added
 
-- `src/ARCHITECTURE.md` — 164-line directory map, Mermaid data-flow
+- `src/ARCHITECTURE.md` — 184-line directory map, Mermaid data-flow
   diagram, persistence model, and a "where do I add X?" recipe table.
+- `.github/ISSUE_TEMPLATE/*` and `.github/PULL_REQUEST_TEMPLATE.md` for
+  consistent bug reports, feature requests, and PR verification notes.
+- `SECURITY.md` and `CODE_OF_CONDUCT.md` for standard repository health
+  and disclosure expectations.
+- `public/robots.txt`, `public/sitemap.xml`, `public/sw.js`, and PWA
+  icon assets (`icon-192.png`, `icon-512.png`, `icon-maskable-512.png`,
+  `apple-touch-icon.png`, `og-image.png`) for deploy/discovery and
+  installability polish.
 - `src/app/recap/styleGrade.ts` and `recap/rankLabels.ts` — pure
   recap helpers extracted from `mountApp`, with full test coverage.
 - `src/app/audio/sfx.ts` — `createSfxController` factory; lazy
@@ -64,9 +72,18 @@ build, and the UI smoke gate.
 
 ### Changed
 
-- `src/app/mountApp.ts` shrank from **1,232 → 1,104 LOC** (−10.4%)
-  via the extractions above. Behavior preserved exactly; no public
-  exports changed.
+- `src/app/mountApp.ts` now enforces top-level screen isolation via
+  `aria-hidden` + `inert` toggling so inactive title/chapter/duel
+  screens are not left in the accessibility tree while the lab is open.
+- `src/app/mountApp.ts` now applies explicit focus handoff on major
+  transitions (lab open, title/chapter/duel entry) to reduce keyboard
+  drift after overlay/screen changes.
+- `src/app/gameFlow.ts` now persists after scene/chapter refresh in
+  `jumpToScene` / `jumpToChapter` to avoid stale duel snapshots being
+  written under destination chapter indices.
+- `vitest.config.ts` now runs test files sequentially
+  (`fileParallelism: false`, `maxConcurrency: 1`) to avoid the
+  non-deterministic worker timeout exit seen in CI-like runs.
 - Title hero, dossier, chapter index, reward overlays all received
   refined CSS and ARIA-label improvements.
 - Board square `aria-label` now composes piece + flags (selected,
@@ -82,11 +99,12 @@ build, and the UI smoke gate.
 
 ### Engineering
 
-- 86 → 214 tests pass (+128 new cases). 33 test files (was 18).
+- 86 → 216 tests pass (+130 new cases). 34 test files (was 18).
 - Lint clean: zero warnings, zero `as any` in production code.
-- Bundle: JS gzipped **~60 KB** (budget: < 90 KB), CSS gzipped
-  **~12 KB** (budget: < 12 KB).
-- Build time: ~0.3 s warm, ~5 s cold.
+- Bundle (current): JS gzipped **63,052 B** (budget: < 90 KB), CSS
+  gzipped **11,828 B** (budget: < 12 KB).
+- Lighthouse mobile snapshot stored at `docs/lighthouse-mobile.json`
+  (Perf 86 / A11y 100 / Best Practices 96 / SEO 100).
 
 ### Deferred (honest notes)
 
