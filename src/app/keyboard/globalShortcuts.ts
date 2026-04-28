@@ -7,6 +7,8 @@
  * - **Enter / Space**: when the lab is active and focus is NOT on the
  *   chess board or promotion panel, advances the current scene if
  *   {@link GlobalShortcutDeps.canAdvance} permits.
+ * - **?** (Shift+/): toggles a parchment-styled keyboard help overlay
+ *   listing every global shortcut.
  *
  * The handler is a pure function over its event + deps so it is easy to
  * unit-test without a real window. {@link attachGlobalShortcuts} only
@@ -26,6 +28,7 @@ export interface GlobalShortcutDeps {
   exitLab(): void
   canAdvance(): boolean
   advance(): void
+  toggleKeyboardHelp(): void
 }
 
 /** Selectors that, when an ancestor of the active element, opt out of advance. */
@@ -74,6 +77,12 @@ export function handleGlobalKey(e: KeyboardEvent, deps: GlobalShortcutDeps): boo
       deps.advance()
       return true
     }
+    return true
+  }
+
+  if (e.key === '?') {
+    e.preventDefault()
+    deps.toggleKeyboardHelp()
     return true
   }
 

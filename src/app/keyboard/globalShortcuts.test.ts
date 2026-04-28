@@ -5,6 +5,7 @@ function makeDeps(over: Partial<GlobalShortcutDeps> = {}): GlobalShortcutDeps & 
   closeRewardOverlay: ReturnType<typeof vi.fn>
   exitLab: ReturnType<typeof vi.fn>
   advance: ReturnType<typeof vi.fn>
+  toggleKeyboardHelp: ReturnType<typeof vi.fn>
 } {
   return {
     isRewardOverlayOpen: () => false,
@@ -13,11 +14,13 @@ function makeDeps(over: Partial<GlobalShortcutDeps> = {}): GlobalShortcutDeps & 
     closeRewardOverlay: vi.fn(),
     exitLab: vi.fn(),
     advance: vi.fn(),
+    toggleKeyboardHelp: vi.fn(),
     ...over,
   } as GlobalShortcutDeps & {
     closeRewardOverlay: ReturnType<typeof vi.fn>
     exitLab: ReturnType<typeof vi.fn>
     advance: ReturnType<typeof vi.fn>
+    toggleKeyboardHelp: ReturnType<typeof vi.fn>
   }
 }
 
@@ -126,6 +129,29 @@ describe('handleGlobalKey', () => {
     const e = makeKey('a')
     expect(handleGlobalKey(e, deps)).toBe(false)
     expect(deps.advance).not.toHaveBeenCalled()
+  })
+
+  it('? toggles the keyboard help overlay regardless of lab state', () => {
+    const deps = makeDeps()
+    const e = makeKey('?')
+    expect(handleGlobalKey(e, deps)).toBe(true)
+    expect(e.defaultPrevented).toBe(true)
+    expect(deps.toggleKeyboardHelp).toHaveBeenCalledTimes(1)
+
+    const deps2 = makeDeps({ isLabActive: () => true })
+    const e2 = makeKey('?')
+    expect(handleGlobalKey(e2, deps2)).toBe(true)
+    expect(deps2.toggleKeyboardHelp).toHaveBeenCalledTimes(1)
+  })
+
+  it('? is suppressed when focus is in a form input (typing a question mark)', () => {
+    const input = document.createElement('input')
+    document.body.appendChild(input)
+    input.focus()
+    const deps = makeDeps()
+    const e = makeKey('?')
+    expect(handleGlobalKey(e, deps)).toBe(false)
+    expect(deps.toggleKeyboardHelp).not.toHaveBeenCalled()
   })
 })
 

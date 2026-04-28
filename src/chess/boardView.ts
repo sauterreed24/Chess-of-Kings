@@ -271,6 +271,7 @@ export class BoardView {
     const panel = document.createElement('div')
     panel.className = 'promo-panel'
     panel.setAttribute('role', 'dialog')
+    panel.setAttribute('aria-modal', 'true')
     panel.setAttribute('aria-label', 'Choose promotion piece')
     panel.dataset.color = color
 
@@ -286,7 +287,9 @@ export class BoardView {
       }
     }
 
-    for (const p of ['q', 'r', 'b', 'n'] as PieceSymbol[]) {
+    const pieces: PieceSymbol[] = ['q', 'r', 'b', 'n']
+    const choiceButtons: HTMLButtonElement[] = []
+    for (const p of pieces) {
       const btn = document.createElement('button')
       btn.type = 'button'
       btn.className = 'promo-btn'
@@ -297,12 +300,56 @@ export class BoardView {
         this.onMove(from, to, p)
       })
       panel.appendChild(btn)
+      choiceButtons.push(btn)
     }
+
+    /* Keyboard: Esc dismisses, ArrowLeft/Right move focus between choices,
+     * Home/End jump to first/last, Tab cycles within the panel. Enter and
+     * Space activate the focused button via native behavior. */
+    panel.addEventListener('keydown', (e) => {
+      const idx = choiceButtons.indexOf(document.activeElement as HTMLButtonElement)
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        this.dismissPromo()
+        this.clearSelection()
+        return
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault()
+        const next = idx <= 0 ? choiceButtons.length - 1 : idx - 1
+        choiceButtons[next]?.focus()
+        return
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault()
+        const next = idx < 0 || idx === choiceButtons.length - 1 ? 0 : idx + 1
+        choiceButtons[next]?.focus()
+        return
+      }
+      if (e.key === 'Home') {
+        e.preventDefault()
+        choiceButtons[0]?.focus()
+        return
+      }
+      if (e.key === 'End') {
+        e.preventDefault()
+        choiceButtons[choiceButtons.length - 1]?.focus()
+        return
+      }
+      if (e.key === 'Tab') {
+        if (choiceButtons.length === 0) return
+        e.preventDefault()
+        const dir = e.shiftKey ? -1 : 1
+        const cur = idx < 0 ? 0 : idx
+        const next = (cur + dir + choiceButtons.length) % choiceButtons.length
+        choiceButtons[next]?.focus()
+      }
+    })
 
     document.body.appendChild(panel)
     this.promoPanel = panel
     /* focus first button for keyboard nav */
-    ;(panel.querySelector('.promo-btn') as HTMLButtonElement | null)?.focus()
+    choiceButtons[0]?.focus()
   }
 
   private dismissPromo() {

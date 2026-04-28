@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { Chess } from 'chess.js'
 import { BoardView } from './boardView'
 
@@ -91,6 +91,103 @@ describe('BoardView keyboard navigation', () => {
     expect(e2.getAttribute('aria-pressed')).toBe('true')
     expect(e2.getAttribute('aria-label')).toContain('selected')
     expect(e4.getAttribute('aria-label')).toContain('legal move target')
+    root.remove()
+  })
+})
+
+describe('BoardView promotion picker keyboard', () => {
+  /** Position with White to play b7-b8=?, sets up the promotion picker via clickSquare. */
+  const PROMO_FEN = '4k3/1P6/8/8/8/8/8/4K3 w - - 0 1'
+
+  beforeEach(() => {
+    /* Some tests open a picker and don't activate a button; the panel
+     * is appended to document.body, not the test root, so we must
+     * sweep stragglers between tests. */
+    document.querySelectorAll('.promo-panel, .promo-backdrop').forEach((el) => el.remove())
+  })
+
+  function openPicker(): {
+    root: HTMLDivElement
+    moves: Array<{ from: string; to: string; promo?: string }>
+    panel: HTMLDivElement
+  } {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const moves: Array<{ from: string; to: string; promo?: string }> = []
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove(from, to, promotion) {
+        moves.push({ from, to, promo: promotion })
+      },
+    })
+    const chess = new Chess(PROMO_FEN)
+    view.draw(chess, null, { mode: 'solo', soloColor: 'w' })
+    /* Click the b7 pawn, then click b8 to trigger the picker. */
+    root.querySelector<HTMLButtonElement>('[data-square="b7"]')!.click()
+    root.querySelector<HTMLButtonElement>('[data-square="b8"]')!.click()
+    const panel = document.querySelector<HTMLDivElement>('.promo-panel')!
+    return { root, moves, panel }
+  }
+
+  it('focuses the queen choice first and Enter activates it', () => {
+    const { root, moves, panel } = openPicker()
+    const buttons = panel.querySelectorAll<HTMLButtonElement>('.promo-btn')
+    expect(buttons).toHaveLength(4)
+    expect(document.activeElement).toBe(buttons[0])
+    expect(buttons[0]!.getAttribute('aria-label')).toBe('Queen')
+    buttons[0]!.click()
+    expect(moves).toEqual([{ from: 'b7', to: 'b8', promo: 'q' }])
+    expect(document.querySelector('.promo-panel')).toBeNull()
+    root.remove()
+  })
+
+  it('ArrowRight cycles forward, ArrowLeft cycles backward, wrapping at the ends', () => {
+    const { root, panel } = openPicker()
+    const buttons = panel.querySelectorAll<HTMLButtonElement>('.promo-btn')
+    const fire = (key: string) => {
+      panel.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }))
+    }
+    fire('ArrowRight')
+    expect(document.activeElement).toBe(buttons[1])
+    fire('ArrowRight')
+    expect(document.activeElement).toBe(buttons[2])
+    fire('ArrowRight')
+    expect(document.activeElement).toBe(buttons[3])
+    fire('ArrowRight')
+    expect(document.activeElement).toBe(buttons[0])
+    fire('ArrowLeft')
+    expect(document.activeElement).toBe(buttons[3])
+    root.remove()
+  })
+
+  it('Home jumps to first, End jumps to last', () => {
+    const { root, panel } = openPicker()
+    const buttons = panel.querySelectorAll<HTMLButtonElement>('.promo-btn')
+    panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }))
+    expect(document.activeElement).toBe(buttons[3])
+    panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }))
+    expect(document.activeElement).toBe(buttons[0])
+    root.remove()
+  })
+
+  it('Escape dismisses the picker without invoking onMove', () => {
+    const { root, moves, panel } = openPicker()
+    panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(document.querySelector('.promo-panel')).toBeNull()
+    expect(moves).toEqual([])
+    root.remove()
+  })
+
+  it('Tab cycles forward, Shift+Tab cycles backward inside the panel (focus trap)', () => {
+    const { root, panel } = openPicker()
+    const buttons = panel.querySelectorAll<HTMLButtonElement>('.promo-btn')
+    panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }))
+    expect(document.activeElement).toBe(buttons[1])
+    panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }))
+    expect(document.activeElement).toBe(buttons[0])
+    panel.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }))
+    expect(document.activeElement).toBe(buttons[3])
     root.remove()
   })
 })

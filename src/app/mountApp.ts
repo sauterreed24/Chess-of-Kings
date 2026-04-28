@@ -1051,6 +1051,63 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   /* ─── Keyboard shortcuts ─────────────────────────────────────── */
+  let keyboardHelpOpen = false
+  function showKeyboardHelp() {
+    keyboardHelpOpen = true
+    openRewardOverlay(
+      `<div class="reward-sheet reward-sheet--kbdhelp">
+         <p class="section-heading">Keyboard atlas</p>
+         <p class="reward-hero__copy">Every shortcut available without leaving the keyboard.</p>
+         <div class="kbd-help-grid" aria-label="Keyboard shortcuts">
+           <dl>
+             <dt><kbd>Enter</kbd> · <kbd>Space</kbd></dt>
+             <dd>Advance the current scene (when not focused on the board).</dd>
+             <dt><kbd>Esc</kbd></dt>
+             <dd>Close this overlay; otherwise exit the lab to the chapters index.</dd>
+             <dt><kbd>?</kbd></dt>
+             <dd>Open or close this help overlay.</dd>
+           </dl>
+           <dl>
+             <dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd></dt>
+             <dd>Move focus on the chess board, one square at a time.</dd>
+             <dt><kbd>Home</kbd> · <kbd>End</kbd></dt>
+             <dd>Jump to the near corners (a8 / h1).</dd>
+             <dt><kbd>Enter</kbd> · <kbd>Space</kbd></dt>
+             <dd>Activate the focused square (select piece, then a target).</dd>
+           </dl>
+           <dl>
+             <dt>Promotion: <kbd>←</kbd> <kbd>→</kbd></dt>
+             <dd>Cycle Queen → Rook → Bishop → Knight.</dd>
+             <dt><kbd>Enter</kbd></dt>
+             <dd>Confirm the focused promotion piece.</dd>
+             <dt><kbd>Esc</kbd></dt>
+             <dd>Cancel the promotion (no move is made).</dd>
+           </dl>
+         </div>
+         <div class="echo-controls">
+           <button type="button" class="primary" id="btn-kbdhelp-close">Close</button>
+         </div>
+       </div>`,
+      (root) => {
+        root.querySelector<HTMLButtonElement>('#btn-kbdhelp-close')?.addEventListener('click', () => {
+          keyboardHelpOpen = false
+          closeRewardOverlay()
+        })
+      },
+      () => {
+        keyboardHelpOpen = false
+      },
+    )
+  }
+  function toggleKeyboardHelp() {
+    if (keyboardHelpOpen) {
+      keyboardHelpOpen = false
+      closeRewardOverlay()
+    } else if (!rewardOverlayCtl.isOpen()) {
+      showKeyboardHelp()
+    }
+  }
+
   attachGlobalShortcuts(window, {
     isRewardOverlayOpen: () => rewardOverlayCtl.isOpen(),
     isLabActive: () => labOverlay.classList.contains('lab-overlay--active'),
@@ -1064,6 +1121,7 @@ export function mountApp(app: HTMLDivElement) {
       flow.advanceScene()
       updateAdvance(flow)
     },
+    toggleKeyboardHelp,
   })
 
   /* ─── Event listeners ────────────────────────────────────────── */

@@ -2124,6 +2124,102 @@ body {
 }
 
 /* ═══════════════════════════════
+   KEYBOARD HELP OVERLAY
+   ═══════════════════════════════ */
+.reward-sheet--kbdhelp {
+  max-width: 640px;
+}
+
+.kbd-help-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 1fr;
+  margin: 0.6rem 0 0.4rem;
+}
+
+@media (min-width: 640px) {
+  .kbd-help-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.kbd-help-grid dl {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(201,169,98,0.18);
+  border-radius: 9px;
+  background:
+    linear-gradient(180deg, rgba(232,201,126,0.05), rgba(0,0,0,0.18)),
+    rgba(0,0,0,0.18);
+  line-height: 1.45;
+}
+
+.kbd-help-grid dt {
+  margin: 0.45rem 0 0.15rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--gold-bright, #e8c97e);
+}
+
+.kbd-help-grid dt:first-of-type { margin-top: 0; }
+
+.kbd-help-grid dd {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted, #c9b58a);
+  line-height: 1.5;
+}
+
+.kbd-help-grid kbd {
+  display: inline-block;
+  padding: 0.05rem 0.42rem;
+  margin-right: 0.18rem;
+  border: 1px solid rgba(201,169,98,0.45);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.32);
+  color: var(--gold-bright, #e8c97e);
+  font: 600 0.72rem/1 ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  letter-spacing: 0.04em;
+}
+
+/* ═══════════════════════════════
+   TYPOGRAPHY RHYTHM (ratios, not absolutes)
+   ═══════════════════════════════ */
+.lede,
+.chapters-lede,
+.opponent-note,
+.lesson-note,
+.lesson-lead,
+.philosophy,
+.title-tagline,
+.reward-hero__copy,
+.coach-tip,
+.scene-progress,
+.match-mandate {
+  line-height: 1.55;
+}
+
+.narrative-body p,
+.codex-entry p,
+.interlude-line {
+  line-height: 1.6;
+}
+
+.section-heading,
+.display-title,
+.chapter-title,
+.match-card__name,
+.mark {
+  line-height: 1.18;
+}
+
+.ledger-row,
+.move-ledger,
+.calibration-rail__label,
+.diff-stars {
+  line-height: 1.35;
+}
+
+/* ═══════════════════════════════
    RESPONSIVE — SMALL SCREENS
    ═══════════════════════════════ */
 @media (max-width: 520px) {
