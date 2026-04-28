@@ -10,6 +10,7 @@ vi.mock('./storage', () => ({
 }))
 
 import { GameFlow } from './gameFlow'
+import { writeSave } from './storage'
 
 function mockBoard(): Pick<BoardView, 'draw' | 'setInteraction' | 'setOrientation' | 'setCheckSquare' | 'setSkin'> {
   return {
@@ -107,5 +108,28 @@ describe('GameFlow AI / puzzles', () => {
     expect(st.sceneTendencies.flankPawnPushes).toBe(1)
     flow.undo()
     expect(st.sceneTendencies.flankPawnPushes).toBe(0)
+  })
+
+  it('jumpToScene persists the destination scene state, not stale duel in-progress snapshot', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    const writeSaveMock = vi.mocked(writeSave)
+    writeSaveMock.mockClear()
+
+    expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
+    flow.tryPlayerMove('e2', 'e4')
+    writeSaveMock.mockClear()
+
+    flow.jumpToScene(0, 0)
+    const latest = writeSaveMock.mock.calls.at(-1)?.[0]
+    expect(latest).toBeTruthy()
+    expect(latest?.chapterIndex).toBe(0)
+    expect(latest?.sceneIndex).toBe(0)
+    expect(latest?.inProgress).toBeNull()
   })
 })

@@ -53,8 +53,15 @@ describe('chronicleReplay', () => {
   })
 
   it('renderEchoBoardFen recovers from invalid FEN', () => {
-    const html = renderEchoBoardFen('not-a-fen-at-all', 'classic-royal')
-    const cells = html.match(/class="echo-sq echo-sq--/g)
-    expect(cells?.length).toBe(64)
+    const warn = console.warn
+    const spy = (..._args: unknown[]) => {}
+    console.warn = spy as typeof console.warn
+    try {
+      const html = renderEchoBoardFen('not-a-fen-at-all', 'classic-royal')
+      const cells = html.match(/class="echo-sq echo-sq--/g)
+      expect(cells?.length).toBe(64)
+    } finally {
+      console.warn = warn
+    }
   })
 })

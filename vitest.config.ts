@@ -5,5 +5,7 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.test.ts'],
     restoreMocks: true,
+    fileParallelism: false,
+    maxConcurrency: 1,
   },
 })

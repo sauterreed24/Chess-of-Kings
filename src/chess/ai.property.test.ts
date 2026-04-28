@@ -10,13 +10,21 @@ import type { Move } from 'chess.js'
 import { findBestMoveWithProfile } from './ai'
 import { AI_PROFILES } from './aiProfiles'
 
-function randomPosition(maxPly: number): Chess {
+function makeRng(seed: number): () => number {
+  let s = seed >>> 0
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0
+    return s / 0x100000000
+  }
+}
+
+function randomPosition(maxPly: number, rand: () => number): Chess {
   const c = new Chess()
-  const plies = Math.floor(Math.random() * Math.max(1, maxPly))
+  const plies = Math.floor(rand() * Math.max(1, maxPly))
   for (let i = 0; i < plies; i++) {
     const moves = c.moves({ verbose: true })
     if (!moves.length) break
-    const mv = moves[Math.floor(Math.random() * moves.length)]!
+    const mv = moves[Math.floor(rand() * moves.length)]!
     c.move(mv)
     if (c.isGameOver()) break
   }
@@ -33,8 +41,9 @@ describe('engine property: legality across all profiles', () => {
       thinkTimeMs: 60,
     }))
 
+    const rand = makeRng(0xc0ffee)
     for (let i = 0; i < 12; i++) {
-      const c = randomPosition(28)
+      const c = randomPosition(28, rand)
       if (c.isGameOver()) continue
       const fenSnapshot = c.fen()
       for (const p of profiles) {

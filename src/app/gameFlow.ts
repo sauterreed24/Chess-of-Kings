@@ -1951,8 +1951,8 @@ export class GameFlow {
     if (index > this.highestUnlockedChapter) return
     this.chapterIndex = index
     this.sceneIndex = 0
-    this.persist()
     this.refreshScene()
+    this.persist()
   }
 
   jumpToScene(chapterIndex: number, sceneIndex: number) {
@@ -1962,8 +1962,8 @@ export class GameFlow {
     if (sceneIndex < 0 || sceneIndex >= ch.scenes.length) return
     this.chapterIndex = chapterIndex
     this.sceneIndex = sceneIndex
-    this.persist()
     this.refreshScene()
+    this.persist()
   }
 
   newGame() {

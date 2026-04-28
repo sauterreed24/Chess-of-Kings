@@ -142,6 +142,23 @@ describe('BoardView promotion picker keyboard', () => {
     root.remove()
   })
 
+  it('invokes onMove with the selected promotion piece for every underpromotion option', () => {
+    const expectations: Array<{ index: number; promo: string }> = [
+      { index: 0, promo: 'q' },
+      { index: 1, promo: 'r' },
+      { index: 2, promo: 'b' },
+      { index: 3, promo: 'n' },
+    ]
+    for (const { index, promo } of expectations) {
+      const { root, moves, panel } = openPicker()
+      const buttons = panel.querySelectorAll<HTMLButtonElement>('.promo-btn')
+      buttons[index]!.click()
+      expect(moves).toEqual([{ from: 'b7', to: 'b8', promo }])
+      expect(document.querySelector('.promo-panel')).toBeNull()
+      root.remove()
+    }
+  })
+
   it('ArrowRight cycles forward, ArrowLeft cycles backward, wrapping at the ends', () => {
     const { root, panel } = openPicker()
     const buttons = panel.querySelectorAll<HTMLButtonElement>('.promo-btn')
