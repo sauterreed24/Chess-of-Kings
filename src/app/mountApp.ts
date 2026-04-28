@@ -121,6 +121,7 @@ export function mountApp(app: HTMLDivElement) {
   let latestResolvedForRecap: ChessUiPayload | null = null
   let pendingChapterPrompt: { completedTitle: string; nextTitle: string | null } | null = null
   let moveGuardEnabled = localStorage.getItem('cok-move-guard') === '1'
+  let focusBeforeLab: HTMLElement | null = null
   const sfx = createSfxController({
     enabled: localStorage.getItem('cok-sfx-enabled') !== '0',
   })
@@ -400,6 +401,8 @@ export function mountApp(app: HTMLDivElement) {
   function openLab() {
     closeRewardOverlay()
     flow.setLastScreen('play')
+    focusBeforeLab = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    setTopLevelScreen(null)
     shell.classList.add('shell--lab')
     labOverlay.classList.add('lab-overlay--active')
     const chessRoot = app.querySelector<HTMLDivElement>('#chess-root')!
@@ -407,6 +410,7 @@ export function mountApp(app: HTMLDivElement) {
     else if (!flow.isInDuelMode()) flow.refreshScene()
     flow.board?.setMoveGuard(moveGuardEnabled)
     syncTitleButtons()
+    btnVestibule.focus()
   }
 
   function closeLab() {
@@ -417,25 +421,41 @@ export function mountApp(app: HTMLDivElement) {
     flow.setLastScreen('chapters')
   }
 
+  function setSectionVisibility(el: HTMLElement, visible: boolean) {
+    el.classList.toggle('hidden', !visible)
+    el.setAttribute('aria-hidden', visible ? 'false' : 'true')
+    ;(el as HTMLElement & { inert?: boolean }).inert = !visible
+  }
+
+  function setTopLevelScreen(active: 'title' | 'chapters' | 'duel' | null) {
+    setSectionVisibility(screenTitle as HTMLElement, active === 'title')
+    setSectionVisibility(screenChapters as HTMLElement, active === 'chapters')
+    setSectionVisibility(screenDuel as HTMLElement, active === 'duel')
+  }
+
   function showTitle() {
     closeRewardOverlay()
     flow.setLastScreen('title')
     labOverlay.classList.remove('lab-overlay--active')
     shell.classList.remove('shell--lab')
-    screenTitle.classList.remove('hidden')
-    screenChapters.classList.add('hidden')
-    screenDuel.classList.add('hidden')
+    setTopLevelScreen('title')
     syncTitleButtons()
     syncMvpFlag()
     syncDailyRibbon()
+    if (focusBeforeLab && document.contains(focusBeforeLab)) {
+      focusBeforeLab.focus()
+      focusBeforeLab = null
+    } else if (!btnResume.disabled) {
+      btnResume.focus()
+    } else {
+      btnEnterArchive.focus()
+    }
   }
 
   function showChapters() {
     closeRewardOverlay()
     flow.setLastScreen('chapters')
-    screenTitle.classList.add('hidden')
-    screenDuel.classList.add('hidden')
-    screenChapters.classList.remove('hidden')
+    setTopLevelScreen('chapters')
     btnChaptersBack.classList.remove('hidden')
     btnChaptersBack.textContent = '← Return to title'
     chapterList.innerHTML = ''
@@ -448,7 +468,6 @@ export function mountApp(app: HTMLDivElement) {
       chapterQuickActions.querySelector<HTMLButtonElement>('#btn-resume-recovered')?.addEventListener('click', () => {
         const ok = flow.resumeRecoverableSession()
         if (ok) {
-          screenChapters.classList.add('hidden')
           openLab()
           updateAdvance(flow)
         }
@@ -481,7 +500,6 @@ export function mountApp(app: HTMLDivElement) {
       if (!locked) {
         li.querySelector('button')?.addEventListener('click', () => {
           flow.jumpToChapter(i)
-          screenChapters.classList.add('hidden')
           openLab()
         })
       }
@@ -500,6 +518,7 @@ export function mountApp(app: HTMLDivElement) {
       </div>`
       chapterList.appendChild(li)
     })
+    btnChaptersBack.focus()
   }
 
   function showRewardBundles(bundles: RewardBundle[]) {
@@ -991,10 +1010,9 @@ export function mountApp(app: HTMLDivElement) {
   function showDuel() {
     closeRewardOverlay()
     flow.setLastScreen('chapters')
-    screenTitle.classList.add('hidden')
-    screenChapters.classList.add('hidden')
-    screenDuel.classList.remove('hidden')
+    setTopLevelScreen('duel')
     renderDuelUi()
+    duelList.querySelector<HTMLButtonElement>('.duel-row')?.focus()
   }
 
   function setBoardVisible(on: boolean) {
