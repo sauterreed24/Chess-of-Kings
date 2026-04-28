@@ -26,6 +26,8 @@ import {
   tierLabel,
 } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
+import { styleGradeFromPayload, turningPointLine } from './recap/styleGrade'
+import { rankLabel, nextRankThreshold } from './recap/rankLabels'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -146,41 +148,6 @@ export function mountApp(app: HTMLDivElement) {
     gain.connect(ctx.destination)
     osc.start(now)
     osc.stop(now + dur + 0.015)
-  }
-
-  function styleGradeFromPayload(p: ChessUiPayload): string {
-    let score = 0
-    for (const q of p.sanQuality) {
-      if (!q) continue
-      if (q === 'brilliant') score += 3
-      else if (q === 'good') score += 2
-      else if (q === 'ok') score += 1
-      else if (q === 'inaccuracy') score -= 1
-      else if (q === 'mistake') score -= 2
-      else if (q === 'blunder') score -= 3
-    }
-    if (score >= 16) return 'S'
-    if (score >= 10) return 'A'
-    if (score >= 5) return 'B'
-    if (score >= 1) return 'C'
-    return 'D'
-  }
-
-  function turningPointLine(p: ChessUiPayload): string {
-    let idx = -1
-    for (let i = 0; i < p.sanQuality.length; i++) {
-      if (p.sanQuality[i] === 'brilliant') { idx = i; break }
-    }
-    if (idx < 0) {
-      for (let i = 0; i < p.sanQuality.length; i++) {
-        if (p.sanQuality[i] === 'good') { idx = i; break }
-      }
-    }
-    if (idx < 0) idx = Math.max(0, p.sanLog.length - 1)
-    const san = p.sanLog[idx] ?? '...'
-    const moveNo = Math.floor(idx / 2) + 1
-    const dot = idx % 2 === 0 ? '.' : '...'
-    return `${moveNo}${dot} ${san}`
   }
 
   /* ─── Chess UI updater ────────────────────────────────────────── */
@@ -494,22 +461,6 @@ export function mountApp(app: HTMLDivElement) {
       </div>`
       chapterList.appendChild(li)
     })
-  }
-
-  function rankLabel(points: number): string {
-    if (points >= 650) return 'Archive Grandmaster'
-    if (points >= 450) return 'Court Strategos'
-    if (points >= 280) return 'Senior Scholar'
-    if (points >= 140) return 'Apprentice Analyst'
-    return 'Initiate'
-  }
-
-  function nextRankThreshold(points: number): { currentFloor: number; next: number; nextLabel: string } {
-    if (points < 140) return { currentFloor: 0, next: 140, nextLabel: 'Apprentice Analyst' }
-    if (points < 280) return { currentFloor: 140, next: 280, nextLabel: 'Senior Scholar' }
-    if (points < 450) return { currentFloor: 280, next: 450, nextLabel: 'Court Strategos' }
-    if (points < 650) return { currentFloor: 450, next: 650, nextLabel: 'Archive Grandmaster' }
-    return { currentFloor: 650, next: 900, nextLabel: 'Legendary Archivist' }
   }
 
   function showRewardBundles(bundles: RewardBundle[]) {
