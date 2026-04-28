@@ -29,6 +29,7 @@ import { getShellMarkup } from './shellMarkup'
 import { styleGradeFromPayload, turningPointLine } from './recap/styleGrade'
 import { rankLabel, nextRankThreshold } from './recap/rankLabels'
 import { createSfxController } from './audio/sfx'
+import { buildChapterRail, buildLadderTrack } from './play/chapterRail'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -870,39 +871,6 @@ export function mountApp(app: HTMLDivElement) {
     boardPanel.classList.toggle('instrument-column--hidden', !on)
   }
 
-  /* ─── Build ladder track HTML ─────────────────────────────────── */
-  function buildLadderTrack(chapter: Chapter, currentSceneId: string): string {
-    const matches = chapter.scenes.filter(s => s.type === 'match') as MatchScene[]
-    if (matches.length < 2) return ''
-    const dots = matches.map(m => {
-      const done = flow.completedSceneIds.includes(m.id)
-      const current = m.id === currentSceneId
-      const cls = current ? 'ltrack-dot ltrack-dot--current'
-        : done ? 'ltrack-dot ltrack-dot--done'
-        : 'ltrack-dot'
-      const tierAbbr = m.ladderTier === 'mini-boss' ? 'M' : m.ladderTier === 'boss' ? 'B' : m.ladderTier === 'counterpart' ? 'C' : String(matches.indexOf(m) + 1)
-      return `<span class="${cls}" title="${escapeHtml(m.opponentName)}">${tierAbbr}</span>`
-    }).join('<span class="ltrack-line" aria-hidden="true"></span>')
-    return `<div class="ladder-track">${dots}</div>`
-  }
-
-  function buildChapterRail(chapter: Chapter, currentSceneId: string): string {
-    const matchScenes = chapter.scenes.filter(s => s.type === 'match') as MatchScene[]
-    if (!matchScenes.length) return ''
-    const rows = matchScenes.map((m, idx) => {
-      const done = flow.completedSceneIds.includes(m.id)
-      const current = m.id === currentSceneId
-      const cls = current ? 'chapter-rail__row chapter-rail__row--current'
-        : done ? 'chapter-rail__row chapter-rail__row--done'
-        : 'chapter-rail__row'
-      return `<div class="${cls}">
-        <span class="chapter-rail__idx">${idx + 1}</span>
-        <span class="chapter-rail__name">${escapeHtml(m.opponentName)}</span>
-      </div>`
-    }).join('')
-    return `<p class="chapter-rail__title">${escapeHtml(chapter.title)} Ladder</p>${rows}`
-  }
-
   /* ─── renderScene ─────────────────────────────────────────────── */
   function renderScene(chapter: Chapter, scene: Scene, sceneIndex: number) {
     app.querySelector('#play-chapter-label')!.textContent = `${chapter.title} · ${chapter.era}`
@@ -932,7 +900,7 @@ export function mountApp(app: HTMLDivElement) {
     chapterRail.classList.toggle('hidden', !showRail)
     manuscriptPanel.classList.toggle('manuscript-panel--with-rail', showRail)
     if (showRail) {
-      chapterRail.innerHTML = buildChapterRail(chapter, scene.id)
+      chapterRail.innerHTML = buildChapterRail(chapter, scene.id, flow.completedSceneIds)
     } else {
       chapterRail.innerHTML = ''
     }
@@ -1001,7 +969,7 @@ export function mountApp(app: HTMLDivElement) {
     } else if (scene.type === 'match') {
       const tier = scene.ladderTier ? tierLabel(scene.ladderTier) : ''
       const tierClass = scene.ladderTier ?? ''
-      const ladderTrack = buildLadderTrack(chapter, scene.id)
+      const ladderTrack = buildLadderTrack(chapter, scene.id, flow.completedSceneIds)
       sceneTag.textContent = scene.title
 
       /* Count match number and total */
