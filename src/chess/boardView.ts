@@ -107,6 +107,7 @@ export class BoardView {
       btn.classList.add(light ? 'sq-light' : 'sq-dark')
       btn.tabIndex = -1
       btn.setAttribute('aria-label', `Square ${sq}`)
+      btn.setAttribute('aria-pressed', 'false')
       btn.addEventListener('click', () => this.clickSquare(sq as Square))
       this.cells.set(sq as Square, btn)
       this.root.appendChild(btn)
@@ -445,6 +446,8 @@ export class BoardView {
   private updateHighlights() {
     const ch = this.pendingChess
     for (const [sq, btn] of this.cells) {
+      const piece = ch?.get(sq) ?? null
+      const labels = [this.squareAriaLabel(sq, piece)]
       btn.classList.remove(
         'sq-selected',
         'sq-legal',
@@ -456,18 +459,29 @@ export class BoardView {
       )
       if (this.lastMove && (sq === this.lastMove.from || sq === this.lastMove.to)) {
         btn.classList.add('sq-last')
+        labels.push('last move')
       }
-      if (this.checkSquare === sq) btn.classList.add('sq-check')
-      if (this.selected === sq) btn.classList.add('sq-selected')
+      if (this.checkSquare === sq) {
+        btn.classList.add('sq-check')
+        labels.push('king in check')
+      }
+      if (this.selected === sq) {
+        btn.classList.add('sq-selected')
+        labels.push(`selected; ${this.legalTargets.size} legal target${this.legalTargets.size === 1 ? '' : 's'}`)
+      }
       if (this.legalTargets.has(sq)) {
         btn.classList.add('sq-legal')
-        const occ = ch?.get(sq)
+        const occ = piece
         if (occ) btn.classList.add('sq-legal-capture')
         else btn.classList.add('sq-legal-dot')
+        labels.push(occ ? 'legal capture target' : 'legal move target')
       }
       if (this.guardTo === sq && this.guardFrom && this.guardFrom === this.selected) {
         btn.classList.add('sq-guard')
+        labels.push('confirm move target; activate again to move')
       }
+      btn.setAttribute('aria-pressed', this.selected === sq ? 'true' : 'false')
+      btn.setAttribute('aria-label', labels.join(', '))
     }
   }
 

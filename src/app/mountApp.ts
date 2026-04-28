@@ -460,12 +460,16 @@ export function mountApp(app: HTMLDivElement) {
         ? `<div class="chapter-locked">
             <span class="ch-idx">${escapeHtml(ch.title)}</span>
             <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
-            <span class="lock-badge">Sealed</span>
-          </div>`
-        : `<button type="button" class="chapter-btn" data-idx="${i}">
-            <span class="ch-idx">${escapeHtml(ch.title)}</span>
-            <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
             <span class="ch-era">${escapeHtml(ch.era)}</span>
+            <span class="lock-badge">Sealed passage</span>
+          </div>`
+        : `<button type="button" class="chapter-btn" data-idx="${i}" aria-label="Enter ${escapeHtml(ch.title)}: ${escapeHtml(ch.subtitle)}">
+            <span class="chapter-btn__main">
+              <span class="ch-idx">${escapeHtml(ch.title)}</span>
+              <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
+              <span class="ch-era">${escapeHtml(ch.era)}</span>
+            </span>
+            <span class="chapter-btn__state">${i === flow.chapterIndex ? 'Current' : 'Open'}</span>
             <span class="chapter-btn__arrow" aria-hidden="true">→</span>
           </button>`
       if (!locked) {
@@ -486,7 +490,7 @@ export function mountApp(app: HTMLDivElement) {
         <span class="ch-name">${escapeHtml(row.subtitle)}</span>
         <span class="ch-era">${escapeHtml(row.era)}</span>
         <span class="roadmap-teaser">${escapeHtml(row.teaser)}</span>
-        <span class="lock-badge">Sealed</span>
+        <span class="lock-badge">Future archive</span>
       </div>`
       chapterList.appendChild(li)
     })
@@ -544,7 +548,13 @@ export function mountApp(app: HTMLDivElement) {
       .join('')
     const overlayHtml = `
       <div class="reward-sheet reward-sheet--inscribed">
-        <p class="section-heading">Archive Rewards Inscribed</p>
+        <div class="reward-hero">
+          <span class="reward-hero__sigil" aria-hidden="true">✦</span>
+          <div>
+            <p class="section-heading">Archive Rewards Inscribed</p>
+            <p class="reward-hero__copy">The court records your result, unlocks, and next training focus.</p>
+          </div>
+        </div>
         ${recap}
         ${cards}
         <div class="reward-card">
@@ -598,7 +608,13 @@ export function mountApp(app: HTMLDivElement) {
          </div>`
     openRewardOverlay(
       `<div class="reward-sheet">
-         <p class="section-heading">Chapter Threshold Crossed</p>
+         <div class="reward-hero">
+           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
+           <div>
+             <p class="section-heading">Chapter Threshold Crossed</p>
+             <p class="reward-hero__copy">A new seal has been added to the chronicle.</p>
+           </div>
+         </div>
          ${body}
        </div>`,
       (root) => {
@@ -621,9 +637,13 @@ export function mountApp(app: HTMLDivElement) {
   function renderDuelUi() {
     const roster = flow.getDuelRoster()
     duelList.innerHTML = roster.map((r) =>
-      `<button type="button" class="chapter-btn duel-row" data-op="${escapeHtml(r.opponentId)}">
-        <span class="ch-name">${escapeHtml(r.opponentName)}</span>
-        <span class="ch-era">${escapeHtml(r.era)} · ${escapeHtml(r.styleTags.join(' / '))}</span>
+      `<button type="button" class="chapter-btn duel-row" data-op="${escapeHtml(r.opponentId)}" aria-label="Open dossier for ${escapeHtml(r.opponentName)}">
+        <span class="chapter-btn__main">
+          <span class="ch-idx">${escapeHtml(r.era)}</span>
+          <span class="ch-name">${escapeHtml(r.opponentName)}</span>
+          <span class="ch-era">${escapeHtml(r.styleTags.join(' / '))}</span>
+        </span>
+        <span class="duel-row__stamp">${r.variants.length} files</span>
       </button>`,
     ).join('')
 
@@ -633,6 +653,12 @@ export function mountApp(app: HTMLDivElement) {
         if (!op) return
         const rival = roster.find((r) => r.opponentId === op)
         if (!rival) return
+        for (const row of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]) {
+          const active = row === btn
+          row.classList.toggle('duel-row--active', active)
+          if (active) row.setAttribute('aria-current', 'true')
+          else row.removeAttribute('aria-current')
+        }
         const history = flow
           .getMatchHistory()
           .filter((h) => h.opponentId === rival.opponentId)
@@ -680,6 +706,7 @@ export function mountApp(app: HTMLDivElement) {
         const variantOptions = unlockedVariants
           .map((v) => `<option value="${escapeHtml(v.id)}">${escapeHtml(v.label)}</option>`)
           .join('')
+        const primaryVariant = unlockedVariants[0]
         const echoes = history
           .filter((h) => h.outcome === 'win')
           .slice(-3)
@@ -724,10 +751,18 @@ export function mountApp(app: HTMLDivElement) {
                 <span class="match-card__vs">Dossier</span>
                 <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
               </div>
+              <span class="duel-row__stamp">Recommended: ${recommendedDifficulty}</span>
+            </div>
+            <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
+            ${primaryVariant ? `<p class="opponent-note">${escapeHtml(primaryVariant.bio)}</p>` : ''}
+            <div class="dossier-stat-grid" aria-label="Duel history">
+              <span><strong>${wins}</strong><small>Wins</small></span>
+              <span><strong>${losses}</strong><small>Losses</small></span>
+              <span><strong>${draws}</strong><small>Draws</small></span>
+              <span><strong>${dominantGrade}</strong><small>Common grade</small></span>
             </div>
             <p class="opponent-note"><strong>Strengths:</strong> ${escapeHtml(rival.strengths)}</p>
             <p class="opponent-note"><strong>Weaknesses:</strong> ${escapeHtml(rival.weaknesses)}</p>
-            <p class="opponent-note"><em>"${escapeHtml(rival.quote)}"</em></p>
             <div class="reward-card">
               <h4>Duel Analytics</h4>
               <ul>

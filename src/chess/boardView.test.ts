@@ -72,4 +72,25 @@ describe('BoardView keyboard navigation', () => {
     expect(document.activeElement).toBe(e4)
     root.remove()
   })
+
+  it('announces selected pieces and legal targets', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+    })
+    const chess = new Chess()
+    view.draw(chess, null, { mode: 'solo', soloColor: 'w' })
+
+    view.showLegalFrom(chess, 'e2')
+
+    const e2 = root.querySelector<HTMLButtonElement>('[data-square="e2"]')!
+    const e4 = root.querySelector<HTMLButtonElement>('[data-square="e4"]')!
+    expect(e2.getAttribute('aria-pressed')).toBe('true')
+    expect(e2.getAttribute('aria-label')).toContain('selected')
+    expect(e4.getAttribute('aria-label')).toContain('legal move target')
+    root.remove()
+  })
 })
