@@ -46,7 +46,7 @@ export function getShellMarkup(): string {
             <p class="mvp-note" id="mvp-flag"></p>
             <div class="daily-ribbon hidden" id="daily-ribbon" aria-live="polite"></div>
             <p class="title-privacy">
-              <a class="title-privacy__link" href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
+              <a class="title-privacy__link" href="./privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
             </p>
           </div>
         </div>
