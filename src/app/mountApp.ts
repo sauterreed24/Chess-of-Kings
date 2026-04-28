@@ -10,7 +10,6 @@ import { getBookTopLines } from '../chess/openings'
 import { escapeHtml } from './htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from './chronicleReplay'
 import { createRewardOverlayController } from './rewardOverlayController'
-import { routeEscapeKey } from './escapeKeyRouting'
 import { createEchoReplayTimer } from './chronicleEchoTimer'
 import {
   BOSS_PROFILE_RE,
@@ -30,6 +29,7 @@ import { styleGradeFromPayload, turningPointLine } from './recap/styleGrade'
 import { rankLabel, nextRankThreshold } from './recap/rankLabels'
 import { createSfxController } from './audio/sfx'
 import { buildChapterRail, buildLadderTrack } from './play/chapterRail'
+import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -1051,40 +1051,19 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   /* ─── Keyboard shortcuts ─────────────────────────────────────── */
-  window.addEventListener('keydown', (e) => {
-    const inInput =
-      document.activeElement instanceof HTMLInputElement ||
-      document.activeElement instanceof HTMLTextAreaElement
-    if (inInput) return
-
-    if (e.key === 'Escape') {
-      const escapeAction = routeEscapeKey({
-        rewardOverlayOpen: rewardOverlayCtl.isOpen(),
-        labActive: labOverlay.classList.contains('lab-overlay--active'),
-      })
-      if (escapeAction === 'close-reward-overlay') {
-        e.preventDefault()
-        closeRewardOverlay()
-        return
-      }
-      if (escapeAction === 'exit-lab') {
-        e.preventDefault()
-        closeLab()
-        showChapters()
-        return
-      }
-    }
-
-    if ((e.key === 'Enter' || e.key === ' ') && labOverlay.classList.contains('lab-overlay--active')) {
-      const active = document.activeElement
-      const onBoard = active?.closest('.chess-grid') || active?.closest('.promo-panel')
-      if (onBoard) return
-      e.preventDefault()
-      if (flow.canAdvance()) {
-        flow.advanceScene()
-        updateAdvance(flow)
-      }
-    }
+  attachGlobalShortcuts(window, {
+    isRewardOverlayOpen: () => rewardOverlayCtl.isOpen(),
+    isLabActive: () => labOverlay.classList.contains('lab-overlay--active'),
+    closeRewardOverlay,
+    exitLab: () => {
+      closeLab()
+      showChapters()
+    },
+    canAdvance: () => flow.canAdvance(),
+    advance: () => {
+      flow.advanceScene()
+      updateAdvance(flow)
+    },
   })
 
   /* ─── Event listeners ────────────────────────────────────────── */
