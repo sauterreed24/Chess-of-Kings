@@ -2,7 +2,7 @@ import { Chess } from 'chess.js'
 import { PLAYABLE_CHAPTERS } from '../data/chapters'
 import { LOCKED_ROADMAP } from '../data/roadmap'
 import { GameFlow } from './gameFlow'
-import type { ChessUiPayload, MoveQuality } from './gameFlow'
+import type { ChessUiPayload } from './gameFlow'
 import { clearSave, hasSave } from './storage'
 import type { Chapter, MatchScene, Scene, PieceSkinId, RewardBundle } from '../types'
 import { PIECE_SKIN_LABEL } from '../chess/skins'
@@ -10,7 +10,6 @@ import { getBookTopLines } from '../chess/openings'
 import { escapeHtml } from './htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from './chronicleReplay'
 import { createRewardOverlayController } from './rewardOverlayController'
-import { routeEscapeKey } from './escapeKeyRouting'
 import { createEchoReplayTimer } from './chronicleEchoTimer'
 import {
   BOSS_PROFILE_RE,
@@ -26,6 +25,17 @@ import {
   tierLabel,
 } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
+import { styleGradeFromPayload, turningPointLine } from './recap/styleGrade'
+import { rankLabel, nextRankThreshold } from './recap/rankLabels'
+import { createSfxController } from './audio/sfx'
+import { buildChapterRail, buildLadderTrack } from './play/chapterRail'
+import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
+import { recordToday as recordStreakToday, readStreak } from './session/streak'
+import { pickDailyCalculus } from './session/dailyCalculus'
+import { deriveCalibrationLens } from './duel/calibrationLens'
+import { createAnnouncer } from './a11y/announcer'
+import { ANNOUNCE_TEMPLATES } from '../data/strings'
+import { getRivalProfile } from '../data/rivals'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -72,6 +82,8 @@ export function mountApp(app: HTMLDivElement) {
   const lessonNote = app.querySelector<HTMLParagraphElement>('#lesson-note')!
   const coachTipEl = app.querySelector<HTMLParagraphElement>('#coach-tip')!
   const mvpFlag = app.querySelector<HTMLParagraphElement>('#mvp-flag')!
+  const dailyRibbon = app.querySelector<HTMLDivElement>('#daily-ribbon')!
+  const announcer = createAnnouncer(app.querySelector<HTMLDivElement>('#live-announcer')!)
   const moveLedger = app.querySelector<HTMLDivElement>('#move-ledger')!
   const calibrationRail = app.querySelector<HTMLDivElement>('#calibration-rail')!
   const calibrationTrack = app.querySelector<HTMLDivElement>('#calibration-track')!
@@ -104,91 +116,21 @@ export function mountApp(app: HTMLDivElement) {
   /** Invalidated in renderScene so Advance button state always refreshes on passage change. */
   let lastAdvanceSig = ''
   let prevSessionRecovered = false
+  /** Skip aria-live announcements for outcomes already spoken this scene. */
+  let announcedOutcomeKey = ''
   let latestResolvedForRecap: ChessUiPayload | null = null
   let pendingChapterPrompt: { completedTitle: string; nextTitle: string | null } | null = null
-  let sfxEnabled = localStorage.getItem('cok-sfx-enabled') !== '0'
   let moveGuardEnabled = localStorage.getItem('cok-move-guard') === '1'
-  let audioCtx: AudioContext | null = null
-
-  function ensureAudioContext(): AudioContext | null {
-    if (!sfxEnabled) return null
-    if (!audioCtx) {
-      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-      if (!Ctx) return null
-      audioCtx = new Ctx()
-    }
-    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {})
-    return audioCtx
-  }
-
-  function playMoveSfx(san: string, quality: MoveQuality | null) {
-    const ctx = ensureAudioContext()
-    if (!ctx) return
-    const now = ctx.currentTime
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    let freq = 290
-    let dur = 0.065
-    if (san.includes('x')) freq = 190
-    if (san.includes('+')) freq = 360
-    if (san.includes('#')) {
-      freq = 470
-      dur = 0.12
-    }
-    if (quality === 'brilliant') freq += 120
-    else if (quality === 'blunder') freq -= 60
-    osc.type = san.includes('x') ? 'triangle' : 'sine'
-    osc.frequency.setValueAtTime(freq, now)
-    gain.gain.setValueAtTime(0.0001, now)
-    gain.gain.exponentialRampToValueAtTime(0.032, now + 0.008)
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur)
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.start(now)
-    osc.stop(now + dur + 0.015)
-  }
-
-  function styleGradeFromPayload(p: ChessUiPayload): string {
-    let score = 0
-    for (const q of p.sanQuality) {
-      if (!q) continue
-      if (q === 'brilliant') score += 3
-      else if (q === 'good') score += 2
-      else if (q === 'ok') score += 1
-      else if (q === 'inaccuracy') score -= 1
-      else if (q === 'mistake') score -= 2
-      else if (q === 'blunder') score -= 3
-    }
-    if (score >= 16) return 'S'
-    if (score >= 10) return 'A'
-    if (score >= 5) return 'B'
-    if (score >= 1) return 'C'
-    return 'D'
-  }
-
-  function turningPointLine(p: ChessUiPayload): string {
-    let idx = -1
-    for (let i = 0; i < p.sanQuality.length; i++) {
-      if (p.sanQuality[i] === 'brilliant') { idx = i; break }
-    }
-    if (idx < 0) {
-      for (let i = 0; i < p.sanQuality.length; i++) {
-        if (p.sanQuality[i] === 'good') { idx = i; break }
-      }
-    }
-    if (idx < 0) idx = Math.max(0, p.sanLog.length - 1)
-    const san = p.sanLog[idx] ?? '...'
-    const moveNo = Math.floor(idx / 2) + 1
-    const dot = idx % 2 === 0 ? '.' : '...'
-    return `${moveNo}${dot} ${san}`
-  }
+  const sfx = createSfxController({
+    enabled: localStorage.getItem('cok-sfx-enabled') !== '0',
+  })
 
   /* ─── Chess UI updater ────────────────────────────────────────── */
 
   function applyChessUi(p: ChessUiPayload) {
     if (p.sanLog.length > prevSanLen) {
       for (let i = prevSanLen; i < p.sanLog.length; i++) {
-        playMoveSfx(p.sanLog[i] ?? '', p.sanQuality[i] ?? null)
+        sfx.playMoveSfx(p.sanLog[i] ?? '', p.sanQuality[i] ?? null)
       }
     }
     prevSanLen = p.sanLog.length
@@ -257,7 +199,7 @@ export function mountApp(app: HTMLDivElement) {
     }
     if (p.sessionRecovered && !prevSessionRecovered) {
       boardStatus.classList.add('status-pill--recovered')
-      if (sfxEnabled) playMoveSfx('O-O', 'good')
+      sfx.playMoveSfx('O-O', 'good')
       window.setTimeout(() => boardStatus.classList.remove('status-pill--recovered'), 1800)
     }
     prevSessionRecovered = p.sessionRecovered
@@ -339,6 +281,27 @@ export function mountApp(app: HTMLDivElement) {
 
     if (p.matchOutcome) latestResolvedForRecap = p
 
+    /* Announce a terminal outcome at most once per scene. The key
+     * combines outcome + ledger fingerprint so a new game on the same
+     * scene reannounces. Rival name comes from the AI persona when
+     * available, falling back to "the rival" for narrative scenes. */
+    if (p.matchOutcome) {
+      const key = `${p.matchOutcome}|${p.ledgerFp}`
+      if (key !== announcedOutcomeKey) {
+        announcedOutcomeKey = key
+        const rival = p.aiPersona?.replace(/\s*\(.*\)\s*$/, '').trim() || 'the rival'
+        const tmpl =
+          p.matchOutcome === 'win'
+            ? ANNOUNCE_TEMPLATES.matchWin
+            : p.matchOutcome === 'loss'
+              ? ANNOUNCE_TEMPLATES.matchLoss
+              : ANNOUNCE_TEMPLATES.matchDraw
+        announcer.say(`${tmpl} ${rival}.`)
+      }
+    } else if (!p.matchOutcome && announcedOutcomeKey) {
+      announcedOutcomeKey = ''
+    }
+
     const rewards = flow.consumePendingRewards()
     if (rewards.length) showRewardBundles(rewards)
     else maybeShowPendingChapterPrompt()
@@ -392,6 +355,48 @@ export function mountApp(app: HTMLDivElement) {
       : ''
   }
 
+  /* ─── Session streak + Daily Calculus ribbon ─────────────────── */
+  /* Recorded once per local day on app boot. The streak / daily pick
+   * are stored in dedicated localStorage keys to keep them orthogonal
+   * to the versioned SaveData and free of migrations. The daily pick
+   * is only shown when the player has the chapter unlocked, so the
+   * call-to-action never appears as a button that does nothing. */
+  recordStreakToday()
+  function syncDailyRibbon() {
+    const streak = readStreak()
+    const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
+    const daily =
+      dailyRaw && dailyRaw.chapterIndex <= flow.highestUnlockedChapter ? dailyRaw : null
+    const streakBadge =
+      streak.count > 1
+        ? `<span class="daily-ribbon__streak"><strong>${streak.count}</strong> day streak</span>`
+        : streak.count === 1
+          ? `<span class="daily-ribbon__streak"><strong>Day 1</strong> of a new streak</span>`
+          : ''
+    const dailyBlock = daily
+      ? `<button type="button" class="ghost daily-ribbon__cta" id="btn-daily-calculus"
+            aria-label="Play today's Daily Calculus puzzle: ${escapeHtml(daily.title)}">
+            <span class="daily-ribbon__label">Daily Calculus</span>
+            <span class="daily-ribbon__title">${escapeHtml(daily.title)}</span>
+            <span class="daily-ribbon__chapter">${escapeHtml(daily.chapterTitle)} · ${escapeHtml(daily.dayKey)}</span>
+          </button>`
+      : ''
+    if (!streakBadge && !dailyBlock) {
+      dailyRibbon.classList.add('hidden')
+      dailyRibbon.innerHTML = ''
+      return
+    }
+    dailyRibbon.innerHTML = `${streakBadge}${dailyBlock}`
+    dailyRibbon.classList.remove('hidden')
+    if (daily) {
+      dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', () => {
+        flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
+        screenChapters.classList.add('hidden')
+        openLab()
+      })
+    }
+  }
+
   function openLab() {
     closeRewardOverlay()
     flow.setLastScreen('play')
@@ -422,6 +427,7 @@ export function mountApp(app: HTMLDivElement) {
     screenDuel.classList.add('hidden')
     syncTitleButtons()
     syncMvpFlag()
+    syncDailyRibbon()
   }
 
   function showChapters() {
@@ -460,12 +466,16 @@ export function mountApp(app: HTMLDivElement) {
         ? `<div class="chapter-locked">
             <span class="ch-idx">${escapeHtml(ch.title)}</span>
             <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
-            <span class="lock-badge">Sealed</span>
-          </div>`
-        : `<button type="button" class="chapter-btn" data-idx="${i}">
-            <span class="ch-idx">${escapeHtml(ch.title)}</span>
-            <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
             <span class="ch-era">${escapeHtml(ch.era)}</span>
+            <span class="lock-badge">Sealed passage</span>
+          </div>`
+        : `<button type="button" class="chapter-btn" data-idx="${i}" aria-label="Enter ${escapeHtml(ch.title)}: ${escapeHtml(ch.subtitle)}">
+            <span class="chapter-btn__main">
+              <span class="ch-idx">${escapeHtml(ch.title)}</span>
+              <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
+              <span class="ch-era">${escapeHtml(ch.era)}</span>
+            </span>
+            <span class="chapter-btn__state">${i === flow.chapterIndex ? 'Current' : 'Open'}</span>
             <span class="chapter-btn__arrow" aria-hidden="true">→</span>
           </button>`
       if (!locked) {
@@ -486,30 +496,16 @@ export function mountApp(app: HTMLDivElement) {
         <span class="ch-name">${escapeHtml(row.subtitle)}</span>
         <span class="ch-era">${escapeHtml(row.era)}</span>
         <span class="roadmap-teaser">${escapeHtml(row.teaser)}</span>
-        <span class="lock-badge">Sealed</span>
+        <span class="lock-badge">Future archive</span>
       </div>`
       chapterList.appendChild(li)
     })
   }
 
-  function rankLabel(points: number): string {
-    if (points >= 650) return 'Archive Grandmaster'
-    if (points >= 450) return 'Court Strategos'
-    if (points >= 280) return 'Senior Scholar'
-    if (points >= 140) return 'Apprentice Analyst'
-    return 'Initiate'
-  }
-
-  function nextRankThreshold(points: number): { currentFloor: number; next: number; nextLabel: string } {
-    if (points < 140) return { currentFloor: 0, next: 140, nextLabel: 'Apprentice Analyst' }
-    if (points < 280) return { currentFloor: 140, next: 280, nextLabel: 'Senior Scholar' }
-    if (points < 450) return { currentFloor: 280, next: 450, nextLabel: 'Court Strategos' }
-    if (points < 650) return { currentFloor: 450, next: 650, nextLabel: 'Archive Grandmaster' }
-    return { currentFloor: 650, next: 900, nextLabel: 'Legendary Archivist' }
-  }
-
   function showRewardBundles(bundles: RewardBundle[]) {
     if (!bundles.length) return
+    sfx.playEventSfx('reward')
+    announcer.say(ANNOUNCE_TEMPLATES.rewardsInscribed)
     const rp = flow.getRankPoints()
     const next = nextRankThreshold(rp)
     const progress = Math.max(0, Math.min(100, ((rp - next.currentFloor) / (next.next - next.currentFloor)) * 100))
@@ -544,7 +540,13 @@ export function mountApp(app: HTMLDivElement) {
       .join('')
     const overlayHtml = `
       <div class="reward-sheet reward-sheet--inscribed">
-        <p class="section-heading">Archive Rewards Inscribed</p>
+        <div class="reward-hero">
+          <span class="reward-hero__sigil" aria-hidden="true">✦</span>
+          <div>
+            <p class="section-heading">Archive Rewards Inscribed</p>
+            <p class="reward-hero__copy">The court records your result, unlocks, and next training focus.</p>
+          </div>
+        </div>
         ${recap}
         ${cards}
         <div class="reward-card">
@@ -598,7 +600,13 @@ export function mountApp(app: HTMLDivElement) {
          </div>`
     openRewardOverlay(
       `<div class="reward-sheet">
-         <p class="section-heading">Chapter Threshold Crossed</p>
+         <div class="reward-hero">
+           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
+           <div>
+             <p class="section-heading">Chapter Threshold Crossed</p>
+             <p class="reward-hero__copy">A new seal has been added to the chronicle.</p>
+           </div>
+         </div>
          ${body}
        </div>`,
       (root) => {
@@ -621,9 +629,13 @@ export function mountApp(app: HTMLDivElement) {
   function renderDuelUi() {
     const roster = flow.getDuelRoster()
     duelList.innerHTML = roster.map((r) =>
-      `<button type="button" class="chapter-btn duel-row" data-op="${escapeHtml(r.opponentId)}">
-        <span class="ch-name">${escapeHtml(r.opponentName)}</span>
-        <span class="ch-era">${escapeHtml(r.era)} · ${escapeHtml(r.styleTags.join(' / '))}</span>
+      `<button type="button" class="chapter-btn duel-row" data-op="${escapeHtml(r.opponentId)}" aria-label="Open dossier for ${escapeHtml(r.opponentName)}">
+        <span class="chapter-btn__main">
+          <span class="ch-idx">${escapeHtml(r.era)}</span>
+          <span class="ch-name">${escapeHtml(r.opponentName)}</span>
+          <span class="ch-era">${escapeHtml(r.styleTags.join(' / '))}</span>
+        </span>
+        <span class="duel-row__stamp">${r.variants.length} files</span>
       </button>`,
     ).join('')
 
@@ -633,6 +645,12 @@ export function mountApp(app: HTMLDivElement) {
         if (!op) return
         const rival = roster.find((r) => r.opponentId === op)
         if (!rival) return
+        for (const row of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]) {
+          const active = row === btn
+          row.classList.toggle('duel-row--active', active)
+          if (active) row.setAttribute('aria-current', 'true')
+          else row.removeAttribute('aria-current')
+        }
         const history = flow
           .getMatchHistory()
           .filter((h) => h.opponentId === rival.opponentId)
@@ -680,6 +698,7 @@ export function mountApp(app: HTMLDivElement) {
         const variantOptions = unlockedVariants
           .map((v) => `<option value="${escapeHtml(v.id)}">${escapeHtml(v.label)}</option>`)
           .join('')
+        const primaryVariant = unlockedVariants[0]
         const echoes = history
           .filter((h) => h.outcome === 'win')
           .slice(-3)
@@ -689,7 +708,12 @@ export function mountApp(app: HTMLDivElement) {
               Echo ${new Date(e.timestamp).toLocaleDateString()} · ${e.styleGrade} · ${e.turningPointSan}
             </button>`).join('')
           : '<p class="ledger-empty">Defeat this rival to inscribe chronicle echoes.</p>'
+        const rivalProfile = getRivalProfile(rival.opponentId)
         const prepLines = (() => {
+          /* Prefer the curated counter-prep when we have a known rival;
+           * fall back to the heuristic-driven bullets for unknown ids
+           * (composite scenes, future content). */
+          if (rivalProfile) return rivalProfile.counterPrep.slice(0, 3)
           const lines: string[] = []
           if (rival.styleTags.some((t) => /tactic|attack|sac/i.test(t))) {
             lines.push('Prioritize king safety by move 10; avoid speculative pawn grabs near your king.')
@@ -709,7 +733,30 @@ export function mountApp(app: HTMLDivElement) {
           if (!lines.length) lines.push('Play principled development: center control, king safety, then dynamic expansion.')
           return lines.slice(0, 3)
         })()
+        const schoolBlendHtml = rivalProfile
+          ? `<div class="rival-school" aria-label="Doctrinal school blend">
+              <span class="rival-school__primary">${escapeHtml(rivalProfile.blend.primary.school)}</span>
+              <span class="rival-school__weight">${rivalProfile.blend.primary.weight}%</span>
+              ${rivalProfile.blend.secondary
+                ? `<span class="rival-school__plus" aria-hidden="true">+</span>
+                   <span class="rival-school__secondary">${escapeHtml(rivalProfile.blend.secondary.school)}</span>
+                   <span class="rival-school__weight">${rivalProfile.blend.secondary.weight}%</span>`
+                : ''}
+              <p class="rival-school__sig">${escapeHtml(rivalProfile.signature)}</p>
+            </div>`
+          : ''
         const trainingPlan = flow.getAdaptiveTrainingPlan(rival.opponentId)
+        const lens = deriveCalibrationLens(history, rivalMem)
+        const lensTicks = ['Forgiving', 'Measured', 'Balanced', 'Sharpened', 'Relentless']
+        const lensTickHtml = lensTicks
+          .map((t, i) => {
+            const fillIdx = Math.round(lens.dialPosition * 4)
+            const cls = i === fillIdx ? 'cal-lens__tick cal-lens__tick--current'
+              : i < fillIdx ? 'cal-lens__tick cal-lens__tick--filled'
+              : 'cal-lens__tick'
+            return `<span class="${cls}" aria-hidden="true" title="${escapeHtml(t)}"></span>`
+          })
+          .join('')
         const openingWatch = (variantId: string) => {
           const variant = unlockedVariants.find((v) => v.id === variantId) ?? unlockedVariants[0]
           if (!variant) return []
@@ -724,10 +771,26 @@ export function mountApp(app: HTMLDivElement) {
                 <span class="match-card__vs">Dossier</span>
                 <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
               </div>
+              <span class="duel-row__stamp">Recommended: ${recommendedDifficulty}</span>
+            </div>
+            <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
+            ${primaryVariant ? `<p class="opponent-note">${escapeHtml(primaryVariant.bio)}</p>` : ''}
+            <div class="dossier-stat-grid" aria-label="Duel history">
+              <span><strong>${wins}</strong><small>Wins</small></span>
+              <span><strong>${losses}</strong><small>Losses</small></span>
+              <span><strong>${draws}</strong><small>Draws</small></span>
+              <span><strong>${dominantGrade}</strong><small>Common grade</small></span>
+            </div>
+            <div class="cal-lens" role="group" aria-label="Calibration Lens for ${escapeHtml(rival.opponentName)}">
+              <div class="cal-lens__head">
+                <span class="cal-lens__label">Calibration Lens</span>
+                <strong class="cal-lens__level">${escapeHtml(lens.level)}</strong>
+              </div>
+              <div class="cal-lens__dial" aria-hidden="true">${lensTickHtml}</div>
+              <p class="cal-lens__hint">${escapeHtml(lens.hint)}</p>
             </div>
             <p class="opponent-note"><strong>Strengths:</strong> ${escapeHtml(rival.strengths)}</p>
             <p class="opponent-note"><strong>Weaknesses:</strong> ${escapeHtml(rival.weaknesses)}</p>
-            <p class="opponent-note"><em>"${escapeHtml(rival.quote)}"</em></p>
             <div class="reward-card">
               <h4>Duel Analytics</h4>
               <ul>
@@ -743,6 +806,7 @@ export function mountApp(app: HTMLDivElement) {
               <h4>Chronicle Echoes</h4>
               ${echoCards}
             </div>
+            ${schoolBlendHtml}
             <div class="reward-card">
               <h4>Counter-Prep Briefing</h4>
               <ul>${prepLines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
@@ -772,6 +836,10 @@ export function mountApp(app: HTMLDivElement) {
             <label class="teach-label">Piece Skin</label>
             <select id="duel-skin" class="duel-select">${skinOptions}</select>
             <button type="button" class="primary" id="btn-start-duel">Start Duel</button>
+            <button type="button" class="ghost" id="btn-mastery-trial"
+              aria-label="Begin a Mastery Trial against ${escapeHtml(rival.opponentName)} at ceiling difficulty">
+              Mastery Trial · Ceiling
+            </button>
             <button type="button" class="ghost" id="btn-preview-skin">Preview Skin In Board</button>
           </div>`
         duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
@@ -903,6 +971,19 @@ export function mountApp(app: HTMLDivElement) {
             openLab()
           }
         })
+        duelPanel.querySelector<HTMLButtonElement>('#btn-mastery-trial')?.addEventListener('click', () => {
+          /* Mastery Trial: lock to ceiling, pick the highest-tier
+           * unlocked variant, hand them the player's chosen color from
+           * the dropdown if any, otherwise White. */
+          const variantId = unlockedVariants[unlockedVariants.length - 1]!.id
+          const color = (duelPanel.querySelector<HTMLSelectElement>('#duel-color')?.value ?? 'w') as 'w' | 'b'
+          const skin = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? flow.getSelectedPieceSkin()) as PieceSkinId
+          flow.setPieceSkin(skin)
+          const ok = flow.startDuel(rival.opponentId, variantId, color, undefined, 'relentless')
+          if (ok) {
+            openLab()
+          }
+        })
       })
     }
   }
@@ -918,39 +999,6 @@ export function mountApp(app: HTMLDivElement) {
 
   function setBoardVisible(on: boolean) {
     boardPanel.classList.toggle('instrument-column--hidden', !on)
-  }
-
-  /* ─── Build ladder track HTML ─────────────────────────────────── */
-  function buildLadderTrack(chapter: Chapter, currentSceneId: string): string {
-    const matches = chapter.scenes.filter(s => s.type === 'match') as MatchScene[]
-    if (matches.length < 2) return ''
-    const dots = matches.map(m => {
-      const done = flow.completedSceneIds.includes(m.id)
-      const current = m.id === currentSceneId
-      const cls = current ? 'ltrack-dot ltrack-dot--current'
-        : done ? 'ltrack-dot ltrack-dot--done'
-        : 'ltrack-dot'
-      const tierAbbr = m.ladderTier === 'mini-boss' ? 'M' : m.ladderTier === 'boss' ? 'B' : m.ladderTier === 'counterpart' ? 'C' : String(matches.indexOf(m) + 1)
-      return `<span class="${cls}" title="${escapeHtml(m.opponentName)}">${tierAbbr}</span>`
-    }).join('<span class="ltrack-line" aria-hidden="true"></span>')
-    return `<div class="ladder-track">${dots}</div>`
-  }
-
-  function buildChapterRail(chapter: Chapter, currentSceneId: string): string {
-    const matchScenes = chapter.scenes.filter(s => s.type === 'match') as MatchScene[]
-    if (!matchScenes.length) return ''
-    const rows = matchScenes.map((m, idx) => {
-      const done = flow.completedSceneIds.includes(m.id)
-      const current = m.id === currentSceneId
-      const cls = current ? 'chapter-rail__row chapter-rail__row--current'
-        : done ? 'chapter-rail__row chapter-rail__row--done'
-        : 'chapter-rail__row'
-      return `<div class="${cls}">
-        <span class="chapter-rail__idx">${idx + 1}</span>
-        <span class="chapter-rail__name">${escapeHtml(m.opponentName)}</span>
-      </div>`
-    }).join('')
-    return `<p class="chapter-rail__title">${escapeHtml(chapter.title)} Ladder</p>${rows}`
   }
 
   /* ─── renderScene ─────────────────────────────────────────────── */
@@ -972,6 +1020,7 @@ export function mountApp(app: HTMLDivElement) {
     lastCalKey = ''
     lastEvalScore = Number.NaN
     lastAdvanceSig = ''
+    announcedOutcomeKey = ''
     btnReset.disabled = true
     btnNextHint.textContent = ''
     const showBoard = flow.sceneUsesBoard(scene)
@@ -982,7 +1031,7 @@ export function mountApp(app: HTMLDivElement) {
     chapterRail.classList.toggle('hidden', !showRail)
     manuscriptPanel.classList.toggle('manuscript-panel--with-rail', showRail)
     if (showRail) {
-      chapterRail.innerHTML = buildChapterRail(chapter, scene.id)
+      chapterRail.innerHTML = buildChapterRail(chapter, scene.id, flow.completedSceneIds)
     } else {
       chapterRail.innerHTML = ''
     }
@@ -1051,7 +1100,7 @@ export function mountApp(app: HTMLDivElement) {
     } else if (scene.type === 'match') {
       const tier = scene.ladderTier ? tierLabel(scene.ladderTier) : ''
       const tierClass = scene.ladderTier ?? ''
-      const ladderTrack = buildLadderTrack(chapter, scene.id)
+      const ladderTrack = buildLadderTrack(chapter, scene.id, flow.completedSceneIds)
       sceneTag.textContent = scene.title
 
       /* Count match number and total */
@@ -1133,40 +1182,77 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   /* ─── Keyboard shortcuts ─────────────────────────────────────── */
-  window.addEventListener('keydown', (e) => {
-    const inInput =
-      document.activeElement instanceof HTMLInputElement ||
-      document.activeElement instanceof HTMLTextAreaElement
-    if (inInput) return
-
-    if (e.key === 'Escape') {
-      const escapeAction = routeEscapeKey({
-        rewardOverlayOpen: rewardOverlayCtl.isOpen(),
-        labActive: labOverlay.classList.contains('lab-overlay--active'),
-      })
-      if (escapeAction === 'close-reward-overlay') {
-        e.preventDefault()
-        closeRewardOverlay()
-        return
-      }
-      if (escapeAction === 'exit-lab') {
-        e.preventDefault()
-        closeLab()
-        showChapters()
-        return
-      }
+  let keyboardHelpOpen = false
+  function showKeyboardHelp() {
+    keyboardHelpOpen = true
+    openRewardOverlay(
+      `<div class="reward-sheet reward-sheet--kbdhelp">
+         <p class="section-heading">Keyboard atlas</p>
+         <p class="reward-hero__copy">Every shortcut available without leaving the keyboard.</p>
+         <div class="kbd-help-grid" aria-label="Keyboard shortcuts">
+           <dl>
+             <dt><kbd>Enter</kbd> · <kbd>Space</kbd></dt>
+             <dd>Advance the current scene (when not focused on the board).</dd>
+             <dt><kbd>Esc</kbd></dt>
+             <dd>Close this overlay; otherwise exit the lab to the chapters index.</dd>
+             <dt><kbd>?</kbd></dt>
+             <dd>Open or close this help overlay.</dd>
+           </dl>
+           <dl>
+             <dt><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd></dt>
+             <dd>Move focus on the chess board, one square at a time.</dd>
+             <dt><kbd>Home</kbd> · <kbd>End</kbd></dt>
+             <dd>Jump to the near corners (a8 / h1).</dd>
+             <dt><kbd>Enter</kbd> · <kbd>Space</kbd></dt>
+             <dd>Activate the focused square (select piece, then a target).</dd>
+           </dl>
+           <dl>
+             <dt>Promotion: <kbd>←</kbd> <kbd>→</kbd></dt>
+             <dd>Cycle Queen → Rook → Bishop → Knight.</dd>
+             <dt><kbd>Enter</kbd></dt>
+             <dd>Confirm the focused promotion piece.</dd>
+             <dt><kbd>Esc</kbd></dt>
+             <dd>Cancel the promotion (no move is made).</dd>
+           </dl>
+         </div>
+         <div class="echo-controls">
+           <button type="button" class="primary" id="btn-kbdhelp-close">Close</button>
+         </div>
+       </div>`,
+      (root) => {
+        root.querySelector<HTMLButtonElement>('#btn-kbdhelp-close')?.addEventListener('click', () => {
+          keyboardHelpOpen = false
+          closeRewardOverlay()
+        })
+      },
+      () => {
+        keyboardHelpOpen = false
+      },
+    )
+  }
+  function toggleKeyboardHelp() {
+    if (keyboardHelpOpen) {
+      keyboardHelpOpen = false
+      closeRewardOverlay()
+    } else if (!rewardOverlayCtl.isOpen()) {
+      showKeyboardHelp()
     }
+  }
 
-    if ((e.key === 'Enter' || e.key === ' ') && labOverlay.classList.contains('lab-overlay--active')) {
-      const active = document.activeElement
-      const onBoard = active?.closest('.chess-grid') || active?.closest('.promo-panel')
-      if (onBoard) return
-      e.preventDefault()
-      if (flow.canAdvance()) {
-        flow.advanceScene()
-        updateAdvance(flow)
-      }
-    }
+  attachGlobalShortcuts(window, {
+    isRewardOverlayOpen: () => rewardOverlayCtl.isOpen(),
+    isLabActive: () => labOverlay.classList.contains('lab-overlay--active'),
+    closeRewardOverlay,
+    exitLab: () => {
+      closeLab()
+      showChapters()
+    },
+    canAdvance: () => flow.canAdvance(),
+    advance: () => {
+      flow.advanceScene()
+      updateAdvance(flow)
+    },
+    toggleKeyboardHelp,
   })
 
   /* ─── Event listeners ────────────────────────────────────────── */
@@ -1189,10 +1275,10 @@ export function mountApp(app: HTMLDivElement) {
   })
   btnVestibule.addEventListener('click', () => { closeLab(); showChapters() })
   btnSfx.addEventListener('click', () => {
-    sfxEnabled = !sfxEnabled
-    localStorage.setItem('cok-sfx-enabled', sfxEnabled ? '1' : '0')
-    btnSfx.textContent = `Sound: ${sfxEnabled ? 'On' : 'Off'}`
-    if (sfxEnabled) ensureAudioContext()
+    sfx.setEnabled(!sfx.enabled)
+    localStorage.setItem('cok-sfx-enabled', sfx.enabled ? '1' : '0')
+    btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
+    if (sfx.enabled) sfx.unlock()
   })
   btnMoveGuard.addEventListener('click', () => {
     moveGuardEnabled = !moveGuardEnabled
@@ -1207,8 +1293,8 @@ export function mountApp(app: HTMLDivElement) {
     flow.restoreStablePosition()
     updateAdvance(flow)
   })
-  btnNext.addEventListener('click', () => { flow.advanceScene(); updateAdvance(flow) })
-  btnUndo.addEventListener('click', () => { flow.undo(); updateAdvance(flow) })
+  btnNext.addEventListener('click', () => { sfx.playEventSfx('advance'); flow.advanceScene(); updateAdvance(flow) })
+  btnUndo.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.undo(); updateAdvance(flow) })
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
 
   let advanceTicker = 0
@@ -1235,11 +1321,12 @@ export function mountApp(app: HTMLDivElement) {
   window.addEventListener('pagehide', () => {
     flow.flushDeferredIO()
   })
-  btnSfx.textContent = `Sound: ${sfxEnabled ? 'On' : 'Off'}`
+  btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
   btnMoveGuard.textContent = `Move Guard: ${moveGuardEnabled ? 'On' : 'Off'}`
 
   syncTitleButtons()
   syncMvpFlag()
+  syncDailyRibbon()
 
   if (hasSave()) {
     if (flow.lastScreen === 'play') {

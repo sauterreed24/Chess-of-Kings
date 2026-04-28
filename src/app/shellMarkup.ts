@@ -25,22 +25,30 @@ export function getShellMarkup(): string {
 
       <section id="screen-title" class="screen screen--title">
         <div class="title-hero">
-          <div class="title-ornament" aria-hidden="true"><span class="title-ornament__glyph">⚔</span></div>
-          <p class="kicker">A narrative chess odyssey</p>
-          <h1 class="display-title">The Calculus of Kings</h1>
-          <p class="title-tagline">Enter simulations instantly and face history's greatest minds at the board.</p>
-          <p class="lede">No walking hub. Pure chapter progression, duel archives, adaptive AI rivals, and persistent rewards.</p>
-          <div class="title-actions" id="title-actions-save">
-            <button type="button" class="primary" id="btn-resume">Resume expedition</button>
-            <button type="button" class="secondary" id="btn-new">New chronicle</button>
+          <div class="title-hero__plate">
+            <div class="title-ornament" aria-hidden="true"><span class="title-ornament__glyph">⚔</span></div>
+            <p class="kicker">A narrative chess odyssey</p>
+            <h1 class="display-title">The Calculus of Kings</h1>
+            <p class="title-tagline">An ancient royal archive running on impossible future technology.</p>
+            <p class="lede">Play story chapters, unlock rival dossiers, learn from adaptive AI, and preserve every triumph in a persistent chronicle.</p>
+            <div class="title-stats" aria-label="Game highlights">
+              <span><strong>Campaign</strong><small>chapter trials</small></span>
+              <span><strong>Duel Archive</strong><small>rival dossiers</small></span>
+              <span><strong>Accessible</strong><small>keyboard board</small></span>
+            </div>
+            <div class="title-actions" id="title-actions-save">
+              <button type="button" class="primary" id="btn-resume">Resume expedition</button>
+              <button type="button" class="secondary" id="btn-new">New chronicle</button>
+            </div>
+            <div class="title-actions title-actions--solo hidden" id="title-actions-fresh">
+              <button type="button" class="primary" id="btn-enter-archive">Enter the Archive</button>
+            </div>
+            <p class="mvp-note" id="mvp-flag"></p>
+            <div class="daily-ribbon hidden" id="daily-ribbon" aria-live="polite"></div>
+            <p class="title-privacy">
+              <a class="title-privacy__link" href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
+            </p>
           </div>
-          <div class="title-actions title-actions--solo hidden" id="title-actions-fresh">
-            <button type="button" class="primary" id="btn-enter-archive">Enter the Archive</button>
-          </div>
-          <p class="mvp-note" id="mvp-flag"></p>
-          <p class="title-privacy">
-            <a class="title-privacy__link" href="/privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
-          </p>
         </div>
       </section>
 
@@ -122,6 +130,7 @@ export function getShellMarkup(): string {
                     <span class="calibration-rail__label">White moves inscribed</span>
                     <div class="calibration-rail__track" id="calibration-track"></div>
                   </div>
+                  <p class="board-guide" id="board-guide">Select a piece to illuminate legal targets. Captures are framed in bronze; check is marked in crimson.</p>
                   <div class="board-stage" id="board-stage">
                     <div class="captured-row captured-row--top" id="captured-top" aria-label="Pieces captured by White"></div>
                     <div class="board-stage__inner">
@@ -136,7 +145,7 @@ export function getShellMarkup(): string {
                         <div class="board-brass__corner board-brass__corner--tr"></div>
                         <div class="board-brass__corner board-brass__corner--bl"></div>
                         <div class="board-brass__corner board-brass__corner--br"></div>
-                        <div id="chess-root" class="board-wrap" role="region" aria-label="Chess board" aria-describedby="narrative-kbd-hint"></div>
+                        <div id="chess-root" class="board-wrap" role="region" aria-label="Chess board" aria-describedby="narrative-kbd-hint board-guide"></div>
                       </div>
                     </div>
                     <div class="captured-row captured-row--bot" id="captured-bot" aria-label="Pieces captured by Black"></div>
@@ -159,6 +168,7 @@ export function getShellMarkup(): string {
       </div>
 
       <div id="reward-overlay" class="reward-overlay hidden" role="dialog" aria-modal="true" aria-live="polite" aria-label="Rewards and unlocks" aria-hidden="true"></div>
+      <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
     </main>
   `
 }

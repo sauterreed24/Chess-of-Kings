@@ -107,6 +107,7 @@ export class BoardView {
       btn.classList.add(light ? 'sq-light' : 'sq-dark')
       btn.tabIndex = -1
       btn.setAttribute('aria-label', `Square ${sq}`)
+      btn.setAttribute('aria-pressed', 'false')
       btn.addEventListener('click', () => this.clickSquare(sq as Square))
       this.cells.set(sq as Square, btn)
       this.root.appendChild(btn)
@@ -270,6 +271,7 @@ export class BoardView {
     const panel = document.createElement('div')
     panel.className = 'promo-panel'
     panel.setAttribute('role', 'dialog')
+    panel.setAttribute('aria-modal', 'true')
     panel.setAttribute('aria-label', 'Choose promotion piece')
     panel.dataset.color = color
 
@@ -285,7 +287,9 @@ export class BoardView {
       }
     }
 
-    for (const p of ['q', 'r', 'b', 'n'] as PieceSymbol[]) {
+    const pieces: PieceSymbol[] = ['q', 'r', 'b', 'n']
+    const choiceButtons: HTMLButtonElement[] = []
+    for (const p of pieces) {
       const btn = document.createElement('button')
       btn.type = 'button'
       btn.className = 'promo-btn'
@@ -296,12 +300,56 @@ export class BoardView {
         this.onMove(from, to, p)
       })
       panel.appendChild(btn)
+      choiceButtons.push(btn)
     }
+
+    /* Keyboard: Esc dismisses, ArrowLeft/Right move focus between choices,
+     * Home/End jump to first/last, Tab cycles within the panel. Enter and
+     * Space activate the focused button via native behavior. */
+    panel.addEventListener('keydown', (e) => {
+      const idx = choiceButtons.indexOf(document.activeElement as HTMLButtonElement)
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        this.dismissPromo()
+        this.clearSelection()
+        return
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault()
+        const next = idx <= 0 ? choiceButtons.length - 1 : idx - 1
+        choiceButtons[next]?.focus()
+        return
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault()
+        const next = idx < 0 || idx === choiceButtons.length - 1 ? 0 : idx + 1
+        choiceButtons[next]?.focus()
+        return
+      }
+      if (e.key === 'Home') {
+        e.preventDefault()
+        choiceButtons[0]?.focus()
+        return
+      }
+      if (e.key === 'End') {
+        e.preventDefault()
+        choiceButtons[choiceButtons.length - 1]?.focus()
+        return
+      }
+      if (e.key === 'Tab') {
+        if (choiceButtons.length === 0) return
+        e.preventDefault()
+        const dir = e.shiftKey ? -1 : 1
+        const cur = idx < 0 ? 0 : idx
+        const next = (cur + dir + choiceButtons.length) % choiceButtons.length
+        choiceButtons[next]?.focus()
+      }
+    })
 
     document.body.appendChild(panel)
     this.promoPanel = panel
     /* focus first button for keyboard nav */
-    ;(panel.querySelector('.promo-btn') as HTMLButtonElement | null)?.focus()
+    choiceButtons[0]?.focus()
   }
 
   private dismissPromo() {
@@ -445,6 +493,8 @@ export class BoardView {
   private updateHighlights() {
     const ch = this.pendingChess
     for (const [sq, btn] of this.cells) {
+      const piece = ch?.get(sq) ?? null
+      const labels = [this.squareAriaLabel(sq, piece)]
       btn.classList.remove(
         'sq-selected',
         'sq-legal',
@@ -456,18 +506,29 @@ export class BoardView {
       )
       if (this.lastMove && (sq === this.lastMove.from || sq === this.lastMove.to)) {
         btn.classList.add('sq-last')
+        labels.push('last move')
       }
-      if (this.checkSquare === sq) btn.classList.add('sq-check')
-      if (this.selected === sq) btn.classList.add('sq-selected')
+      if (this.checkSquare === sq) {
+        btn.classList.add('sq-check')
+        labels.push('king in check')
+      }
+      if (this.selected === sq) {
+        btn.classList.add('sq-selected')
+        labels.push(`selected; ${this.legalTargets.size} legal target${this.legalTargets.size === 1 ? '' : 's'}`)
+      }
       if (this.legalTargets.has(sq)) {
         btn.classList.add('sq-legal')
-        const occ = ch?.get(sq)
+        const occ = piece
         if (occ) btn.classList.add('sq-legal-capture')
         else btn.classList.add('sq-legal-dot')
+        labels.push(occ ? 'legal capture target' : 'legal move target')
       }
       if (this.guardTo === sq && this.guardFrom && this.guardFrom === this.selected) {
         btn.classList.add('sq-guard')
+        labels.push('confirm move target; activate again to move')
       }
+      btn.setAttribute('aria-pressed', this.selected === sq ? 'true' : 'false')
+      btn.setAttribute('aria-label', labels.join(', '))
     }
   }
 
