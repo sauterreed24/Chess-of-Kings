@@ -30,6 +30,8 @@ import { rankLabel, nextRankThreshold } from './recap/rankLabels'
 import { createSfxController } from './audio/sfx'
 import { buildChapterRail, buildLadderTrack } from './play/chapterRail'
 import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
+import { recordToday as recordStreakToday, readStreak } from './session/streak'
+import { pickDailyCalculus } from './session/dailyCalculus'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -76,6 +78,7 @@ export function mountApp(app: HTMLDivElement) {
   const lessonNote = app.querySelector<HTMLParagraphElement>('#lesson-note')!
   const coachTipEl = app.querySelector<HTMLParagraphElement>('#coach-tip')!
   const mvpFlag = app.querySelector<HTMLParagraphElement>('#mvp-flag')!
+  const dailyRibbon = app.querySelector<HTMLDivElement>('#daily-ribbon')!
   const moveLedger = app.querySelector<HTMLDivElement>('#move-ledger')!
   const calibrationRail = app.querySelector<HTMLDivElement>('#calibration-rail')!
   const calibrationTrack = app.querySelector<HTMLDivElement>('#calibration-track')!
@@ -324,6 +327,48 @@ export function mountApp(app: HTMLDivElement) {
       : ''
   }
 
+  /* ─── Session streak + Daily Calculus ribbon ─────────────────── */
+  /* Recorded once per local day on app boot. The streak / daily pick
+   * are stored in dedicated localStorage keys to keep them orthogonal
+   * to the versioned SaveData and free of migrations. The daily pick
+   * is only shown when the player has the chapter unlocked, so the
+   * call-to-action never appears as a button that does nothing. */
+  recordStreakToday()
+  function syncDailyRibbon() {
+    const streak = readStreak()
+    const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
+    const daily =
+      dailyRaw && dailyRaw.chapterIndex <= flow.highestUnlockedChapter ? dailyRaw : null
+    const streakBadge =
+      streak.count > 1
+        ? `<span class="daily-ribbon__streak"><strong>${streak.count}</strong> day streak</span>`
+        : streak.count === 1
+          ? `<span class="daily-ribbon__streak"><strong>Day 1</strong> of a new streak</span>`
+          : ''
+    const dailyBlock = daily
+      ? `<button type="button" class="ghost daily-ribbon__cta" id="btn-daily-calculus"
+            aria-label="Play today's Daily Calculus puzzle: ${escapeHtml(daily.title)}">
+            <span class="daily-ribbon__label">Daily Calculus</span>
+            <span class="daily-ribbon__title">${escapeHtml(daily.title)}</span>
+            <span class="daily-ribbon__chapter">${escapeHtml(daily.chapterTitle)} · ${escapeHtml(daily.dayKey)}</span>
+          </button>`
+      : ''
+    if (!streakBadge && !dailyBlock) {
+      dailyRibbon.classList.add('hidden')
+      dailyRibbon.innerHTML = ''
+      return
+    }
+    dailyRibbon.innerHTML = `${streakBadge}${dailyBlock}`
+    dailyRibbon.classList.remove('hidden')
+    if (daily) {
+      dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', () => {
+        flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
+        screenChapters.classList.add('hidden')
+        openLab()
+      })
+    }
+  }
+
   function openLab() {
     closeRewardOverlay()
     flow.setLastScreen('play')
@@ -354,6 +399,7 @@ export function mountApp(app: HTMLDivElement) {
     screenDuel.classList.add('hidden')
     syncTitleButtons()
     syncMvpFlag()
+    syncDailyRibbon()
   }
 
   function showChapters() {
@@ -430,6 +476,7 @@ export function mountApp(app: HTMLDivElement) {
 
   function showRewardBundles(bundles: RewardBundle[]) {
     if (!bundles.length) return
+    sfx.playEventSfx('reward')
     const rp = flow.getRankPoints()
     const next = nextRankThreshold(rp)
     const progress = Math.max(0, Math.min(100, ((rp - next.currentFloor) / (next.next - next.currentFloor)) * 100))
@@ -1162,8 +1209,8 @@ export function mountApp(app: HTMLDivElement) {
     flow.restoreStablePosition()
     updateAdvance(flow)
   })
-  btnNext.addEventListener('click', () => { flow.advanceScene(); updateAdvance(flow) })
-  btnUndo.addEventListener('click', () => { flow.undo(); updateAdvance(flow) })
+  btnNext.addEventListener('click', () => { sfx.playEventSfx('advance'); flow.advanceScene(); updateAdvance(flow) })
+  btnUndo.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.undo(); updateAdvance(flow) })
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
 
   let advanceTicker = 0
@@ -1195,6 +1242,7 @@ export function mountApp(app: HTMLDivElement) {
 
   syncTitleButtons()
   syncMvpFlag()
+  syncDailyRibbon()
 
   if (hasSave()) {
     if (flow.lastScreen === 'play') {

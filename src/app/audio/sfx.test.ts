@@ -134,6 +134,59 @@ describe('createSfxController', () => {
     expect(freqOf(5)).toBe(230)
   })
 
+  it('castle SAN gets a distinct square-wave cue at 240 Hz', () => {
+    const fake = makeFakeAudioContext()
+    const sfx = createSfxController({
+      enabled: true,
+      audioContextFactory: () => fake as unknown as AudioContext,
+    })
+    sfx.playMoveSfx('O-O', null)
+    sfx.playMoveSfx('O-O-O', null)
+    expect(fake.oscillators[0]!.type).toBe('square')
+    expect(fake.oscillators[1]!.type).toBe('square')
+    expect(fake.oscillators[0]!.frequency.setValueAtTime.mock.calls[0]![0]).toBe(240)
+  })
+
+  it('promotion SAN gets a triangle-wave cue at 540 Hz (when not also check/mate)', () => {
+    const fake = makeFakeAudioContext()
+    const sfx = createSfxController({
+      enabled: true,
+      audioContextFactory: () => fake as unknown as AudioContext,
+    })
+    sfx.playMoveSfx('e8=Q', null)
+    expect(fake.oscillators[0]!.type).toBe('triangle')
+    expect(fake.oscillators[0]!.frequency.setValueAtTime.mock.calls[0]![0]).toBe(540)
+  })
+
+  it('playEventSfx fires every cue label with its expected frequency', () => {
+    const fake = makeFakeAudioContext()
+    const sfx = createSfxController({
+      enabled: true,
+      audioContextFactory: () => fake as unknown as AudioContext,
+    })
+    sfx.playEventSfx('undo')
+    sfx.playEventSfx('advance')
+    sfx.playEventSfx('reward')
+    sfx.playEventSfx('draw')
+    sfx.playEventSfx('castle')
+    sfx.playEventSfx('promotion')
+    sfx.playEventSfx('unlock')
+    const freqs = fake.oscillators.map(
+      (o) => o.frequency.setValueAtTime.mock.calls[0]![0] as number,
+    )
+    expect(freqs).toEqual([220, 320, 520, 250, 240, 540, 600])
+  })
+
+  it('playEventSfx is silent when disabled', () => {
+    const fake = makeFakeAudioContext()
+    const sfx = createSfxController({
+      enabled: false,
+      audioContextFactory: () => fake as unknown as AudioContext,
+    })
+    sfx.playEventSfx('reward')
+    expect(fake.oscillators).toHaveLength(0)
+  })
+
   it('silently no-ops when the factory returns null (unsupported environment)', () => {
     const sfx = createSfxController({ enabled: true, audioContextFactory: () => null })
     expect(() => sfx.playMoveSfx('e4', null)).not.toThrow()
