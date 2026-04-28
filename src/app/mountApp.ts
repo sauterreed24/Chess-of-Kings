@@ -33,6 +33,8 @@ import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
 import { recordToday as recordStreakToday, readStreak } from './session/streak'
 import { pickDailyCalculus } from './session/dailyCalculus'
 import { deriveCalibrationLens } from './duel/calibrationLens'
+import { createAnnouncer } from './a11y/announcer'
+import { ANNOUNCE_TEMPLATES } from '../data/strings'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -80,6 +82,7 @@ export function mountApp(app: HTMLDivElement) {
   const coachTipEl = app.querySelector<HTMLParagraphElement>('#coach-tip')!
   const mvpFlag = app.querySelector<HTMLParagraphElement>('#mvp-flag')!
   const dailyRibbon = app.querySelector<HTMLDivElement>('#daily-ribbon')!
+  const announcer = createAnnouncer(app.querySelector<HTMLDivElement>('#live-announcer')!)
   const moveLedger = app.querySelector<HTMLDivElement>('#move-ledger')!
   const calibrationRail = app.querySelector<HTMLDivElement>('#calibration-rail')!
   const calibrationTrack = app.querySelector<HTMLDivElement>('#calibration-track')!
@@ -112,6 +115,8 @@ export function mountApp(app: HTMLDivElement) {
   /** Invalidated in renderScene so Advance button state always refreshes on passage change. */
   let lastAdvanceSig = ''
   let prevSessionRecovered = false
+  /** Skip aria-live announcements for outcomes already spoken this scene. */
+  let announcedOutcomeKey = ''
   let latestResolvedForRecap: ChessUiPayload | null = null
   let pendingChapterPrompt: { completedTitle: string; nextTitle: string | null } | null = null
   let moveGuardEnabled = localStorage.getItem('cok-move-guard') === '1'
@@ -274,6 +279,27 @@ export function mountApp(app: HTMLDivElement) {
     }
 
     if (p.matchOutcome) latestResolvedForRecap = p
+
+    /* Announce a terminal outcome at most once per scene. The key
+     * combines outcome + ledger fingerprint so a new game on the same
+     * scene reannounces. Rival name comes from the AI persona when
+     * available, falling back to "the rival" for narrative scenes. */
+    if (p.matchOutcome) {
+      const key = `${p.matchOutcome}|${p.ledgerFp}`
+      if (key !== announcedOutcomeKey) {
+        announcedOutcomeKey = key
+        const rival = p.aiPersona?.replace(/\s*\(.*\)\s*$/, '').trim() || 'the rival'
+        const tmpl =
+          p.matchOutcome === 'win'
+            ? ANNOUNCE_TEMPLATES.matchWin
+            : p.matchOutcome === 'loss'
+              ? ANNOUNCE_TEMPLATES.matchLoss
+              : ANNOUNCE_TEMPLATES.matchDraw
+        announcer.say(`${tmpl} ${rival}.`)
+      }
+    } else if (!p.matchOutcome && announcedOutcomeKey) {
+      announcedOutcomeKey = ''
+    }
 
     const rewards = flow.consumePendingRewards()
     if (rewards.length) showRewardBundles(rewards)
@@ -478,6 +504,7 @@ export function mountApp(app: HTMLDivElement) {
   function showRewardBundles(bundles: RewardBundle[]) {
     if (!bundles.length) return
     sfx.playEventSfx('reward')
+    announcer.say(ANNOUNCE_TEMPLATES.rewardsInscribed)
     const rp = flow.getRankPoints()
     const next = nextRankThreshold(rp)
     const progress = Math.max(0, Math.min(100, ((rp - next.currentFloor) / (next.next - next.currentFloor)) * 100))
@@ -974,6 +1001,7 @@ export function mountApp(app: HTMLDivElement) {
     lastCalKey = ''
     lastEvalScore = Number.NaN
     lastAdvanceSig = ''
+    announcedOutcomeKey = ''
     btnReset.disabled = true
     btnNextHint.textContent = ''
     const showBoard = flow.sceneUsesBoard(scene)

@@ -168,6 +168,7 @@ export function getShellMarkup(): string {
       </div>
 
       <div id="reward-overlay" class="reward-overlay hidden" role="dialog" aria-modal="true" aria-live="polite" aria-label="Rewards and unlocks" aria-hidden="true"></div>
+      <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
     </main>
   `
 }
