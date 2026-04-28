@@ -392,7 +392,6 @@ export function mountApp(app: HTMLDivElement) {
     if (daily) {
       dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', () => {
         flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
-        screenChapters.classList.add('hidden')
         openLab()
       })
     }
@@ -433,6 +432,16 @@ export function mountApp(app: HTMLDivElement) {
     setSectionVisibility(screenDuel as HTMLElement, active === 'duel')
   }
 
+  function focusTitleEntry() {
+    if (focusBeforeLab && document.contains(focusBeforeLab)) {
+      focusBeforeLab.focus()
+      focusBeforeLab = null
+      return
+    }
+    if (!btnResume.disabled) btnResume.focus()
+    else btnEnterArchive.focus()
+  }
+
   function showTitle() {
     closeRewardOverlay()
     flow.setLastScreen('title')
@@ -442,14 +451,7 @@ export function mountApp(app: HTMLDivElement) {
     syncTitleButtons()
     syncMvpFlag()
     syncDailyRibbon()
-    if (focusBeforeLab && document.contains(focusBeforeLab)) {
-      focusBeforeLab.focus()
-      focusBeforeLab = null
-    } else if (!btnResume.disabled) {
-      btnResume.focus()
-    } else {
-      btnEnterArchive.focus()
-    }
+    focusTitleEntry()
   }
 
   function showChapters() {

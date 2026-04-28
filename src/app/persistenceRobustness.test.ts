@@ -62,6 +62,7 @@ describe('loadSave robustness', () => {
 describe('writeSave robustness', () => {
   it('does not throw when localStorage.setItem refuses (private mode / quota)', () => {
     const original = Storage.prototype.setItem
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     /* Force every setItem call to reject. */
     Storage.prototype.setItem = vi.fn(() => {
       const err = new DOMException('quota', 'QuotaExceededError')
@@ -98,6 +99,9 @@ describe('writeSave robustness', () => {
         inProgress: null,
       }
       expect(() => writeSave(data)).not.toThrow()
+      expect(warnSpy).toHaveBeenCalledWith(
+        '[Calculus of Kings] writeSave: persist failed even after trimming history/rivalMemory',
+      )
     } finally {
       Storage.prototype.setItem = original
     }
