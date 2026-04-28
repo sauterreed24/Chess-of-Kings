@@ -2,7 +2,7 @@ import { Chess } from 'chess.js'
 import { PLAYABLE_CHAPTERS } from '../data/chapters'
 import { LOCKED_ROADMAP } from '../data/roadmap'
 import { GameFlow } from './gameFlow'
-import type { ChessUiPayload, MoveQuality } from './gameFlow'
+import type { ChessUiPayload } from './gameFlow'
 import { clearSave, hasSave } from './storage'
 import type { Chapter, MatchScene, Scene, PieceSkinId, RewardBundle } from '../types'
 import { PIECE_SKIN_LABEL } from '../chess/skins'
@@ -28,6 +28,7 @@ import {
 import { getShellMarkup } from './shellMarkup'
 import { styleGradeFromPayload, turningPointLine } from './recap/styleGrade'
 import { rankLabel, nextRankThreshold } from './recap/rankLabels'
+import { createSfxController } from './audio/sfx'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -108,54 +109,17 @@ export function mountApp(app: HTMLDivElement) {
   let prevSessionRecovered = false
   let latestResolvedForRecap: ChessUiPayload | null = null
   let pendingChapterPrompt: { completedTitle: string; nextTitle: string | null } | null = null
-  let sfxEnabled = localStorage.getItem('cok-sfx-enabled') !== '0'
   let moveGuardEnabled = localStorage.getItem('cok-move-guard') === '1'
-  let audioCtx: AudioContext | null = null
-
-  function ensureAudioContext(): AudioContext | null {
-    if (!sfxEnabled) return null
-    if (!audioCtx) {
-      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-      if (!Ctx) return null
-      audioCtx = new Ctx()
-    }
-    if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {})
-    return audioCtx
-  }
-
-  function playMoveSfx(san: string, quality: MoveQuality | null) {
-    const ctx = ensureAudioContext()
-    if (!ctx) return
-    const now = ctx.currentTime
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    let freq = 290
-    let dur = 0.065
-    if (san.includes('x')) freq = 190
-    if (san.includes('+')) freq = 360
-    if (san.includes('#')) {
-      freq = 470
-      dur = 0.12
-    }
-    if (quality === 'brilliant') freq += 120
-    else if (quality === 'blunder') freq -= 60
-    osc.type = san.includes('x') ? 'triangle' : 'sine'
-    osc.frequency.setValueAtTime(freq, now)
-    gain.gain.setValueAtTime(0.0001, now)
-    gain.gain.exponentialRampToValueAtTime(0.032, now + 0.008)
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur)
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.start(now)
-    osc.stop(now + dur + 0.015)
-  }
+  const sfx = createSfxController({
+    enabled: localStorage.getItem('cok-sfx-enabled') !== '0',
+  })
 
   /* ─── Chess UI updater ────────────────────────────────────────── */
 
   function applyChessUi(p: ChessUiPayload) {
     if (p.sanLog.length > prevSanLen) {
       for (let i = prevSanLen; i < p.sanLog.length; i++) {
-        playMoveSfx(p.sanLog[i] ?? '', p.sanQuality[i] ?? null)
+        sfx.playMoveSfx(p.sanLog[i] ?? '', p.sanQuality[i] ?? null)
       }
     }
     prevSanLen = p.sanLog.length
@@ -224,7 +188,7 @@ export function mountApp(app: HTMLDivElement) {
     }
     if (p.sessionRecovered && !prevSessionRecovered) {
       boardStatus.classList.add('status-pill--recovered')
-      if (sfxEnabled) playMoveSfx('O-O', 'good')
+      sfx.playMoveSfx('O-O', 'good')
       window.setTimeout(() => boardStatus.classList.remove('status-pill--recovered'), 1800)
     }
     prevSessionRecovered = p.sessionRecovered
@@ -1175,10 +1139,10 @@ export function mountApp(app: HTMLDivElement) {
   })
   btnVestibule.addEventListener('click', () => { closeLab(); showChapters() })
   btnSfx.addEventListener('click', () => {
-    sfxEnabled = !sfxEnabled
-    localStorage.setItem('cok-sfx-enabled', sfxEnabled ? '1' : '0')
-    btnSfx.textContent = `Sound: ${sfxEnabled ? 'On' : 'Off'}`
-    if (sfxEnabled) ensureAudioContext()
+    sfx.setEnabled(!sfx.enabled)
+    localStorage.setItem('cok-sfx-enabled', sfx.enabled ? '1' : '0')
+    btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
+    if (sfx.enabled) sfx.unlock()
   })
   btnMoveGuard.addEventListener('click', () => {
     moveGuardEnabled = !moveGuardEnabled
@@ -1221,7 +1185,7 @@ export function mountApp(app: HTMLDivElement) {
   window.addEventListener('pagehide', () => {
     flow.flushDeferredIO()
   })
-  btnSfx.textContent = `Sound: ${sfxEnabled ? 'On' : 'Off'}`
+  btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
   btnMoveGuard.textContent = `Move Guard: ${moveGuardEnabled ? 'On' : 'Off'}`
 
   syncTitleButtons()
