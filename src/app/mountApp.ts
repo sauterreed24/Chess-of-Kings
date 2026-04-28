@@ -35,6 +35,7 @@ import { pickDailyCalculus } from './session/dailyCalculus'
 import { deriveCalibrationLens } from './duel/calibrationLens'
 import { createAnnouncer } from './a11y/announcer'
 import { ANNOUNCE_TEMPLATES } from '../data/strings'
+import { getRivalProfile } from '../data/rivals'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -707,7 +708,12 @@ export function mountApp(app: HTMLDivElement) {
               Echo ${new Date(e.timestamp).toLocaleDateString()} · ${e.styleGrade} · ${e.turningPointSan}
             </button>`).join('')
           : '<p class="ledger-empty">Defeat this rival to inscribe chronicle echoes.</p>'
+        const rivalProfile = getRivalProfile(rival.opponentId)
         const prepLines = (() => {
+          /* Prefer the curated counter-prep when we have a known rival;
+           * fall back to the heuristic-driven bullets for unknown ids
+           * (composite scenes, future content). */
+          if (rivalProfile) return rivalProfile.counterPrep.slice(0, 3)
           const lines: string[] = []
           if (rival.styleTags.some((t) => /tactic|attack|sac/i.test(t))) {
             lines.push('Prioritize king safety by move 10; avoid speculative pawn grabs near your king.')
@@ -727,6 +733,18 @@ export function mountApp(app: HTMLDivElement) {
           if (!lines.length) lines.push('Play principled development: center control, king safety, then dynamic expansion.')
           return lines.slice(0, 3)
         })()
+        const schoolBlendHtml = rivalProfile
+          ? `<div class="rival-school" aria-label="Doctrinal school blend">
+              <span class="rival-school__primary">${escapeHtml(rivalProfile.blend.primary.school)}</span>
+              <span class="rival-school__weight">${rivalProfile.blend.primary.weight}%</span>
+              ${rivalProfile.blend.secondary
+                ? `<span class="rival-school__plus" aria-hidden="true">+</span>
+                   <span class="rival-school__secondary">${escapeHtml(rivalProfile.blend.secondary.school)}</span>
+                   <span class="rival-school__weight">${rivalProfile.blend.secondary.weight}%</span>`
+                : ''}
+              <p class="rival-school__sig">${escapeHtml(rivalProfile.signature)}</p>
+            </div>`
+          : ''
         const trainingPlan = flow.getAdaptiveTrainingPlan(rival.opponentId)
         const lens = deriveCalibrationLens(history, rivalMem)
         const lensTicks = ['Forgiving', 'Measured', 'Balanced', 'Sharpened', 'Relentless']
@@ -788,6 +806,7 @@ export function mountApp(app: HTMLDivElement) {
               <h4>Chronicle Echoes</h4>
               ${echoCards}
             </div>
+            ${schoolBlendHtml}
             <div class="reward-card">
               <h4>Counter-Prep Briefing</h4>
               <ul>${prepLines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>

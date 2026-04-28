@@ -2139,6 +2139,50 @@ body {
 }
 
 /* ═══════════════════════════════
+   RIVAL SCHOOL BLEND (dossier doctrinal stamp)
+   ═══════════════════════════════ */
+.rival-school {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.55rem;
+  margin: 0.55rem 0 0.65rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(201,169,98,0.22);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(232,201,126,0.05), rgba(0,0,0,0.18)),
+    rgba(0,0,0,0.16);
+}
+
+.rival-school__primary,
+.rival-school__secondary {
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  color: var(--gold-bright, #e8c97e);
+}
+
+.rival-school__weight {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--muted, #c9b58a);
+  font-variant-numeric: tabular-nums;
+}
+
+.rival-school__plus {
+  color: rgba(201,169,98,0.55);
+  font-size: 0.85rem;
+}
+
+.rival-school__sig {
+  flex: 1 1 100%;
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted, #c9b58a);
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════
    CALIBRATION LENS (dossier brass dial)
    ═══════════════════════════════ */
 .cal-lens {
