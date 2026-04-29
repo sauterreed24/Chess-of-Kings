@@ -72,6 +72,15 @@ smoke are all passing.
 
 ### Changed
 
+- **Board region hint (`#board-guide`)** is driven by `GameFlow` each
+  chess update (wait for opponent / AI thinking / freeplay / terminal)
+  so it cannot contradict “0 legal targets” when it is not your turn.
+- **Mobile lab layout** (`src/style.css`) — wider small-screen
+  breakpoint, `svh`/`dvh` sheet height, safe-area insets, board-first
+  column order on narrow viewports, tighter chrome for iPhone-class
+  Safari.
+- Prologue **calibration `goalPlain`** copy now states explicitly that
+  White moves only on White’s turn and to wait between trainer replies.
 - `src/app/mountApp.ts` now enforces top-level screen isolation via
   `aria-hidden` + `inert` toggling so inactive title/chapter/duel
   screens are not left in the accessibility tree while the lab is open.

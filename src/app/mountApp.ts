@@ -84,6 +84,7 @@ export function mountApp(app: HTMLDivElement) {
   const mvpFlag = app.querySelector<HTMLParagraphElement>('#mvp-flag')!
   const dailyRibbon = app.querySelector<HTMLDivElement>('#daily-ribbon')!
   const announcer = createAnnouncer(app.querySelector<HTMLDivElement>('#live-announcer')!)
+  const boardGuide = app.querySelector<HTMLParagraphElement>('#board-guide')!
   const moveLedger = app.querySelector<HTMLDivElement>('#move-ledger')!
   const calibrationRail = app.querySelector<HTMLDivElement>('#calibration-rail')!
   const calibrationTrack = app.querySelector<HTMLDivElement>('#calibration-track')!
@@ -227,6 +228,7 @@ export function mountApp(app: HTMLDivElement) {
       window.setTimeout(() => boardStatus.classList.remove('status-pill--recovered'), 1800)
     }
     prevSessionRecovered = p.sessionRecovered
+    boardGuide.textContent = p.boardGuide
     if (p.sessionRecovered) {
       recoveryControls.classList.remove('hidden')
       btnRecoveryRestore.disabled = !p.canRestoreStable

@@ -132,4 +132,42 @@ describe('GameFlow AI / puzzles', () => {
     expect(latest?.sceneIndex).toBe(0)
     expect(latest?.inProgress).toBeNull()
   })
+
+  it('emits boardGuide that explains waiting when the player color is not on move', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    onChessUpdate.mockClear()
+    expect(flow.startDuel('alexion', 'alexion-mentor', 'b')).toBe(true)
+    /* `startDuel` emits once before AI thinking, then again with `aiThinking` — assert the first snapshot. */
+    const waitGuide = onChessUpdate.mock.calls.map((c) => c[0]).find((p) => /Wait for White/.test(p.boardGuide))
+    expect(waitGuide).toBeDefined()
+    onChessUpdate.mockClear()
+    expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
+    const payloadW = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(payloadW?.boardGuide).toMatch(/Select a piece to illuminate/)
+  })
+
+  it('emits freeplay-specific boardGuide on the rehearsal board', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const freeIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.id === 'c1-freeplay')
+    expect(freeIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch1, freeIdx)
+    const payload = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(payload?.boardGuide).toMatch(/side whose turn it is/)
+  })
 })

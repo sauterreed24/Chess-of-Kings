@@ -73,6 +73,8 @@ export type ChessUiPayload = {
   tacticalPulse: string | null
   sessionRecovered: boolean
   canRestoreStable: boolean
+  /** Short hint tied to turn / mode — shown as `aria-describedby` for the board. */
+  boardGuide: string
 }
 
 type DuelSession = {
@@ -702,6 +704,7 @@ export class GameFlow {
       tacticalPulse: this.lastTacticalPulse,
       sessionRecovered: this.sessionRecoveredNotice,
       canRestoreStable: this.history.length > 1 && !this.aiThinking,
+      boardGuide: this.boardGuideText(sc),
     })
   }
 
@@ -1265,6 +1268,28 @@ export class GameFlow {
     if (this.chess.inCheck()) return 'Check.'
     const t = this.chess.turn() === 'w' ? 'White' : 'Black'
     return `${t} to move.`
+  }
+
+  private boardGuideText(scene: Scene): string {
+    const defaultGuide =
+      'Select a piece to illuminate legal targets. Captures are framed in bronze; check is marked in crimson.'
+    const chessy = this.mode === 'duel' || this.sceneUsesBoard(scene)
+    if (!chessy) return defaultGuide
+    if (this.isSceneTerminalForCurrentMode() || this.chess.isGameOver()) {
+      return 'This passage is decided on the board. Continue from the manuscript when the next control is available.'
+    }
+    if (this.aiThinking) {
+      return 'The opponent is choosing a move — the board will update when their reply lands.'
+    }
+    if (scene.type === 'freeplay') {
+      return 'Select a piece of the side whose turn it is (see status above). Captures are framed in bronze; check is marked in crimson.'
+    }
+    if (this.chess.turn() !== this.playerColor) {
+      const opp = this.playerColor === 'w' ? 'Black' : 'White'
+      const mine = this.playerColor === 'w' ? 'White' : 'Black'
+      return `Wait for ${opp} to move — you command ${mine}. When it returns to you, select a piece to see legal targets (captures bronze; check crimson).`
+    }
+    return defaultGuide
   }
 
   /* ─── Coaching tips ────────────────────────────────────────────────── */

@@ -2461,7 +2461,7 @@ body {
 /* ═══════════════════════════════
    RESPONSIVE — SMALL SCREENS
    ═══════════════════════════════ */
-@media (max-width: 520px) {
+@media (max-width: 700px) {
   html, body { font-size: 17px; }
 
   .top-bar { padding: 0 0.75rem; }
@@ -2644,5 +2644,182 @@ html.perf-lean .board-stage--finisher .board-brass {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════
+   iPHONE / MOBILE BROWSER FIT
+   Keep the playable board fully reachable inside Safari's dynamic viewport.
+   ═══════════════════════════════ */
+@media (max-width: 700px), (max-width: 1024px) and (max-height: 700px) {
+  html,
+  body,
+  #app {
+    min-height: 100svh;
+  }
+
+  .top-bar {
+    justify-content: center;
+    height: 56px;
+    min-height: 56px;
+    padding-left: max(0.5rem, env(safe-area-inset-left));
+    padding-right: max(0.5rem, env(safe-area-inset-right));
+  }
+
+  .top-bar__brand {
+    display: none;
+  }
+
+  .top-nav {
+    width: min(100%, 22rem);
+    justify-content: center;
+  }
+
+  .coarse-pointer .ghost--nav,
+  .top-nav .ghost--nav {
+    min-width: 0;
+    min-height: 2.35rem;
+    padding-inline: 0.58rem;
+    font-size: 0.54rem;
+    letter-spacing: 0.09em;
+  }
+
+  .lab-overlay__sheet {
+    top: 56px;
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100svh - 56px);
+    min-width: 0;
+  }
+
+  @supports (height: 100dvh) {
+    .lab-overlay__sheet {
+      max-height: calc(100dvh - 56px);
+    }
+  }
+
+  .lab-overlay__bar {
+    gap: 0.55rem;
+    padding: 0.42rem max(0.62rem, env(safe-area-inset-right)) 0.42rem max(0.62rem, env(safe-area-inset-left));
+  }
+
+  .lab-overlay__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.46rem;
+    letter-spacing: 0.13em;
+  }
+
+  .lab-overlay__vestibule {
+    flex: 0 0 auto;
+  }
+
+  .screen--play-inner {
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 0.75rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
+  }
+
+  .play-crawl {
+    margin-bottom: 0.75rem;
+    padding: 0.72rem 0.82rem 0.86rem;
+  }
+
+  .play-crawl__row {
+    align-items: flex-start;
+  }
+
+  .chapter-title {
+    font-size: clamp(1.08rem, 6.2vw, 1.45rem);
+  }
+
+  .scene-progress {
+    font-size: 0.5rem;
+    padding: 0.24rem 0.48rem;
+  }
+
+  .play-atelier {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .instrument-column {
+    order: -1;
+    width: min(100%, 24rem);
+    max-width: 100%;
+    min-width: 0;
+    margin-inline: auto;
+  }
+
+  .manuscript-panel {
+    min-width: 0;
+  }
+
+  .instrument-frame {
+    min-width: 0;
+    padding: 0.65rem 0.65rem 0.8rem;
+  }
+
+  .instrument-header {
+    margin-bottom: 0.52rem;
+    padding-bottom: 0.52rem;
+  }
+
+  .status-pill-wrap {
+    min-height: auto;
+  }
+
+  .instrument-toggles,
+  .board-tools {
+    gap: 0.32rem;
+  }
+
+  .ghost--sound,
+  .ghost--tool {
+    flex: 1 1 auto;
+    min-width: min(100%, 7rem);
+    padding-inline: 0.58rem;
+  }
+
+  .board-stage {
+    margin-top: 0.25rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .board-stage__inner {
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .board-brass {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: min(100%, calc(100svw - 3.1rem));
+    min-width: 0;
+    padding: 6px;
+  }
+
+  .board-wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .sq {
+    font-size: clamp(1.18rem, 7.1vw, 1.9rem);
+  }
+
+  .captured-row {
+    min-height: 1.05rem;
+    padding-block: 0.08rem;
+  }
+
+  .move-ledger {
+    max-height: min(7.2rem, 24svh);
   }
 }

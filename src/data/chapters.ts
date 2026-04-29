@@ -99,7 +99,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         teaching: {
           threat: 'There is no single threat yet — you are learning tempo and instinct.',
           goalPlain:
-            'Complete four moves as White. Development and king safety still matter; the Lab is watching every choice.',
+            'Complete four moves as White — only on White’s turn (read the status line). When Black is on move, wait for the trainer’s reply; your pieces are idle until then. Development and king safety still matter; the Lab is watching every choice.',
           whyItWorks:
             'Even random replies punish wasted time. Pieces that trip over each other early lose initiative for the whole game.',
           concept:
