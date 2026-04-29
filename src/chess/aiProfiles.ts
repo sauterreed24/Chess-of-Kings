@@ -162,6 +162,7 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('amara')) return AI_PROFILES.novice_court
   if (matchId.includes('lukas')) return AI_PROFILES.apprentice_court
   if (matchId.includes('edred')) return AI_PROFILES.scholar_guard
+  if (matchId.includes('rowan') || matchId.includes('vega')) return AI_PROFILES.scholar_guard
   if (matchId.includes('marius')) return AI_PROFILES.veteran_scholar
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
@@ -173,6 +174,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('strategos')) return AI_PROFILES.alexion_strategos
   if (variantId.includes('apex')) return AI_PROFILES.alexion_apex
   if (variantId.includes('veteran')) return AI_PROFILES.veteran_scholar
+  if (variantId.includes('rowan')) return AI_PROFILES.scholar_guard
+  if (variantId.includes('vega')) return AI_PROFILES.scholar_guard
   return AI_PROFILES.apprentice_court
 }
 

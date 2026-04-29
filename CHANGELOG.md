@@ -22,6 +22,9 @@ smoke are all passing.
   `aiDepth`, chapter rewards, and freeplay rehearsal. Unlocks after
   Chapter I on the chronicle index (`roadmap.ts` no longer lists Ch II
   as future-only).
+- **Romantic duel archive**: `rowan` / `vega` roster entries
+  (`minChapterUnlock: 2`, tabiya FENs), victory rewards unlock their duel
+  variants; `grantVictoryRewards` wires scene IDs to opponent unlocks.
 - **`chapter2Complete`** on `SaveData` + `GameFlow` (set when leaving
   `c2-reflection`); title screen copy and campaign-finale message know
   when both chapters are sealed.
@@ -81,6 +84,9 @@ smoke are all passing.
 
 ### Changed
 
+- **Chapter II ladder scripts** tightened for legal black SAN sequences
+  under typical white replies; Rowan/Vega after-match copy aligned with
+  those lines.
 - **Counterpart (Chapter I finale)** engine depth **5 → 4** for a
   slightly fairer ceiling against the composite scholar.
 - **Board region hint (`#board-guide`)** is driven by `GameFlow` each
@@ -120,7 +126,7 @@ smoke are all passing.
 
 ### Engineering
 
-- 86 → 218 tests pass (+132 new cases). 34 test files (was 18).
+- 86 → 224 tests pass. 34 test files (was 18).
 - Lint clean: zero warnings, zero `as any` in production code.
 - Bundle (measured 2026-04-29, `npm run build` + `npm run report:bundle-gzip`): JS gzip **63,661 B** (budget: < 90 KB), CSS gzip **12,496 B** (budget: < 13 KB).
 - Lighthouse mobile CLI JSON: `docs/lighthouse-mobile-max-pass-2.json`

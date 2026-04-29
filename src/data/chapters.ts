@@ -906,7 +906,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'rowan',
-            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy Italian — gambits accepted, complications welcomed.',
+            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy King\'s Gambit — gambits accepted, complications welcomed.',
           },
           {
             speaker: 'reed',
@@ -929,7 +929,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         playerColor: 'w',
         aiDepth: 3,
         aiStyle: 'romantic',
-        scriptedBlackSans: ['exf4', 'Nf6', 'd5', 'Nc6', 'Bb4+', 'O-O', 'Re8', 'd6'],
+        scriptedBlackSans: ['exf4', 'Nf6', 'Bc5', 'Nc6', 'O-O', 'd5'],
         ladderTier: 'initiate',
         difficulty: 2,
       },
@@ -943,7 +943,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'reed',
-            text: 'Chapter I drilled “loose pieces drop off.” Your bishop on c5 was aiming at f2 the whole time.',
+            text: 'Chapter I drilled “loose pieces drop off.” Your bishop on c5 was eyeing f2 the whole time.',
           },
           {
             speaker: 'alexion',
@@ -980,7 +980,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         playerColor: 'w',
         aiDepth: 4,
         aiStyle: 'romantic',
-        scriptedBlackSans: ['Bc5', 'Nf6', 'd6', 'O-O', 'Bg4', 'Nd4', 'c6', 'Re8'],
+        scriptedBlackSans: ['Bc5', 'Nf6', 'd6', 'O-O', 'Bg4', 'h6'],
         ladderTier: 'boss',
         difficulty: 4,
       },

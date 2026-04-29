@@ -1153,9 +1153,13 @@ export class GameFlow {
         ? 'amara'
         : m.id.includes('edred')
           ? 'edred'
-          : m.id.includes('boss') || m.id.includes('demetrios')
-            ? 'alexion'
-            : ''
+          : m.id.includes('rowan')
+            ? 'rowan'
+            : m.id.includes('vega')
+              ? 'vega'
+              : m.id.includes('boss') || m.id.includes('demetrios')
+                ? 'alexion'
+                : ''
       if (unlockId && !this.duelUnlockedOpponentIds.includes(unlockId)) this.duelUnlockedOpponentIds.push(unlockId)
       const rewards = BASE_VICTORY_REWARDS[m.id] ?? []
       rewards.forEach((r) => this.applyReward(r))

@@ -62,6 +62,24 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       duelVariantId: 'alexion-apex',
     },
   ],
+  'c2-match-rowan': [
+    {
+      id: 'rw-variant-rowan-gambit',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Rowan Gambit Tabiya',
+      description: "Replay Rowan from the Chapter II King's Gambit tabiya in Duel mode.",
+      duelVariantId: 'rowan-gambit',
+    },
+  ],
+  'c2-match-vega': [
+    {
+      id: 'rw-variant-vega-italian',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Vega Italian Pressure',
+      description: "Replay Vega's kingside pressure line from Chapter II in Duel mode.",
+      duelVariantId: 'vega-italian',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
