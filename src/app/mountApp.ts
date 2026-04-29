@@ -94,7 +94,30 @@ export function mountApp(app: HTMLDivElement) {
   const capturedBot = app.querySelector<HTMLDivElement>('#captured-bot')!
   const evalBarWrap = app.querySelector<HTMLDivElement>('#eval-bar-wrap')!
   const rewardOverlay = app.querySelector<HTMLDivElement>('#reward-overlay')!
-  const rewardOverlayCtl = createRewardOverlayController(rewardOverlay)
+  /** Direct `#shell` children we marked `inert` while the reward dialog is open (reward node sits inside the shell). */
+  const rewardInertRestore: HTMLElement[] = []
+  function setShellBehindRewardInert(active: boolean) {
+    if (!active) {
+      for (const el of rewardInertRestore) {
+        el.inert = false
+      }
+      rewardInertRestore.length = 0
+      return
+    }
+    for (const node of shell.children) {
+      if (!(node instanceof HTMLElement)) continue
+      if (node === rewardOverlay || node.id === 'live-announcer') continue
+      if (!node.inert) {
+        node.inert = true
+        rewardInertRestore.push(node)
+      }
+    }
+  }
+  const rewardOverlayCtl = createRewardOverlayController(rewardOverlay, {
+    onOpenChange(open) {
+      setShellBehindRewardInert(open)
+    },
+  })
   const closeRewardOverlay = () => rewardOverlayCtl.close()
   const openRewardOverlay = (
     html: string,
@@ -402,6 +425,7 @@ export function mountApp(app: HTMLDivElement) {
     flow.setLastScreen('play')
     focusBeforeLab = document.activeElement instanceof HTMLElement ? document.activeElement : null
     setTopLevelScreen(null)
+    setNavActive(null)
     shell.classList.add('shell--lab')
     labOverlay.classList.add('lab-overlay--active')
     const chessRoot = app.querySelector<HTMLDivElement>('#chess-root')!
@@ -432,6 +456,20 @@ export function mountApp(app: HTMLDivElement) {
     setSectionVisibility(screenDuel as HTMLElement, active === 'duel')
   }
 
+  function setNavActive(active: 'title' | 'chapters' | 'duel' | null) {
+    const nav = [
+      { key: 'title' as const, el: btnTitle },
+      { key: 'chapters' as const, el: btnChapters },
+      { key: 'duel' as const, el: btnDuel },
+    ]
+    for (const item of nav) {
+      const on = active === item.key
+      item.el.classList.toggle('ghost--nav-active', on)
+      if (on) item.el.setAttribute('aria-current', 'page')
+      else item.el.removeAttribute('aria-current')
+    }
+  }
+
   function focusTitleEntry() {
     if (focusBeforeLab && document.contains(focusBeforeLab)) {
       focusBeforeLab.focus()
@@ -448,6 +486,7 @@ export function mountApp(app: HTMLDivElement) {
     labOverlay.classList.remove('lab-overlay--active')
     shell.classList.remove('shell--lab')
     setTopLevelScreen('title')
+    setNavActive('title')
     syncTitleButtons()
     syncMvpFlag()
     syncDailyRibbon()
@@ -458,6 +497,7 @@ export function mountApp(app: HTMLDivElement) {
     closeRewardOverlay()
     flow.setLastScreen('chapters')
     setTopLevelScreen('chapters')
+    setNavActive('chapters')
     btnChaptersBack.classList.remove('hidden')
     btnChaptersBack.textContent = '← Return to title'
     chapterList.innerHTML = ''
@@ -1013,6 +1053,7 @@ export function mountApp(app: HTMLDivElement) {
     closeRewardOverlay()
     flow.setLastScreen('chapters')
     setTopLevelScreen('duel')
+    setNavActive('duel')
     renderDuelUi()
     duelList.querySelector<HTMLButtonElement>('.duel-row')?.focus()
   }

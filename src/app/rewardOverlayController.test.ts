@@ -2,6 +2,32 @@ import { describe, expect, it, vi } from 'vitest'
 import { createRewardOverlayController } from './rewardOverlayController'
 
 describe('createRewardOverlayController', () => {
+  it('invokes onOpenChange when opening and closing', () => {
+    const el = document.createElement('div')
+    el.classList.add('hidden')
+    const hook = vi.fn()
+    const c = createRewardOverlayController(el, { onOpenChange: hook })
+    c.open('<p>x</p>')
+    expect(hook).toHaveBeenLastCalledWith(true)
+    c.close()
+    expect(hook).toHaveBeenLastCalledWith(false)
+  })
+
+  it('invokes onOpenChange(true) when reveal unhides prepared content', async () => {
+    const el = document.createElement('div')
+    el.classList.add('hidden')
+    const hook = vi.fn()
+    document.body.appendChild(el)
+    const c = createRewardOverlayController(el, { onOpenChange: hook })
+    c.replaceInner('<button type="button" id="rbtn">ok</button>')
+    expect(hook).not.toHaveBeenCalled()
+    c.reveal()
+    await vi.waitFor(() => expect(hook).toHaveBeenCalledWith(true))
+    c.close()
+    expect(hook).toHaveBeenLastCalledWith(false)
+    el.remove()
+  })
+
   it('open runs cleanup from previous open before replacing content', () => {
     const el = document.createElement('div')
     el.classList.add('hidden')

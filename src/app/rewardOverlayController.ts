@@ -21,7 +21,16 @@ export type RewardOverlayController = {
   setCleanup: (cleanup: (() => void) | null) => void
 }
 
-export function createRewardOverlayController(el: HTMLDivElement): RewardOverlayController {
+export type RewardOverlayControllerOptions = {
+  /** Fires when visibility becomes open (true) or fully closed (false). */
+  onOpenChange?: (open: boolean) => void
+}
+
+export function createRewardOverlayController(
+  el: HTMLDivElement,
+  options?: RewardOverlayControllerOptions,
+): RewardOverlayController {
+  const onOpenChange = options?.onOpenChange
   let onCleanup: (() => void) | null = null
   let focusBeforeOpen: HTMLElement | null = null
 
@@ -41,6 +50,7 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
       el.classList.add('hidden')
       el.setAttribute('aria-hidden', 'true')
       el.innerHTML = ''
+      onOpenChange?.(false)
       const prev = focusBeforeOpen
       focusBeforeOpen = null
       queueMicrotask(() => {
@@ -60,6 +70,7 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
       el.setAttribute('aria-hidden', 'false')
       onCleanup = cleanup ?? null
       setup?.(el)
+      onOpenChange?.(true)
       queueMicrotask(() => focusFirstOverlayControl(el))
     },
 
@@ -70,8 +81,10 @@ export function createRewardOverlayController(el: HTMLDivElement): RewardOverlay
     },
 
     reveal() {
+      const wasHidden = el.classList.contains('hidden')
       el.classList.remove('hidden')
       el.setAttribute('aria-hidden', 'false')
+      if (wasHidden) onOpenChange?.(true)
       queueMicrotask(() => focusFirstOverlayControl(el))
     },
 

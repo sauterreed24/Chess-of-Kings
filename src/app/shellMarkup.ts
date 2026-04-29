@@ -16,8 +16,8 @@ export function getShellMarkup(): string {
           <span class="mark">The Calculus of Kings</span>
           <span class="mark-sub">Alexandrine Archive · Historia Lapidea</span>
         </div>
-        <nav class="top-nav">
-          <button type="button" class="ghost ghost--nav" id="btn-title">Title</button>
+        <nav class="top-nav" aria-label="Primary navigation">
+          <button type="button" class="ghost ghost--nav" id="btn-title" aria-current="page">Title</button>
           <button type="button" class="ghost ghost--nav" id="btn-chapters">Chapters</button>
           <button type="button" class="ghost ghost--nav" id="btn-duel">Duel</button>
         </nav>
