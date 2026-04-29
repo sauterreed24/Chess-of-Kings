@@ -53,11 +53,20 @@ describe('BoardView redraw perf smoke', () => {
 
     const t0 = performance.now()
     for (let i = 0; i < 500; i++) view.draw(ch, null, { mode: 'free' })
-    const elapsed = performance.now() - t0
+    const sameElapsed = performance.now() - t0
+
+    const t1 = performance.now()
+    for (let i = 0; i < 500; i++) {
+      if (i % 2 === 0) ch.move({ from: 'e2', to: 'e4' })
+      else ch.undo()
+      view.draw(ch, null, { mode: 'free' })
+    }
+    const alternatingElapsed = performance.now() - t1
 
     /* Same position 500 times should be much faster than alternating
      * positions (every cell hits the lastPieceSig early-return). */
-    expect(elapsed).toBeLessThan(2000)
+    expect(sameElapsed).toBeLessThan(4000)
+    expect(sameElapsed).toBeLessThan(alternatingElapsed * 0.88)
 
     root.remove()
   })

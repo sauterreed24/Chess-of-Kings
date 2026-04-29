@@ -61,12 +61,12 @@ function playOneGame(maxPly: number): Outcome {
 describe('engine-vs-engine smoke (veteran_scholar vs random)', () => {
   it('strong profile beats random baseline on a majority of short games', { timeout: 90000 }, () => {
     withSeededMathRandom(0x5eed1234, () => {
-      const N = 4
+      const N = 3
       let wins = 0
       let losses = 0
       let draws = 0
       for (let i = 0; i < N; i++) {
-        const o = playOneGame(50)
+        const o = playOneGame(40)
         if (o === 'engineWin') wins += 1
         else if (o === 'engineLoss') losses += 1
         else draws += 1

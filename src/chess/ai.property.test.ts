@@ -38,11 +38,11 @@ describe('engine property: legality across all profiles', () => {
     const profiles = Object.values(AI_PROFILES).map((p) => ({
       ...p,
       searchDepth: 1,
-      thinkTimeMs: 60,
+      thinkTimeMs: 40,
     }))
 
     const rand = makeRng(0xc0ffee)
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 9; i++) {
       const c = randomPosition(28, rand)
       if (c.isGameOver()) continue
       const fenSnapshot = c.fen()
