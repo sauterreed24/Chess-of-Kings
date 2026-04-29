@@ -19,7 +19,8 @@
     "lint": "eslint \"src/**/*.ts\" --max-warnings 0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui-smoke": "vitest run src/app/rewardOverlayController.test.ts src/app/escapeKeyRouting.test.ts src/app/chronicleEchoTimer.test.ts src/app/uiEscape.smoke.test.ts"
+    "test:ui-smoke": "vitest run src/app/rewardOverlayController.test.ts src/app/escapeKeyRouting.test.ts src/app/chronicleEchoTimer.test.ts src/app/uiEscape.smoke.test.ts",
+    "report:bundle-gzip": "node scripts/report-bundle-gzip.mjs"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

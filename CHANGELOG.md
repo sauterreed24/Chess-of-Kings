@@ -12,7 +12,7 @@ level (the save format has its own version field — see
 ## [Unreleased] — Maximum Effort Pass
 
 A multi-pass polish, refactor, and test push. Current gate status in
-this branch: lint, typecheck, full tests (216 cases), build, and UI
+this branch: lint, typecheck, full tests (218 cases), build, and UI
 smoke are all passing.
 
 ### Added
@@ -75,9 +75,10 @@ smoke are all passing.
 - `src/app/mountApp.ts` now enforces top-level screen isolation via
   `aria-hidden` + `inert` toggling so inactive title/chapter/duel
   screens are not left in the accessibility tree while the lab is open.
-- `src/app/mountApp.ts` now applies explicit focus handoff on major
-  transitions (lab open, title/chapter/duel entry) to reduce keyboard
-  drift after overlay/screen changes.
+- `createRewardOverlayController` accepts optional `onOpenChange`; the
+  app uses it to mark other `#shell` children `inert` while the reward
+  dialog is open (the dialog node lives inside the shell, so a single
+  parent `inert` would silence it).
 - `src/app/gameFlow.ts` now persists after scene/chapter refresh in
   `jumpToScene` / `jumpToChapter` to avoid stale duel snapshots being
   written under destination chapter indices.
@@ -99,12 +100,11 @@ smoke are all passing.
 
 ### Engineering
 
-- 86 → 216 tests pass (+130 new cases). 34 test files (was 18).
+- 86 → 218 tests pass (+132 new cases). 34 test files (was 18).
 - Lint clean: zero warnings, zero `as any` in production code.
-- Bundle (current): JS gzipped **63,052 B** (budget: < 90 KB), CSS
-  gzipped **11,828 B** (budget: < 12 KB).
-- Lighthouse mobile snapshot stored at `docs/lighthouse-mobile.json`
-  (Perf 86 / A11y 100 / Best Practices 96 / SEO 100).
+- Bundle (measured 2026-04-29, `npm run build` + `npm run report:bundle-gzip`): JS gzip **63,661 B** (budget: < 90 KB), CSS gzip **12,496 B** (budget: < 13 KB).
+- Lighthouse mobile CLI JSON: `docs/lighthouse-mobile-max-pass-2.json`
+  (Perf 86 / A11y 100 / Best Practices 96 / SEO 100). Older snapshot remains at `docs/lighthouse-mobile.json`.
 
 ### Deferred (honest notes)
 

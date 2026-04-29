@@ -91,7 +91,7 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` currently runs **216 tests across 34 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
+**Testing scopes.** `npm test` currently runs **218 tests across 34 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
@@ -116,12 +116,12 @@ runtime_dependencies: chess.js (+ Capacitor packages for native shells)
 loc: ~11.5k non-blank TypeScript lines (src/), single CSS file ~2244 non-blank lines
 deploy_target: GitHub Pages (PWA, installable on iOS/Android)
 license: MIT
-tests: 216 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
+tests: 218 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
 performance_budget:
-  js_gzipped: < 90 KB (current 63.1 KB from dist/assets/index-DmvzhHvU.js)
-  css_gzipped: < 12 KB (current 11.8 KB from dist/assets/index-BA41UJwP.css)
+  js_gzipped: < 90 KB (measured 63661 bytes gzip for `dist/assets/index-*.js` after `npm run build`, 2026-04-29)
+  css_gzipped: < 13 KB (measured 12496 bytes gzip for `dist/assets/index-*.css`, same build)
 lighthouse_snapshot_mobile:
-  report: docs/lighthouse-mobile.json
+  report: docs/lighthouse-mobile-max-pass-2.json
   performance: 86
   accessibility: 100
   best_practices: 96
