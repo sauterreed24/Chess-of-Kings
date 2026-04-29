@@ -1,9 +1,9 @@
 import type { Chapter } from '../types'
 
 /**
- * MVP playable campaign: Prologue + Chapter I.
- * Chapter I now features a full 6-rung ladder: Initiate → Apprentice
- * → Scholar (mini-boss) → Veteran → Advisor (boss) → Counterpart.
+ * Playable campaign: Prologue + Chapter I + Chapter II (Romantic arc).
+ * Chapter I: six-rung ladder (Initiate → … → Counterpart).
+ * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -740,7 +740,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           'The court distilled — every important game of the ancient era. Plays precise development with no weaknesses. Win by checkmate, or force a true dead draw if no side can still mate.',
         fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2',
         playerColor: 'w',
-        aiDepth: 5,
+        aiDepth: 4,
         aiStyle: 'apotheosis',
         scriptedBlackSans: ['Nc6', 'Nf6', 'Bc5', 'O-O', 'd6', 'Be6', 'Qd7', 'Rad8'],
         ladderTier: 'counterpart',
@@ -778,7 +778,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'narrator',
-            text: 'Chapter I is sealed. The door to the next age lies beyond a locked threshold — romantic gambits, classical precision, hypermodern paradox, the Soviet machine. Each is built on what you learned here. The archive waits.',
+            text: 'Chapter I is sealed. The door to the next age stands open — romantic gambits first, then classical precision, hypermodern paradox, the Soviet machine. Each is built on what you learned here. The archive waits.',
           },
         ],
       },
@@ -797,6 +797,228 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Repetition turns pattern into instinct. The positions you practice in silence become the moves you find quickly under pressure.',
           concept: 'Free play cements what the structured lessons demanded.',
+        },
+      },
+    ],
+  },
+
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER II — The Age of Fire (Romantic ladder — compact)
+     Two encounters + puzzle; tuned slightly below Chapter I finale.
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch2',
+    index: 2,
+    title: 'Chapter II',
+    subtitle: 'The Age of Fire',
+    era: 'Romantic attack — initiative as creed',
+    themeClass: 'theme-romantic',
+    philosophy: 'The king is not only a sovereign to hide — sometimes he is the weakness the attack hungers for.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c2-intro',
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The chamber walls change colour — less candle-wax, more forge-ember. The pieces are the same, but the air between them feels thinner, as though every exchange could ignite.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'Welcome to the Romantic age. Here, players paid for clarity with risk. Gambits offered pawns for minutes of confusion; sacrifices bought time against the clock of the opponent’s composure.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So the mistakes I was punished for in Chapter I — loose pieces, slow development — they still matter?',
+          },
+          {
+            speaker: 'alexion',
+            text: 'More. A Romantic attack punishes hesitation twice: once in material, once in tempo. You will meet players who want the king exposed. Your job is not to refuse drama — it is to choose which drama you can survive.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c2-codex-fire',
+        heading: 'The Romantic Laws — fire without self-immolation',
+        entries: [
+          {
+            term: 'Initiative',
+            body: 'The player whose threats demand answers controls the pulse of the game. Initiative is not the same as attack — it means your opponent’s useful moves are fewer than yours. If you sacrifice, buy initiative you can use before the debt comes due.',
+          },
+          {
+            term: 'The king as target',
+            body: 'In the Romantic era, kings wandered into storms on purpose — to shelter behind enemy weaknesses. A king in the centre can be powerful or fatal. Ask each move: am I inviting tactics I can calculate, or ones I am hoping away?',
+          },
+          {
+            term: 'Gambits',
+            body: 'A gambit offers material for development, open lines, or a broken pawn structure the opponent cannot repair. Accept only if you know the repair; decline if you prefer to let the attacker prove the compensation.',
+          },
+          {
+            term: 'Sacrifice vs. blunder',
+            body: 'A sacrifice has a receipt: concrete threats, a recapture, or a forced sequence. A blunder is a donation. The archive records both — learn to feel the difference in your stomach before the ledger confirms it.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c2-puzzle-king-hunt',
+        title: 'Puzzle — corner the king',
+        fen: '3k4/6Q1/3K4/8/8/8/8/8 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'The black king is already driven toward the edge. The queen commands the long diagonals and ranks — finish with geometry, not noise.',
+        teaching: {
+          threat: 'Delay, and the king slips toward the centre again. The Romantic court does not forgive slow hands.',
+          goalPlain:
+            'Deliver checkmate in one. Every flight square must be denied — find the queen move that seals the verdict.',
+          whyItWorks:
+            'Corner and edge mates are exercises in coverage: the attacker uses the board’s rim as a second defender.',
+          concept:
+            'King hunts end when the attacker runs out of checks with purpose — or when the defender trades into an endgame. Here, you end it before the escape.',
+        },
+        hint: 'The eighth rank is a cliff. Stand on its edge with authority.',
+        opponentAiDepth: 2,
+        opponentAiStyle: 'romantic',
+      },
+      {
+        type: 'dialogue',
+        id: 'c2-after-puzzle',
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'Clean. You did not add a single superfluous check — that restraint is already Romantic discipline, not ancient caution dressed in new clothes.',
+          },
+          {
+            speaker: 'reed',
+            text: 'I was looking for the pattern where the king runs out of squares.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'Good. The ladder here is shorter than Chapter I, but the opponents are hungrier. First: Rowan, who plays the way a duelist plays — fast, loud, proud.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c2-before-rowan',
+        lines: [
+          {
+            speaker: 'rowan',
+            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy Italian — gambits accepted, complications welcomed.',
+          },
+          {
+            speaker: 'reed',
+            text: 'If I decline the mess?',
+          },
+          {
+            speaker: 'rowan',
+            text: 'Then I will drag you into it anyway. Fire spreads.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c2-match-rowan',
+        title: 'Encounter 1 of 2 — The Gambiteer',
+        opponentName: 'Rowan Vale',
+        opponentNote:
+          'A Romantic duelist — sharp tactics from open games, loves piece contact after 1.e4 e5. Keep the king safe, accept complications only when you see the recapture.',
+        fen: 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR w KQkq - 0 2',
+        playerColor: 'w',
+        aiDepth: 3,
+        aiStyle: 'romantic',
+        scriptedBlackSans: ['exf4', 'Nf6', 'd5', 'Nc6', 'Bb4+', 'O-O', 'Re8', 'd6'],
+        ladderTier: 'initiate',
+        difficulty: 2,
+      },
+      {
+        type: 'dialogue',
+        id: 'c2-after-rowan',
+        lines: [
+          {
+            speaker: 'rowan',
+            text: 'You did not flinch when I offered the fork motif on f2. Most students still reach for the poisoned pawn like it is candy.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Chapter I drilled “loose pieces drop off.” Your bishop on c5 was aiming at f2 the whole time.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'One more rung. Vega does not gamble — she sacrifices with invoices. If you survive her accounting, Chapter II is yours.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c2-before-vega',
+        lines: [
+          {
+            speaker: 'vega',
+            text: 'I am not here to entertain you. I am here to see whether you can calculate when the board is loud.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Loud how?',
+          },
+          {
+            speaker: 'vega',
+            text: 'Open files, half-open diagonals, knights that remember every fork you ever missed. Bring your king to safety before you dream of attack.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c2-match-vega',
+        title: 'Encounter 2 of 2 — The Flamekeeper',
+        opponentName: 'Vega Sorn',
+        opponentNote:
+          'Romantic pressure with better discipline than Rowan — she punishes slow development and weak squares on the kingside. Castle early or pay in tempi.',
+        fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4',
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'romantic',
+        scriptedBlackSans: ['Bc5', 'Nf6', 'd6', 'O-O', 'Bg4', 'Nd4', 'c6', 'Re8'],
+        ladderTier: 'boss',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c2-reflection',
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You have walked through fire without confusing bravery with recklessness. That distinction is the hinge the Romantic era turned on.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Rowan wanted chaos. Vega wanted me to prove I could see through it.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'Exactly. The next chambers will ask different questions — structure, restraint, systems. You carry both ancient patience and Romantic tempo into them.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter II is sealed. The archive still holds classical lines, hypermodern shadows, Soviet steel — each waiting behind its own door. For now, the forge cools. The chronicle remembers the heat.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c2-freeplay',
+        title: 'Free board — Romantic rehearsal',
+        lesson:
+          'Re-open any line you nearly lost — alternate sides from a sharp Italian or gambit position. No objective beyond rehearsal.',
+        teaching: {
+          threat: 'None — this is a sandbox after the ladder.',
+          goalPlain:
+            'Practice tactical shots and king safety under self-imposed time pressure. Return to the vestibule when finished.',
+          whyItWorks:
+            'Romantic skill is pattern recognition under noise; repetition turns noise back into signal.',
+          concept: 'The ladder tested you; the sandbox lets you steal back intuition cheaply.',
         },
       },
     ],

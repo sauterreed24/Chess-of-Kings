@@ -12,11 +12,20 @@ level (the save format has its own version field — see
 ## [Unreleased] — Maximum Effort Pass
 
 A multi-pass polish, refactor, and test push. Current gate status in
-this branch: lint, typecheck, full tests (218 cases), build, and UI
+this branch: lint, typecheck, full tests (224 cases), build, and UI
 smoke are all passing.
 
 ### Added
 
+- **Chapter II — The Age of Fire** in `data/chapters.ts`: Romantic codex,
+  king-hunt mate puzzle, two ladder matches (Rowan / Vega) with tuned
+  `aiDepth`, chapter rewards, and freeplay rehearsal. Unlocks after
+  Chapter I on the chronicle index (`roadmap.ts` no longer lists Ch II
+  as future-only).
+- **`chapter2Complete`** on `SaveData` + `GameFlow` (set when leaving
+  `c2-reflection`); title screen copy and campaign-finale message know
+  when both chapters are sealed.
+- **`theme-romantic`** lab atmosphere in `style.css`.
 - `src/ARCHITECTURE.md` — 184-line directory map, Mermaid data-flow
   diagram, persistence model, and a "where do I add X?" recipe table.
 - `.github/ISSUE_TEMPLATE/*` and `.github/PULL_REQUEST_TEMPLATE.md` for
@@ -72,6 +81,8 @@ smoke are all passing.
 
 ### Changed
 
+- **Counterpart (Chapter I finale)** engine depth **5 → 4** for a
+  slightly fairer ceiling against the composite scholar.
 - **Board region hint (`#board-guide`)** is driven by `GameFlow` each
   chess update (wait for opponent / AI thinking / freeplay / terminal)
   so it cannot contradict “0 legal targets” when it is not your turn.

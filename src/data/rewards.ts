@@ -80,4 +80,19 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       description: 'A replay-ready summary of your chapter triumph was archived.',
     },
   ],
+  ch2: [
+    {
+      id: 'rw-title-romantic-seal',
+      kind: 'title',
+      label: 'Title Earned: Seal of the Romantic Flame',
+      description: 'Chapter II completed. Your chronicle carries the forge-mark of the Romantic ladder.',
+      titleId: 'seal-romantic-flame',
+    },
+    {
+      id: 'rw-chronicle-echo-ch2',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'A second echo — Romantic trials and verdicts — joins your archive.',
+    },
+  ],
 }

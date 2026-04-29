@@ -1566,6 +1566,34 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   background: rgba(232,201,126,0.12);
 }
 
+#screen-play[data-theme='theme-romantic'] .manuscript-panel {
+  background:
+    linear-gradient(160deg, rgba(90,32,22,0.35) 0%, transparent 48%),
+    linear-gradient(180deg, #1a1410 0%, #100d0a 100%);
+  border-color: rgba(232,120,80,0.22);
+}
+#screen-play[data-theme='theme-romantic'] .instrument-frame {
+  background: linear-gradient(180deg, #221814 0%, #16110e 100%);
+  border-color: rgba(232,140,90,0.26);
+}
+#screen-play[data-theme='theme-romantic'] .play-crawl {
+  border-bottom-color: rgba(232,120,80,0.18);
+}
+#screen-play[data-theme='theme-romantic'] .chapter-title {
+  color: #f2d6c8;
+  text-shadow: 0 0 32px rgba(200,80,50,0.18);
+}
+#screen-play[data-theme='theme-romantic'] .philosophy {
+  color: color-mix(in srgb, #e8a090 55%, var(--muted));
+}
+#screen-play[data-theme='theme-romantic'] .scene-tag {
+  color: #f0a080;
+}
+#screen-play[data-theme='theme-romantic'] .chapter-rail__row--current {
+  border-color: rgba(240,160,120,0.55);
+  background: rgba(200,70,40,0.12);
+}
+
 /* ─── Final polish pass: contrast + readability ─── */
 .chapters-lede {
   color: color-mix(in srgb, var(--ivory) 78%, var(--muted));

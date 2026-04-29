@@ -355,8 +355,9 @@ export function mountApp(app: HTMLDivElement) {
       window.setTimeout(() => maybeShowPendingChapterPrompt(), 0)
     },
     onCampaignFinished() {
-      const msg =
-        flow.chapter1Complete === true
+      const msg = flow.chapter2Complete
+        ? 'Chapters I and II are sealed. Further ages are not yet compiled for this build — your chronicle is marked.'
+        : flow.chapter1Complete === true
           ? 'Chapter I sealed. Further ages are not built into this version — your chronicle is marked.'
           : 'Bookmark updated.'
       pendingChapterPrompt = { completedTitle: msg, nextTitle: null }
@@ -376,9 +377,11 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   function syncMvpFlag() {
-    mvpFlag.textContent = flow.chapter1Complete
-      ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
-      : ''
+    mvpFlag.textContent = flow.chapter2Complete
+      ? 'Chapters I and II are inscribed in your save. Resume reopens the chronicle.'
+      : flow.chapter1Complete
+        ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
+        : ''
   }
 
   /* ─── Session streak + Daily Calculus ribbon ─────────────────── */

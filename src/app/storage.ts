@@ -21,6 +21,7 @@ export interface SaveData {
   highestUnlockedChapter: number
   lastScreen: LastScreen
   chapter1Complete: boolean
+  chapter2Complete: boolean
   completedSceneIds: string[]
   completedPuzzleIds: string[]
   stratarchiaUnlocked: boolean
@@ -44,6 +45,7 @@ const defaultSave = (): SaveData => ({
   highestUnlockedChapter: 0,
   lastScreen: 'title',
   chapter1Complete: false,
+  chapter2Complete: false,
   completedSceneIds: [],
   completedPuzzleIds: [],
   stratarchiaUnlocked: false,
@@ -218,6 +220,7 @@ export function loadSave(): SaveData | null {
           ? o.lastScreen
           : 'chapters',
       chapter1Complete: Boolean(o.chapter1Complete),
+      chapter2Complete: Boolean((o as { chapter2Complete?: unknown }).chapter2Complete),
       completedSceneIds: sanitizeStringArray(o.completedSceneIds, 1200),
       completedPuzzleIds: sanitizeStringArray(o.completedPuzzleIds, 600),
       stratarchiaUnlocked: Boolean(o.stratarchiaUnlocked),

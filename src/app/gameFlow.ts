@@ -106,6 +106,7 @@ export class GameFlow {
   highestUnlockedChapter = 0
   lastScreen: LastScreen = 'title'
   chapter1Complete = false
+  chapter2Complete = false
   completedSceneIds: string[] = []
   completedPuzzleIds: string[] = []
   stratarchiaUnlocked = false
@@ -169,6 +170,7 @@ export class GameFlow {
       this.highestUnlockedChapter = Math.min(s.highestUnlockedChapter, chapters.length - 1)
       this.lastScreen = s.lastScreen
       this.chapter1Complete = s.chapter1Complete
+      this.chapter2Complete = s.chapter2Complete
       this.completedSceneIds = [...s.completedSceneIds]
       this.completedPuzzleIds = [...s.completedPuzzleIds]
       this.stratarchiaUnlocked = s.stratarchiaUnlocked
@@ -220,6 +222,7 @@ export class GameFlow {
       highestUnlockedChapter: this.highestUnlockedChapter,
       lastScreen: this.lastScreen,
       chapter1Complete: this.chapter1Complete,
+      chapter2Complete: this.chapter2Complete,
       completedSceneIds: [...this.completedSceneIds],
       completedPuzzleIds: [...this.completedPuzzleIds],
       stratarchiaUnlocked: this.stratarchiaUnlocked,
@@ -1923,6 +1926,7 @@ export class GameFlow {
     const leaving = this.currentScene()
     this.recordLeavingScene(leaving.id, leaving)
     if (leaving.id === 'c1-reflection') this.chapter1Complete = true
+    if (leaving.id === 'c2-reflection') this.chapter2Complete = true
 
     if (this.sceneIndex < ch.scenes.length - 1) {
       this.sceneIndex++
@@ -1998,6 +2002,7 @@ export class GameFlow {
     this.highestUnlockedChapter = 0
     this.lastScreen = 'title'
     this.chapter1Complete = false
+    this.chapter2Complete = false
     this.completedSceneIds = []
     this.completedPuzzleIds = []
     this.stratarchiaUnlocked = false

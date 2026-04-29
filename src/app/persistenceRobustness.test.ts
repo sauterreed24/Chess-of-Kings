@@ -76,6 +76,7 @@ describe('writeSave robustness', () => {
         highestUnlockedChapter: 0,
         lastScreen: 'title' as const,
         chapter1Complete: false,
+        chapter2Complete: false,
         completedSceneIds: [],
         completedPuzzleIds: [],
         stratarchiaUnlocked: false,
