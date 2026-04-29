@@ -79,14 +79,14 @@ flowchart LR
     user[User input] --> board[BoardView]
     user --> mount[mountApp]
     board -->|onMove| flow[GameFlow]
-    flow -->|legality| chessjs[chess.js]
-    flow -->|search| ai[AI / negamax + αβ + TT]
-    ai --> eval[Evaluation + style bias]
+    flow -->|legality| chessjs["chess.js"]
+    flow -->|search| ai["AI: negamax + alpha-beta + TT"]
+    ai --> eval["Evaluation + style bias"]
     flow -->|onChessUpdate| mount
     mount --> overlay[RewardOverlayController]
     mount --> sfx[SfxController]
     mount --> announcer[Live announcer]
-    flow <--> storage[localStorage]
+    flow <-->|save/load| storage[localStorage]
 ```
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
