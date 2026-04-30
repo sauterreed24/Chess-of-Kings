@@ -27,14 +27,103 @@
     <meta name="twitter:image" content="https://sauterreed24.github.io/Chess-of-Kings/og-image.png" />
     <meta name="application-name" content="Calculus of Kings" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Calculus of Kings" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <title>The Calculus of Kings</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "The Calculus of Kings",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Web browser",
+        "description": "Narrative chess odyssey: campaign chapters, duel archive, adaptive rivals, and persistent rewards. Play in the browser; installable as a PWA.",
+        "url": "https://sauterreed24.github.io/Chess-of-Kings/",
+        "isAccessibleForFree": true,
+        "author": {
+          "@type": "Person",
+          "name": "Reed Sauter",
+          "url": "https://github.com/sauterreed24"
+        },
+        "codeRepository": "https://github.com/sauterreed24/Chess-of-Kings",
+        "license": "https://github.com/sauterreed24/Chess-of-Kings/blob/main/LICENSE"
+      }
+    </script>
+    <style>
+      /* Inline boot splash — displayed before the main CSS bundle loads.
+         Removed automatically when mountApp() rewrites #app. */
+      html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+      html, body { margin: 0; background: #0a0908; color: #e8e4d8; }
+      .boot-splash {
+        position: fixed; inset: 0; display: flex;
+        align-items: center; justify-content: center;
+        padding: 2rem max(1rem, env(safe-area-inset-right)) 2rem max(1rem, env(safe-area-inset-left));
+        background:
+          radial-gradient(ellipse 70% 60% at 50% 35%, rgba(201,169,98,0.14), transparent 70%),
+          radial-gradient(ellipse 60% 50% at 50% 80%, rgba(26,58,92,0.18), transparent 70%),
+          #0a0908;
+        text-align: center;
+        font-family: Georgia, "Times New Roman", serif;
+        animation: boot-fade 0.5s ease-out;
+      }
+      .boot-splash__plate {
+        max-width: 28rem; padding: 1.75rem 1.5rem;
+        border: 1px solid rgba(201,169,98,0.22);
+        background: linear-gradient(180deg, rgba(20,17,12,0.95), rgba(8,7,6,0.95));
+        box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+        border-radius: 4px;
+      }
+      .boot-splash__crest {
+        font-size: 1.6rem; color: #c9a96a; letter-spacing: 0.2em;
+        margin-bottom: 0.6rem; opacity: 0.85;
+      }
+      .boot-splash__kicker {
+        margin: 0 0 0.55rem; font-size: 0.72rem;
+        letter-spacing: 0.32em; text-transform: uppercase; color: #c9a96a;
+      }
+      .boot-splash__title {
+        margin: 0 0 0.6rem; font-size: clamp(1.4rem, 6vw, 2.1rem);
+        letter-spacing: 0.04em; color: #e8c97e; font-weight: 600;
+      }
+      .boot-splash__sub {
+        margin: 0; color: #c4c0b4; font-size: 0.95rem; opacity: 0.85;
+      }
+      .boot-splash__noscript {
+        margin: 1rem 0 0; padding-top: 0.85rem;
+        border-top: 1px solid rgba(201,169,98,0.2);
+        color: #e8e4d8; font-size: 0.92rem; line-height: 1.5;
+      }
+      .boot-splash__noscript a { color: #e8c97e; }
+      @keyframes boot-fade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-splash { animation: none; }
+      }
+    </style>
   </head>
   <body>
-    <a class="skip-link" href="#shell">Skip to main content</a>
-    <div id="app"></div>
+    <a class="skip-link" href="#app">Skip to main content</a>
+    <div id="app" tabindex="-1" aria-label="The Calculus of Kings">
+      <div class="boot-splash" role="status" aria-live="polite">
+        <div class="boot-splash__plate">
+          <div class="boot-splash__crest" aria-hidden="true">⚔</div>
+          <p class="boot-splash__kicker">A narrative chess odyssey</p>
+          <h1 class="boot-splash__title">The Calculus of Kings</h1>
+          <p class="boot-splash__sub">Loading the archive…</p>
+          <noscript>
+            <p class="boot-splash__noscript">
+              This site needs JavaScript to play. Enable it in your browser settings,
+              or visit the source on
+              <a href="https://github.com/sauterreed24/Chess-of-Kings">GitHub</a>.
+            </p>
+          </noscript>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

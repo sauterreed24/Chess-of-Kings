@@ -36,7 +36,9 @@ const ADVANCE_OPT_OUT_SELECTORS = ['.chess-grid', '.promo-panel']
 
 function isFocusInForm(): boolean {
   const ae = document.activeElement
-  return ae instanceof HTMLInputElement || ae instanceof HTMLTextAreaElement
+  if (ae instanceof HTMLInputElement || ae instanceof HTMLTextAreaElement) return true
+  if (ae instanceof HTMLElement && ae.isContentEditable) return true
+  return ae?.closest?.('[contenteditable="true"]') != null
 }
 
 function isFocusInBoardOrPromotion(): boolean {

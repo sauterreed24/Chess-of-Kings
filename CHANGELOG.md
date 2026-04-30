@@ -9,10 +9,21 @@ level (the save format has its own version field — see
 
 ---
 
+## [0.2.14] — 2026-04-30
+
+Product and reliability pass: live rival talk lines in AI flavor, Daily
+Calculus confirmation when abandoning recoverable play, streak
+`persistOk` + UI warning, Calibration Lens **Equilibrium** rename +
+clearer dossier difficulty copy, lab overlay ARIA + `accessibility.html`,
+ledger memo optimization, contrast tweaks, `contenteditable` shortcut
+suppression, expanded tests (**231**), README refresh.
+
+---
+
 ## [Unreleased] — Maximum Effort Pass
 
 A multi-pass polish, refactor, and test push. Current gate status in
-this branch: lint, typecheck, full tests (224 cases), build, and UI
+this branch: lint, typecheck, full tests (231 cases), build, and UI
 smoke are all passing.
 
 ### Added

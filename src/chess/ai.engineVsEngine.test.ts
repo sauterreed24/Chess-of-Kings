@@ -1,13 +1,8 @@
 /**
- * Engine-vs-engine smoke: a strong profile must beat or draw a random
- * baseline most of the time. Specifically, the alexandrine `advisor_boss`
- * profile should not LOSE to pure random more than 1 in 6 games when
- * playing White from the standard starting position.
- *
- * This is a smoke test, not a benchmark — runs 6 short games (max 60
- * plies) under a tight per-move time cap so the whole suite finishes in
- * a few seconds. The assertion is loose so non-determinism in
- * Math.random() doesn't cause flakes.
+ * Engine-vs-engine smoke: veteran_scholar vs random moves from the start
+ * position. Uses seeded Math.random so runs are reproducible. Assertions are
+ * intentionally loose (loss cap + majority wins/draws): this guards catastrophic
+ * regression and illegal moves, not Elo strength.
  */
 import { describe, expect, it } from 'vitest'
 import { Chess } from 'chess.js'
@@ -58,8 +53,8 @@ function playOneGame(maxPly: number): Outcome {
   return 'draw'
 }
 
-describe('engine-vs-engine smoke (veteran_scholar vs random)', () => {
-  it('strong profile beats random baseline on a majority of short games', { timeout: 90000 }, () => {
+describe('engine-vs-engine smoke (veteran_scholar vs random, seeded)', () => {
+  it('does not catastrophically lose to random on a short seeded run', { timeout: 90000 }, () => {
     withSeededMathRandom(0x5eed1234, () => {
       const N = 3
       let wins = 0
@@ -71,8 +66,7 @@ describe('engine-vs-engine smoke (veteran_scholar vs random)', () => {
         else if (o === 'engineLoss') losses += 1
         else draws += 1
       }
-      /* Loose band: the engine must lose < half of games to random.
-       * Realistic expectation is wins 2-4, losses 0-1. */
+      /* Loose band: the engine must lose < half of games to random. */
       expect(losses).toBeLessThanOrEqual(1)
       expect(wins + draws).toBeGreaterThanOrEqual(N - 1)
     })

@@ -101,6 +101,20 @@ describe('shell markup structural integrity', () => {
     expect(overlay.classList.contains('hidden')).toBe(true)
   })
 
+  it('declares the lab overlay hidden from assistive tech until opened', () => {
+    const host = document.createElement('div')
+    host.innerHTML = getShellMarkup()
+    const lab = host.querySelector('#lab-overlay')!
+    expect(lab.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('links to privacy and accessibility statements from the title plate', () => {
+    const host = document.createElement('div')
+    host.innerHTML = getShellMarkup()
+    expect(host.innerHTML).toContain('href="./privacy.html"')
+    expect(host.innerHTML).toContain('href="./accessibility.html"')
+  })
+
   it('declares the chess board with aria-describedby including the kbd hint and board guide', () => {
     const host = document.createElement('div')
     host.innerHTML = getShellMarkup()

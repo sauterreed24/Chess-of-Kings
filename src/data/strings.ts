@@ -44,7 +44,7 @@ export const RIBBON_LABELS = {
 export const CALIBRATION_LEVEL_LABELS = {
   Forgiving: 'Forgiving',
   Measured: 'Measured',
-  Balanced: 'Balanced',
+  Equilibrium: 'Equilibrium',
   Sharpened: 'Sharpened',
   Relentless: 'Relentless',
 } as const

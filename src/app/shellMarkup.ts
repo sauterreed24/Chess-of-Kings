@@ -47,6 +47,8 @@ export function getShellMarkup(): string {
             <div class="daily-ribbon hidden" id="daily-ribbon" aria-live="polite"></div>
             <p class="title-privacy">
               <a class="title-privacy__link" href="./privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
+              <span aria-hidden="true"> · </span>
+              <a class="title-privacy__link" href="./accessibility.html" target="_blank" rel="noopener noreferrer">Accessibility</a>
             </p>
           </div>
         </div>
@@ -75,7 +77,7 @@ export function getShellMarkup(): string {
         </div>
       </section>
 
-      <div id="lab-overlay" class="lab-overlay">
+      <div id="lab-overlay" class="lab-overlay" aria-hidden="true">
         <div class="lab-overlay__scrim" aria-hidden="true"></div>
         <div class="lab-overlay__sheet">
           <div class="lab-overlay__bar">

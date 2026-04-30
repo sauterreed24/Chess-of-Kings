@@ -42,6 +42,7 @@ import {
 import { chooseOpeningBookMove } from '../chess/openings'
 import { detectTacticalMotifs } from '../chess/motifs'
 import { lossRecoveryMentorLine } from '../game/trainingTips'
+import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
@@ -401,6 +402,17 @@ export class GameFlow {
 
   hasRecoverableSession(): boolean {
     return this.canResumeSnapshot(this.pendingInProgressSnapshot)
+  }
+
+  /**
+   * True when the player has an active board/puzzle/duel session that would be
+   * lost or replaced by a scene jump (e.g. Daily Calculus from the title).
+   */
+  hasUnsavedPassageProgress(): boolean {
+    if (this.mode === 'idle') return false
+    const sc = this.currentScene()
+    if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return false
+    return this.history.length > 0
   }
 
   resumeRecoverableSession(): boolean {
@@ -770,6 +782,28 @@ export class GameFlow {
     return null
   }
 
+  private rivalTalkLineForCurrentSession(): string | null {
+    let rivalKey: string | null = null
+    if (this.mode === 'duel' && this.duelSession) {
+      rivalKey = this.duelSession.roster.opponentId
+    } else if (this.mode === 'match' && this.matchScene) {
+      rivalKey = inferRivalIdFromSceneId(this.matchScene.id)
+    }
+    if (!rivalKey) return null
+    const profile = getRivalProfile(rivalKey)
+    if (!profile) return null
+    const recent = this.matchHistory.filter((h) => h.opponentId === rivalKey).slice(-4)
+    const recentWins = recent.filter((h) => h.outcome === 'win').length
+    const recentLosses = recent.filter((h) => h.outcome === 'loss').length
+    const seed = this.sanLog.length * 31 + this.history.length * 11
+    return selectTalkLine(profile, recentWins, recentLosses, seed)
+  }
+
+  private withRivalTalkPrefix(body: string): string {
+    const line = this.rivalTalkLineForCurrentSession()
+    return line ? `${line} — ${body}` : body
+  }
+
   private currentAiFlavor(): string | null {
     const phase = this.sanLog.length < 12 ? 'opening' : this.sanLog.length < 30 ? 'middlegame' : 'endgame'
     const memoryTag = (() => {
@@ -804,33 +838,45 @@ export class GameFlow {
     if (this.mode === 'match' && this.matchScene) {
       const id = this.matchScene.id
       if (id.includes('amara')) {
-        return phase === 'opening'
-          ? `Amara is developing by principle, not pressure.${memoryTag}`
-          : `Amara seeks safety first; sharp tactical shots can still break through.${memoryTag}`
+        return this.withRivalTalkPrefix(
+          phase === 'opening'
+            ? `Amara is developing by principle, not pressure.${memoryTag}`
+            : `Amara seeks safety first; sharp tactical shots can still break through.${memoryTag}`,
+        )
       }
       if (id.includes('lukas')) {
-        return phase === 'opening'
-          ? `Lukas follows prepared structures; off-book transitions are your edge.${memoryTag}`
-          : `Lukas stabilizes lines, but can misjudge dynamic imbalances.${memoryTag}`
+        return this.withRivalTalkPrefix(
+          phase === 'opening'
+            ? `Lukas follows prepared structures; off-book transitions are your edge.${memoryTag}`
+            : `Lukas stabilizes lines, but can misjudge dynamic imbalances.${memoryTag}`,
+        )
       }
       if (id.includes('edred')) {
-        return phase === 'opening'
-          ? `Edred is loading tactical pressure on your king flank.${memoryTag}`
-          : `Edred accelerates forcing lines — every tempo matters now.${memoryTag}`
+        return this.withRivalTalkPrefix(
+          phase === 'opening'
+            ? `Edred is loading tactical pressure on your king flank.${memoryTag}`
+            : `Edred accelerates forcing lines — every tempo matters now.${memoryTag}`,
+        )
       }
       if (id.includes('marius')) {
-        return phase === 'opening'
-          ? `Marius builds quietly; space and pawn breaks decide this battle.${memoryTag}`
-          : `Marius squeezes small edges — avoid passive drift.${memoryTag}`
+        return this.withRivalTalkPrefix(
+          phase === 'opening'
+            ? `Marius builds quietly; space and pawn breaks decide this battle.${memoryTag}`
+            : `Marius squeezes small edges — avoid passive drift.${memoryTag}`,
+        )
       }
       if (id.includes('demetrios') || id.includes('boss') || id.includes('counterpart')) {
-        return phase === 'opening'
-          ? `Elite court doctrine online: disciplined development and central restraint.${memoryTag}${rivalryTag}`
-          : `The boss profile is converting with precision — counterplay must be concrete.${memoryTag}${rivalryTag}`
+        return this.withRivalTalkPrefix(
+          phase === 'opening'
+            ? `Elite court doctrine online: disciplined development and central restraint.${memoryTag}${rivalryTag}`
+            : `The boss profile is converting with precision — counterplay must be concrete.${memoryTag}${rivalryTag}`,
+        )
       }
     }
     if (this.mode === 'duel' && this.duelSession) {
-      return `Duel calibration: ${this.duelSession.variant.label} is adapting to your tendencies.${memoryTag}${rivalryTag}`
+      return this.withRivalTalkPrefix(
+        `Duel calibration: ${this.duelSession.variant.label} is adapting to your tendencies.${memoryTag}${rivalryTag}`,
+      )
     }
     return null
   }
@@ -1985,7 +2031,6 @@ export class GameFlow {
     this.chapterIndex = index
     this.sceneIndex = 0
     this.refreshScene()
-    this.persist()
   }
 
   jumpToScene(chapterIndex: number, sceneIndex: number) {
@@ -1996,7 +2041,6 @@ export class GameFlow {
     this.chapterIndex = chapterIndex
     this.sceneIndex = sceneIndex
     this.refreshScene()
-    this.persist()
   }
 
   newGame() {

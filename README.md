@@ -2,45 +2,123 @@
 
 > An alt-history chess RPG. Play it in your browser, install it on iPhone, or run it locally.
 
-[![Play it now](https://img.shields.io/badge/Play%20Now-GitHub%20Pages-brightgreen)](https://sauterreed24.github.io/Chess-of-Kings/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/sauterreed24/Chess-of-Kings)](https://github.com/sauterreed24/Chess-of-Kings/releases)
+<p align="center">
+  <a href="https://sauterreed24.github.io/Chess-of-Kings/">
+    <img src="public/og-image.png" alt="The Calculus of Kings — narrative chess odyssey" width="640" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://sauterreed24.github.io/Chess-of-Kings/"><img alt="Play it now" src="https://img.shields.io/badge/Play%20Now-Live%20Demo-2ea44f?style=for-the-badge&logo=github"></a>
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge"></a>
+  <a href="https://github.com/sauterreed24/Chess-of-Kings/releases"><img alt="Release" src="https://img.shields.io/github/v/release/sauterreed24/Chess-of-Kings?style=for-the-badge"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/sauterreed24/Chess-of-Kings/actions/workflows/ci.yml"><img src="https://github.com/sauterreed24/Chess-of-Kings/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
+  &nbsp;
+  <a href="https://github.com/sauterreed24/Chess-of-Kings/actions/workflows/pages.yml"><img src="https://github.com/sauterreed24/Chess-of-Kings/actions/workflows/pages.yml/badge.svg" alt="GitHub Pages deploy" /></a>
+</p>
+
+<p align="center">
+  <a href="https://sauterreed24.github.io/Chess-of-Kings/"><b>https://sauterreed24.github.io/Chess-of-Kings/</b></a>
+  &nbsp;·&nbsp;
+  <a href="#start-here">Start here</a>
+  &nbsp;·&nbsp;
+  <a href="#at-a-glance-recruiters">At a glance</a>
+  &nbsp;·&nbsp;
+  <a href="#thirty-second-tour">30‑second tour</a>
+  &nbsp;·&nbsp;
+  <a href="#for-engineers">Engineering</a>
+  &nbsp;·&nbsp;
+  <a href="#for-reviewers">Hiring / AI</a>
+  &nbsp;·&nbsp;
+  <a href="#run-locally">Local run</a>
+</p>
+
+---
+
+<span id="at-a-glance-recruiters"></span>
+
+## At a glance (recruiters & screeners)
+
+| | |
+| --- | --- |
+| **What it is** | Story-driven chess RPG with adaptive rival AI, shipped as a **static PWA** (no backend, no accounts). |
+| **Play** | **[Live demo](https://sauterreed24.github.io/Chess-of-Kings/)** — first step is always [Start here](#start-here). |
+| **Stack** | **TypeScript (strict)**, plain DOM, **Vite**, **Vitest**, `chess.js`; Capacitor shells for optional native builds. |
+| **Quality** | **231** automated tests, ESLint **0** warnings, CI on every PR (`lint` + `build` + full `test` + UI smoke). |
+| **Fit signals** | Accessibility-minded UI, save-format migrations, property-tested engine, small **gzip** JS budget (~64 KB). |
+
+**Suggested GitHub topics** (for discoverability): `typescript`, `vite`, `vitest`, `pwa`, `chess`, `game-development`, `accessibility`, `github-pages`, `no-framework`.
+
+---
+
+<span id="start-here"></span>
+
+## Start here (play in 30 seconds)
+
+**You do not need to clone the repo to play.** The game is the live site only.
+
+1. Open **[the live demo](https://sauterreed24.github.io/Chess-of-Kings/)** (or paste `https://sauterreed24.github.io/Chess-of-Kings/` into any modern browser).
+2. Wait until the brass “Loading the archive…” plate is replaced by the title screen (first load may take a few seconds on slow networks).
+3. Tap **Enter the Archive** (no save yet) or **Resume expedition** (returning player).
+4. Use **Chapters** in the top bar, pick an open chapter, then follow **Advance** through the story until the board appears.
+
+**Requirements:** JavaScript enabled (the game is a client-side app). Works in current Chrome, Firefox, Safari, and Edge. **Private/incognito** is fine; you will not have a prior save.
+
+**iPhone / in-app browsers (Messages, Mail, LinkedIn, etc.):** for the full UI (not plain default fonts), open the link in **Safari** using **Open in Safari** if another app embeds a stripped-down WebView. The deployed site sets a **`<base href>`** so icons, manifest, stylesheet, and script always resolve under `/Chess-of-Kings/` even when the WebView’s URL bar omits a trailing slash.
+
+**If you only see “Loading the archive…”:** hard-refresh the tab (Windows: `Ctrl+Shift+R`, Mac: `Cmd+Shift+R`), try a private window, or temporarily disable strict ad/script blockers for `github.io`. If the network blocks `github.io`, use **Run locally** below — that does not need GitHub Pages.
+
+**If you forked this repo:** your Pages URL is `https://<your-username>.github.io/<repository-name>/` (the path segment matches the repository name). Enable **Settings → Pages → Source: GitHub Actions** and ensure the **Deploy GitHub Pages** workflow has run on `main` (see [`.github/workflows/pages.yml`](./.github/workflows/pages.yml)).
+
+<span id="pwa-stale-cache"></span>
+
+**After a new release (stale PWA / service worker):** the app shell is cached for offline use ([`public/sw.js`](./public/sw.js); cache version bumps on releases). If you still see an **old build** right after a deploy, **hard-refresh** once (`Ctrl+Shift+R` / `Cmd+Shift+R`) or clear site data for `github.io` (Chrome: padlock → **Site settings** → **Delete data**). A normal refresh usually picks up the new `index.html` on the next visit.
+
+---
+
+<a id="thirty-second-tour"></a>
+## 30‑second tour
+
+1. Open **<https://sauterreed24.github.io/Chess-of-Kings/>** on any modern device — phone, tablet, laptop.
+2. First-time visitors see **Enter the Archive**; returning visitors see **Resume expedition**.
+3. Pick a chapter from the chronicle index, then play through dialogue → drill → rated match against a curated rival.
+4. Win or lose, the **Reward overlay** explains *why* — style grade, turning point, training focus, and any unlocks.
+5. Press **`?`** anywhere outside a form to see every keyboard shortcut on a parchment-styled atlas.
+
+No sign-up. No tracking. No backend. The whole save lives in `localStorage`.
 
 ---
 
 ## Live demo
 
-**Play in any modern browser:** **<https://sauterreed24.github.io/Chess-of-Kings/>**
+| Device | How to play |
+| --- | --- |
+| **Any browser** (desktop / laptop / tablet / phone) | Open **<https://sauterreed24.github.io/Chess-of-Kings/>** — that's it. |
+| **iPhone / iPad** (installable PWA) | Prefer **Safari** (full engine). Open the link → **Share** → **Add to Home Screen**. In embedded in-app browsers, use **Open in Safari** if the layout looks unstyled. Tested on iPhone 13 Pro Max. |
+| **Android** (installable PWA) | Open the link in **Chrome** → tap the **⋮** menu → **Install app** (or **Add to Home Screen**). |
+| **Local clone** | See [Run locally](#run-locally) (Node **18+**, `npm install`, `npm run dev`). |
 
-**Install on iPhone (iPhone 13 Pro Max tested):** open the link in Safari → tap **Share** → **Add to Home Screen**. The app runs in standalone mode; the brass-and-lapis theme color carries to the status bar.
-
-**Run locally:**
-```bash
-git clone https://github.com/sauterreed24/Chess-of-Kings.git
-cd Chess-of-Kings
-npm install
-npm run dev
-```
+The demo is a **single static bundle** served from GitHub Pages. There is no server, no auth, no analytics — every keystroke stays on your device. If a slow network momentarily fails, the service worker keeps the app shell available offline after the first visit. If a deploy looks “stuck” on an old version, see [PWA cache / new releases](#pwa-stale-cache).
 
 ---
 
-## What's new in this release
+## What's new in this release (v0.2.14)
 
-A maximum-effort polish pass across the whole project. Highlights:
+Ship-ready polish across narrative AI copy, navigation safety, accessibility, and tests:
 
-- **New rival doctrine system.** Every named rival has a curated school blend (Macedonian Phalanx, Achaemenid Patience, Egyptian Symmetry, Indic Combinatorics, Bactrian Frontier, Synthesis), a three-bullet counter-prep briefing, opening signatures, and a five-bucket talk profile (opening / punished / rattled / audacious / draw).
-- **Calibration Lens dial.** A brass dial in every duel dossier shows whether the engine has softened around you (Forgiving / Measured / Balanced / Sharpened / Relentless). The labels hide raw numbers; players see one of five tasteful bands.
-- **Mastery Trial.** A second button on the dossier locks the rival to ceiling difficulty for a single match — the unlock condition for the highest skin tier.
-- **Daily Calculus.** Open the app on a new day to find one curated puzzle picked deterministically from the campaign. Two devices in the same timezone see the same puzzle.
-- **Session streak.** Subtle ribbon on the title screen: "Day 1 of a new streak" → "5 day streak" → and a clean reset after a gap.
-- **Procedural SFX expansion.** Capture / check / castle / promotion / mate / undo / advance / reward all have distinct cues, generated at runtime via a single oscillator. Reduced-motion users get a softer envelope. No audio assets shipped.
-- **Promotion picker keyboard support.** Esc cancels, Arrow keys cycle Q / R / B / N, Home / End jump to ends, Tab / Shift+Tab cycle inside the panel, Enter / Space confirm.
-- **`?` keyboard atlas.** Pressing `?` anywhere outside a form opens a parchment-styled overlay listing every shortcut.
-- **`aria-live` outcome announcer.** Match outcomes (won / lost / drawn against rival) and reward inscriptions are announced once per resolution to assistive tech.
-- **Engine property tests + engine-vs-engine smoke.** 12 random positions × 9 profiles assert legal moves and no throws; a strong profile must beat random on a majority of short games.
-- **Architecture documentation** at `src/ARCHITECTURE.md` (184 lines): directory map, Mermaid data-flow, persistence model, recipe table.
+- **Live rival talk lines.** `selectTalkLine` from each rival’s dossier profile now prefixes **match and duel** AI flavor text (opening / rattled / audacious buckets from recent results).
+- **Daily Calculus guard.** Starting today’s puzzle from the title confirms when a **recoverable save** or **in-progress simulation** would be replaced.
+- **Session streak honesty.** `recordToday` reports `persistOk`; failed writes show a visible ribbon warning (quota / private mode).
+- **Calibration Lens wording.** The adaptive dial’s center band is labeled **Equilibrium** so it cannot be confused with **Balanced** difficulty on the dossier (renamed to **Difficulty hint** / **Recommended next difficulty**).
+- **Simulation layer ARIA.** The lab overlay is `aria-hidden` when closed; when open it uses dialog semantics. **`public/accessibility.html`** is linked beside Privacy on the title plate.
+- **UX detail.** Mastery Trial uses secondary styling plus a one-line ceiling-difficulty hint; move-ledger memo keys avoid redundant rebuilds on FEN-only updates; thinking pill and square coordinates gain safer contrast.
+- **Shortcuts.** Global `?` / Advance routing ignores **`contenteditable`** regions.
+- **Tests.** **231** automated tests including duel flavor + streak persistence + shell markup gates; engine-vs-engine smoke described as seeded loss-cap regression guard.
 
-Full details are in [`CHANGELOG.md`](./CHANGELOG.md).
+Earlier roadmap highlights (rival doctrine, Mastery Trial, Daily Calculus ribbon, SFX, keyboard atlas, property-tested engine, architecture doc) remain in [`CHANGELOG.md`](./CHANGELOG.md).
 
 ---
 
@@ -70,6 +148,8 @@ Full details are in [`CHANGELOG.md`](./CHANGELOG.md).
 
 ---
 
+<span id="for-engineers"></span>
+
 ## For engineers
 
 The codebase is intentionally direct: plain TypeScript + DOM (no React, no router, no state library), with `chess.js` as the legality oracle. Current footprint is approximately **11.5k non-blank TypeScript lines** across **73 `.ts` files** plus one CSS file (`src/style.css`).
@@ -91,11 +171,11 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` currently runs **218 tests across 34 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
+**Testing scopes.** `npm test` currently runs **231 tests across 34 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
-- **Engine vs engine** — strong profile beats random baseline on a majority of short games.
+- **Engine vs engine** — seeded smoke: veteran profile must not catastrophically lose to random on short games.
 - **Migration** — older save fixtures load and round-trip.
 - **DOM** — board view, reward overlay focus restore, chronicle replay, promotion picker keyboard.
 - **A11y** — `aria-live` announcer, reduced-motion CSS guarantees.
@@ -106,20 +186,37 @@ CI gates: `npm run lint`, `npm test`, `npm run build`, `npm run test:ui-smoke`.
 
 ---
 
+<span id="for-reviewers"></span>
+
 ## For hiring managers / AI reviewers
 
 ```yaml
 project: The Calculus of Kings
+one_liner: Alt-history chess RPG that ships as a single ~67 KB gzipped JS bundle, installable on iOS without an app store.
+readme_play_path: "Start here → live demo URL → Enter the Archive → Chapters → Advance"
+live_demo_url: https://sauterreed24.github.io/Chess-of-Kings/
 language: TypeScript (strict)
 framework: none (custom DOM, Vite + Vitest)
 runtime_dependencies: chess.js (+ Capacitor packages for native shells)
 loc: ~11.5k non-blank TypeScript lines (src/), single CSS file ~2244 non-blank lines
 deploy_target: GitHub Pages (PWA, installable on iOS/Android)
+ci_workflows:
+  - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/ci.yml
+  - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/pages.yml
 license: MIT
-tests: 218 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
+tests: 231 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
+skills_keywords:
+  - TypeScript strict mode
+  - Vite
+  - Vitest
+  - Property-based testing
+  - PWA and service worker
+  - WCAG-minded UI (ARIA, roving tabindex, reduced motion)
+  - Game AI (negamax, alpha-beta, transposition table)
+  - Stateful client persistence and migrations
 performance_budget:
-  js_gzipped: < 90 KB (measured 63661 bytes gzip for `dist/assets/index-*.js` after `npm run build`, 2026-04-29)
-  css_gzipped: < 13 KB (measured 12496 bytes gzip for `dist/assets/index-*.css`, same build)
+  js_gzipped: < 90 KB (measured 67329 bytes gzip for `dist/assets/index-*.js` after `npm run build`, 2026-04-30)
+  css_gzipped: < 14 KB (measured 13167 bytes gzip for `dist/assets/index-*.css`, same build)
 lighthouse_snapshot_mobile:
   report: docs/lighthouse-mobile-max-pass-2.json
   performance: 86
@@ -128,25 +225,62 @@ lighthouse_snapshot_mobile:
   seo: 100
 engineering_signals:
   - SSR-free PWA, installable on iOS without an app store
+  - "Production HTML injects <base href> so relative assets resolve under /repo/ on GitHub Pages (strict WebViews, missing trailing slash)"
   - Custom DOM, no React, no virtual DOM
   - Accessibility-first (roving tabindex, ARIA, prefers-reduced-motion, aria-live)
   - Save-format versioning with forward migration discipline
   - Property-tested engine search and curated rival doctrine system
+  - Responsive across phone / tablet / laptop with safe-area handling
 ask_me_about:
   - "How the school blend evaluation interacts with phase-adaptive profiles."
   - "How anti-tilt and momentum hardening keep the win-rate band stable around 35-65%."
   - "Why the project ships zero new runtime dependencies despite shipping a chess engine."
 ```
 
+> **Human reviewers:** the fastest product review is the [live demo](https://sauterreed24.github.io/Chess-of-Kings/) plus five minutes in **Chapters** — no install required. Green **CI** / **Pages** badges at the top of this README link to workflow runs.
+>
+> **AI reviewers:** every quantitative claim in the YAML block is reproducible from this repository. Bundle sizes: `npm run build && npm run report:bundle-gzip`. Lighthouse snapshot: [`docs/lighthouse-mobile-max-pass-2.json`](./docs/lighthouse-mobile-max-pass-2.json). Architecture: [`src/ARCHITECTURE.md`](./src/ARCHITECTURE.md). Entry points for code reading: [`src/main.ts`](./src/main.ts) → [`src/app/mountApp.ts`](./src/app/mountApp.ts) → [`src/app/gameFlow.ts`](./src/app/gameFlow.ts) → [`src/chess/ai.ts`](./src/chess/ai.ts).
+
 ---
 
-## Quick start
+<span id="run-locally"></span>
+
+## Run locally
+
+Use this when you want the same game without relying on GitHub Pages (offline, corporate network, or contributing).
+
+**Prerequisites:** [Node.js](https://nodejs.org/) **18 or newer** (CI uses 22; `package.json` declares `engines.node` `>=18`).
+
+```bash
+git clone https://github.com/sauterreed24/Chess-of-Kings.git
+cd Chess-of-Kings
+npm install
+npm run dev
+```
+
+Then open the URL Vite prints (usually `http://localhost:5173/`). The dev server is bound to **all interfaces** (`host: true` in `vite.config.ts`) so you can open that URL from another device on the same Wi‑Fi for phone/tablet checks.
+
+**Windows:** if you cloned into a folder with a space in the name (e.g. `Chess of Kings`), quote the path: `cd "Chess of Kings"`.
+
+**Clean / reproducible install (optional):** `npm ci` instead of `npm install` after a fresh clone.
+
+**Match production (GitHub Pages) locally:**
+
+```bash
+npm run build && npm run preview
+```
+
+Open the URL Vite prints; asset paths use the same `/Chess-of-Kings/` base as the published site (see `vite.config.ts`).
+
+---
+
+## Quick start (contributors)
 
 ```bash
 npm install              # install dependencies
-npm run dev              # local dev server
+npm run dev              # local dev server (LAN-exposed for device testing)
 npm run build            # production build (tsc + vite)
-npm test                 # full test suite
+npm test                 # full test suite (231 tests)
 npm run lint             # eslint, max warnings 0
 npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay)
 ```
@@ -157,7 +291,7 @@ npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay
 
 - **Pass 1.5** — extract the closure-heavy renderers in `mountApp` (`applyChessUi`, `renderScene`, `renderDuelUi`, `showRewardBundles`) by introducing a typed mount context, so the duel and play surfaces can be exercised in jsdom mounts.
 - **Pass 2 deep** — feature-decomposed `evaluate.ts` (per-phase PSTs, isolated / doubled / passed / connected pawns, mobility, bishop pair, rook on open file, knight outposts, space, tempo) with one tiny test per feature. Optional Web Worker for AI search if benchmarks justify it.
-- **Pass 3 deep** — wire `selectTalkLine` into the live in-match flavor pipeline; turn opening repertoires into real preference biases inside `chess/openings.ts`.
+- **Pass 3 deep** — tune opening repertoires into measurable preference biases inside `chess/openings.ts` (talk lines now prefix live match/duel flavor).
 - **Native shells** — Capacitor scaffolding for iOS / Android already exists; the next step is a TestFlight build.
 
 ---
@@ -167,6 +301,8 @@ npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay
 - [`src/ARCHITECTURE.md`](./src/ARCHITECTURE.md) — directory map, data-flow diagram, persistence model, recipe table.
 - [`CONTRIBUTING.md`](./CONTRIBUTING.md) — coding standards, test gates, what we'd love help with.
 - [`CHANGELOG.md`](./CHANGELOG.md) — release notes by pass.
+- [`SECURITY.md`](./SECURITY.md) — responsible disclosure.
+- [`docs/ACCESSIBILITY-DEVICE-CHECKLIST.md`](./docs/ACCESSIBILITY-DEVICE-CHECKLIST.md) — manual cross-device checklist.
 
 ---
 
@@ -177,6 +313,7 @@ Built solo by **Reed Sauter**, an SDR at Artemis Distribution and a self-taught 
 If you're an AI company, startup, or engineering team looking for someone who ships with discipline, I'd love to connect.
 
 - GitHub: [@sauterreed24](https://github.com/sauterreed24)
+- Primary portfolio artifact: **[play the live demo](https://sauterreed24.github.io/Chess-of-Kings/)** (this README is written so that link is always the first actionable step).
 
 ---
 

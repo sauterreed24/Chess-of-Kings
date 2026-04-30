@@ -7,11 +7,20 @@ function memoryStore(initial: string | null = null): StreakStorage & { value: st
     read() {
       return s.value
     },
-    write(v: string) {
+    write(v: string): boolean {
       s.value = v
+      return true
     },
   }
   return s
+}
+
+function failingStore(initial: string | null = null): StreakStorage {
+  const base = memoryStore(initial)
+  return {
+    read: () => base.read(),
+    write: () => false,
+  }
 }
 
 describe('dayKey', () => {
@@ -58,6 +67,7 @@ describe('recordToday', () => {
     expect(r.state).toEqual({ count: 1, lastDayKey: '2026-04-28' })
     expect(r.isFreshDay).toBe(true)
     expect(r.wasReset).toBe(false)
+    expect(r.persistOk).toBe(true)
   })
 
   it('same-day repeat does not change anything', () => {
@@ -65,6 +75,7 @@ describe('recordToday', () => {
     const r = recordToday(new Date(2026, 3, 28, 23, 0), store)
     expect(r.state.count).toBe(4)
     expect(r.isFreshDay).toBe(false)
+    expect(r.persistOk).toBe(true)
   })
 
   it('consecutive-day increments by 1', () => {
@@ -73,6 +84,7 @@ describe('recordToday', () => {
     expect(r.state).toEqual({ count: 5, lastDayKey: '2026-04-29' })
     expect(r.isFreshDay).toBe(true)
     expect(r.wasReset).toBe(false)
+    expect(r.persistOk).toBe(true)
   })
 
   it('a 2+ day gap resets the streak to 1 and flags wasReset when the prior streak was > 1', () => {
@@ -81,6 +93,7 @@ describe('recordToday', () => {
     expect(r.state).toEqual({ count: 1, lastDayKey: '2026-04-28' })
     expect(r.isFreshDay).toBe(true)
     expect(r.wasReset).toBe(true)
+    expect(r.persistOk).toBe(true)
   })
 
   it('a clock that goes backward leaves prior state untouched', () => {
@@ -89,5 +102,13 @@ describe('recordToday', () => {
     expect(r.state.count).toBe(1)
     expect(r.isFreshDay).toBe(true)
     expect(r.wasReset).toBe(true)
+    expect(r.persistOk).toBe(true)
+  })
+
+  it('reports persistOk false and falls back to disk state when write fails', () => {
+    const store = failingStore(JSON.stringify({ count: 2, lastDayKey: '2026-04-27' }))
+    const r = recordToday(new Date(2026, 3, 28), store)
+    expect(r.persistOk).toBe(false)
+    expect(r.state).toEqual({ count: 2, lastDayKey: '2026-04-27' })
   })
 })

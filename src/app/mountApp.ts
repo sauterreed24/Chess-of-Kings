@@ -237,7 +237,7 @@ export function mountApp(app: HTMLDivElement) {
     }
 
     btnUndo.disabled = !p.canUndo
-    const ledgerKey = `${p.fen}|${p.ledgerFp}`
+    const ledgerKey = `${p.sanLog.length}|${p.ledgerFp}`
     if (ledgerKey !== lastLedgerKey) {
       lastLedgerKey = ledgerKey
       const ledgerHtml = formatMoveLedger(p.sanLog, p.sanQuality)
@@ -390,18 +390,22 @@ export function mountApp(app: HTMLDivElement) {
    * to the versioned SaveData and free of migrations. The daily pick
    * is only shown when the player has the chapter unlocked, so the
    * call-to-action never appears as a button that does nothing. */
-  recordStreakToday()
+  const streakBoot = recordStreakToday()
   function syncDailyRibbon() {
     const streak = readStreak()
     const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
     const daily =
       dailyRaw && dailyRaw.chapterIndex <= flow.highestUnlockedChapter ? dailyRaw : null
+    const persistNote =
+      streakBoot.persistOk === false
+        ? `<span class="daily-ribbon__warn" role="status">Streak could not be saved in this browser (private mode or storage full).</span>`
+        : ''
     const streakBadge =
       streak.count > 1
-        ? `<span class="daily-ribbon__streak"><strong>${streak.count}</strong> day streak</span>`
+        ? `<span class="daily-ribbon__streak"><strong>${streak.count}</strong> day streak</span>${persistNote}`
         : streak.count === 1
-          ? `<span class="daily-ribbon__streak"><strong>Day 1</strong> of a new streak</span>`
-          : ''
+          ? `<span class="daily-ribbon__streak"><strong>Day 1</strong> of a new streak</span>${persistNote}`
+          : persistNote
     const dailyBlock = daily
       ? `<button type="button" class="ghost daily-ribbon__cta" id="btn-daily-calculus"
             aria-label="Play today's Daily Calculus puzzle: ${escapeHtml(daily.title)}">
@@ -419,6 +423,13 @@ export function mountApp(app: HTMLDivElement) {
     dailyRibbon.classList.remove('hidden')
     if (daily) {
       dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', () => {
+        const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+        if (mustConfirm) {
+          const ok = window.confirm(
+            'Leave the current passage? Your open simulation will be replaced with today’s Daily Calculus puzzle.',
+          )
+          if (!ok) return
+        }
         flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
         openLab()
       })
@@ -433,6 +444,10 @@ export function mountApp(app: HTMLDivElement) {
     setNavActive(null)
     shell.classList.add('shell--lab')
     labOverlay.classList.add('lab-overlay--active')
+    labOverlay.setAttribute('aria-hidden', 'false')
+    labOverlay.setAttribute('role', 'dialog')
+    labOverlay.setAttribute('aria-modal', 'true')
+    labOverlay.setAttribute('aria-label', 'Archive simulation')
     const chessRoot = app.querySelector<HTMLDivElement>('#chess-root')!
     if (!flow.board) flow.mountBoard(chessRoot)
     else if (!flow.isInDuelMode()) flow.refreshScene()
@@ -444,6 +459,10 @@ export function mountApp(app: HTMLDivElement) {
   function closeLab() {
     closeRewardOverlay()
     labOverlay.classList.remove('lab-overlay--active')
+    labOverlay.setAttribute('aria-hidden', 'true')
+    labOverlay.removeAttribute('aria-modal')
+    labOverlay.removeAttribute('role')
+    labOverlay.removeAttribute('aria-label')
     shell.classList.remove('shell--lab')
     flow.stopDuel()
     flow.setLastScreen('chapters')
@@ -489,6 +508,10 @@ export function mountApp(app: HTMLDivElement) {
     closeRewardOverlay()
     flow.setLastScreen('title')
     labOverlay.classList.remove('lab-overlay--active')
+    labOverlay.setAttribute('aria-hidden', 'true')
+    labOverlay.removeAttribute('aria-modal')
+    labOverlay.removeAttribute('role')
+    labOverlay.removeAttribute('aria-label')
     shell.classList.remove('shell--lab')
     setTopLevelScreen('title')
     setNavActive('title')
@@ -813,7 +836,7 @@ export function mountApp(app: HTMLDivElement) {
           : ''
         const trainingPlan = flow.getAdaptiveTrainingPlan(rival.opponentId)
         const lens = deriveCalibrationLens(history, rivalMem)
-        const lensTicks = ['Forgiving', 'Measured', 'Balanced', 'Sharpened', 'Relentless']
+        const lensTicks = ['Forgiving', 'Measured', 'Equilibrium', 'Sharpened', 'Relentless']
         const lensTickHtml = lensTicks
           .map((t, i) => {
             const fillIdx = Math.round(lens.dialPosition * 4)
@@ -837,7 +860,7 @@ export function mountApp(app: HTMLDivElement) {
                 <span class="match-card__vs">Dossier</span>
                 <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
               </div>
-              <span class="duel-row__stamp">Recommended: ${recommendedDifficulty}</span>
+              <span class="duel-row__stamp">Difficulty hint: ${recommendedDifficulty}</span>
             </div>
             <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
             ${primaryVariant ? `<p class="opponent-note">${escapeHtml(primaryVariant.bio)}</p>` : ''}
@@ -864,7 +887,7 @@ export function mountApp(app: HTMLDivElement) {
                 <li><strong>Average length:</strong> ${avgMoves} ply</li>
                 <li><strong>Common style grade:</strong> ${dominantGrade}</li>
                 <li><strong>Weakness map:</strong> ${escapeHtml(weaknessMap)}</li>
-                <li><strong>Recommended next duel:</strong> ${recommendedDifficulty}</li>
+                <li><strong>Recommended next difficulty:</strong> ${recommendedDifficulty}</li>
                 ${rivalMem ? `<li><strong>Rival memory:</strong> ${rivalMem.games} logged games · adaptation intensity ${(Math.min(100, (rivalMem.punishedFlankPushes + rivalMem.punishedEarlyQueen + rivalMem.punishedCheckSpam) * 3)).toFixed(0)}%</li>` : ''}
               </ul>
             </div>
@@ -902,10 +925,11 @@ export function mountApp(app: HTMLDivElement) {
             <label class="teach-label">Piece Skin</label>
             <select id="duel-skin" class="duel-select">${skinOptions}</select>
             <button type="button" class="primary" id="btn-start-duel">Start Duel</button>
-            <button type="button" class="ghost" id="btn-mastery-trial"
+            <button type="button" class="secondary" id="btn-mastery-trial"
               aria-label="Begin a Mastery Trial against ${escapeHtml(rival.opponentName)} at ceiling difficulty">
               Mastery Trial · Ceiling
             </button>
+            <p class="mastery-trial-hint opponent-note">Locks Relentless difficulty for one match — highest-tier skin unlock.</p>
             <button type="button" class="ghost" id="btn-preview-skin">Preview Skin In Board</button>
           </div>`
         duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {

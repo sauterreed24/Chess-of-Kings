@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { RIVAL_PROFILES, getRivalProfile, selectTalkLine, type RivalProfile } from './rivals'
+import { RIVAL_PROFILES, getRivalProfile, selectTalkLine, inferRivalIdFromSceneId, type RivalProfile } from './rivals'
 
 describe('RIVAL_PROFILES data', () => {
   const expectedIds = ['amara', 'lukas', 'edred', 'marius', 'demetrios']
@@ -71,5 +71,16 @@ describe('selectTalkLine', () => {
 
   it('is deterministic (same inputs -> same line)', () => {
     expect(selectTalkLine(profile, 1, 0, 7)).toBe(selectTalkLine(profile, 1, 0, 7))
+  })
+})
+
+describe('inferRivalIdFromSceneId', () => {
+  it('matches a campaign scene id containing a rival key', () => {
+    expect(inferRivalIdFromSceneId('c1-match-amara-intro')).toBe('amara')
+    expect(inferRivalIdFromSceneId('c2-boss-demetrios-finale')).toBe('demetrios')
+  })
+
+  it('returns null when no rival substring matches', () => {
+    expect(inferRivalIdFromSceneId('c0-dialogue-only')).toBeNull()
   })
 })

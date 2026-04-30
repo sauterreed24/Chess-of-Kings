@@ -26,7 +26,8 @@ export interface StreakState {
 
 export interface StreakStorage {
   read(): string | null
-  write(value: string): void
+  /** Returns whether the value was persisted (false on quota / private mode). */
+  write(value: string): boolean
 }
 
 const STORAGE_KEY = 'cok-streak'
@@ -43,8 +44,9 @@ export function localStorageStreakStore(): StreakStorage {
     write(value: string) {
       try {
         localStorage.setItem(STORAGE_KEY, value)
+        return true
       } catch {
-        /* quota / private mode: silently drop the streak update */
+        return false
       }
     },
   }
@@ -90,6 +92,8 @@ export interface RecordResult {
   isFreshDay: boolean
   /** True when today's recording reset the streak after a gap. */
   wasReset: boolean
+  /** False when localStorage rejected the write (streak may not persist across reloads). */
+  persistOk: boolean
 }
 
 export function recordToday(
@@ -100,7 +104,7 @@ export function recordToday(
   const prev = readStreak(store)
 
   if (prev.lastDayKey === today) {
-    return { state: prev, isFreshDay: false, wasReset: false }
+    return { state: prev, isFreshDay: false, wasReset: false, persistOk: true }
   }
 
   const delta = dayDelta(prev.lastDayKey, today)
@@ -113,6 +117,7 @@ export function recordToday(
     /* delta === 1 (consecutive day) */
     next = { count: prev.count + 1, lastDayKey: today }
   }
-  store.write(JSON.stringify(next))
-  return { state: next, isFreshDay: true, wasReset }
+  const persistOk = store.write(JSON.stringify(next))
+  const state = persistOk ? next : readStreak(store)
+  return { state, isFreshDay: true, wasReset, persistOk }
 }

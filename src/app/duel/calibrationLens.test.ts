@@ -23,9 +23,9 @@ function entry(over: Partial<MatchHistoryEntry>): MatchHistoryEntry {
 }
 
 describe('deriveCalibrationLens', () => {
-  it('returns Balanced when history is empty', () => {
+  it('returns Equilibrium when history is empty', () => {
     const v = deriveCalibrationLens([], undefined)
-    expect(v.level).toBe('Balanced')
+    expect(v.level).toBe('Equilibrium')
     expect(v.dialPosition).toBeCloseTo(0.5)
   })
 
@@ -91,9 +91,9 @@ describe('deriveCalibrationLens', () => {
       punishedCheckSpam: 0,
     }
     /* Two wins normally would lean Sharpened, but heavy loss pressure
-     * (5 net losses) drags the dial back toward Balanced/Forgiving. */
+     * (5 net losses) drags the dial back toward Equilibrium/Forgiving. */
     const v = deriveCalibrationLens(history, mem)
-    expect(['Forgiving', 'Measured', 'Balanced']).toContain(v.level)
+    expect(['Forgiving', 'Measured', 'Equilibrium']).toContain(v.level)
   })
 })
 
@@ -154,7 +154,7 @@ describe('difficulty curve simulation', () => {
       outcomes = [...outcomes.slice(-12), entry({ id: `s${i}`, outcome })]
       const v = deriveCalibrationLens(outcomes, undefined)
       labels.add(v.level)
-      expect(['Forgiving', 'Measured', 'Balanced', 'Sharpened', 'Relentless']).toContain(v.level)
+      expect(['Forgiving', 'Measured', 'Equilibrium', 'Sharpened', 'Relentless']).toContain(v.level)
     }
     expect(labels.size).toBeGreaterThan(1)
   })

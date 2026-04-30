@@ -6,11 +6,11 @@
  * engine has adjusted around this player. The dial deliberately hides
  * raw numbers; players see one of:
  *
- *   Forgiving  -- after sustained losing streak (anti-tilt active)
- *   Measured   -- mild softening after a couple of recent losses
- *   Balanced   -- default, centered band
- *   Sharpened  -- after sustained wins (momentum hardening)
- *   Relentless -- mastery-trial / boss ceiling
+ *   Forgiving    -- after sustained losing streak (anti-tilt active)
+ *   Measured     -- mild softening after a couple of recent losses
+ *   Equilibrium  -- default, centered band
+ *   Sharpened    -- after sustained wins (momentum hardening)
+ *   Relentless   -- mastery-trial / boss ceiling
  *
  * Pure function: identical input -> identical output. Used by the
  * dossier renderer in mountApp; safe to call as often as needed.
@@ -20,7 +20,7 @@ import type { MatchHistoryEntry, RivalMemoryEntry } from '../../types'
 export type CalibrationLevel =
   | 'Forgiving'
   | 'Measured'
-  | 'Balanced'
+  | 'Equilibrium'
   | 'Sharpened'
   | 'Relentless'
 
@@ -32,12 +32,12 @@ export interface CalibrationView {
   hint: string
 }
 
-const LEVEL_ORDER: CalibrationLevel[] = ['Forgiving', 'Measured', 'Balanced', 'Sharpened', 'Relentless']
+const LEVEL_ORDER: CalibrationLevel[] = ['Forgiving', 'Measured', 'Equilibrium', 'Sharpened', 'Relentless']
 
 const LEVEL_HINTS: Record<CalibrationLevel, string> = {
   Forgiving: 'Anti-tilt active: longer think time, slightly higher blunder rate.',
   Measured: 'Mild softening — the rival is reading your tendencies.',
-  Balanced: 'Default profile for this rival, no adjustment applied.',
+  Equilibrium: 'Default profile for this rival, no adjustment applied.',
   Sharpened: 'Momentum hardening — the rival is tightening their lines.',
   Relentless: 'Ceiling profile. Intended for Mastery Trials.',
 }
@@ -56,7 +56,7 @@ export function deriveCalibrationLens(
 
   /* No history yet -- centered. */
   if (!recentHistory.length) {
-    return { level: 'Balanced', dialPosition: 0.5, hint: LEVEL_HINTS.Balanced }
+    return { level: 'Equilibrium', dialPosition: 0.5, hint: LEVEL_HINTS.Equilibrium }
   }
 
   const last = recentHistory.slice(-12)
@@ -68,7 +68,7 @@ export function deriveCalibrationLens(
   const pressure = rivalMem ? rivalMem.losses - rivalMem.wins : 0
   const adjusted = score - pressure * 0.5
 
-  let level: CalibrationLevel = 'Balanced'
+  let level: CalibrationLevel = 'Equilibrium'
   if (adjusted <= -3) level = 'Forgiving'
   else if (adjusted <= -1) level = 'Measured'
   else if (adjusted >= 4) level = 'Relentless'

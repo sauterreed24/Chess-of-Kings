@@ -252,6 +252,14 @@ export function getRivalProfile(opponentId: string): RivalProfile | null {
   return RIVAL_PROFILES[opponentId] ?? null
 }
 
+/** Infer canonical rival id from a campaign scene id (substring match). */
+export function inferRivalIdFromSceneId(sceneId: string): string | null {
+  for (const key of Object.keys(RIVAL_PROFILES)) {
+    if (sceneId.includes(key)) return key
+  }
+  return null
+}
+
 /**
  * Returns a flavor line for the rival appropriate for the supplied
  * record state. Pure: identical inputs always pick the same index.

@@ -35,6 +35,17 @@ beforeEach(() => {
 })
 
 describe('handleGlobalKey', () => {
+  it('does nothing when focus is in contenteditable', () => {
+    const editable = document.createElement('div')
+    editable.setAttribute('contenteditable', 'true')
+    document.body.appendChild(editable)
+    editable.focus()
+    const deps = makeDeps({ isRewardOverlayOpen: () => true })
+    const e = makeKey('Escape')
+    expect(handleGlobalKey(e, deps)).toBe(false)
+    expect(deps.closeRewardOverlay).not.toHaveBeenCalled()
+  })
+
   it('does nothing when focus is in a text input', () => {
     const input = document.createElement('input')
     document.body.appendChild(input)

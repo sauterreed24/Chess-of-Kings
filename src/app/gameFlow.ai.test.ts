@@ -170,4 +170,25 @@ describe('GameFlow AI / puzzles', () => {
     const payload = onChessUpdate.mock.calls.at(-1)?.[0]
     expect(payload?.boardGuide).toMatch(/side whose turn it is/)
   })
+
+  it('duel aiFlavor prefixes with curated talk when the rival has a profile', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    ;(flow as unknown as { unlockedDuelVariantIds: string[] }).unlockedDuelVariantIds.push('amara-initiate')
+    expect(flow.startDuel('amara', 'amara-initiate', 'w')).toBe(true)
+    const flavor = (flow as unknown as { currentAiFlavor(): string | null }).currentAiFlavor()
+    expect(flavor).toMatch(/Duel calibration/)
+    expect(flavor).toMatch(/ — /)
+    expect(
+      flavor?.includes('I have studied the board') ||
+        flavor?.includes('Symmetry is the patient') ||
+        flavor?.includes('Mirror me only'),
+    ).toBe(true)
+  })
 })
