@@ -452,7 +452,9 @@ export class BoardView {
 
       const fly = document.createElement('div')
       fly.className = `piece-fly ${flyClass}`
-      fly.textContent = flyGlyph
+      fly.innerHTML = flyGlyph
+      fly.style.width = `${fromRect.width}px`
+      fly.style.height = `${fromRect.height}px`
       const x0 = fromRect.left + fromRect.width / 2
       const y0 = fromRect.top + fromRect.height / 2
       const x1 = toRect.left + toRect.width / 2
