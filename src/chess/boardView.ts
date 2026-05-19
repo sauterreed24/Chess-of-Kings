@@ -13,9 +13,18 @@ const PROMO_NAMES: Record<PieceSymbol, string> = {
 
 export type BoardPickMode = 'off' | 'solo' | 'free'
 
+export interface BoardSelectionState {
+  selected: Square | null
+  legalMoveCount: number
+  captureCount: number
+  quietMoveCount: number
+  guardTarget: Square | null
+}
+
 export interface BoardViewOptions {
   root: HTMLElement
   onMove: (from: Square, to: Square, promotion?: PieceSymbol) => void
+  onSelectionChange?: (state: BoardSelectionState) => void
   orientation: 'w' | 'b'
 }
 
@@ -24,6 +33,7 @@ const FLY_MS = 200
 export class BoardView {
   private root: HTMLElement
   private onMove: BoardViewOptions['onMove']
+  private onSelectionChange: BoardViewOptions['onSelectionChange']
   orientation: 'w' | 'b'
   private cells = new Map<Square, HTMLButtonElement>()
   private selected: Square | null = null
@@ -46,10 +56,12 @@ export class BoardView {
   private pieceFlyEls: HTMLElement[] = []
   /** Skip rewriting unchanged squares (majority of cells on typical moves). */
   private lastPieceSig = new Map<Square, string>()
+  private lastSelectionSig = ''
 
   constructor(opts: BoardViewOptions) {
     this.root = opts.root
     this.onMove = opts.onMove
+    this.onSelectionChange = opts.onSelectionChange
     this.orientation = opts.orientation
     this.buildGrid()
   }
@@ -530,6 +542,37 @@ export class BoardView {
       btn.setAttribute('aria-pressed', this.selected === sq ? 'true' : 'false')
       btn.setAttribute('aria-label', labels.join(', '))
     }
+    this.emitSelectionChange()
+  }
+
+  private currentSelectionState(): BoardSelectionState {
+    let captureCount = 0
+    const ch = this.pendingChess
+    for (const sq of this.legalTargets) {
+      if (ch?.get(sq)) captureCount++
+    }
+    return {
+      selected: this.selected,
+      legalMoveCount: this.legalTargets.size,
+      captureCount,
+      quietMoveCount: Math.max(0, this.legalTargets.size - captureCount),
+      guardTarget: this.guardFrom === this.selected ? this.guardTo : null,
+    }
+  }
+
+  private emitSelectionChange() {
+    if (!this.onSelectionChange) return
+    const state = this.currentSelectionState()
+    const sig = [
+      state.selected ?? '',
+      state.legalMoveCount,
+      state.captureCount,
+      state.quietMoveCount,
+      state.guardTarget ?? '',
+    ].join('|')
+    if (sig === this.lastSelectionSig) return
+    this.lastSelectionSig = sig
+    this.onSelectionChange(state)
   }
 
   private clearGuard() {

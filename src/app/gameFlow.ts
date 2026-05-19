@@ -10,7 +10,7 @@ import {
 import type { AIStyle } from '../chess/evaluate'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
-import type { BoardPickMode } from '../chess/boardView'
+import type { BoardPickMode, BoardSelectionState } from '../chess/boardView'
 import type {
   CalibrationScene,
   Chapter,
@@ -43,10 +43,21 @@ import { chooseOpeningBookMove } from '../chess/openings'
 import { detectTacticalMotifs } from '../chess/motifs'
 import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
+import { moveInsightFor, type MoveInsightMode } from './moveInsight'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
 const PERSIST_DEBOUNCE_MS = 180
+
+function emptyBoardSelection(): BoardSelectionState {
+  return {
+    selected: null,
+    legalMoveCount: 0,
+    captureCount: 0,
+    quietMoveCount: 0,
+    guardTarget: null,
+  }
+}
 
 export type MatchOutcome = 'win' | 'loss' | 'draw' | null
 export type MoveQuality = 'brilliant' | 'good' | 'ok' | 'inaccuracy' | 'mistake' | 'blunder' | null
@@ -152,6 +163,7 @@ export class GameFlow {
     repeatedChecksWithoutGain: 0,
   }
   private lastTacticalPulse: string | null = null
+  private boardSelection: BoardSelectionState = emptyBoardSelection()
   /** Last engine ply (from+to+promotion) — used to discourage immediate duplicate AI moves. */
   private lastAiMoveKey: string | null = null
   private pendingInProgressSnapshot: InProgressSnapshot | null = null
@@ -537,6 +549,7 @@ export class GameFlow {
     this.cancelAiTimer()
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
+    this.boardSelection = emptyBoardSelection()
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
     this.mode = 'duel'
     this.puzzleScene = null
@@ -587,6 +600,10 @@ export class GameFlow {
       root: container,
       orientation: 'w',
       onMove: (from, to, promotion) => this.tryPlayerMove(from, to, promotion),
+      onSelectionChange: (state) => {
+        this.boardSelection = state
+        this.emitChess()
+      },
     })
     this.board.setSkin(this.selectedPieceSkin)
     this.refreshScene()
@@ -605,6 +622,7 @@ export class GameFlow {
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
+    this.boardSelection = emptyBoardSelection()
     this.sessionRecoveredNotice = false
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
 
@@ -742,6 +760,7 @@ export class GameFlow {
     this.lastAiMoveKey = null
     this.lastTacticalPulse = null
     this.lastResolvedOutcomeKey = null
+    this.boardSelection = emptyBoardSelection()
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
     if (this.mode === 'calibration') this.calibrationMoves = 0
     if (this.mode === 'match' || this.mode === 'duel') this.scriptedMoveIndex = 0
@@ -1332,47 +1351,59 @@ export class GameFlow {
       return 'This passage is decided on the board. Continue from the manuscript when the next control is available.'
     }
     if (this.aiThinking) {
-      return 'The opponent is choosing a move — the board will update when their reply lands.'
+      return 'The opponent is choosing a move - the board will update when their reply lands.'
     }
-    if (scene.type === 'freeplay') {
-      return 'Select a piece of the side whose turn it is (see status above). Captures are framed in bronze; check is marked in crimson.'
-    }
-    if (this.chess.turn() !== this.playerColor) {
+    if (this.chess.turn() !== this.playerColor && scene.type !== 'freeplay') {
       const opp = this.playerColor === 'w' ? 'Black' : 'White'
       const mine = this.playerColor === 'w' ? 'White' : 'Black'
-      return `Wait for ${opp} to move — you command ${mine}. When it returns to you, select a piece to see legal targets (captures bronze; check crimson).`
+      return `Wait for ${opp} to move - you command ${mine}. When it returns to you, select a piece to see legal targets (captures bronze; check crimson).`
+    }
+    const selectionGuide = this.boardSelectionGuide()
+    if (selectionGuide) return selectionGuide
+    if (scene.type === 'freeplay') {
+      return 'Select a piece of the side whose turn it is (see status above). Captures are framed in bronze; check is marked in crimson.'
     }
     return defaultGuide
   }
 
-  /* ─── Coaching tips ────────────────────────────────────────────────── */
-  private computeCoachTip(san: string): string | null {
-    const halfMoves = this.sanLog.length
-    if (halfMoves > 28) return null
+  private boardSelectionGuide(): string | null {
+    const s = this.boardSelection
+    if (!s.selected) return null
+    const piece = this.chess.get(s.selected)
+    const pieceName =
+      piece?.type === 'p'
+        ? 'pawn'
+        : piece?.type === 'n'
+          ? 'knight'
+          : piece?.type === 'b'
+            ? 'bishop'
+            : piece?.type === 'r'
+              ? 'rook'
+              : piece?.type === 'q'
+                ? 'queen'
+                : piece?.type === 'k'
+                  ? 'king'
+                  : 'piece'
+    if (s.guardTarget) {
+      return `${s.selected} ${pieceName} is staged for ${s.guardTarget}. Activate ${s.guardTarget} again to confirm the guarded move.`
+    }
+    const targetWord = s.legalMoveCount === 1 ? 'target' : 'targets'
+    const captureLine = s.captureCount
+      ? `${s.captureCount} capture${s.captureCount === 1 ? '' : 's'} available`
+      : 'no captures from this square'
+    return `${s.selected} ${pieceName} selected: ${s.legalMoveCount} legal ${targetWord}; ${captureLine}. Choose a highlighted square or select another piece.`
+  }
 
-    if (san === 'O-O' || san === 'O-O-O') {
-      return 'King housed — your rooks can now coordinate along the back rank.'
-    }
-    if (halfMoves <= 14 && /^Q/.test(san) && !san.includes('=') && !san.includes('#') && !san.includes('+')) {
-      return 'Early queens are easy targets — knights and bishops first.'
-    }
-    if (san.includes('x') && !this.chess.isGameOver()) {
-      const adv = materialAdvantage(this.chess, this.playerColor)
-      if (adv < -50) {
-        return 'You captured but the position worsened — recaptures and counter-threats can steal back what you gave.'
-      }
-      return 'Material won. Verify nothing is left hanging in return.'
-    }
-    if (san.endsWith('+') && !san.includes('x') && halfMoves <= 18) {
-      const adv = materialAdvantage(this.chess, this.playerColor)
-      if (adv <= 20) {
-        return 'A check that doesn\'t win material alerts the king to escape sooner. Each check must threaten something concrete.'
-      }
-    }
-    if (halfMoves <= 12 && /^[ah]/.test(san) && san[1] !== 'x') {
-      return 'Wing pawn moves in the opening often lose time. Development and center first.'
-    }
-    return null
+  /* ─── Coaching tips ────────────────────────────────────────────────── */
+  private computeCoachTip(move: Move, mover: 'w' | 'b'): string | null {
+    if (this.mode === 'idle') return null
+    return moveInsightFor({
+      move,
+      halfMoveCount: this.sanLog.length,
+      materialAfterCp: materialAdvantage(this.chess, mover),
+      playerColor: mover,
+      mode: this.mode as MoveInsightMode,
+    })
   }
 
   tryPlayerMove(from: Square, to: Square, promotion?: PieceSymbol) {
@@ -1449,10 +1480,8 @@ export class GameFlow {
     const motifs = detectTacticalMotifs(this.chess, last, piece.color)
     this.lastTacticalPulse = this.tacticalPulseFromMove(last, playerQuality, motifs)
 
-    /* Coaching — only in match/puzzle scenes for player's own moves */
-    if (this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'duel') {
-      this.lastCoachTip = this.computeCoachTip(last.san)
-    }
+    /* Coaching follows player moves across every board mode. */
+    this.lastCoachTip = this.computeCoachTip(last, piece.color)
 
     if (this.mode === 'puzzle' && this.puzzleScene && this.puzzleSolved()) {
       this.board?.setInteraction(false)
@@ -1586,8 +1615,7 @@ export class GameFlow {
   private playAiMove() {
     this.aiThinking = false
     this.aiTimer = 0
-    /* Clear coaching tip when AI plays — keeps it focused on player actions */
-    this.lastCoachTip = null
+    /* Keep the last player insight visible through the reply. */
     this.lastTacticalPulse = null
     const sc = this.currentScene()
     if (this.isSceneTerminalForCurrentMode()) {
@@ -1862,6 +1890,7 @@ export class GameFlow {
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
+    this.boardSelection = emptyBoardSelection()
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
 
     const sc = this.currentScene()
@@ -1906,6 +1935,7 @@ export class GameFlow {
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.lastAiMoveKey = null
+    this.boardSelection = emptyBoardSelection()
 
     const twoStepUndo =
       (this.mode === 'duel' || sc.type === 'match' || sc.type === 'calibration' || sc.type === 'puzzle') &&
@@ -2068,6 +2098,7 @@ export class GameFlow {
     this.rivalMemory = {}
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
+    this.boardSelection = emptyBoardSelection()
     this.lastDuelSetup = null
     this.pendingRewards = []
     this.pendingInProgressSnapshot = null
