@@ -18,6 +18,10 @@ const CSS_PATH = resolve(HERE, '..', 'style.css')
 const CSS = readFileSync(CSS_PATH, 'utf8')
 
 describe('reduced-motion CSS guarantees', () => {
+  it('declares a global hidden utility that wins against display components', () => {
+    expect(CSS).toMatch(/\.hidden\s*\{\s*display:\s*none\s*!important;\s*\}/)
+  })
+
   it('declares at least one (prefers-reduced-motion: reduce) media block', () => {
     expect(CSS).toMatch(/@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/)
   })

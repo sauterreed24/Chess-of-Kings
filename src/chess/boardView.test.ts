@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { Chess } from 'chess.js'
 import { BoardView } from './boardView'
+import type { BoardSelectionState } from './boardView'
 
 describe('BoardView keyboard navigation', () => {
   it('moves focus with arrow keys in screen/DOM order', () => {
@@ -91,6 +92,88 @@ describe('BoardView keyboard navigation', () => {
     expect(e2.getAttribute('aria-pressed')).toBe('true')
     expect(e2.getAttribute('aria-label')).toContain('selected')
     expect(e4.getAttribute('aria-label')).toContain('legal move target')
+    root.remove()
+  })
+
+  it('reports quiet legal targets and clears selection state', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const states: BoardSelectionState[] = []
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+      onSelectionChange: (state) => states.push(state),
+    })
+    const chess = new Chess()
+    view.draw(chess, null, { mode: 'solo', soloColor: 'w' })
+
+    view.showLegalFrom(chess, 'e2')
+    expect(states[states.length - 1]).toMatchObject({
+      selected: 'e2',
+      legalMoveCount: 2,
+      captureCount: 0,
+      quietMoveCount: 2,
+      guardTarget: null,
+    })
+
+    view.clearSelection()
+    expect(states[states.length - 1]).toMatchObject({
+      selected: null,
+      legalMoveCount: 0,
+      captureCount: 0,
+      quietMoveCount: 0,
+      guardTarget: null,
+    })
+    root.remove()
+  })
+
+  it('reports capture targets in selection state', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const states: BoardSelectionState[] = []
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+      onSelectionChange: (state) => states.push(state),
+    })
+    const chess = new Chess('4k3/8/8/8/3n4/2B5/8/4K3 w - - 0 1')
+    view.draw(chess, null, { mode: 'solo', soloColor: 'w' })
+
+    view.showLegalFrom(chess, 'c3')
+
+    const state = states[states.length - 1]
+    expect(state).toMatchObject({ selected: 'c3', captureCount: 1 })
+    expect(state?.legalMoveCount).toBeGreaterThan(state?.captureCount ?? 0)
+    root.remove()
+  })
+
+  it('reports pending move-guard confirmation targets', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const states: BoardSelectionState[] = []
+    const moves: Array<{ from: string; to: string }> = []
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove(from, to) {
+        moves.push({ from, to })
+      },
+      onSelectionChange: (state) => states.push(state),
+    })
+    view.setMoveGuard(true)
+    view.draw(new Chess(), null, { mode: 'solo', soloColor: 'w' })
+
+    root.querySelector<HTMLButtonElement>('[data-square="e2"]')!.click()
+    root.querySelector<HTMLButtonElement>('[data-square="e4"]')!.click()
+
+    expect(states[states.length - 1]).toMatchObject({
+      selected: 'e2',
+      guardTarget: 'e4',
+      legalMoveCount: 2,
+    })
+    expect(moves).toEqual([])
     root.remove()
   })
 })

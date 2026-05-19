@@ -171,6 +171,30 @@ describe('GameFlow AI / puzzles', () => {
     expect(payload?.boardGuide).toMatch(/side whose turn it is/)
   })
 
+  it('keeps the last player move insight visible after the trainer replies', async () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.jumpToScene(0, 3)
+    onChessUpdate.mockClear()
+
+    flow.tryPlayerMove('e2', 'e4')
+
+    const playerInsight = onChessUpdate.mock.calls.at(-1)?.[0]?.coachTip
+    expect(playerInsight).toMatch(/Center claimed/)
+
+    await vi.advanceTimersByTimeAsync(500)
+
+    const afterReply = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(flow.chess.turn()).toBe('w')
+    expect(afterReply?.coachTip).toBe(playerInsight)
+  })
+
   it('duel aiFlavor prefixes with curated talk when the rival has a profile', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

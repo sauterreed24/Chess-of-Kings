@@ -275,6 +275,27 @@ describe('GameFlow depth systems', () => {
     expect(flow.consumePendingRewards()).toEqual([])
   })
 
+  it('surfaces selected-piece guidance through boardGuide', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    flow.jumpToScene(0, 3)
+
+    flow.board?.showLegalFrom(flow.chess, 'e2')
+
+    expect(latest?.boardGuide).toMatch(/e2 pawn selected: 2 legal targets; no captures/)
+    root.remove()
+  })
+
   it('flushDeferredIO flushes pending UI emit and does not throw', () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {

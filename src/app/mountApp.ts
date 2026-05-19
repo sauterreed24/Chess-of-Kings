@@ -36,6 +36,7 @@ import { deriveCalibrationLens } from './duel/calibrationLens'
 import { createAnnouncer } from './a11y/announcer'
 import { ANNOUNCE_TEMPLATES } from '../data/strings'
 import { getRivalProfile } from '../data/rivals'
+import { syncTitleActionGroups } from './titleActions'
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
@@ -149,6 +150,15 @@ export function mountApp(app: HTMLDivElement) {
   const sfx = createSfxController({
     enabled: localStorage.getItem('cok-sfx-enabled') !== '0',
   })
+
+  function focusWithoutScroll(el: HTMLElement | null | undefined) {
+    if (!el) return
+    try {
+      el.focus({ preventScroll: true })
+    } catch {
+      el.focus()
+    }
+  }
 
   /* ─── Chess UI updater ────────────────────────────────────────── */
 
@@ -371,9 +381,13 @@ export function mountApp(app: HTMLDivElement) {
 
   function syncTitleButtons() {
     const saved = hasSave()
-    titleActionsSave.classList.toggle('hidden', !saved)
-    titleActionsFresh.classList.toggle('hidden', saved)
-    btnResume.disabled = !saved
+    syncTitleActionGroups(saved, {
+      saveGroup: titleActionsSave,
+      freshGroup: titleActionsFresh,
+      resumeButton: btnResume,
+      newButton: btnNew,
+      enterButton: btnEnterArchive,
+    })
   }
 
   function syncMvpFlag() {
@@ -453,7 +467,7 @@ export function mountApp(app: HTMLDivElement) {
     else if (!flow.isInDuelMode()) flow.refreshScene()
     flow.board?.setMoveGuard(moveGuardEnabled)
     syncTitleButtons()
-    btnVestibule.focus()
+    focusWithoutScroll(btnVestibule)
   }
 
   function closeLab() {
@@ -495,13 +509,18 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   function focusTitleEntry() {
-    if (focusBeforeLab && document.contains(focusBeforeLab)) {
-      focusBeforeLab.focus()
+    if (
+      focusBeforeLab &&
+      document.contains(focusBeforeLab) &&
+      !focusBeforeLab.closest('[aria-hidden="true"], .hidden')
+    ) {
+      focusWithoutScroll(focusBeforeLab)
       focusBeforeLab = null
       return
     }
-    if (!btnResume.disabled) btnResume.focus()
-    else btnEnterArchive.focus()
+    focusBeforeLab = null
+    if (!btnResume.disabled) focusWithoutScroll(btnResume)
+    else focusWithoutScroll(btnEnterArchive)
   }
 
   function showTitle() {
@@ -588,7 +607,7 @@ export function mountApp(app: HTMLDivElement) {
       </div>`
       chapterList.appendChild(li)
     })
-    btnChaptersBack.focus()
+    focusWithoutScroll(btnChaptersBack)
   }
 
   function showRewardBundles(bundles: RewardBundle[]) {
@@ -1084,7 +1103,7 @@ export function mountApp(app: HTMLDivElement) {
     setTopLevelScreen('duel')
     setNavActive('duel')
     renderDuelUi()
-    duelList.querySelector<HTMLButtonElement>('.duel-row')?.focus()
+    focusWithoutScroll(duelList.querySelector<HTMLButtonElement>('.duel-row'))
   }
 
   function setBoardVisible(on: boolean) {
@@ -1360,7 +1379,6 @@ export function mountApp(app: HTMLDivElement) {
   btnChapters.addEventListener('click', () => showChapters())
   btnDuel.addEventListener('click', showDuel)
   btnChaptersBack.addEventListener('click', () => {
-    screenChapters.classList.add('hidden')
     showTitle()
   })
   btnVestibule.addEventListener('click', () => { closeLab(); showChapters() })
