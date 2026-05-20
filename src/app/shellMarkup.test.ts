@@ -97,8 +97,16 @@ describe('shell markup structural integrity', () => {
     const overlay = host.querySelector('#reward-overlay')!
     expect(overlay.getAttribute('role')).toBe('dialog')
     expect(overlay.getAttribute('aria-modal')).toBe('true')
+    expect(overlay.hasAttribute('aria-live')).toBe(false)
     expect(overlay.getAttribute('aria-hidden')).toBe('true')
     expect(overlay.classList.contains('hidden')).toBe(true)
+  })
+
+  it('declares player preference toggles with pressed state', () => {
+    const host = document.createElement('div')
+    host.innerHTML = getShellMarkup()
+    expect(host.querySelector('#btn-sfx')?.getAttribute('aria-pressed')).toBe('true')
+    expect(host.querySelector('#btn-move-guard')?.getAttribute('aria-pressed')).toBe('false')
   })
 
   it('declares the lab overlay hidden from assistive tech until opened', () => {

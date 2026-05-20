@@ -38,6 +38,25 @@ import { ANNOUNCE_TEMPLATES } from '../data/strings'
 import { getRivalProfile } from '../data/rivals'
 import { syncTitleActionGroups } from './titleActions'
 
+const SFX_PREF_KEY = 'cok-sfx-enabled'
+const MOVE_GUARD_PREF_KEY = 'cok-move-guard'
+
+function readPreference(key: string): string | null {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function writePreference(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value)
+  } catch {
+    // Preference toggles should still work for the current session when storage is unavailable.
+  }
+}
+
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
 
@@ -147,10 +166,10 @@ export function mountApp(app: HTMLDivElement) {
   let announcedOutcomeKey = ''
   let latestResolvedForRecap: ChessUiPayload | null = null
   let pendingChapterPrompt: { completedTitle: string; nextTitle: string | null } | null = null
-  let moveGuardEnabled = localStorage.getItem('cok-move-guard') === '1'
+  let moveGuardEnabled = readPreference(MOVE_GUARD_PREF_KEY) === '1'
   let focusBeforeLab: HTMLElement | null = null
   const sfx = createSfxController({
-    enabled: localStorage.getItem('cok-sfx-enabled') !== '0',
+    enabled: readPreference(SFX_PREF_KEY) !== '0',
   })
 
   function focusWithoutScroll(el: HTMLElement | null | undefined) {
@@ -160,6 +179,18 @@ export function mountApp(app: HTMLDivElement) {
     } catch {
       el.focus()
     }
+  }
+
+  function syncPreferenceButtons() {
+    btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
+    btnSfx.setAttribute('aria-pressed', sfx.enabled ? 'true' : 'false')
+    btnSfx.setAttribute('aria-label', sfx.enabled ? 'Sound effects are on' : 'Sound effects are off')
+    btnMoveGuard.textContent = `Move Guard: ${moveGuardEnabled ? 'On' : 'Off'}`
+    btnMoveGuard.setAttribute('aria-pressed', moveGuardEnabled ? 'true' : 'false')
+    btnMoveGuard.setAttribute(
+      'aria-label',
+      moveGuardEnabled ? 'Move Guard is on' : 'Move Guard is off',
+    )
   }
 
   /* ─── Chess UI updater ────────────────────────────────────────── */
@@ -1537,14 +1568,14 @@ export function mountApp(app: HTMLDivElement) {
   btnVestibule.addEventListener('click', () => { closeLab(); showChapters() })
   btnSfx.addEventListener('click', () => {
     sfx.setEnabled(!sfx.enabled)
-    localStorage.setItem('cok-sfx-enabled', sfx.enabled ? '1' : '0')
-    btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
+    writePreference(SFX_PREF_KEY, sfx.enabled ? '1' : '0')
+    syncPreferenceButtons()
     if (sfx.enabled) sfx.unlock()
   })
   btnMoveGuard.addEventListener('click', () => {
     moveGuardEnabled = !moveGuardEnabled
-    localStorage.setItem('cok-move-guard', moveGuardEnabled ? '1' : '0')
-    btnMoveGuard.textContent = `Move Guard: ${moveGuardEnabled ? 'On' : 'Off'}`
+    writePreference(MOVE_GUARD_PREF_KEY, moveGuardEnabled ? '1' : '0')
+    syncPreferenceButtons()
     flow.board?.setMoveGuard(moveGuardEnabled)
   })
   btnRecoveryDismiss.addEventListener('click', () => {
@@ -1582,8 +1613,7 @@ export function mountApp(app: HTMLDivElement) {
   window.addEventListener('pagehide', () => {
     flow.flushDeferredIO()
   })
-  btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
-  btnMoveGuard.textContent = `Move Guard: ${moveGuardEnabled ? 'On' : 'Off'}`
+  syncPreferenceButtons()
 
   syncTitleButtons()
   syncMvpFlag()
