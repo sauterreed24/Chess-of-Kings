@@ -8,6 +8,7 @@ import {
   isSemiOpenFile,
   opponentOf,
   pawnDefendsSquare,
+  popCount,
   rankOfIndex,
   squareIndex,
 } from './bitboard'
@@ -142,11 +143,23 @@ function isolatedPawnPenalty(position: PositionAnalysis, c: Color): number {
 }
 
 const PASSED_BONUS = [0, 0, 10, 18, 30, 52, 82, 0]
+const CORE_CENTER_MASK = boxMask(3, 4, 3, 4)
+const EXTENDED_CENTER_MASK = boxMask(2, 5, 2, 5) & ~CORE_CENTER_MASK
 const RANK_MASKS: readonly bigint[] = Array.from({ length: 8 }, (_, rank) => {
   let mask = 0n
   for (let file = 0; file < 8; file++) mask |= SQUARE_MASKS[rank * 8 + file]!
   return mask
 })
+
+function boxMask(fileMin: number, fileMax: number, rankMin: number, rankMax: number): bigint {
+  let mask = 0n
+  for (let rank = rankMin; rank <= rankMax; rank++) {
+    for (let file = fileMin; file <= fileMax; file++) {
+      mask |= SQUARE_MASKS[rank * 8 + file]!
+    }
+  }
+  return mask
+}
 
 function passedPawnBonus(position: PositionAnalysis, c: Color): number {
   let bonus = 0
@@ -228,7 +241,26 @@ function pieceCoordinationBonus(position: PositionAnalysis, c: Color): number {
   return bonus
 }
 
-/* ─── King safety ────────────────────────────────────────────────────── */
+/* ─── Activity, pressure, and king safety ────────────────────────────── */
+
+function mobilityBonus(position: PositionAnalysis, c: Color, endgame: boolean): number {
+  const perMove = endgame ? 0.55 : 0.4
+  return Math.round(position.mobility[c] * perMove)
+}
+
+function kingPressureBonus(position: PositionAnalysis, c: Color, endgame: boolean): number {
+  if (endgame) return 0
+  return position.kingPressure[c] * 7
+}
+
+function loosePiecePressureBonus(position: PositionAnalysis, c: Color): number {
+  return Math.min(90, position.loosePiecePressure[c])
+}
+
+function centerControlBonus(position: PositionAnalysis, c: Color): number {
+  return popCount(position.attacks[c] & CORE_CENTER_MASK) * 5 +
+    popCount(position.attacks[c] & EXTENDED_CENTER_MASK) * 2
+}
 
 function kingSafetyPenalty(position: PositionAnalysis, c: Color): number {
   const homeRank = c === 'w' ? 0 : 7
@@ -291,6 +323,14 @@ export function materialAndPst(
   score -= bishopPairBonus(position, opp)
   score += pieceCoordinationBonus(position, forColor)
   score -= pieceCoordinationBonus(position, opp)
+  score += mobilityBonus(position, forColor, eg)
+  score -= mobilityBonus(position, opp, eg)
+  score += kingPressureBonus(position, forColor, eg)
+  score -= kingPressureBonus(position, opp, eg)
+  score += loosePiecePressureBonus(position, forColor)
+  score -= loosePiecePressureBonus(position, opp)
+  score += centerControlBonus(position, forColor)
+  score -= centerControlBonus(position, opp)
   if (!eg) {
     score -= kingSafetyPenalty(position, forColor)
     score += kingSafetyPenalty(position, opp)

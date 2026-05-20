@@ -15,6 +15,10 @@ export interface PositionAnalysis {
   occupancy: ColorMap<bigint> & { all: bigint }
   pawnsByFile: ColorMap<number[]>
   pieceList: PositionPiece[]
+  attacks: ColorMap<bigint>
+  mobility: ColorMap<number>
+  kingPressure: ColorMap<number>
+  loosePiecePressure: ColorMap<number>
   heavyPieceCount: number
   nonKingPieceCount: number
   bishopCount: ColorMap<number>
@@ -43,6 +47,29 @@ const WHITE_PASSED_MASKS: readonly bigint[] = buildPassedPawnMasks('w')
 const BLACK_PASSED_MASKS: readonly bigint[] = buildPassedPawnMasks('b')
 const WHITE_PAWN_ATTACKERS_TO: readonly bigint[] = buildPawnAttackersTo('w')
 const BLACK_PAWN_ATTACKERS_TO: readonly bigint[] = buildPawnAttackersTo('b')
+const WHITE_PAWN_ATTACKS_FROM: readonly bigint[] = buildPawnAttacksFrom('w')
+const BLACK_PAWN_ATTACKS_FROM: readonly bigint[] = buildPawnAttacksFrom('b')
+const KNIGHT_ATTACKS: readonly bigint[] = buildJumpAttackMasks([
+  [1, 2], [2, 1], [2, -1], [1, -2],
+  [-1, -2], [-2, -1], [-2, 1], [-1, 2],
+])
+const KING_ATTACKS: readonly bigint[] = buildJumpAttackMasks([
+  [-1, -1], [0, -1], [1, -1],
+  [-1, 0],           [1, 0],
+  [-1, 1],  [0, 1],  [1, 1],
+])
+const BISHOP_DIRECTIONS: readonly Direction[] = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+const ROOK_DIRECTIONS: readonly Direction[] = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+const LOOSE_PRESSURE_VALUE: Record<PieceSymbol, number> = {
+  p: 8,
+  n: 18,
+  b: 18,
+  r: 28,
+  q: 48,
+  k: 0,
+}
+
+type Direction = readonly [number, number]
 
 function emptyPieceBitboards(): PieceBitboards {
   return { p: 0n, n: 0n, b: 0n, r: 0n, q: 0n, k: 0n }
@@ -76,6 +103,73 @@ function buildPawnAttackersTo(color: Color): bigint[] {
   })
 }
 
+function buildPawnAttacksFrom(color: Color): bigint[] {
+  return Array.from({ length: 64 }, (_, index) => {
+    const file = fileOfIndex(index)
+    const rank = rankOfIndex(index)
+    const attackRank = color === 'w' ? rank + 1 : rank - 1
+    if (attackRank < 0 || attackRank > 7) return 0n
+    let mask = 0n
+    if (file > 0) mask |= SQUARE_MASKS[attackRank * 8 + file - 1]!
+    if (file < 7) mask |= SQUARE_MASKS[attackRank * 8 + file + 1]!
+    return mask
+  })
+}
+
+function buildJumpAttackMasks(offsets: readonly Direction[]): bigint[] {
+  return Array.from({ length: 64 }, (_, index) => {
+    const file = fileOfIndex(index)
+    const rank = rankOfIndex(index)
+    let mask = 0n
+    for (const [df, dr] of offsets) {
+      const f = file + df
+      const r = rank + dr
+      if (f >= 0 && f < 8 && r >= 0 && r < 8) mask |= SQUARE_MASKS[r * 8 + f]!
+    }
+    return mask
+  })
+}
+
+function slidingAttacksFrom(index: number, occupied: bigint, directions: readonly Direction[]): bigint {
+  const file = fileOfIndex(index)
+  const rank = rankOfIndex(index)
+  let mask = 0n
+  for (const [df, dr] of directions) {
+    let f = file + df
+    let r = rank + dr
+    while (f >= 0 && f < 8 && r >= 0 && r < 8) {
+      const squareMask = SQUARE_MASKS[r * 8 + f]!
+      mask |= squareMask
+      if ((occupied & squareMask) !== 0n) break
+      f += df
+      r += dr
+    }
+  }
+  return mask
+}
+
+function attacksFromPiece(piece: PositionPiece, occupied: bigint): bigint {
+  switch (piece.type) {
+    case 'p':
+      return (piece.color === 'w' ? WHITE_PAWN_ATTACKS_FROM : BLACK_PAWN_ATTACKS_FROM)[piece.index]!
+    case 'n':
+      return KNIGHT_ATTACKS[piece.index]!
+    case 'b':
+      return slidingAttacksFrom(piece.index, occupied, BISHOP_DIRECTIONS)
+    case 'r':
+      return slidingAttacksFrom(piece.index, occupied, ROOK_DIRECTIONS)
+    case 'q':
+      return (
+        slidingAttacksFrom(piece.index, occupied, BISHOP_DIRECTIONS) |
+        slidingAttacksFrom(piece.index, occupied, ROOK_DIRECTIONS)
+      )
+    case 'k':
+      return KING_ATTACKS[piece.index]!
+    default:
+      return 0n
+  }
+}
+
 export function squareIndex(square: Square): number {
   return (Number(square[1]) - 1) * 8 + (square.charCodeAt(0) - 97)
 }
@@ -97,6 +191,15 @@ export function opponentOf(color: Color): Color {
   return color === 'w' ? 'b' : 'w'
 }
 
+export function popCount(mask: bigint): number {
+  let n = 0
+  while (mask !== 0n) {
+    mask &= mask - 1n
+    n++
+  }
+  return n
+}
+
 export function analyzePosition(chess: Chess): PositionAnalysis {
   const pieces: ColorMap<PieceBitboards> = {
     w: emptyPieceBitboards(),
@@ -109,6 +212,10 @@ export function analyzePosition(chess: Chess): PositionAnalysis {
   }
   const bishopCount: ColorMap<number> = { w: 0, b: 0 }
   const kingIndex: ColorMap<number | null> = { w: null, b: null }
+  const attacks: ColorMap<bigint> = { w: 0n, b: 0n }
+  const mobility: ColorMap<number> = { w: 0, b: 0 }
+  const kingPressure: ColorMap<number> = { w: 0, b: 0 }
+  const loosePiecePressure: ColorMap<number> = { w: 0, b: 0 }
   const pieceList: PositionPiece[] = []
   let heavyPieceCount = 0
   let nonKingPieceCount = 0
@@ -139,11 +246,38 @@ export function analyzePosition(chess: Chess): PositionAnalysis {
     }
   }
 
+  for (const piece of pieceList) {
+    const attackMask = attacksFromPiece(piece, occupancy.all)
+    attacks[piece.color] |= attackMask
+    mobility[piece.color] += popCount(attackMask & ~occupancy[piece.color])
+  }
+
+  for (const color of ['w', 'b'] as const) {
+    const enemy = opponentOf(color)
+    const enemyKing = kingIndex[enemy]
+    if (enemyKing !== null) {
+      kingPressure[color] = popCount(attacks[color] & (KING_ATTACKS[enemyKing]! | SQUARE_MASKS[enemyKing]!))
+    }
+  }
+
+  for (const piece of pieceList) {
+    if (piece.type === 'k') continue
+    const enemy = opponentOf(piece.color)
+    const mask = SQUARE_MASKS[piece.index]!
+    if ((attacks[enemy] & mask) !== 0n && (attacks[piece.color] & mask) === 0n) {
+      loosePiecePressure[enemy] += LOOSE_PRESSURE_VALUE[piece.type]
+    }
+  }
+
   return {
     pieces,
     occupancy,
     pawnsByFile,
     pieceList,
+    attacks,
+    mobility,
+    kingPressure,
+    loosePiecePressure,
     heavyPieceCount,
     nonKingPieceCount,
     bishopCount,
@@ -178,4 +312,8 @@ export function isOpenFile(position: PositionAnalysis, file: number): boolean {
 
 export function isSemiOpenFile(position: PositionAnalysis, color: Color, file: number): boolean {
   return (position.pieces[color].p & FILE_MASKS[file]!) === 0n
+}
+
+export function isSquareAttacked(position: PositionAnalysis, byColor: Color, index: number): boolean {
+  return (position.attacks[byColor] & SQUARE_MASKS[index]!) !== 0n
 }

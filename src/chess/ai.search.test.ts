@@ -10,5 +10,12 @@ describe('alpha-beta search pipeline', () => {
 
     expect(move?.san).toBe('Rf8#')
   })
-})
 
+  it('prioritizes winning an undefended queen in a quiet material position', () => {
+    const chess = new Chess('7k/8/8/8/4q3/8/8/K3R3 w - - 0 1')
+
+    const move = findBestMove(chess, 2, 'engine', 250)
+
+    expect(move?.san).toBe('Rxe4')
+  })
+})
