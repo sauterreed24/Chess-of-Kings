@@ -23,11 +23,25 @@ suppression, expanded tests (**231**), README refresh.
 ## [Unreleased] — Maximum Effort Pass
 
 A multi-pass polish, refactor, and test push. Current gate status in
-this branch: lint, typecheck, full tests (231 cases), build, and UI
+this branch: lint, typecheck, full tests (293 cases), build, and UI
 smoke are all passing.
 
 ### Added
 
+- **Piece-movement physics (`src/chess/boardAnimation.ts`)** — a DOM-free,
+  fully unit-tested geometry layer behind the board's visual state engine.
+  Carries now follow a *lift → eased arc → settle* trajectory (the easing is
+  baked into the spatial sampling so the carry can run on a `linear` GPU
+  timeline with translate+scale only — no per-frame layout or paint). The
+  module also derives the captured square (handling en-passant) and the
+  castling rook's travel. `BoardView` consumes it to: dissolve a captured
+  piece (fade + shrink + topple on the correct square, including en-passant),
+  carry the **castling rook in tandem with the king** (previously castling
+  did not animate at all), and squash-settle each piece as it lands. A single
+  `flyGen` token cancels stale carries so a fast follow-up move can never
+  leave a destination piece hidden. Pure helpers covered by
+  `boardAnimation.test.ts` (22 cases); DOM orchestration covered by
+  `boardView.animation.test.ts` (7 cases) under stubbed layout/WAAPI.
 - **Hanging-piece coach (`src/app/hangingInsight.ts`)** — the highest-value
   real-world lesson. After every match / duel / freeplay move it runs a
   one-exchange static check over the opponent's *legal* captures (so pinned
@@ -103,6 +117,21 @@ smoke are all passing.
 
 ### Changed
 
+- **Flying-piece skin theming fixed (`src/style.css`)** — the carried sprite
+  lives on `<body>`, but its skin colours were keyed off
+  `.chess-grid[data-skin] .piece-fly`, an ancestor that is never present
+  there, so every carry rendered in the default ivory/ink regardless of skin
+  (most visible on **Obsidian Neon**, which carried as plain cream instead of
+  glowing). `BoardView` now stamps `data-skin` on the sprite itself and the
+  rules are re-scoped to `.piece-fly[data-skin]`; capture sprites inherit the
+  same theming. Verified in-browser across all four skins.
+- **Interactive vector polish (`src/style.css`)** — a selected piece now lifts
+  off the board (`translateY` + scale) to reinforce tap-to-move, and the hover
+  lift uses the project's spring-out easing. All piece motion remains
+  `transform`-only (compositor-friendly) and is gated by `prefers-reduced-motion`
+  (JS guard in `BoardView` plus the universal CSS clamp) and trimmed under the
+  `perf-lean` profile (shorter carry, fewer arc samples, no capture dissolve or
+  landing squash).
 - **Chapter II ladder scripts** tightened for legal black SAN sequences
   under typical white replies; Rowan/Vega after-match copy aligned with
   those lines.
