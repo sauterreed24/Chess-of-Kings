@@ -1,5 +1,49 @@
-const CACHE_NAME = 'cok-static-v2'
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './favicon.svg']
+const CACHE_NAME = 'cok-static-v3'
+const APP_SHELL = [
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './favicon.svg',
+  './apple-touch-icon.png',
+]
+
+function isHtmlRequest(request) {
+  const accept = request.headers.get('accept') || ''
+  return request.mode === 'navigate' || request.destination === 'document' || accept.includes('text/html')
+}
+
+async function cacheResponse(request, response) {
+  if (!response || response.status !== 200 || response.type !== 'basic') return
+  const cache = await caches.open(CACHE_NAME)
+  await cache.put(request, response.clone())
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request)
+    await cacheResponse(request, response)
+    return response
+  } catch {
+    return (await caches.match(request)) || (await caches.match('./index.html')) || Response.error()
+  }
+}
+
+async function staleWhileRevalidate(request) {
+  const cached = await caches.match(request)
+  const network = fetch(request).then(async (response) => {
+    await cacheResponse(request, response)
+    return response
+  })
+  if (cached) {
+    network.catch(() => {})
+    return cached
+  }
+  try {
+    return await network
+  } catch {
+    return Response.error()
+  }
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -20,15 +64,5 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return
   const url = new URL(request.url)
   if (url.origin !== self.location.origin) return
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached
-      return fetch(request).then((response) => {
-        if (!response || response.status !== 200 || response.type !== 'basic') return response
-        const copy = response.clone()
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy))
-        return response
-      })
-    }),
-  )
+  event.respondWith(isHtmlRequest(request) ? networkFirst(request) : staleWhileRevalidate(request))
 })

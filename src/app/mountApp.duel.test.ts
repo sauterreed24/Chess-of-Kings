@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { mountApp } from './mountApp'
 import { hasSave } from './storage'
 
@@ -19,6 +19,35 @@ describe('mounted duel dossier', () => {
     app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
 
     expect(hasSave()).toBe(true)
+  })
+
+  it('keeps preference toggles accessible even when persistence fails', () => {
+    localStorage.setItem('cok-sfx-enabled', '0')
+    localStorage.setItem('cok-move-guard', '1')
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    const sound = app.querySelector<HTMLButtonElement>('#btn-sfx')!
+    const moveGuard = app.querySelector<HTMLButtonElement>('#btn-move-guard')!
+    expect(sound.textContent).toBe('Sound: Off')
+    expect(sound.getAttribute('aria-pressed')).toBe('false')
+    expect(sound.getAttribute('aria-label')).toBe('Sound effects are off')
+    expect(moveGuard.textContent).toBe('Move Guard: On')
+    expect(moveGuard.getAttribute('aria-pressed')).toBe('true')
+    expect(moveGuard.getAttribute('aria-label')).toBe('Move Guard is on')
+
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'QuotaExceededError')
+    })
+    expect(() => sound.click()).not.toThrow()
+    expect(sound.textContent).toBe('Sound: On')
+    expect(sound.getAttribute('aria-pressed')).toBe('true')
+    expect(sound.getAttribute('aria-label')).toBe('Sound effects are on')
+    expect(() => moveGuard.click()).not.toThrow()
+    expect(moveGuard.textContent).toBe('Move Guard: Off')
+    expect(moveGuard.getAttribute('aria-pressed')).toBe('false')
+    expect(moveGuard.getAttribute('aria-label')).toBe('Move Guard is off')
   })
 
   it('keeps duel launch controls in the first dossier section without duplicate ids', () => {

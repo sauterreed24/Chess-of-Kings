@@ -124,8 +124,8 @@ export function getShellMarkup(): string {
                       <button type="button" class="ghost ghost--sound" id="btn-recovery-dismiss">Dismiss</button>
                     </div>
                     <div class="instrument-toggles">
-                      <button type="button" class="ghost ghost--sound" id="btn-sfx">Sound: On</button>
-                      <button type="button" class="ghost ghost--sound" id="btn-move-guard">Move Guard: Off</button>
+                      <button type="button" class="ghost ghost--sound" id="btn-sfx" aria-pressed="true">Sound: On</button>
+                      <button type="button" class="ghost ghost--sound" id="btn-move-guard" aria-pressed="false">Move Guard: Off</button>
                     </div>
                   </div>
                   <div class="calibration-rail hidden" id="calibration-rail" aria-label="Calibration progress">
@@ -169,7 +169,7 @@ export function getShellMarkup(): string {
         </div>
       </div>
 
-      <div id="reward-overlay" class="reward-overlay hidden" role="dialog" aria-modal="true" aria-live="polite" aria-label="Rewards and unlocks" aria-hidden="true"></div>
+      <div id="reward-overlay" class="reward-overlay hidden" role="dialog" aria-modal="true" aria-label="Rewards and unlocks" aria-hidden="true"></div>
       <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
     </main>
   `
