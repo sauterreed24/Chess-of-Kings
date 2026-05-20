@@ -62,6 +62,7 @@ src/
 │   ├── ai.ts                Alpha-beta search with transposition table,
 │   │                        move ordering, profile-driven blunder + risk.
 │   ├── evaluate.ts          Material + PST + style-bias evaluation.
+│   ├── bitboard.ts          Compact board masks used by evaluation/search.
 │   ├── aiProfiles.ts        Phase adaptation + resolveProfileBy* helpers.
 │   ├── motifs.ts            Tactical motif detector (fork / pin / skewer / …).
 │   ├── openings.ts          Tiny opening book + getBookTopLines for dossiers.
