@@ -4,7 +4,7 @@ import { LOCKED_ROADMAP } from '../data/roadmap'
 import { GameFlow } from './gameFlow'
 import type { ChessUiPayload } from './gameFlow'
 import { clearSave, hasSave } from './storage'
-import type { Chapter, MatchScene, Scene, PieceSkinId, RewardBundle } from '../types'
+import type { Chapter, DuelRosterEntry, DuelVariant, MatchScene, Scene, PieceSkinId, RewardBundle } from '../types'
 import { PIECE_SKIN_LABEL } from '../chess/skins'
 import { getBookTopLines } from '../chess/openings'
 import { escapeHtml } from './htmlEscape'
@@ -484,6 +484,10 @@ export function mountApp(app: HTMLDivElement) {
     flow.setLastScreen('chapters')
   }
 
+  function closeLabIfActive() {
+    if (labOverlay.classList.contains('lab-overlay--active')) closeLab()
+  }
+
   function setSectionVisibility(el: HTMLElement, visible: boolean) {
     el.classList.toggle('hidden', !visible)
     el.setAttribute('aria-hidden', visible ? 'false' : 'true')
@@ -527,7 +531,7 @@ export function mountApp(app: HTMLDivElement) {
 
   function showTitle() {
     closeRewardOverlay()
-    flow.setLastScreen('title')
+    if (hasSave()) flow.setLastScreen('title')
     labOverlay.classList.remove('lab-overlay--active')
     labOverlay.setAttribute('aria-hidden', 'true')
     labOverlay.removeAttribute('aria-modal')
@@ -885,6 +889,43 @@ export function mountApp(app: HTMLDivElement) {
             </div>
             <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
             ${primaryVariant ? `<p class="opponent-note">${escapeHtml(primaryVariant.bio)}</p>` : ''}
+            <div class="duel-launch" aria-label="Duel setup">
+              <div class="duel-launch__grid">
+                <div class="duel-launch__field">
+                  <label class="teach-label" for="duel-variant">Variant</label>
+                  <select id="duel-variant" class="duel-select">${variantOptions}</select>
+                </div>
+                <div class="duel-launch__field">
+                  <label class="teach-label" for="duel-color">Color</label>
+                  <select id="duel-color" class="duel-select">
+                    <option value="w">White</option>
+                    <option value="b">Black</option>
+                  </select>
+                </div>
+                <div class="duel-launch__field">
+                  <label class="teach-label" for="duel-difficulty">Difficulty Profile</label>
+                  <select id="duel-difficulty" class="duel-select">
+                    <option value="novice">Novice (forgiving)</option>
+                    <option value="balanced" selected>Balanced (default)</option>
+                    <option value="relentless">Relentless (boss-like)</option>
+                  </select>
+                </div>
+                <div class="duel-launch__field">
+                  <label class="teach-label" for="duel-skin">Piece Skin</label>
+                  <select id="duel-skin" class="duel-select">${skinOptions}</select>
+                </div>
+              </div>
+              <div class="duel-launch__actions">
+                <button type="button" class="ghost" id="btn-auto-duel">Auto-Calibrate Duel</button>
+                <button type="button" class="ghost" id="btn-preview-skin">Preview Skin</button>
+                <button type="button" class="primary" id="btn-start-duel">Start Duel</button>
+                <button type="button" class="secondary" id="btn-mastery-trial"
+                  aria-label="Begin a Mastery Trial against ${escapeHtml(rival.opponentName)} at ceiling difficulty">
+                  Mastery Trial
+                </button>
+              </div>
+              <p class="mastery-trial-hint opponent-note">Mastery Trial locks Relentless difficulty for one match and the highest-tier skin unlock path.</p>
+            </div>
             <div class="dossier-stat-grid" aria-label="Duel history">
               <span><strong>${wins}</strong><small>Wins</small></span>
               <span><strong>${losses}</strong><small>Losses</small></span>
@@ -929,29 +970,6 @@ export function mountApp(app: HTMLDivElement) {
               <h4>Opening Watchlist</h4>
               <ul id="duel-opening-watch">${openingWatch(unlockedVariants[0]!.id).map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
             </div>
-            <label class="teach-label">Variant</label>
-            <select id="duel-variant" class="duel-select">${variantOptions}</select>
-            <label class="teach-label">Color</label>
-            <select id="duel-color" class="duel-select">
-              <option value="w">White</option>
-              <option value="b">Black</option>
-            </select>
-            <label class="teach-label">Difficulty Profile</label>
-            <select id="duel-difficulty" class="duel-select">
-              <option value="novice">Novice (forgiving)</option>
-              <option value="balanced" selected>Balanced (default)</option>
-              <option value="relentless">Relentless (boss-like)</option>
-            </select>
-            <button type="button" class="ghost" id="btn-auto-duel">Auto-Calibrate Duel</button>
-            <label class="teach-label">Piece Skin</label>
-            <select id="duel-skin" class="duel-select">${skinOptions}</select>
-            <button type="button" class="primary" id="btn-start-duel">Start Duel</button>
-            <button type="button" class="secondary" id="btn-mastery-trial"
-              aria-label="Begin a Mastery Trial against ${escapeHtml(rival.opponentName)} at ceiling difficulty">
-              Mastery Trial · Ceiling
-            </button>
-            <p class="mastery-trial-hint opponent-note">Locks Relentless difficulty for one match — highest-tier skin unlock.</p>
-            <button type="button" class="ghost" id="btn-preview-skin">Preview Skin In Board</button>
           </div>`
         duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
           const val = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? 'classic-royal') as PieceSkinId
@@ -1079,7 +1097,10 @@ export function mountApp(app: HTMLDivElement) {
           flow.setPieceSkin(skin)
           const ok = flow.startDuel(rival.opponentId, variantId, color, undefined, difficulty)
           if (ok) {
+            const variant = unlockedVariants.find((v) => v.id === variantId) ?? unlockedVariants[0]!
+            renderDuelLabBrief(rival, variant, color, difficulty)
             openLab()
+            updateAdvance(flow)
           }
         })
         duelPanel.querySelector<HTMLButtonElement>('#btn-mastery-trial')?.addEventListener('click', () => {
@@ -1092,7 +1113,9 @@ export function mountApp(app: HTMLDivElement) {
           flow.setPieceSkin(skin)
           const ok = flow.startDuel(rival.opponentId, variantId, color, undefined, 'relentless')
           if (ok) {
+            renderDuelLabBrief(rival, unlockedVariants[unlockedVariants.length - 1]!, color, 'relentless')
             openLab()
+            updateAdvance(flow)
           }
         })
       })
@@ -1110,6 +1133,87 @@ export function mountApp(app: HTMLDivElement) {
 
   function setBoardVisible(on: boolean) {
     boardPanel.classList.toggle('instrument-column--hidden', !on)
+  }
+
+  function renderDuelLabBrief(
+    rival: DuelRosterEntry,
+    variant: DuelVariant,
+    playerColor: 'w' | 'b',
+    difficulty: 'novice' | 'balanced' | 'relentless',
+  ) {
+    const colorLabel = playerColor === 'w' ? 'White' : 'Black'
+    const difficultyLabel =
+      difficulty === 'novice'
+        ? 'Novice'
+        : difficulty === 'relentless'
+          ? 'Relentless'
+          : 'Balanced'
+    currentSceneType = null
+    lastAdvanceSig = ''
+    advanceWasReady = false
+    lastLedgerKey = ''
+    lastCalKey = ''
+    lastCapturedFen = ''
+    lastEvalScore = Number.NaN
+    announcedOutcomeKey = ''
+
+    app.querySelector('#play-chapter-label')!.textContent = `Duel Archive · ${rival.era}`
+    app.querySelector('#play-chapter-title')!.textContent = rival.opponentName
+    app.querySelector('#play-chapter-sub')!.textContent = variant.label
+    app.querySelector('#play-philosophy')!.textContent = rival.quote
+    labEraLabel.textContent = `Duel Archive · ${rival.era}`
+    document.getElementById('screen-play')?.setAttribute('data-theme', 'theme-ancient')
+    document.getElementById('play-atelier')?.classList.toggle('play-atelier--solo', false)
+    sceneProgress.textContent = `Duel · ${colorLabel}`
+    sceneTag.textContent = `${variant.label} duel`
+
+    narrativeBody.classList.remove('narrative-body--dialogue', 'narrative-body--interlude', 'narrative-body--no-fade')
+    narrativeBody.scrollTop = 0
+    chapterRail.classList.add('hidden')
+    chapterRail.innerHTML = ''
+    manuscriptPanel.classList.remove('manuscript-panel--with-rail')
+    showEvalBar = false
+    evalBarWrap.classList.add('hidden')
+    capturedTop.classList.add('hidden')
+    capturedBot.classList.add('hidden')
+    capturedTop.innerHTML = ''
+    capturedBot.innerHTML = ''
+    calibrationRail.classList.add('hidden')
+    moveLedger.innerHTML = ''
+    boardStage.classList.remove('board-stage--victory', 'board-stage--loss')
+    setBoardVisible(true)
+    btnReset.disabled = false
+    btnNext.disabled = true
+    btnNext.classList.remove('primary--ready')
+    btnNext.classList.add('hidden')
+    btnNextHint.textContent = ''
+    lessonNote.textContent = 'Duel results are recorded in the archive and shape future rival memory.'
+
+    narrativeBody.innerHTML = `
+      <div class="match-card">
+        <div class="match-card__top">
+          <div class="match-card__header">
+            <span class="match-card__vs">Duel</span>
+            <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
+          </div>
+          <div class="match-card__meta">
+            <span>${escapeHtml(difficultyLabel)}</span>
+            <span>${escapeHtml(colorLabel)} pieces</span>
+          </div>
+        </div>
+        <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
+        <p class="opponent-note">${escapeHtml(variant.bio)}</p>
+        <p class="match-mandate">No move cap. Play until checkmate or a true dead draw.</p>
+        <div class="reward-card">
+          <h4>Counter-Prep Briefing</h4>
+          <ul>
+            <li><strong>Strengths:</strong> ${escapeHtml(rival.strengths)}</li>
+            <li><strong>Weaknesses:</strong> ${escapeHtml(rival.weaknesses)}</li>
+            <li><strong>Style:</strong> ${rival.styleTags.map((tag) => escapeHtml(tag)).join(' · ')}</li>
+          </ul>
+        </div>
+      </div>`
+    window.requestAnimationFrame(syncNarrativeFade)
   }
 
   /* ─── renderScene ─────────────────────────────────────────────── */
@@ -1136,6 +1240,7 @@ export function mountApp(app: HTMLDivElement) {
     narrativeBody.scrollTop = 0
     announcedOutcomeKey = ''
     btnReset.disabled = true
+    btnNext.classList.remove('hidden')
     btnNextHint.textContent = ''
     const showBoard = flow.sceneUsesBoard(scene)
     document.getElementById('play-atelier')?.classList.toggle('play-atelier--solo', !showBoard)
@@ -1304,6 +1409,7 @@ export function mountApp(app: HTMLDivElement) {
      * it is reachable without hunting — critical on small phone screens. */
     if (becameReady && !narrative) {
       window.requestAnimationFrame(() => {
+        if (typeof btnNext.scrollIntoView !== 'function') return
         try {
           const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
           btnNext.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' })
@@ -1413,9 +1519,18 @@ export function mountApp(app: HTMLDivElement) {
     flow.newGame()
     showChapters()
   })
-  btnTitle.addEventListener('click', showTitle)
-  btnChapters.addEventListener('click', () => showChapters())
-  btnDuel.addEventListener('click', showDuel)
+  btnTitle.addEventListener('click', () => {
+    closeLabIfActive()
+    showTitle()
+  })
+  btnChapters.addEventListener('click', () => {
+    closeLabIfActive()
+    showChapters()
+  })
+  btnDuel.addEventListener('click', () => {
+    closeLabIfActive()
+    showDuel()
+  })
   btnChaptersBack.addEventListener('click', () => {
     showTitle()
   })

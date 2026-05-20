@@ -471,6 +471,9 @@ html, body {
   .play-atelier { grid-template-columns: 1fr; }
   .instrument-column { max-width: 420px; margin: 0 auto; }
   .duel-wrap { grid-template-columns: 1fr; }
+  .duel-launch__actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .chapter-rail { display: none; }
   .manuscript-panel,
   .manuscript-panel--with-rail { padding: 1.25rem 1.3rem 1.45rem 1.45rem; }
@@ -2038,6 +2041,55 @@ body {
   letter-spacing: 0.08em;
 }
 
+.duel-launch {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.8rem 0 0.95rem;
+  padding: 0.75rem 0.82rem;
+  border: 1px solid rgba(232,201,126,0.26);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, rgba(232,201,126,0.08), transparent 38%),
+    linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.12));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.duel-launch__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.duel-launch__field {
+  display: grid;
+  gap: 0.22rem;
+  min-width: 0;
+}
+
+.duel-launch__field .teach-label {
+  margin: 0;
+}
+
+.duel-launch__actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.duel-launch__actions .primary,
+.duel-launch__actions .secondary,
+.duel-launch__actions .ghost {
+  width: 100%;
+  min-height: 2.55rem;
+  padding-inline: 0.6rem;
+  white-space: normal;
+}
+
+.duel-launch .mastery-trial-hint {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
 .duel-select {
   min-height: 2.4rem;
   border-radius: 8px;
@@ -2695,6 +2747,18 @@ body {
   .board-brass { padding: 7px; }
   .board-guide { display: none; }
   .dossier-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .duel-launch {
+    padding: 0.62rem;
+  }
+  .duel-launch__grid,
+  .duel-launch__actions {
+    grid-template-columns: 1fr;
+  }
+  .duel-launch__actions .primary,
+  .duel-launch__actions .secondary,
+  .duel-launch__actions .ghost {
+    min-height: 2.75rem;
+  }
   .duel-list { position: static; }
 
   .btn-advance-label { font-size: 0.62rem; }
