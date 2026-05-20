@@ -2,6 +2,13 @@ import { Chess } from 'chess.js'
 import type { Color, Move, PieceSymbol, Square } from 'chess.js'
 import type { PieceSkinId } from '../types'
 import { glyphForSkin } from './skins'
+import {
+  buildFlyKeyframes,
+  capturedSquareFor,
+  castlingRookMove,
+  rectCenter,
+  type FlyPoint,
+} from './boardAnimation'
 
 const FILES = 'abcdefgh'
 /** Avoid allocating `[...FILES].reverse()` on every square-order walk. */
@@ -28,7 +35,23 @@ export interface BoardViewOptions {
   orientation: 'w' | 'b'
 }
 
-const FLY_MS = 200
+/** Carry duration: long enough to read as weight, short enough to stay snappy. */
+const FLY_MS = 240
+/** Captured piece dissolve — overlaps the incoming carry so it reads as a strike. */
+const CAPTURE_MS = 230
+/** Settle squash when the carried piece is set down on its square. */
+const LAND_MS = 180
+/** Trimmed timings for low-power / lean hardware. */
+const FLY_MS_LEAN = 150
+
+interface Flight {
+  from: FlyPoint
+  to: FlyPoint
+  glyph: string
+  colorClass: Color
+  toSquare: Square
+  size: number
+}
 
 export class BoardView {
   private root: HTMLElement
@@ -434,7 +457,7 @@ export class BoardView {
     }
     if (last) this.lastMove = { from: last.from, to: last.to }
 
-    /* Clean up any leftover fly sprites or pending promotions */
+    /* Clean up any leftover fly/capture sprites or pending promotions */
     for (const el of this.pieceFlyEls) el.remove()
     this.pieceFlyEls.length = 0
     this.root.querySelectorAll<HTMLElement>('.piece--fly-pending').forEach((el) =>
@@ -442,31 +465,18 @@ export class BoardView {
     )
     this.dismissPromo()
 
-    const isCastle = last?.isKingsideCastle() || last?.isQueensideCastle()
     const reduceMotion =
       typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
+    const lean =
+      typeof document !== 'undefined' && document.documentElement.classList.contains('perf-lean')
     const doFly =
-      last &&
-      !isCastle &&
+      !!last &&
       !reduceMotion &&
       typeof document !== 'undefined' &&
       typeof document.body.animate === 'function'
 
-    let fromRect: DOMRect | null = null
-    let toRect: DOMRect | null = null
-    let flyGlyph = ''
-    let flyClass = ''
-    if (doFly && last) {
-      const fromBtn = this.cells.get(last.from)
-      const toBtn = this.cells.get(last.to)
-      if (fromBtn && toBtn) {
-        fromRect = fromBtn.getBoundingClientRect()
-        toRect = toBtn.getBoundingClientRect()
-        const shown: PieceSymbol = last.promotion ?? last.piece
-        flyGlyph = glyphForSkin(this.skin, last.color, shown)
-        flyClass = `piece piece--${last.color}`
-      }
-    }
+    /* Capture the outgoing occupant's glyph BEFORE the diff overwrites cells. */
+    const captureSnapshot = doFly && last && !lean ? this.captureSnapshotFor(last) : null
 
     for (const [sq, btn] of this.cells) {
       const p = chess.get(sq)
@@ -482,38 +492,7 @@ export class BoardView {
       for (const l of labels) btn.appendChild(l)
     }
 
-    if (doFly && fromRect && toRect && flyGlyph && last) {
-      const gen = ++this.flyGen
-      const toSpan = this.cells.get(last.to)?.querySelector<HTMLElement>('.piece')
-      if (toSpan) toSpan.classList.add('piece--fly-pending')
-
-      const fly = document.createElement('div')
-      fly.className = `piece-fly ${flyClass}`
-      fly.innerHTML = flyGlyph
-      fly.style.width = `${fromRect.width}px`
-      fly.style.height = `${fromRect.height}px`
-      const x0 = fromRect.left + fromRect.width / 2
-      const y0 = fromRect.top + fromRect.height / 2
-      const x1 = toRect.left + toRect.width / 2
-      const y1 = toRect.top + toRect.height / 2
-      document.body.appendChild(fly)
-      this.pieceFlyEls.push(fly)
-
-      const anim = fly.animate(
-        [
-          { transform: `translate(${x0}px,${y0}px) translate(-50%,-50%)` },
-          { transform: `translate(${x1}px,${y1}px) translate(-50%,-50%)` },
-        ],
-        { duration: FLY_MS, easing: 'cubic-bezier(0.22,1,0.36,1)', fill: 'forwards' },
-      )
-      anim.onfinish = () => {
-        fly.remove()
-        const ix = this.pieceFlyEls.indexOf(fly)
-        if (ix >= 0) this.pieceFlyEls.splice(ix, 1)
-        if (gen !== this.flyGen) return
-        toSpan?.classList.remove('piece--fly-pending')
-      }
-    }
+    if (doFly && last) this.animateMove(last, captureSnapshot, lean)
 
     this.selected = null
     this.legalTargets.clear()
@@ -521,6 +500,141 @@ export class BoardView {
     this.guardTo = null
     this.guardStamp = 0
     this.updateHighlights()
+  }
+
+  /* ─── Piece-movement physics ───────────────────────────────────────── */
+
+  private captureSnapshotFor(
+    last: Move,
+  ): { square: Square; glyph: string; colorClass: Color } | null {
+    const square = capturedSquareFor(last)
+    if (!square) return null
+    const colorClass: Color = last.color === 'w' ? 'b' : 'w'
+    return {
+      square,
+      glyph: glyphForSkin(this.skin, colorClass, last.captured ?? 'p'),
+      colorClass,
+    }
+  }
+
+  /** Reads cell geometry and packages one piece's carry, or null if unmeasurable. */
+  private flightFor(from: Square, to: Square, color: Color, piece: PieceSymbol): Flight | null {
+    const fromBtn = this.cells.get(from)
+    const toBtn = this.cells.get(to)
+    if (!fromBtn || !toBtn) return null
+    const fromRect = fromBtn.getBoundingClientRect()
+    const toRect = toBtn.getBoundingClientRect()
+    if (fromRect.width === 0 || toRect.width === 0) return null
+    return {
+      from: rectCenter(fromRect),
+      to: rectCenter(toRect),
+      glyph: glyphForSkin(this.skin, color, piece),
+      colorClass: color,
+      toSquare: to,
+      size: fromRect.width,
+    }
+  }
+
+  /**
+   * Orchestrates the move's motion: the captured piece dissolves, the mover
+   * (and a castling rook) are carried along a lifted arc, and each landed piece
+   * settles with a squash. A single `flyGen` token lets a follow-up draw cancel
+   * stale callbacks so the destination piece is never left hidden.
+   */
+  private animateMove(
+    last: Move,
+    captureSnapshot: { square: Square; glyph: string; colorClass: Color } | null,
+    lean: boolean,
+  ) {
+    const gen = ++this.flyGen
+    if (captureSnapshot) this.spawnCaptureDissolve(captureSnapshot)
+
+    const flights: Flight[] = []
+    const primary = this.flightFor(last.from, last.to, last.color, last.promotion ?? last.piece)
+    if (primary) flights.push(primary)
+    const rook = castlingRookMove(last)
+    if (rook) {
+      const rookFlight = this.flightFor(rook.from, rook.to, last.color, 'r')
+      if (rookFlight) flights.push(rookFlight)
+    }
+    for (const flight of flights) this.spawnFlight(flight, gen, lean)
+  }
+
+  private spawnFlight(flight: Flight, gen: number, lean: boolean) {
+    const toSpan = this.cells.get(flight.toSquare)?.querySelector<HTMLElement>('.piece') ?? null
+    if (toSpan) toSpan.classList.add('piece--fly-pending')
+
+    const fly = document.createElement('div')
+    fly.className = `piece-fly piece piece--${flight.colorClass}`
+    fly.dataset.skin = this.skin
+    fly.innerHTML = flight.glyph
+    fly.style.width = `${flight.size}px`
+    fly.style.height = `${flight.size}px`
+    document.body.appendChild(fly)
+    this.pieceFlyEls.push(fly)
+
+    const duration = lean ? FLY_MS_LEAN : FLY_MS
+    const frames = buildFlyKeyframes(flight.from, flight.to, flight.size, lean ? 4 : 6)
+    const anim = fly.animate(frames, { duration, easing: 'linear', fill: 'forwards' })
+    anim.onfinish = () => {
+      fly.remove()
+      const ix = this.pieceFlyEls.indexOf(fly)
+      if (ix >= 0) this.pieceFlyEls.splice(ix, 1)
+      if (gen !== this.flyGen) return
+      if (toSpan) {
+        toSpan.classList.remove('piece--fly-pending')
+        if (!lean) this.settlePiece(toSpan)
+      }
+    }
+  }
+
+  /** A brief squash-and-settle as the carried piece is set down on its square. */
+  private settlePiece(span: HTMLElement) {
+    if (typeof span.animate !== 'function') return
+    span.style.transformOrigin = 'center 84%'
+    const anim = span.animate(
+      [
+        { transform: 'scale(1.02, 0.88)' },
+        { transform: 'scale(0.99, 1.04)', offset: 0.55 },
+        { transform: 'scale(1, 1)' },
+      ],
+      { duration: LAND_MS, easing: 'cubic-bezier(0.34,1.56,0.64,1)' },
+    )
+    anim.onfinish = () => {
+      span.style.transformOrigin = ''
+    }
+  }
+
+  private spawnCaptureDissolve(snap: { square: Square; glyph: string; colorClass: Color }) {
+    const cell = this.cells.get(snap.square)
+    if (!cell) return
+    const rect = cell.getBoundingClientRect()
+    if (rect.width === 0) return
+    const el = document.createElement('div')
+    el.className = `piece-fly piece-capture piece piece--${snap.colorClass}`
+    el.dataset.skin = this.skin
+    el.innerHTML = snap.glyph
+    el.style.width = `${rect.width}px`
+    el.style.height = `${rect.height}px`
+    const center = rectCenter(rect)
+    const base = `translate(${center.x}px, ${center.y}px) translate(-50%, -50%)`
+    el.style.transform = base
+    document.body.appendChild(el)
+    this.pieceFlyEls.push(el)
+
+    const anim = el.animate(
+      [
+        { transform: `${base} scale(1) rotate(0deg)`, opacity: 1 },
+        { transform: `${base} scale(1.06) rotate(-3deg)`, opacity: 1, offset: 0.2 },
+        { transform: `${base} translateY(10px) scale(0.5) rotate(-18deg)`, opacity: 0 },
+      ],
+      { duration: CAPTURE_MS, easing: 'cubic-bezier(0.4,0,0.7,0.2)', fill: 'forwards' },
+    )
+    anim.onfinish = () => {
+      el.remove()
+      const ix = this.pieceFlyEls.indexOf(el)
+      if (ix >= 0) this.pieceFlyEls.splice(ix, 1)
+    }
   }
 
   setCheckSquare(sq: Square | null) {

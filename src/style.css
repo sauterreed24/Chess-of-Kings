@@ -1179,7 +1179,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   height: 100%;
   user-select: none;
   pointer-events: none;
-  transition: opacity 0.06s, transform 0.12s ease;
+  transition: opacity 0.06s, transform 0.16s var(--ease-out);
 }
 .piece svg {
   width: 82%;
@@ -1220,6 +1220,11 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 .chess-grid[data-skin='obsidian-neon'] .sq:hover:not(:disabled) .piece--b {
   filter: drop-shadow(0 0 8px #ff007f) drop-shadow(0 0 20px rgba(255,0,127,0.6));
+}
+
+/* A selected piece reads as "lifted off the board" — reinforces tap-to-move. */
+.sq-selected .piece {
+  transform: translateY(-3px) scale(1.05);
 }
 
 .piece--fly-pending { opacity: 0; }
@@ -1269,15 +1274,20 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   filter: drop-shadow(0 0 4px #ff007f) drop-shadow(0 0 12px rgba(255,0,127,0.4));
 }
 
-/* Flying piece overlay during animation */
+/* Flying piece overlay during animation. Lives on <body>, so skin theming is
+ * keyed off its own [data-skin] attribute (set by BoardView) rather than an
+ * ancestor .chess-grid — the grid is not an ancestor here. */
 .piece-fly {
   position: fixed; left: 0; top: 0; z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  transition: none;
   will-change: transform;
 }
+/* The struck piece reads as knocked off — it sits just under the incoming mover. */
+.piece-capture { z-index: 1999; will-change: transform, opacity; }
 .piece-fly svg {
   width: 82%;
   height: 82%;
@@ -1293,14 +1303,14 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   filter: drop-shadow(0 8px 16px rgba(0,0,0,0.75));
 }
 
-.chess-grid[data-skin='classic-royal'] .piece-fly.piece--w { --piece-fill: #ffffff; --piece-stroke: #121e30; }
-.chess-grid[data-skin='classic-royal'] .piece-fly.piece--b { --piece-fill: #152438; --piece-stroke: #ece3cf; }
-.chess-grid[data-skin='high-contrast'] .piece-fly.piece--w { --piece-fill: #ffffff; --piece-stroke: #000000; }
-.chess-grid[data-skin='high-contrast'] .piece-fly.piece--b { --piece-fill: #000000; --piece-stroke: #ffffff; }
-.chess-grid[data-skin='alexandrine-ornate'] .piece-fly.piece--w { --piece-fill: #fdf5e2; --piece-stroke: #b38f36; filter: drop-shadow(0 8px 16px rgba(179,143,54,0.6)); }
-.chess-grid[data-skin='alexandrine-ornate'] .piece-fly.piece--b { --piece-fill: #12213a; --piece-stroke: #dcae43; filter: drop-shadow(0 8px 16px rgba(220,174,67,0.55)); }
-.chess-grid[data-skin='obsidian-neon'] .piece-fly.piece--w { --piece-fill: #09101a; --piece-stroke: #00ffcc; filter: drop-shadow(0 0 8px #00ffcc) drop-shadow(0 0 20px rgba(0,255,204,0.5)); }
-.chess-grid[data-skin='obsidian-neon'] .piece-fly.piece--b { --piece-fill: #09101a; --piece-stroke: #ff007f; filter: drop-shadow(0 0 8px #ff007f) drop-shadow(0 0 20px rgba(255,0,127,0.5)); }
+.piece-fly[data-skin='classic-royal'].piece--w { --piece-fill: #ffffff; --piece-stroke: #121e30; }
+.piece-fly[data-skin='classic-royal'].piece--b { --piece-fill: #152438; --piece-stroke: #ece3cf; }
+.piece-fly[data-skin='high-contrast'].piece--w { --piece-fill: #ffffff; --piece-stroke: #000000; }
+.piece-fly[data-skin='high-contrast'].piece--b { --piece-fill: #000000; --piece-stroke: #ffffff; }
+.piece-fly[data-skin='alexandrine-ornate'].piece--w { --piece-fill: #fdf5e2; --piece-stroke: #b38f36; filter: drop-shadow(0 8px 16px rgba(179,143,54,0.6)); }
+.piece-fly[data-skin='alexandrine-ornate'].piece--b { --piece-fill: #12213a; --piece-stroke: #dcae43; filter: drop-shadow(0 8px 16px rgba(220,174,67,0.55)); }
+.piece-fly[data-skin='obsidian-neon'].piece--w { --piece-fill: #09101a; --piece-stroke: #00ffcc; filter: drop-shadow(0 0 8px #00ffcc) drop-shadow(0 0 20px rgba(0,255,204,0.5)); }
+.piece-fly[data-skin='obsidian-neon'].piece--b { --piece-fill: #09101a; --piece-stroke: #ff007f; filter: drop-shadow(0 0 8px #ff007f) drop-shadow(0 0 20px rgba(255,0,127,0.5)); }
 
 /* Coordinate labels */
 .sq-label {
