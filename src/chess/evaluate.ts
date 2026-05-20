@@ -1,4 +1,17 @@
 import type { Chess, Color, PieceSymbol, Square } from 'chess.js'
+import {
+  FILE_MASKS,
+  SQUARE_MASKS,
+  analyzePosition,
+  fileOfIndex,
+  isPawnPassed,
+  isSemiOpenFile,
+  opponentOf,
+  pawnDefendsSquare,
+  rankOfIndex,
+  squareIndex,
+} from './bitboard'
+import type { PositionAnalysis, PositionPiece } from './bitboard'
 
 export const PIECE_VALUES: Record<PieceSymbol, number> = {
   p: 100,
@@ -94,23 +107,8 @@ const PST_KING_EG_W = [
   -50,-30,-30,-30,-30,-30,-30,-50,
 ]
 
-function sqIndex(square: Square): number {
-  return (Number(square[1]) - 1) * 8 + (square.charCodeAt(0) - 97)
-}
-
-function heavyPieceCount(board: ReturnType<Chess['board']>): number {
-  let n = 0
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const p = board[r]![c]
-      if (p && (p.type === 'q' || p.type === 'r')) n++
-    }
-  }
-  return n
-}
-
 function pstFor(piece: PieceSymbol, square: Square, color: Color, endgame: boolean): number {
-  const idxW = sqIndex(square)
+  const idxW = squareIndex(square)
   const idx = color === 'w' ? idxW : 63 - idxW
   switch (piece) {
     case 'p': return PST_PAWN_W[idx]!
@@ -125,27 +123,15 @@ function pstFor(piece: PieceSymbol, square: Square, color: Color, endgame: boole
 
 /* ─── Pawn structure ──────────────────────────────────────────────────── */
 
-function doubledPawnPenalty(board: ReturnType<Chess['board']>, c: Color): number {
-  const perFile = new Array<number>(8).fill(0)
-  for (let r = 0; r < 8; r++) {
-    for (let f = 0; f < 8; f++) {
-      const p = board[r]![f]
-      if (p?.type === 'p' && p.color === c) perFile[f]++
-    }
-  }
+function doubledPawnPenalty(position: PositionAnalysis, c: Color): number {
+  const perFile = position.pawnsByFile[c]
   let pen = 0
   for (const n of perFile) if (n >= 2) pen += 14 * (n - 1)
   return pen
 }
 
-function isolatedPawnPenalty(board: ReturnType<Chess['board']>, c: Color): number {
-  const perFile = new Array<number>(8).fill(0)
-  for (let r = 0; r < 8; r++) {
-    for (let f = 0; f < 8; f++) {
-      const p = board[r]![f]
-      if (p?.type === 'p' && p.color === c) perFile[f]++
-    }
-  }
+function isolatedPawnPenalty(position: PositionAnalysis, c: Color): number {
+  const perFile = position.pawnsByFile[c]
   let pen = 0
   for (let f = 0; f < 8; f++) {
     if (!perFile[f]) continue
@@ -156,127 +142,158 @@ function isolatedPawnPenalty(board: ReturnType<Chess['board']>, c: Color): numbe
 }
 
 const PASSED_BONUS = [0, 0, 10, 18, 30, 52, 82, 0]
+const RANK_MASKS: readonly bigint[] = Array.from({ length: 8 }, (_, rank) => {
+  let mask = 0n
+  for (let file = 0; file < 8; file++) mask |= SQUARE_MASKS[rank * 8 + file]!
+  return mask
+})
 
-function passedPawnBonus(board: ReturnType<Chess['board']>, c: Color): number {
-  const opp: Color = c === 'w' ? 'b' : 'w'
+function passedPawnBonus(position: PositionAnalysis, c: Color): number {
   let bonus = 0
-  for (let r = 0; r < 8; r++) {
-    for (let f = 0; f < 8; f++) {
-      const p = board[r]![f]
-      if (!p || p.type !== 'p' || p.color !== c) continue
-      let passed = true
-      outer: for (let r2 = 0; r2 < 8; r2++) {
-        if (c === 'w' ? r2 <= r : r2 >= r) continue
-        for (let df = -1; df <= 1; df++) {
-          const f2 = f + df
-          if (f2 < 0 || f2 > 7) continue
-          if (board[r2]![f2]?.type === 'p' && board[r2]![f2]?.color === opp) {
-            passed = false
-            break outer
-          }
-        }
-      }
-      if (passed) {
-        const rankFromHome = c === 'w' ? r : 7 - r
-        bonus += PASSED_BONUS[rankFromHome] ?? 0
-      }
-    }
+  for (const piece of position.pieceList) {
+    if (piece.type !== 'p' || piece.color !== c) continue
+    if (!isPawnPassed(position, c, piece.index)) continue
+
+    const rank = rankOfIndex(piece.index)
+    const rankFromHome = c === 'w' ? rank : 7 - rank
+    const protectedBonus = pawnDefendsSquare(position, c, piece.index) ? 9 : 0
+    const file = fileOfIndex(piece.index)
+    const connected =
+      (file > 0 && position.pawnsByFile[c][file - 1]! > 0) ||
+      (file < 7 && position.pawnsByFile[c][file + 1]! > 0)
+    bonus += (PASSED_BONUS[rankFromHome] ?? 0) + protectedBonus + (connected ? 5 : 0)
   }
   return bonus
 }
 
 /* ─── Piece coordination ─────────────────────────────────────────────── */
 
-function rookFileBonus(board: ReturnType<Chess['board']>, c: Color): number {
-  const opp: Color = c === 'w' ? 'b' : 'w'
+function rookFileBonus(position: PositionAnalysis, c: Color): number {
+  const opp = opponentOf(c)
+  const majorPieces = position.pieces[c].r | position.pieces[c].q
   let bonus = 0
   for (let f = 0; f < 8; f++) {
-    let ownPawn = false, oppPawn = false, hasRook = false
-    for (let r = 0; r < 8; r++) {
-      const p = board[r]![f]
-      if (!p) continue
-      if (p.type === 'p' && p.color === c) ownPawn = true
-      if (p.type === 'p' && p.color === opp) oppPawn = true
-      if ((p.type === 'r' || p.type === 'q') && p.color === c) hasRook = true
-    }
-    if (hasRook) {
-      if (!ownPawn && !oppPawn) bonus += 18
-      else if (!ownPawn) bonus += 10
-    }
+    const mask = FILE_MASKS[f]!
+    if ((majorPieces & mask) === 0n) continue
+    const ownPawn = (position.pieces[c].p & mask) !== 0n
+    const oppPawn = (position.pieces[opp].p & mask) !== 0n
+    if (!ownPawn && !oppPawn) bonus += 18
+    else if (!ownPawn) bonus += 10
   }
   return bonus
 }
 
-function bishopPairBonus(board: ReturnType<Chess['board']>, c: Color): number {
-  let bishops = 0
-  for (let r = 0; r < 8; r++) {
-    for (let f = 0; f < 8; f++) {
-      if (board[r]![f]?.type === 'b' && board[r]![f]?.color === c) bishops++
-    }
+function bishopPairBonus(position: PositionAnalysis, c: Color): number {
+  return position.bishopCount[c] >= 2 ? 22 : 0
+}
+
+function knightOutpostBonus(position: PositionAnalysis, piece: PositionPiece): number {
+  const rank = rankOfIndex(piece.index)
+  const file = fileOfIndex(piece.index)
+  const rankFromHome = piece.color === 'w' ? rank : 7 - rank
+  if (rankFromHome < 3 || rankFromHome > 5) return 0
+  if (file < 2 || file > 5) return 0
+  if (!pawnDefendsSquare(position, piece.color, piece.index)) return 0
+
+  const enemy = opponentOf(piece.color)
+  const enemyPawnCanChallenge = pawnDefendsSquare(position, enemy, piece.index)
+  return enemyPawnCanChallenge ? 6 : 18
+}
+
+function rookSeventhBonus(position: PositionAnalysis, piece: PositionPiece): number {
+  const rank = rankOfIndex(piece.index)
+  const targetRank = piece.color === 'w' ? 6 : 1
+  if (rank !== targetRank) return 0
+
+  const enemy = opponentOf(piece.color)
+  const enemyKing = position.kingIndex[enemy]
+  const enemyKingBackRank = enemyKing !== null && rankOfIndex(enemyKing) === (enemy === 'w' ? 0 : 7)
+  const enemyPawnsOnRank =
+    (position.pieces[enemy].p & rankMask(targetRank)) !== 0n ||
+    (position.pieces[enemy].p & rankMask(piece.color === 'w' ? 7 : 0)) !== 0n
+  return enemyKingBackRank || enemyPawnsOnRank ? 14 : 7
+}
+
+function rankMask(rank: number): bigint {
+  return RANK_MASKS[rank]!
+}
+
+function pieceCoordinationBonus(position: PositionAnalysis, c: Color): number {
+  let bonus = 0
+  for (const piece of position.pieceList) {
+    if (piece.color !== c) continue
+    if (piece.type === 'n') bonus += knightOutpostBonus(position, piece)
+    if (piece.type === 'r') bonus += rookSeventhBonus(position, piece)
   }
-  return bishops >= 2 ? 22 : 0
+  return bonus
 }
 
 /* ─── King safety ────────────────────────────────────────────────────── */
 
-function kingSafetyPenalty(board: ReturnType<Chess['board']>, c: Color): number {
+function kingSafetyPenalty(position: PositionAnalysis, c: Color): number {
   const homeRank = c === 'w' ? 0 : 7
   const shieldRank = c === 'w' ? 1 : 6
-  /* Find king on home rank */
-  let kf = -1
-  for (let f = 0; f < 8; f++) {
-    const p = board[homeRank]![f]
-    if (p?.type === 'k' && p.color === c) { kf = f; break }
-  }
-  if (kf < 0) return 0 // king advanced (endgame context, handled by EG PST)
+  const king = position.kingIndex[c]
+  if (king === null || rankOfIndex(king) !== homeRank) return 0 // advanced king is handled by EG PST
+
+  const kf = fileOfIndex(king)
+  const enemy = opponentOf(c)
   let pen = 0
   if (kf >= 5) {
     /* Kingside castle — check f/g/h shield */
     for (let f = 5; f <= 7; f++) {
-      const p = board[shieldRank]![f]
-      if (!p || p.type !== 'p' || p.color !== c) pen += 22
+      const shield = SQUARE_MASKS[shieldRank * 8 + f]!
+      if ((position.pieces[c].p & shield) === 0n) pen += 22
     }
   } else if (kf <= 2) {
     /* Queenside castle — check a/b/c shield */
     for (let f = 0; f <= 2; f++) {
-      const p = board[shieldRank]![f]
-      if (!p || p.type !== 'p' || p.color !== c) pen += 16
+      const shield = SQUARE_MASKS[shieldRank * 8 + f]!
+      if ((position.pieces[c].p & shield) === 0n) pen += 16
     }
   } else {
     /* King in centre — significant danger */
     pen += 28
+  }
+
+  const enemyMajors = position.pieces[enemy].r | position.pieces[enemy].q
+  for (let f = Math.max(0, kf - 1); f <= Math.min(7, kf + 1); f++) {
+    if (!isSemiOpenFile(position, c, f)) continue
+    pen += 5
+    if ((enemyMajors & FILE_MASKS[f]!) !== 0n) pen += 11
   }
   return pen
 }
 
 /* ─── Main evaluation ────────────────────────────────────────────────── */
 
-export function materialAndPst(chess: Chess, forColor: Color): number {
-  const board = chess.board()
-  const eg = heavyPieceCount(board) <= 2
-  const opp: Color = forColor === 'w' ? 'b' : 'w'
+export function materialAndPst(
+  chess: Chess,
+  forColor: Color,
+  position: PositionAnalysis = analyzePosition(chess),
+): number {
+  const eg = position.heavyPieceCount <= 2
+  const opp = opponentOf(forColor)
   let score = 0
-  for (let r = 0; r < 8; r++) {
-    for (let f = 0; f < 8; f++) {
-      const p = board[r]![f]
-      if (!p) continue
-      const v = PIECE_VALUES[p.type] + pstFor(p.type, p.square, p.color, eg)
-      score += p.color === forColor ? v : -v
-    }
+  for (const piece of position.pieceList) {
+    const v = PIECE_VALUES[piece.type] + pstFor(piece.type, piece.square, piece.color, eg)
+    score += piece.color === forColor ? v : -v
   }
-  score -= doubledPawnPenalty(board, forColor)
-  score += doubledPawnPenalty(board, opp)
-  score -= isolatedPawnPenalty(board, forColor)
-  score += isolatedPawnPenalty(board, opp)
-  score += passedPawnBonus(board, forColor)
-  score -= passedPawnBonus(board, opp)
-  score += rookFileBonus(board, forColor)
-  score -= rookFileBonus(board, opp)
-  score += bishopPairBonus(board, forColor)
-  score -= bishopPairBonus(board, opp)
+  score -= doubledPawnPenalty(position, forColor)
+  score += doubledPawnPenalty(position, opp)
+  score -= isolatedPawnPenalty(position, forColor)
+  score += isolatedPawnPenalty(position, opp)
+  score += passedPawnBonus(position, forColor)
+  score -= passedPawnBonus(position, opp)
+  score += rookFileBonus(position, forColor)
+  score -= rookFileBonus(position, opp)
+  score += bishopPairBonus(position, forColor)
+  score -= bishopPairBonus(position, opp)
+  score += pieceCoordinationBonus(position, forColor)
+  score -= pieceCoordinationBonus(position, opp)
   if (!eg) {
-    score -= kingSafetyPenalty(board, forColor)
-    score += kingSafetyPenalty(board, opp)
+    score -= kingSafetyPenalty(position, forColor)
+    score += kingSafetyPenalty(position, opp)
   }
   return score
 }

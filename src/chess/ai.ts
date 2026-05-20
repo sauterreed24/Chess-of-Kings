@@ -4,6 +4,17 @@ import { materialAndPst, styleBias, PIECE_VALUES } from './evaluate'
 import type { AIStyle } from './evaluate'
 import type { AiProfile } from '../types'
 import { detectTacticalMotifs } from './motifs'
+import {
+  analyzePosition,
+  hasPassedPawn,
+  isOpenFile,
+  isPawnPassed,
+  opponentOf,
+  rankOfIndex,
+  squareFromIndex,
+  squareIndex,
+} from './bitboard'
+import type { PositionAnalysis } from './bitboard'
 
 /* ─── Transposition table ────────────────────────────────────────────── */
 
@@ -23,16 +34,8 @@ interface TTEntry {
 const TT = new Map<string, TTEntry>()
 const TT_MAX = 200_000
 
-function ttKeyFromFen(fen: string): string {
-  // Ignore halfmove/fullmove counters for stronger TT reuse (no split allocation).
-  let spaces = 0
-  for (let i = 0; i < fen.length; i++) {
-    if (fen.charCodeAt(i) === 32) {
-      spaces++
-      if (spaces === 4) return fen.slice(0, i)
-    }
-  }
-  return fen
+function ttKey(chess: Chess): string {
+  return chess.hash()
 }
 
 function ttProbe(
@@ -93,13 +96,7 @@ function pickAvoidingRepeat(chosen: Move | null, avoid: string | null | undefine
 export type ProfileMoveOptions = { avoidMoveKey?: string | null }
 
 function nonKingPieceCount(chess: Chess): number {
-  let n = 0
-  for (const row of chess.board()) {
-    for (const p of row) {
-      if (p && p.type !== 'k') n++
-    }
-  }
-  return n
+  return analyzePosition(chess).nonKingPieceCount
 }
 
 function centrality(square: string): number {
@@ -110,41 +107,20 @@ function centrality(square: string): number {
   return 4 - (df + dr) * 0.75
 }
 
-function isOpenFileForRook(chess: Chess, square: string): boolean {
-  const file = square.charCodeAt(0) - 97
-  for (let r = 0; r < 8; r++) {
-    const p = chess.board()[r]?.[file]
-    if (p?.type === 'p') return false
-  }
-  return true
+function isOpenFileForRook(position: PositionAnalysis, square: string): boolean {
+  return isOpenFile(position, square.charCodeAt(0) - 97)
 }
 
-function hasFriendlyPassedPawn(chess: Chess, color: Color): boolean {
-  const board = chess.board()
-  for (let r = 0; r < 8; r++) {
-    for (let f = 0; f < 8; f++) {
-      const p = board[r]?.[f]
-      if (!p || p.type !== 'p' || p.color !== color) continue
-      const dir = color === 'w' ? -1 : 1
-      let blocked = false
-      for (let rr = r + dir; rr >= 0 && rr < 8; rr += dir) {
-        for (const ff of [f - 1, f, f + 1]) {
-          if (ff < 0 || ff > 7) continue
-          const q = board[rr]?.[ff]
-          if (q?.type === 'p' && q.color !== color) {
-            blocked = true
-            break
-          }
-        }
-        if (blocked) break
-      }
-      if (!blocked) return true
-    }
-  }
-  return false
+function hasFriendlyPassedPawn(position: PositionAnalysis, color: Color): boolean {
+  return hasPassedPawn(position, color)
 }
 
-function rookEndgameDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, nNonKing: number): number {
+function rookEndgameDoctrineBonus(
+  position: PositionAnalysis,
+  move: Move,
+  mover: Color,
+  nNonKing: number,
+): number {
   if (move.piece !== 'r') return 0
   if (nNonKing > 8) return 0
   let score = 0
@@ -152,10 +128,10 @@ function rookEndgameDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, n
   if ((mover === 'w' && targetRank === '7') || (mover === 'b' && targetRank === '2')) {
     score += 10 // 7th-rank pressure doctrine
   }
-  if (isOpenFileForRook(chessAfter, move.to)) {
+  if (isOpenFileForRook(position, move.to)) {
     score += 8 // active rook on open file
   }
-  if (hasFriendlyPassedPawn(chessAfter, mover)) {
+  if (hasFriendlyPassedPawn(position, mover)) {
     const toFile = move.to.charCodeAt(0) - 97
     const fromFile = move.from.charCodeAt(0) - 97
     if (Math.abs(toFile - fromFile) >= 1) {
@@ -165,28 +141,19 @@ function rookEndgameDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, n
   return score
 }
 
-function findKingSquare(chess: Chess, color: Color): string | null {
-  const board = chess.board()
-  for (let r = 0; r < 8; r++) {
-    for (let f = 0; f < 8; f++) {
-      const p = board[r]?.[f]
-      if (p?.type === 'k' && p.color === color) {
-        const file = String.fromCharCode(97 + f)
-        const rank = String(8 - r)
-        return `${file}${rank}`
-      }
-    }
-  }
-  return null
-}
-
-function kingOppositionDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, nNonKing: number): number {
+function kingOppositionDoctrineBonus(
+  position: PositionAnalysis,
+  move: Move,
+  mover: Color,
+  nNonKing: number,
+): number {
   if (move.piece !== 'k') return 0
   if (nNonKing > 8) return 0
-  const enemy: Color = mover === 'w' ? 'b' : 'w'
+  const enemy = opponentOf(mover)
   const myKing = move.to
-  const enemyKing = findKingSquare(chessAfter, enemy)
-  if (!enemyKing) return 0
+  const enemyKingIndex = position.kingIndex[enemy]
+  if (enemyKingIndex === null) return 0
+  const enemyKing = squareFromIndex(enemyKingIndex)
   const df = Math.abs(myKing.charCodeAt(0) - enemyKing.charCodeAt(0))
   const dr = Math.abs(Number(myKing[1]) - Number(enemyKing[1]))
   // Straight opposition (one square gap on file/rank) and distant opposition patterns.
@@ -195,26 +162,17 @@ function kingOppositionDoctrineBonus(chessAfter: Chess, move: Move, mover: Color
   return 0
 }
 
-function passedPawnPushDoctrineBonus(chessAfter: Chess, move: Move, mover: Color, nNonKing: number): number {
+function passedPawnPushDoctrineBonus(
+  position: PositionAnalysis,
+  move: Move,
+  mover: Color,
+  nNonKing: number,
+): number {
   if (move.piece !== 'p') return 0
   if (nNonKing > 10) return 0
-  const file = move.to.charCodeAt(0) - 97
-  const rank = Number(move.to[1]) - 1
-  const dir = mover === 'w' ? 1 : -1
-  let blocked = false
-  for (let r = rank + dir; r >= 0 && r < 8; r += dir) {
-    for (const f of [file - 1, file, file + 1]) {
-      if (f < 0 || f > 7) continue
-      const p = chessAfter.board()[7 - r]?.[f]
-      if (p?.type === 'p' && p.color !== mover) {
-        blocked = true
-        break
-      }
-    }
-    if (blocked) break
-  }
-  if (blocked) return 0
-  const advance = mover === 'w' ? rank : 7 - rank
+  const index = squareIndex(move.to)
+  if (!isPawnPassed(position, mover, index)) return 0
+  const advance = mover === 'w' ? rankOfIndex(index) : 7 - rankOfIndex(index)
   return 4 + advance * 0.9
 }
 
@@ -247,18 +205,23 @@ function orderMoves(
 
 /* ─── Quiescence search ──────────────────────────────────────────────── */
 
-function quiesce(chess: Chess, alpha: number, beta: number, style: AIStyle): number {
+const QUIESCE_MAX_PLY = 8
+
+function quiesce(chess: Chess, alpha: number, beta: number, style: AIStyle, qply = 0): number {
+  if (_aborted || searchExpired()) return 0
   const stand = materialAndPst(chess, chess.turn())
   if (stand >= beta) return beta
   if (stand > alpha) alpha = stand
+  if (qply >= QUIESCE_MAX_PLY) return alpha
 
   const tactical = chess
     .moves({ verbose: true })
     .filter((m) => m.captured || m.promotion || m.san.includes('+'))
   for (const mv of orderMoves(tactical, style, 0, null)) {
     chess.move(mv)
-    const score = -quiesce(chess, -beta, -alpha, style)
+    const score = -quiesce(chess, -beta, -alpha, style, qply + 1)
     chess.undo()
+    if (_aborted) return 0
     if (score >= beta) return beta
     if (score > alpha) alpha = score
   }
@@ -268,9 +231,23 @@ function quiesce(chess: Chess, alpha: number, beta: number, style: AIStyle): num
 /* ─── Negamax with αβ + TT ───────────────────────────────────────────── */
 
 const MATE_SCORE = 1_000_000
+const TIME_CHECK_MASK = 127
 
 let _deadline = 0
 let _aborted = false
+let _nodes = 0
+
+function nowMs(): number {
+  return globalThis.performance?.now() ?? Date.now()
+}
+
+function searchExpired(): boolean {
+  _nodes++
+  if ((_nodes & TIME_CHECK_MASK) !== 0) return false
+  if (nowMs() <= _deadline) return false
+  _aborted = true
+  return true
+}
 
 function negamax(
   chess: Chess,
@@ -280,9 +257,9 @@ function negamax(
   style: AIStyle,
   ply: number,
 ): number {
-  if (_aborted || Date.now() > _deadline) { _aborted = true; return 0 }
+  if (_aborted || searchExpired()) return 0
 
-  const key = ttKeyFromFen(chess.fen())
+  const key = ttKey(chess)
   const tt = ttProbe(key, depth, alpha, beta)
   if (tt.score !== undefined) return tt.score
 
@@ -319,8 +296,11 @@ function negamax(
     } else {
       // Principal variation search (zero-window for non-first moves).
       score = -negamax(chess, childDepth, -alpha - 1, -alpha, style, ply + 1)
+      if (!_aborted && canReduce && score > alpha) {
+        score = -negamax(chess, childDepthBase, -alpha - 1, -alpha, style, ply + 1)
+      }
       if (score > alpha && score < beta) {
-        score = -negamax(chess, childDepth, -beta, -alpha, style, ply + 1)
+        score = -negamax(chess, childDepthBase, -beta, -alpha, style, ply + 1)
       }
     }
     chess.undo()
@@ -371,19 +351,21 @@ export function findBestMove(
     killer1[i] = null
     killer2[i] = null
   }
-  _deadline = Date.now() + timeLimitMs
+  _deadline = nowMs() + timeLimitMs
   _aborted = false
+  _nodes = 0
 
   let bestMove: Move = moves[0]!
   let prevIterationScore: number | null = null
+  let rootBestMoveKey: string | null = null
 
   for (let depth = 1; depth <= maxDepth; depth++) {
-    if (Date.now() > _deadline) break
+    if (nowMs() > _deadline) break
     _aborted = false
 
     let localBest: Move | null = null
     let localScore = -Infinity
-    const ordered = orderMoves(moves, style, 0, null)
+    const ordered = orderMoves(moves, style, 0, rootBestMoveKey)
     let alpha = -Infinity
     let beta = Infinity
     if (depth >= 3 && prevIterationScore !== null) {
@@ -391,11 +373,13 @@ export function findBestMove(
       alpha = prevIterationScore - 45
       beta = prevIterationScore + 45
     }
+    const windowAlpha = alpha
+    const windowBeta = beta
 
     for (const mv of ordered) {
       chess.move(mv)
       let score = -negamax(chess, depth - 1, -beta, -alpha, style, 1)
-      if (!_aborted && (score <= alpha || score >= beta)) {
+      if (!_aborted && (score <= windowAlpha || score >= windowBeta)) {
         score = -negamax(chess, depth - 1, -Infinity, Infinity, style, 1)
       }
       chess.undo()
@@ -409,6 +393,7 @@ export function findBestMove(
 
     if (!_aborted && localBest) {
       bestMove = localBest
+      rootBestMoveKey = moveKey(localBest)
       prevIterationScore = localScore
     }
   }
@@ -511,13 +496,14 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
   const baseMobility = moves.length
   return moves.map((move) => {
     chess.move(move)
-    const nNonKing = nonKingPieceCount(chess)
-    const staticEval = materialAndPst(chess, mover)
+    const position = analyzePosition(chess)
+    const nNonKing = position.nonKingPieceCount
+    const staticEval = materialAndPst(chess, mover, position)
     const oppMobility = chess.moves({ verbose: true }).length
     const motifs = detectTacticalMotifs(chess, move, mover)
-    const rookDoctrine = rookEndgameDoctrineBonus(chess, move, mover, nNonKing)
-    const oppositionDoctrine = kingOppositionDoctrineBonus(chess, move, mover, nNonKing)
-    const passedPawnDoctrine = passedPawnPushDoctrineBonus(chess, move, mover, nNonKing)
+    const rookDoctrine = rookEndgameDoctrineBonus(position, move, mover, nNonKing)
+    const oppositionDoctrine = kingOppositionDoctrineBonus(position, move, mover, nNonKing)
+    const passedPawnDoctrine = passedPawnPushDoctrineBonus(position, move, mover, nNonKing)
     const repetitionPenalty = chess.isThreefoldRepetition()
       ? Math.round(14 + profile.conversionStrictness * 26)
       : 0
