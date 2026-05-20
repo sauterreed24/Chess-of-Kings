@@ -426,6 +426,47 @@ html, body {
 }
 .play-atelier--solo { grid-template-columns: 1fr; max-width: 42rem; }
 
+/* ── Universal bounded-narrative play area ──────────────────────────────
+   The play area is a vertical column. No-board scenes (dialogue / interlude
+   / codex) fill it so the prose scrolls INSIDE the manuscript while the
+   Advance button stays pinned and on-screen at every size — desktop, laptop,
+   tablet and phone alike. `max-height: 100%` keeps short passages naturally
+   sized (the button sits right under the text) and only engages internal
+   scrolling when the prose would otherwise push the button off-screen. */
+.play-atelier { flex: 0 0 auto; }
+.play-atelier--solo {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.play-atelier--solo .manuscript-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  min-height: 0;
+}
+.play-atelier--solo .narrative-body {
+  flex: 0 1 auto;
+  min-height: 2.5rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+/* Fade the scrolled edge so "there is more below" reads clearly; JS clears
+   it via .narrative-body--no-fade once the reader reaches the bottom. */
+.play-atelier--solo .narrative-body:not(.narrative-body--no-fade) {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 1.4rem), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 1.4rem), transparent 100%);
+}
+.play-atelier--solo .narrative-actions {
+  flex: 0 0 auto;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(201,169,98,0.14);
+  background: linear-gradient(180deg, rgba(17,15,9,0) 0%, #15120b 36%, #15120b 100%);
+}
+
 @media (max-width: 960px) {
   .play-atelier { grid-template-columns: 1fr; }
   .instrument-column { max-width: 420px; margin: 0 auto; }
@@ -1585,11 +1626,13 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .screen--play-inner {
   flex: 1; overflow: auto;
+  display: flex; flex-direction: column;
   padding: 1rem 1.35rem 2rem;
   background: linear-gradient(180deg, #13110a 0%, #0a0906 100%);
   border: 1px solid rgba(201,169,98,0.18);
   border-top: none; border-radius: 0 0 6px 6px;
 }
+.play-crawl { flex: 0 0 auto; }
 .shell--lab .top-bar { z-index: 50; position: relative; }
 
 /* ═══════════════════════════════
@@ -2727,6 +2770,23 @@ body {
   min-height: 3.2rem;
 }
 
+/* On touch devices the keyboard-operation hint is irrelevant and steals
+   vertical room from the pinned Advance footer. Keep it for assistive tech
+   (it is referenced by the board's aria-describedby) but remove it visually
+   and from layout flow. */
+.coarse-pointer .narrative-kbd-hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Lean profile for lower-power hardware and memory-limited devices. */
 html.perf-lean .ambient__bloom,
 html.perf-lean .ambient__grain,
@@ -2874,15 +2934,20 @@ html.perf-lean .board-stage--finisher .board-brass {
   }
 
   .screen--play-inner {
+    display: flex;
+    flex-direction: column;
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding-left: max(0.85rem, env(safe-area-inset-left));
+    padding-right: max(0.85rem, env(safe-area-inset-right));
     padding-top: 0.75rem;
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
     overscroll-behavior: contain;
   }
 
   .play-crawl {
+    flex: 0 0 auto;
     margin-bottom: 0.75rem;
     padding: 0.72rem 0.82rem 0.86rem;
   }
@@ -2900,10 +2965,21 @@ html.perf-lean .board-stage--finisher .board-brass {
     padding: 0.24rem 0.48rem;
   }
 
+  /* Board scenes stack (board above manuscript) and keep natural height. */
   .play-atelier {
     display: flex;
     flex-direction: column;
     min-width: 0;
+  }
+
+  .play-atelier--solo {
+    max-width: 100%;
+  }
+
+  /* Clear the iOS home indicator beneath the pinned Advance footer. */
+  .play-atelier--solo .narrative-actions {
+    margin-top: 0.85rem;
+    padding-bottom: max(0.15rem, env(safe-area-inset-bottom));
   }
 
   .instrument-column {
@@ -2978,5 +3054,97 @@ html.perf-lean .board-stage--finisher .board-brass {
 
   .move-ledger {
     max-height: min(7.2rem, 24svh);
+  }
+
+  /* Reward / chapter-threshold overlay: dock to the bottom for thumb reach,
+     bound to the dynamic viewport, and keep the action buttons clear of the
+     iOS toolbar and home indicator. */
+  .reward-overlay {
+    align-items: end;
+    padding-bottom: 0;
+  }
+
+  .reward-sheet {
+    width: 100%;
+    max-width: 100%;
+    max-height: 86svh;
+    border-radius: 14px 14px 0 0;
+    padding: 1rem max(1rem, env(safe-area-inset-right))
+      calc(1.1rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  }
+
+  @supports (height: 100dvh) {
+    .reward-sheet {
+      max-height: 86dvh;
+    }
+  }
+
+  .echo-controls {
+    flex-wrap: wrap;
+  }
+
+  .echo-controls .primary,
+  .echo-controls .ghost {
+    flex: 1 1 auto;
+    min-height: 3rem;
+  }
+}
+
+/* ═══════════════════════════════
+   SHORT VIEWPORTS (landscape phones, short laptops)
+   Compress the chapter crawl so prose + the Advance button fit without a
+   hunt. Applies on top of the bounded-narrative layout at any width.
+   ═══════════════════════════════ */
+@media (max-height: 560px) {
+  /* The lab is modal and carries its own "← Chapters" exit, so reclaim the
+     global nav bar's height — vital when only ~360px tall in landscape. */
+  .shell--lab .top-bar { display: none; }
+  .lab-overlay__sheet {
+    top: 0;
+    max-height: 100svh;
+  }
+  @supports (height: 100dvh) {
+    .lab-overlay__sheet { max-height: 100dvh; }
+  }
+  .lab-overlay__bar {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .screen--play-inner {
+    padding-top: 0.5rem;
+    padding-bottom: max(0.4rem, env(safe-area-inset-bottom));
+  }
+
+  .play-crawl {
+    margin-bottom: 0.4rem;
+    padding: 0.42rem 0.7rem 0.46rem;
+  }
+  .play-crawl .chapter-sub,
+  .play-crawl .philosophy {
+    display: none;
+  }
+  .chapter-title {
+    font-size: clamp(1rem, 3.4vw, 1.25rem);
+  }
+
+  .scene-tag {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .play-atelier--solo .manuscript-panel {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+  .play-atelier--solo .narrative-body {
+    min-height: 1.6rem;
+  }
+  .play-atelier--solo .narrative-actions {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+  }
+  .coarse-pointer .primary--advance,
+  .primary--advance {
+    min-height: 2.7rem;
   }
 }

@@ -28,6 +28,14 @@ smoke are all passing.
 
 ### Added
 
+- **Hanging-piece coach (`src/app/hangingInsight.ts`)** — the highest-value
+  real-world lesson. After every match / duel / freeplay move it runs a
+  one-exchange static check over the opponent's *legal* captures (so pinned
+  attackers never false-alarm) and, if the move left a piece to be won
+  (≈ an exchange or more), overrides the coach tip with a specific warning
+  (“your bishop on c4 can be won…”). Suppressed while the opponent is in
+  check and in puzzles (curated sacrifices). Unit + `GameFlow` integration
+  tested.
 - **Chapter II — The Age of Fire** in `data/chapters.ts`: Romantic codex,
   king-hunt mate puzzle, two ladder matches (Rowan / Vega) with tuned
   `aiDepth`, chapter rewards, and freeplay rehearsal. Unlocks after
@@ -103,10 +111,22 @@ smoke are all passing.
 - **Board region hint (`#board-guide`)** is driven by `GameFlow` each
   chess update (wait for opponent / AI thinking / freeplay / terminal)
   so it cannot contradict “0 legal targets” when it is not your turn.
-- **Mobile lab layout** (`src/style.css`) — wider small-screen
-  breakpoint, `svh`/`dvh` sheet height, safe-area insets, board-first
-  column order on narrow viewports, tighter chrome for iPhone-class
-  Safari.
+- **Universal bounded-narrative play area** (`src/style.css`,
+  `src/app/mountApp.ts`) — fixes the iPhone-blocking bug where the
+  **Advance** button after dialogue fell below the fold (and behind the
+  iOS toolbar) and could not be pressed. No-board scenes now scroll the
+  prose *inside* the manuscript while the Advance footer stays pinned and
+  on-screen at every size; board scenes auto-scroll the button into view
+  the moment the objective is met. Verified across iPhone (portrait +
+  landscape), iPad, Android phones, small/landscape phones, Surface,
+  laptop and desktop on both WebKit and Chromium. Adds a short-viewport
+  layout (landscape phones hide the redundant in-lab nav and compress the
+  crawl), a scroll-fade affordance, `prefers-reduced-motion`-aware
+  auto-scroll, and reward/overlay docking with safe-area padding.
+- **Promotion picker** (`src/chess/boardView.ts`) is now clamped to the
+  viewport — White's top-rank promotion menu flips below the square
+  instead of clipping off the top of a phone, so every choice stays
+  tappable.
 - Prologue **calibration `goalPlain`** copy now states explicitly that
   White moves only on White’s turn and to wait between trainer replies.
 - `src/app/mountApp.ts` now enforces top-level screen isolation via

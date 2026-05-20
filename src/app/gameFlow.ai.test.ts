@@ -195,6 +195,54 @@ describe('GameFlow AI / puzzles', () => {
     expect(afterReply?.coachTip).toBe(playerInsight)
   })
 
+  it('warns the player when a move leaves a piece to be won (real-world coaching)', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const freeIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.id === 'c1-freeplay')
+    flow.jumpToScene(ch1, freeIdx)
+
+    /* Freeplay = human controls both sides, so the line is deterministic. */
+    flow.tryPlayerMove('e2', 'e4') // White
+    flow.tryPlayerMove('b7', 'b5') // Black pushes a pawn that will guard c4
+    onChessUpdate.mockClear()
+    flow.tryPlayerMove('f1', 'c4') // White bishop walks onto c4, attacked by the b5 pawn, undefended
+
+    const tip = onChessUpdate.mock.calls.at(-1)?.[0]?.coachTip
+    expect(tip).toMatch(/can be won/)
+    expect(tip).toMatch(/bishop on c4/)
+  })
+
+  it('stays quiet when the developing move is safe', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const freeIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.id === 'c1-freeplay')
+    flow.jumpToScene(ch1, freeIdx)
+
+    flow.tryPlayerMove('e2', 'e4')
+    flow.tryPlayerMove('e7', 'e5')
+    onChessUpdate.mockClear()
+    flow.tryPlayerMove('g1', 'f3') // sound development, nothing hangs
+
+    const tip = onChessUpdate.mock.calls.at(-1)?.[0]?.coachTip ?? ''
+    expect(tip).not.toMatch(/can be won/)
+  })
+
   it('duel aiFlavor prefixes with curated talk when the rival has a profile', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

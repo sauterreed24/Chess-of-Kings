@@ -360,8 +360,45 @@ export class BoardView {
 
     document.body.appendChild(panel)
     this.promoPanel = panel
+    /* Keep the picker fully on-screen. White promotes on the top rank, so the
+     * default "open upward" placement can clip off the top of a phone; flip and
+     * clamp as needed so every choice stays tappable. */
+    if (rect) this.clampPromoPanel(panel, rect, color)
     /* focus first button for keyboard nav */
     choiceButtons[0]?.focus()
+  }
+
+  /** Nudges the promotion picker so it never spills past the viewport edges. */
+  private clampPromoPanel(panel: HTMLElement, target: DOMRect, color: Color) {
+    const margin = 8
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    let pr = panel.getBoundingClientRect()
+
+    /* Horizontal: clamp the centre so the panel stays within the viewport. */
+    const halfW = pr.width / 2
+    let cx = target.left + target.width / 2
+    cx = Math.min(Math.max(cx, margin + halfW), vw - margin - halfW)
+    panel.style.setProperty('--px', `${cx}px`)
+
+    /* Vertical: prefer above for White / below for Black, but flip if it clips. */
+    if (color === 'w' && target.top - pr.height < margin) {
+      panel.style.setProperty('--py', `${target.bottom}px`)
+      panel.style.setProperty('--dir', '0%')
+    } else if (color === 'b' && target.bottom + pr.height > vh - margin) {
+      panel.style.setProperty('--py', `${target.top}px`)
+      panel.style.setProperty('--dir', '-100%')
+    }
+
+    /* Final guard: if it still overflows either edge, pin it inside. */
+    pr = panel.getBoundingClientRect()
+    if (pr.top < margin) {
+      panel.style.setProperty('--py', `${margin}px`)
+      panel.style.setProperty('--dir', '0%')
+    } else if (pr.bottom > vh - margin) {
+      panel.style.setProperty('--py', `${vh - margin}px`)
+      panel.style.setProperty('--dir', '-100%')
+    }
   }
 
   private dismissPromo() {

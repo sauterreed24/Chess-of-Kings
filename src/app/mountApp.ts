@@ -140,6 +140,8 @@ export function mountApp(app: HTMLDivElement) {
   let lastEvalScore = Number.NaN
   /** Invalidated in renderScene so Advance button state always refreshes on passage change. */
   let lastAdvanceSig = ''
+  /** Tracks whether Advance was already enabled, so we only auto-scroll it into view on the false→true edge. */
+  let advanceWasReady = false
   let prevSessionRecovered = false
   /** Skip aria-live announcements for outcomes already spoken this scene. */
   let announcedOutcomeKey = ''
@@ -1129,6 +1131,9 @@ export function mountApp(app: HTMLDivElement) {
     lastCalKey = ''
     lastEvalScore = Number.NaN
     lastAdvanceSig = ''
+    advanceWasReady = false
+    narrativeBody.classList.remove('narrative-body--no-fade')
+    narrativeBody.scrollTop = 0
     announcedOutcomeKey = ''
     btnReset.disabled = true
     btnNextHint.textContent = ''
@@ -1260,6 +1265,7 @@ export function mountApp(app: HTMLDivElement) {
     }
 
     updateAdvance(flow)
+    window.requestAnimationFrame(syncNarrativeFade)
   }
 
   function nextSceneHint(): string {
@@ -1272,23 +1278,55 @@ export function mountApp(app: HTMLDivElement) {
     return 'Complete'
   }
 
+  function isNarrativeScene() {
+    return (
+      currentSceneType === 'dialogue' ||
+      currentSceneType === 'interlude' ||
+      currentSceneType === 'codex'
+    )
+  }
+
   function updateAdvance(g: GameFlow) {
     const ok = g.canAdvance()
-    const hint =
-      ok && currentSceneType !== 'dialogue' && currentSceneType !== 'interlude' && currentSceneType !== 'codex'
-        ? nextSceneHint()
-        : ''
+    const narrative = isNarrativeScene()
+    const hint = ok && !narrative ? nextSceneHint() : ''
     const sig = `${ok}|${currentSceneType ?? ''}|${hint}|${g.sceneIndex}|${g.chapterIndex}`
     if (sig === lastAdvanceSig) return
+    const becameReady = ok && !advanceWasReady
+    advanceWasReady = ok
     lastAdvanceSig = sig
     btnNext.disabled = !ok
     btnNext.classList.toggle('primary--ready', ok)
-    if (ok && currentSceneType !== 'dialogue' && currentSceneType !== 'interlude' && currentSceneType !== 'codex') {
-      btnNextHint.textContent = hint ? `→ ${hint}` : ''
-    } else {
-      btnNextHint.textContent = ''
+    btnNextHint.textContent = ok && !narrative && hint ? `→ ${hint}` : ''
+    /* On board scenes the Advance button lives below the board, ledger and
+     * tools. When the objective is met mid-play (checkmate, puzzle solved,
+     * calibration target reached), pull the now-enabled button into view so
+     * it is reachable without hunting — critical on small phone screens. */
+    if (becameReady && !narrative) {
+      window.requestAnimationFrame(() => {
+        try {
+          const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+          btnNext.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' })
+        } catch {
+          btnNext.scrollIntoView(false)
+        }
+      })
     }
   }
+
+  /* Toggles the bottom scroll-fade on the bounded narrative body so players
+   * can tell when dialogue continues below the fold (mobile no-board scenes). */
+  function syncNarrativeFade() {
+    if (!isNarrativeScene()) return
+    const overflowing = narrativeBody.scrollHeight > narrativeBody.clientHeight + 4
+    const atBottom =
+      narrativeBody.scrollTop + narrativeBody.clientHeight >= narrativeBody.scrollHeight - 4
+    narrativeBody.classList.toggle('narrative-body--no-fade', !overflowing || atBottom)
+  }
+  narrativeBody.addEventListener('scroll', syncNarrativeFade, { passive: true })
+  window.addEventListener('resize', () => window.requestAnimationFrame(syncNarrativeFade), {
+    passive: true,
+  })
 
   /* ─── Keyboard shortcuts ─────────────────────────────────────── */
   let keyboardHelpOpen = false

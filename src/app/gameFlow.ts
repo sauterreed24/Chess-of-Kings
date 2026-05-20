@@ -44,6 +44,7 @@ import { detectTacticalMotifs } from '../chess/motifs'
 import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
+import { findHangingPiece, hangingCoachTip } from './hangingInsight'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
@@ -1482,6 +1483,13 @@ export class GameFlow {
 
     /* Coaching follows player moves across every board mode. */
     this.lastCoachTip = this.computeCoachTip(last, piece.color)
+
+    /* Highest-priority real-world lesson: did this move leave material to be
+     * won on the reply? Skip puzzles, where curated sacrifices are the point. */
+    if (this.mode === 'match' || this.mode === 'duel' || sc.type === 'freeplay') {
+      const threat = findHangingPiece(this.chess, piece.color)
+      if (threat) this.lastCoachTip = hangingCoachTip(threat)
+    }
 
     if (this.mode === 'puzzle' && this.puzzleScene && this.puzzleSolved()) {
       this.board?.setInteraction(false)
