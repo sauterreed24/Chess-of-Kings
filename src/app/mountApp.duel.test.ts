@@ -1,0 +1,80 @@
+import { describe, expect, it, beforeEach } from 'vitest'
+import { mountApp } from './mountApp'
+import { hasSave } from './storage'
+
+describe('mounted duel dossier', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    document.body.innerHTML = ''
+  })
+
+  it('does not create a resumable save just by rendering the fresh title screen', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    expect(hasSave()).toBe(false)
+    expect(app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.disabled).toBe(false)
+
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+
+    expect(hasSave()).toBe(true)
+  })
+
+  it('keeps duel launch controls in the first dossier section without duplicate ids', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    app.querySelector<HTMLButtonElement>('.duel-row')?.click()
+
+    const launch = app.querySelector('.duel-launch')
+    const panelText = app.querySelector('#duel-panel')?.textContent ?? ''
+    expect(launch).not.toBeNull()
+    expect(launch?.querySelector('#btn-start-duel')).not.toBeNull()
+    expect(app.querySelectorAll('#btn-start-duel')).toHaveLength(1)
+    expect(app.querySelectorAll('#duel-variant')).toHaveLength(1)
+    expect(app.querySelectorAll('#btn-preview-skin')).toHaveLength(1)
+    expect(panelText.indexOf('Start Duel')).toBeLessThan(panelText.indexOf('Duel Analytics'))
+  })
+
+  it('closes the simulation layer before top-nav screen changes', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn[data-idx="0"]')?.click()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(false)
+    expect(app.querySelector('#screen-duel')?.classList.contains('hidden')).toBe(false)
+    expect(app.querySelector('#btn-duel')?.getAttribute('aria-current')).toBe('page')
+  })
+
+  it('renders a duel briefing instead of stale campaign text after starting from a lab session', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn[data-idx="0"]')?.click()
+    expect(app.querySelector('#narrative-body')?.textContent).toContain('Rain threads the window')
+
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    app.querySelector<HTMLButtonElement>('.duel-row')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-start-duel')?.click()
+
+    const narrative = app.querySelector('#narrative-body')?.textContent ?? ''
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(app.querySelector('#play-chapter-label')?.textContent).toContain('Duel Archive')
+    expect(narrative).toContain('No move cap')
+    expect(narrative).not.toContain('Rain threads the window')
+    expect(app.querySelector<HTMLButtonElement>('#btn-next')?.disabled).toBe(true)
+    expect(app.querySelector<HTMLButtonElement>('#btn-next')?.classList.contains('hidden')).toBe(true)
+  })
+})
