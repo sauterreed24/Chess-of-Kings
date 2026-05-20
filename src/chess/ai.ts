@@ -493,13 +493,11 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
     const hist = chess.history({ verbose: true }) as Move[]
     return hist.length ? hist[hist.length - 1]! : null
   })()
-  const baseMobility = moves.length
   return moves.map((move) => {
     chess.move(move)
     const position = analyzePosition(chess)
     const nNonKing = position.nonKingPieceCount
     const staticEval = materialAndPst(chess, mover, position)
-    const oppMobility = chess.moves({ verbose: true }).length
     const motifs = detectTacticalMotifs(chess, move, mover)
     const rookDoctrine = rookEndgameDoctrineBonus(position, move, mover, nNonKing)
     const oppositionDoctrine = kingOppositionDoctrineBonus(position, move, mover, nNonKing)
@@ -509,7 +507,7 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
       : 0
     chess.undo()
     const profileScore = profileHeuristic(move, profile, endgame, lastMove, motifs)
-    const mobilityScore = (baseMobility - oppMobility) * 0.9
+    const mobilityScore = (position.mobility[mover] - position.mobility[opponentOf(mover)]) * 0.35
     return {
       move,
       score:

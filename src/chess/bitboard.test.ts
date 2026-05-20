@@ -5,6 +5,7 @@ import {
   hasPassedPawn,
   isOpenFile,
   isPawnPassed,
+  isSquareAttacked,
   pawnDefendsSquare,
   squareIndex,
 } from './bitboard'
@@ -21,6 +22,9 @@ describe('bitboard position analysis', () => {
     expect(position.kingIndex.b).toBe(squareIndex('e8'))
     expect(position.pawnsByFile.w.every((count) => count === 1)).toBe(true)
     expect(position.pawnsByFile.b.every((count) => count === 1)).toBe(true)
+    expect(position.mobility.w).toBe(position.mobility.b)
+    expect(position.kingPressure.w).toBe(0)
+    expect(position.kingPressure.b).toBe(0)
   })
 
   it('detects passed pawns and open files from masks', () => {
@@ -42,5 +46,15 @@ describe('bitboard position analysis', () => {
 
     expect(pawnDefendsSquare(supportedPosition, 'w', squareIndex('e7'))).toBe(true)
     expect(materialAndPst(supported, 'w')).toBeGreaterThan(materialAndPst(unsupported, 'w'))
+  })
+
+  it('builds attack maps and loose-piece pressure from the same analysis pass', () => {
+    const knightProbe = analyzePosition(new Chess('8/8/8/8/4n3/8/8/4K2k b - - 0 1'))
+    const looseQueen = analyzePosition(new Chess('7k/8/8/8/4q3/8/8/K3R3 w - - 0 1'))
+
+    expect(isSquareAttacked(knightProbe, 'b', squareIndex('f2'))).toBe(true)
+    expect(isSquareAttacked(knightProbe, 'b', squareIndex('e2'))).toBe(false)
+    expect(looseQueen.loosePiecePressure.w).toBeGreaterThanOrEqual(48)
+    expect(looseQueen.mobility.w).toBeGreaterThan(0)
   })
 })
