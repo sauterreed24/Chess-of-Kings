@@ -527,6 +527,7 @@ export function mountApp(app: HTMLDivElement) {
     const chessRoot = app.querySelector<HTMLDivElement>('#chess-root')!
     if (!flow.board) flow.mountBoard(chessRoot)
     else if (!flow.isInDuelMode()) flow.refreshScene()
+    renderActiveDuelLabBrief()
     flow.board?.setMoveGuard(moveGuardEnabled)
     syncTitleButtons()
     focusWithoutScroll(btnVestibule)
@@ -1193,6 +1194,13 @@ export function mountApp(app: HTMLDivElement) {
 
   function setBoardVisible(on: boolean) {
     boardPanel.classList.toggle('instrument-column--hidden', !on)
+  }
+
+  function renderActiveDuelLabBrief() {
+    const active = flow.getActiveDuelBrief()
+    if (!active) return
+    renderDuelLabBrief(active.rival, active.variant, active.playerColor, active.difficulty)
+    updateAdvance(flow)
   }
 
   function renderDuelLabBrief(

@@ -373,6 +373,21 @@ export class GameFlow {
     return this.mode === 'duel'
   }
 
+  getActiveDuelBrief(): {
+    rival: DuelRosterEntry
+    variant: DuelVariant
+    playerColor: 'w' | 'b'
+    difficulty: 'novice' | 'balanced' | 'relentless'
+  } | null {
+    if (this.mode !== 'duel' || !this.duelSession) return null
+    return {
+      rival: this.duelSession.roster,
+      variant: this.duelSession.variant,
+      playerColor: this.duelSession.playerColor,
+      difficulty: this.duelSession.difficulty,
+    }
+  }
+
   getSelectedPieceSkin(): PieceSkinId {
     return this.selectedPieceSkin
   }
@@ -607,6 +622,14 @@ export class GameFlow {
       },
     })
     this.board.setSkin(this.selectedPieceSkin)
+    if (this.mode === 'duel' && this.duelSession) {
+      this.board.setOrientation(this.playerColor)
+      this.board.draw(this.chess, null, { mode: 'solo', soloColor: this.playerColor })
+      this.board.setInteraction(true)
+      this.emitChess()
+      if (this.chess.turn() !== this.playerColor) this.scheduleAiMove()
+      return
+    }
     this.refreshScene()
   }
 

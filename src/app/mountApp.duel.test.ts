@@ -106,4 +106,29 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector<HTMLButtonElement>('#btn-next')?.disabled).toBe(true)
     expect(app.querySelector<HTMLButtonElement>('#btn-next')?.classList.contains('hidden')).toBe(true)
   })
+
+  it('restores a reloaded duel session with duel briefing copy', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    app.querySelector<HTMLButtonElement>('.duel-row')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-start-duel')?.click()
+    window.dispatchEvent(new Event('beforeunload'))
+
+    document.body.innerHTML = ''
+    const reloaded = document.createElement('div')
+    document.body.appendChild(reloaded)
+    mountApp(reloaded)
+
+    const narrative = reloaded.querySelector('#narrative-body')?.textContent ?? ''
+    expect(reloaded.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(reloaded.querySelector('#play-chapter-label')?.textContent).toContain('Duel Archive')
+    expect(reloaded.querySelector('#scene-tag')?.textContent).toContain('duel')
+    expect(narrative).toContain('No move cap')
+    expect(narrative).not.toContain('Make at least four moves as White')
+    expect(reloaded.querySelector('#recovery-controls')?.classList.contains('hidden')).toBe(false)
+  })
 })
