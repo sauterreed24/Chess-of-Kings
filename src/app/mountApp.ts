@@ -162,6 +162,8 @@ export function mountApp(app: HTMLDivElement) {
   let lastEvalScore = Number.NaN
   /** Invalidated in renderScene so Advance button state always refreshes on passage change. */
   let lastAdvanceSig = ''
+  /** Re-run the board reveal after the first chess payload fills dynamic header rows. */
+  let pendingBoardReveal = false
   /** Tracks whether Advance was already enabled, so we only auto-scroll it into view on the false→true edge. */
   let advanceWasReady = false
   let prevSessionRecovered = false
@@ -396,6 +398,11 @@ export function mountApp(app: HTMLDivElement) {
     const rewards = flow.consumePendingRewards()
     if (rewards.length) showRewardBundles(rewards)
     else maybeShowPendingChapterPrompt()
+
+    if (pendingBoardReveal) {
+      pendingBoardReveal = false
+      revealBoardScene()
+    }
   }
 
   /* ─── GameFlow setup ──────────────────────────────────────────── */
@@ -1236,6 +1243,7 @@ export function mountApp(app: HTMLDivElement) {
     moveLedger.innerHTML = ''
     boardStage.classList.remove('board-stage--victory', 'board-stage--loss')
     setBoardVisible(true)
+    pendingBoardReveal = true
     btnReset.disabled = false
     btnNext.disabled = true
     btnNext.classList.remove('primary--ready')
@@ -1299,6 +1307,7 @@ export function mountApp(app: HTMLDivElement) {
     btnNextHint.textContent = ''
     const showBoard = flow.sceneUsesBoard(scene)
     playScreen.classList.toggle('screen-play--board-scene', showBoard)
+    pendingBoardReveal = showBoard
     document.getElementById('play-atelier')?.classList.toggle('play-atelier--solo', !showBoard)
     setBoardVisible(showBoard)
     narrativeBody.classList.toggle('narrative-body--dialogue', scene.type === 'dialogue')
@@ -1436,10 +1445,10 @@ export function mountApp(app: HTMLDivElement) {
     window.requestAnimationFrame(() => {
       const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
       const compact = window.matchMedia?.('(max-width: 700px), (max-width: 1024px) and (max-height: 700px)').matches
-      const target = compact ? boardPanel : document.getElementById('play-atelier')
+      const target = compact ? boardPanel : boardStage
       if (!target || typeof target.scrollIntoView !== 'function') return
       try {
-        target.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
+        target.scrollIntoView({ block: compact ? 'start' : 'nearest', behavior: reduce ? 'auto' : 'smooth' })
       } catch {
         target.scrollIntoView(true)
       }
