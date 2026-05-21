@@ -112,8 +112,14 @@ export function getShellMarkup(): string {
                 <div class="instrument-frame">
                   <div class="instrument-header">
                     <span class="instrument-eyebrow">Simulation surface</span>
-                    <div class="status-pill-wrap">
-                      <span class="status-pill" id="board-status" role="status" aria-live="polite"></span>
+                    <div class="play-state-strip" aria-label="Current simulation state">
+                      <div class="status-pill-wrap">
+                        <span class="status-pill" id="board-status" role="status" aria-live="polite"></span>
+                      </div>
+                      <div class="play-state-readouts" aria-label="Move and turn readouts">
+                        <span class="play-chip" id="turn-pulse" aria-live="polite"></span>
+                        <span class="play-chip play-chip--quiet" id="move-counter"></span>
+                      </div>
                     </div>
                     <p class="ai-persona hidden" id="ai-persona"></p>
                     <p class="ai-flavor hidden" id="ai-flavor"></p>

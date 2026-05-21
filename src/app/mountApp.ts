@@ -62,6 +62,7 @@ export function mountApp(app: HTMLDivElement) {
 
   const shell = app.querySelector<HTMLElement>('#shell')!
   const labOverlay = app.querySelector<HTMLDivElement>('#lab-overlay')!
+  const playScreen = app.querySelector<HTMLElement>('#screen-play')!
   const screenTitle = app.querySelector('#screen-title')!
   const screenChapters = app.querySelector('#screen-chapters')!
   const screenDuel = app.querySelector('#screen-duel')!
@@ -91,6 +92,8 @@ export function mountApp(app: HTMLDivElement) {
   const chapterRail = app.querySelector<HTMLDivElement>('#chapter-rail')!
   const sceneProgress = app.querySelector<HTMLSpanElement>('#scene-progress')!
   const boardStatus = app.querySelector<HTMLSpanElement>('#board-status')!
+  const turnPulseEl = app.querySelector<HTMLSpanElement>('#turn-pulse')!
+  const moveCounterEl = app.querySelector<HTMLSpanElement>('#move-counter')!
   const recoveryControls = app.querySelector<HTMLDivElement>('#recovery-controls')!
   const btnRecoveryRestore = app.querySelector<HTMLButtonElement>('#btn-recovery-restore')!
   const btnRecoveryDismiss = app.querySelector<HTMLButtonElement>('#btn-recovery-dismiss')!
@@ -204,6 +207,25 @@ export function mountApp(app: HTMLDivElement) {
     prevSanLen = p.sanLog.length
 
     const isGameOver = p.chess.isGameOver()
+    const sideToMove = p.chess.turn() === 'w' ? 'White' : 'Black'
+    const fullMove = Math.max(1, Math.floor(p.sanLog.length / 2) + 1)
+
+    turnPulseEl.textContent = p.matchOutcome
+      ? p.matchOutcome === 'win'
+        ? 'Victory sealed'
+        : p.matchOutcome === 'loss'
+          ? 'Defeat recorded'
+          : 'Draw recorded'
+      : p.aiThinking
+        ? 'AI calculating'
+        : `${sideToMove} turn`
+    turnPulseEl.classList.toggle('play-chip--white', !p.aiThinking && !p.matchOutcome && p.chess.turn() === 'w')
+    turnPulseEl.classList.toggle('play-chip--black', !p.aiThinking && !p.matchOutcome && p.chess.turn() === 'b')
+    turnPulseEl.classList.toggle('play-chip--thinking', p.aiThinking)
+    turnPulseEl.classList.toggle('play-chip--done', Boolean(p.matchOutcome))
+    moveCounterEl.textContent = p.calibration
+      ? `${Math.min(p.calibration.current, p.calibration.target)}/${p.calibration.target} White moves`
+      : `Move ${fullMove} · ${p.sanLog.length} ply`
 
     /* Status pill */
     if (p.aiThinking) {
@@ -1193,7 +1215,8 @@ export function mountApp(app: HTMLDivElement) {
     app.querySelector('#play-chapter-sub')!.textContent = variant.label
     app.querySelector('#play-philosophy')!.textContent = rival.quote
     labEraLabel.textContent = `Duel Archive · ${rival.era}`
-    document.getElementById('screen-play')?.setAttribute('data-theme', 'theme-ancient')
+    playScreen.setAttribute('data-theme', 'theme-ancient')
+    playScreen.classList.add('screen-play--board-scene')
     document.getElementById('play-atelier')?.classList.toggle('play-atelier--solo', false)
     sceneProgress.textContent = `Duel · ${colorLabel}`
     sceneTag.textContent = `${variant.label} duel`
@@ -1245,6 +1268,7 @@ export function mountApp(app: HTMLDivElement) {
         </div>
       </div>`
     window.requestAnimationFrame(syncNarrativeFade)
+    revealBoardScene()
   }
 
   /* ─── renderScene ─────────────────────────────────────────────── */
@@ -1253,7 +1277,7 @@ export function mountApp(app: HTMLDivElement) {
     app.querySelector('#play-chapter-title')!.textContent = chapter.subtitle
     app.querySelector('#play-chapter-sub')!.textContent = chapter.title
     app.querySelector('#play-philosophy')!.textContent = chapter.philosophy
-    document.getElementById('screen-play')?.setAttribute('data-theme', chapter.themeClass)
+    playScreen.setAttribute('data-theme', chapter.themeClass)
 
     const total = chapter.scenes.length
     sceneProgress.textContent = `Passage ${sceneIndex + 1} · ${total}`
@@ -1274,6 +1298,7 @@ export function mountApp(app: HTMLDivElement) {
     btnNext.classList.remove('hidden')
     btnNextHint.textContent = ''
     const showBoard = flow.sceneUsesBoard(scene)
+    playScreen.classList.toggle('screen-play--board-scene', showBoard)
     document.getElementById('play-atelier')?.classList.toggle('play-atelier--solo', !showBoard)
     setBoardVisible(showBoard)
     narrativeBody.classList.toggle('narrative-body--dialogue', scene.type === 'dialogue')
@@ -1304,6 +1329,8 @@ export function mountApp(app: HTMLDivElement) {
 
     if (!showBoard) {
       boardStatus.textContent = ''
+      turnPulseEl.textContent = ''
+      moveCounterEl.textContent = ''
       moveLedger.innerHTML = ''
       lastLedgerKey = ''
       calibrationRail.classList.add('hidden')
@@ -1402,6 +1429,21 @@ export function mountApp(app: HTMLDivElement) {
 
     updateAdvance(flow)
     window.requestAnimationFrame(syncNarrativeFade)
+    if (showBoard) revealBoardScene()
+  }
+
+  function revealBoardScene() {
+    window.requestAnimationFrame(() => {
+      const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      const compact = window.matchMedia?.('(max-width: 700px), (max-width: 1024px) and (max-height: 700px)').matches
+      const target = compact ? boardPanel : document.getElementById('play-atelier')
+      if (!target || typeof target.scrollIntoView !== 'function') return
+      try {
+        target.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
+      } catch {
+        target.scrollIntoView(true)
+      }
+    })
   }
 
   function nextSceneHint(): string {
