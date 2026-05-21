@@ -35,6 +35,7 @@ describe('mainUiFormatters', () => {
     const html = formatMoveLedger(['e4', 'e5'], ['good', null])
     expect(html).toContain('e4')
     expect(html).toContain('e5')
+    expect(html).toContain('ledger-row--latest')
     expect(html).not.toContain('<script')
   })
 

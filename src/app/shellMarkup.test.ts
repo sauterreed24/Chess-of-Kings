@@ -40,6 +40,8 @@ const REQUIRED_IDS = [
   'chapter-rail',
   'scene-progress',
   'board-status',
+  'turn-pulse',
+  'move-counter',
   'recovery-controls',
   'btn-recovery-restore',
   'btn-recovery-dismiss',

@@ -84,8 +84,9 @@ export function formatMoveLedger(sanLog: string[], sanQuality: MoveQuality[]): s
     const bQ = sanQuality[i + 1] ?? null
     const wIcon = wQ ? `<span class="q-icon q-icon--${wQ}">${QUALITY_ICON[wQ] ?? ''}</span>` : ''
     const bIcon = bQ ? `<span class="q-icon q-icon--${bQ}">${QUALITY_ICON[bQ] ?? ''}</span>` : ''
+    const latest = i + 2 >= sanLog.length
     rows.push(
-      `<div class="ledger-row">` +
+      `<div class="ledger-row${latest ? ' ledger-row--latest' : ''}">` +
         `<span class="ledger-num">${n}.</span>` +
         `<span class="ledger-w ${wQ ? `ledger-w--${wQ}` : ''}">${escapeHtml(wSan)}${wIcon}</span>` +
         `<span class="ledger-b">${bSan ? escapeHtml(bSan) + bIcon : '…'}</span>` +
