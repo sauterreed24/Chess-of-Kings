@@ -9,6 +9,7 @@ import {
   hasPassedPawn,
   isOpenFile,
   isPawnPassed,
+  isSquareAttacked,
   opponentOf,
   rankOfIndex,
   squareFromIndex,
@@ -183,16 +184,39 @@ function captureScore(move: Move): number {
   return victim * 10 - attacker
 }
 
+function captureSafetyScore(move: Move, position: PositionAnalysis | null, mover: Color): number {
+  if (!move.captured || !position) return 0
+  const target = squareIndex(move.to)
+  const enemy = opponentOf(mover)
+  const targetAttacked = isSquareAttacked(position, enemy, target)
+  const targetDefended = isSquareAttacked(position, mover, target)
+  if (!targetAttacked) return 18
+
+  const victim = PIECE_VALUES[move.captured] ?? 0
+  const attacker = PIECE_VALUES[move.piece] ?? 0
+  let score = targetDefended ? 8 : -26
+  if (attacker > victim) score -= Math.round((attacker - victim) * 0.16)
+  if (move.san.includes('+')) score += 6
+  return score
+}
+
+function analysisForCaptureOrdering(chess: Chess, moves: Move[]): PositionAnalysis | null {
+  return moves.some((m) => Boolean(m.captured)) ? analyzePosition(chess) : null
+}
+
 function orderMoves(
   moves: Move[],
   style: AIStyle,
   ply: number,
   ttMoveKey: string | null,
+  position: PositionAnalysis | null = null,
+  mover?: Color,
 ): Move[] {
   return moves
     .map(m => {
       const k = moveKey(m)
       let s = captureScore(m) + styleBias(m, style) + (m.san.includes('+') ? 10 : 0)
+      if (mover) s += captureSafetyScore(m, position, mover)
       if (ttMoveKey && k === ttMoveKey) s += 2_000
       if (killer1[ply] && k === killer1[ply]) s += 650
       if (killer2[ply] && k === killer2[ply]) s += 400
@@ -217,7 +241,9 @@ function quiesce(chess: Chess, alpha: number, beta: number, style: AIStyle, qply
   const tactical = chess
     .moves({ verbose: true })
     .filter((m) => m.captured || m.promotion || m.san.includes('+'))
-  for (const mv of orderMoves(tactical, style, 0, null)) {
+  const mover = chess.turn()
+  const position = analysisForCaptureOrdering(chess, tactical)
+  for (const mv of orderMoves(tactical, style, 0, null, position, mover)) {
     chess.move(mv)
     const score = -quiesce(chess, -beta, -alpha, style, qply + 1)
     chess.undo()
@@ -273,7 +299,15 @@ function negamax(
   const origAlpha = alpha
   let best = -Infinity
   let bestMoveKey: string | null = null
-  const moves = orderMoves(chess.moves({ verbose: true }), style, ply, tt.bestMoveKey)
+  const legalMoves = chess.moves({ verbose: true })
+  const moves = orderMoves(
+    legalMoves,
+    style,
+    ply,
+    tt.bestMoveKey,
+    analysisForCaptureOrdering(chess, legalMoves),
+    chess.turn(),
+  )
 
   for (let i = 0; i < moves.length; i++) {
     const mv = moves[i]!
@@ -358,6 +392,7 @@ export function findBestMove(
   let bestMove: Move = moves[0]!
   let prevIterationScore: number | null = null
   let rootBestMoveKey: string | null = null
+  const rootPosition = analysisForCaptureOrdering(chess, moves)
 
   for (let depth = 1; depth <= maxDepth; depth++) {
     if (nowMs() > _deadline) break
@@ -365,7 +400,7 @@ export function findBestMove(
 
     let localBest: Move | null = null
     let localScore = -Infinity
-    const ordered = orderMoves(moves, style, 0, rootBestMoveKey)
+    const ordered = orderMoves(moves, style, 0, rootBestMoveKey, rootPosition, chess.turn())
     let alpha = -Infinity
     let beta = Infinity
     if (depth >= 3 && prevIterationScore !== null) {
@@ -502,6 +537,7 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
     const rookDoctrine = rookEndgameDoctrineBonus(position, move, mover, nNonKing)
     const oppositionDoctrine = kingOppositionDoctrineBonus(position, move, mover, nNonKing)
     const passedPawnDoctrine = passedPawnPushDoctrineBonus(position, move, mover, nNonKing)
+    const captureSafety = captureSafetyScore(move, position, mover)
     const repetitionPenalty = chess.isThreefoldRepetition()
       ? Math.round(14 + profile.conversionStrictness * 26)
       : 0
@@ -516,7 +552,8 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
         mobilityScore +
         rookDoctrine +
         oppositionDoctrine +
-        passedPawnDoctrine -
+        passedPawnDoctrine +
+        captureSafety -
         repetitionPenalty,
     }
   }).sort((a, b) => b.score - a.score)

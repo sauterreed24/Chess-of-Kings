@@ -18,4 +18,12 @@ describe('alpha-beta search pipeline', () => {
 
     expect(move?.san).toBe('Rxe4')
   })
+
+  it('does not chase a poisoned pawn when the recapture is visible', () => {
+    const chess = new Chess('3r2k1/8/8/8/3p4/8/8/3Q2K1 w - - 0 1')
+
+    const move = findBestMove(chess, 2, 'engine', 250)
+
+    expect(move?.san).not.toBe('Qxd4')
+  })
 })

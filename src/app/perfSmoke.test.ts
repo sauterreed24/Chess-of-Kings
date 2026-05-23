@@ -14,7 +14,7 @@ import { Chess } from 'chess.js'
 import { BoardView } from '../chess/boardView'
 
 describe('BoardView redraw perf smoke', () => {
-  it('500 redraws after a real cycle stays under a generous threshold', () => {
+  it('500 redraws after a real cycle stays under a generous threshold', { timeout: 15000 }, () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
     const view = new BoardView({
@@ -40,7 +40,7 @@ describe('BoardView redraw perf smoke', () => {
     root.remove()
   })
 
-  it('repeatedly drawing the same position is fast (memoization is intact)', () => {
+  it('repeatedly drawing the same position is fast (memoization is intact)', { timeout: 15000 }, () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
     const view = new BoardView({

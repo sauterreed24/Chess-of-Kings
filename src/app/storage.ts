@@ -11,6 +11,7 @@ import type {
 import { Chess } from 'chess.js'
 
 const KEY = 'calculus-of-kings-progress-v3'
+const IN_PROGRESS_PLY_LIMIT = 512
 
 export type LastScreen = 'title' | 'chapters' | 'play'
 
@@ -84,6 +85,19 @@ function sanitizeStringArray(v: unknown, max: number): string[] {
   return out
 }
 
+function sanitizeOrderedStringLog(v: unknown, max: number): string[] {
+  if (!Array.isArray(v)) return []
+  const out: string[] = []
+  for (const raw of v) {
+    if (typeof raw !== 'string') continue
+    const s = raw.trim()
+    if (!s) continue
+    out.push(s)
+    if (out.length >= max) break
+  }
+  return out
+}
+
 function normalizeSkin(v: unknown): PieceSkinId {
   if (
     v === 'classic-royal' ||
@@ -116,6 +130,11 @@ function isFen(v: unknown): v is string {
   }
 }
 
+function sanitizeMoveQualityLog(v: unknown, length: number): SavedMoveQuality[] {
+  const raw = Array.isArray(v) ? v : []
+  return Array.from({ length }, (_, i) => (isMoveQuality(raw[i]) ? raw[i] : null))
+}
+
 function sanitizeInProgress(v: unknown): InProgressSnapshot | null {
   if (!v || typeof v !== 'object') return null
   const x = v as Partial<InProgressSnapshot>
@@ -128,11 +147,11 @@ function sanitizeInProgress(v: unknown): InProgressSnapshot | null {
   ) return null
   if (typeof x.chapterIndex !== 'number' || typeof x.sceneIndex !== 'number') return null
   if (!isFen(x.fen)) return null
-  const history = Array.isArray(x.history) ? x.history.filter(isFen).slice(-240) : []
-  const sanLog = sanitizeStringArray(x.sanLog, 240)
-  const sanQuality = Array.isArray(x.sanQuality)
-    ? x.sanQuality.filter(isMoveQuality).slice(0, sanLog.length)
+  const sanLog = sanitizeOrderedStringLog(x.sanLog, IN_PROGRESS_PLY_LIMIT)
+  const history = Array.isArray(x.history)
+    ? x.history.filter(isFen).slice(0, sanLog.length + 1)
     : []
+  const sanQuality = sanitizeMoveQualityLog(x.sanQuality, sanLog.length)
   const sceneTendencies = {
     flankPawnPushes:
       typeof x.sceneTendencies?.flankPawnPushes === 'number'
