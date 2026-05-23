@@ -139,6 +139,32 @@ describe('storage v3 migration and defaults', () => {
     expect(s?.inProgress?.sanLog[0]).toBe('e4')
   })
 
+  it('preserves duplicate SAN entries and pads in-progress move quality slots', () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        chapterIndex: 0,
+        sceneIndex: 0,
+        inProgress: {
+          mode: 'calibration',
+          chapterIndex: 0,
+          sceneIndex: 0,
+          fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          history: ['rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'],
+          sanLog: [' Nf3 ', 'Nf6', 'Nf3'],
+          sanQuality: ['good'],
+          playerColor: 'w',
+          calibrationMoves: 0,
+          scriptedMoveIndex: 0,
+          sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+        },
+      }),
+    )
+    const s = loadSave()
+    expect(s?.inProgress?.sanLog).toEqual(['Nf3', 'Nf6', 'Nf3'])
+    expect(s?.inProgress?.sanQuality).toEqual(['good', null, null])
+  })
+
   it('writeSave does not throw when storage setItem fails', () => {
     const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('quota exceeded')

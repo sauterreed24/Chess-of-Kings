@@ -666,12 +666,18 @@ export class BoardView {
         'sq-legal-dot',
         'sq-legal-capture',
         'sq-last',
+        'sq-last-from',
+        'sq-last-to',
         'sq-check',
         'sq-guard',
       )
-      if (this.lastMove && (sq === this.lastMove.from || sq === this.lastMove.to)) {
-        btn.classList.add('sq-last')
-        labels.push('last move')
+      if (this.lastMove && sq === this.lastMove.from) {
+        btn.classList.add('sq-last', 'sq-last-from')
+        labels.push('last move origin')
+      }
+      if (this.lastMove && sq === this.lastMove.to) {
+        btn.classList.add('sq-last', 'sq-last-to')
+        labels.push('last move destination')
       }
       if (this.checkSquare === sq) {
         btn.classList.add('sq-check')

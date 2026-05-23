@@ -49,6 +49,7 @@ import { findHangingPiece, hangingCoachTip } from './hangingInsight'
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
 const PERSIST_DEBOUNCE_MS = 180
+const IN_PROGRESS_PLY_LIMIT = 512
 
 function emptyBoardSelection(): BoardSelectionState {
   return {
@@ -62,6 +63,12 @@ function emptyBoardSelection(): BoardSelectionState {
 
 export type MatchOutcome = 'win' | 'loss' | 'draw' | null
 export type MoveQuality = 'brilliant' | 'good' | 'ok' | 'inaccuracy' | 'mistake' | 'blunder' | null
+
+type SnapshotRecoveryState = {
+  history: string[]
+  sanLog: string[]
+  sanQuality: MoveQuality[]
+}
 
 export type ChessUiPayload = {
   chess: Chess
@@ -277,14 +284,19 @@ export class GameFlow {
     const sc = this.currentScene()
     if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return null
     if (!this.history.length) return null
+    const plyCount = Math.min(this.sanLog.length, Math.max(0, this.history.length - 1), IN_PROGRESS_PLY_LIMIT)
+    const history = this.history.slice(0, plyCount + 1)
+    if (!history.length) return null
+    const sanLog = this.sanLog.slice(0, plyCount)
+    const sanQuality = Array.from({ length: plyCount }, (_, i) => this.sanQuality[i] ?? null)
     const snap: InProgressSnapshot = {
       mode: this.mode,
       chapterIndex: this.chapterIndex,
       sceneIndex: this.sceneIndex,
-      fen: this.chess.fen(),
-      history: [...this.history].slice(-240),
-      sanLog: [...this.sanLog].slice(-240),
-      sanQuality: [...this.sanQuality].slice(-240),
+      fen: history[history.length - 1]!,
+      history,
+      sanLog,
+      sanQuality,
       playerColor: this.playerColor,
       calibrationMoves: this.calibrationMoves,
       scriptedMoveIndex: this.scriptedMoveIndex,
@@ -308,51 +320,42 @@ export class GameFlow {
     if (!snap) return false
     this.pendingInProgressSnapshot = null
     if (snap.chapterIndex !== this.chapterIndex || snap.sceneIndex !== this.sceneIndex) return false
+    const recovery = this.snapshotRecoveryState(snap, sc)
+    if (!recovery) return false
 
     if (snap.mode === 'duel' && snap.duel) {
-      const roster = DUEL_ROSTER.find((r) => r.opponentId === snap.duel?.opponentId)
-      const variant = roster?.variants.find((v) => v.id === snap.duel?.variantId)
-      if (!roster || !variant) return false
+      const setup = this.resolveSnapshotDuelSetup(snap)
+      if (!setup) return false
       this.mode = 'duel'
       this.puzzleScene = null
       this.matchScene = null
       this.calibrationScene = null
       this.duelSession = {
-        roster,
-        variant,
+        roster: setup.roster,
+        variant: setup.variant,
         playerColor: snap.duel.playerColor,
         fen: snap.duel.startFen,
         difficulty: snap.duel.difficulty,
       }
       this.playerColor = snap.playerColor
       this.chess.load(snap.fen)
-      this.history = snap.history.length ? [...snap.history] : [snap.fen]
-      this.sanLog = [...snap.sanLog]
-      this.sanQuality = [...snap.sanQuality]
+      this.history = recovery.history
+      this.sanLog = recovery.sanLog
+      this.sanQuality = recovery.sanQuality
       this.sceneTendencies = { ...snap.sceneTendencies }
       this.lastCoachTip = 'Session restored after dev-server restart.'
       this.sessionRecoveredNotice = true
       return true
     }
 
-    const expectedMode =
-      sc.type === 'puzzle'
-        ? 'puzzle'
-        : sc.type === 'match'
-          ? 'match'
-          : sc.type === 'calibration'
-            ? 'calibration'
-            : sc.type === 'freeplay'
-              ? 'freeplay'
-              : null
+    const expectedMode = this.expectedSnapshotMode(sc)
     if (!expectedMode || snap.mode !== expectedMode) return false
 
-    const safeLen = Math.min(snap.sanLog.length, snap.sanQuality.length || snap.sanLog.length)
     this.playerColor = snap.playerColor
     this.chess.load(snap.fen)
-    this.history = snap.history.length ? [...snap.history] : [snap.fen]
-    this.sanLog = snap.sanLog.slice(0, safeLen)
-    this.sanQuality = snap.sanQuality.slice(0, safeLen)
+    this.history = recovery.history
+    this.sanLog = recovery.sanLog
+    this.sanQuality = recovery.sanQuality
     this.calibrationMoves = snap.calibrationMoves
     this.scriptedMoveIndex = snap.scriptedMoveIndex
     this.sceneTendencies = { ...snap.sceneTendencies }
@@ -463,11 +466,88 @@ export class GameFlow {
 
   private canResumeSnapshot(snap: InProgressSnapshot | null): snap is InProgressSnapshot {
     if (!snap) return false
+    if (typeof snap.chapterIndex !== 'number' || typeof snap.sceneIndex !== 'number') return false
     const ch = this.chapters[snap.chapterIndex]
     if (!ch) return false
     if (snap.sceneIndex < 0 || snap.sceneIndex >= ch.scenes.length) return false
     if (snap.chapterIndex > this.highestUnlockedChapter) return false
+    const sc = ch.scenes[snap.sceneIndex]!
+    if (snap.mode === 'duel' && !this.resolveSnapshotDuelSetup(snap)) return false
+    if (!this.snapshotRecoveryState(snap, sc)) return false
     return true
+  }
+
+  private expectedSnapshotMode(sc: Scene): InProgressSnapshot['mode'] | null {
+    if (sc.type === 'puzzle') return 'puzzle'
+    if (sc.type === 'match') return 'match'
+    if (sc.type === 'calibration') return 'calibration'
+    if (sc.type === 'freeplay') return 'freeplay'
+    return null
+  }
+
+  private resolveSnapshotDuelSetup(snap: InProgressSnapshot) {
+    if (snap.mode !== 'duel' || !snap.duel) return null
+    const roster = DUEL_ROSTER.find((r) => r.opponentId === snap.duel?.opponentId)
+    const variant = roster?.variants.find((v) => v.id === snap.duel?.variantId)
+    if (!roster || !variant) return null
+    return { roster, variant }
+  }
+
+  private snapshotStartFen(sc: Scene, snap: InProgressSnapshot): string | null {
+    if (snap.mode === 'duel') return snap.duel?.startFen ?? null
+    if (sc.type === 'puzzle') return sc.fen
+    if (sc.type === 'match') return sc.fen ?? DEFAULT_POSITION
+    if (sc.type === 'calibration') return DEFAULT_POSITION
+    if (sc.type === 'freeplay') return sc.fen ?? DEFAULT_POSITION
+    return null
+  }
+
+  private snapshotMoveQualityAt(snap: InProgressSnapshot, index: number): MoveQuality {
+    const raw = Array.isArray(snap.sanQuality) ? (snap.sanQuality as unknown[])[index] : null
+    return (
+      raw === null ||
+      raw === 'brilliant' ||
+      raw === 'good' ||
+      raw === 'ok' ||
+      raw === 'inaccuracy' ||
+      raw === 'mistake' ||
+      raw === 'blunder'
+    )
+      ? raw
+      : null
+  }
+
+  private snapshotRecoveryState(snap: InProgressSnapshot, sc: Scene): SnapshotRecoveryState | null {
+    if (typeof snap.fen !== 'string' || !Array.isArray(snap.sanLog)) return null
+    if (snap.sanLog.length > IN_PROGRESS_PLY_LIMIT) return null
+    if (snap.mode !== 'duel') {
+      const expectedMode = this.expectedSnapshotMode(sc)
+      if (!expectedMode || snap.mode !== expectedMode) return null
+    }
+    const startFen = this.snapshotStartFen(sc, snap)
+    if (!startFen) return null
+    try {
+      const replay = new Chess(startFen)
+      const history = [replay.fen()]
+      const sanLog: string[] = []
+      for (const raw of snap.sanLog) {
+        if (typeof raw !== 'string') return null
+        const san = raw.trim()
+        if (!san) return null
+        const move = replay.move(san)
+        if (!move) return null
+        sanLog.push(san)
+        history.push(replay.fen())
+      }
+      if (replay.fen() !== snap.fen) return null
+      return {
+        history,
+        sanLog,
+        sanQuality: sanLog.map((_, i) => this.snapshotMoveQualityAt(snap, i)),
+      }
+    } catch {
+      return null
+    }
   }
 
   rematchLastDuel(): boolean {

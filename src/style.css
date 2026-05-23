@@ -1449,6 +1449,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 .sq-light.sq-last { background: rgba(160,190,120,0.55) !important; }
 .sq-dark.sq-last  { background: rgba(40,80,55,0.85)  !important; }
+.sq-light.sq-last-from { background: rgba(128,166,112,0.48) !important; }
+.sq-dark.sq-last-from  { background: rgba(31,74,54,0.74) !important; }
+.sq-light.sq-last-to   { background: rgba(180,203,124,0.66) !important; }
+.sq-dark.sq-last-to    { background: rgba(55,95,58,0.92) !important; }
 
 @keyframes last-move-fade {
   from { filter: brightness(1.5); }
@@ -2507,6 +2511,14 @@ body {
 
 .sq-last {
   box-shadow: inset 0 0 0 2px rgba(168,216,138,0.44);
+}
+.sq-last-from {
+  box-shadow: inset 0 0 0 2px rgba(168,216,138,0.4);
+}
+.sq-last-to {
+  box-shadow:
+    inset 0 0 0 3px rgba(232,201,126,0.76),
+    0 0 14px rgba(232,201,126,0.18);
 }
 
 .captured-row {

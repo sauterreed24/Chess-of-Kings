@@ -95,6 +95,29 @@ describe('BoardView keyboard navigation', () => {
     root.remove()
   })
 
+  it('distinguishes last-move origin and destination for visual and screen-reader feedback', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+    })
+    const chess = new Chess()
+    const last = chess.move({ from: 'e2', to: 'e4' })!
+    view.draw(chess, last, { mode: 'free' })
+
+    const e2 = root.querySelector<HTMLButtonElement>('[data-square="e2"]')!
+    const e4 = root.querySelector<HTMLButtonElement>('[data-square="e4"]')!
+    expect(e2.classList.contains('sq-last')).toBe(true)
+    expect(e2.classList.contains('sq-last-from')).toBe(true)
+    expect(e2.getAttribute('aria-label')).toContain('last move origin')
+    expect(e4.classList.contains('sq-last')).toBe(true)
+    expect(e4.classList.contains('sq-last-to')).toBe(true)
+    expect(e4.getAttribute('aria-label')).toContain('last move destination')
+    root.remove()
+  })
+
   it('reports quiet legal targets and clears selection state', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)

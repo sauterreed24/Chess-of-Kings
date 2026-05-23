@@ -47,7 +47,7 @@
 | **What it is** | Story-driven chess RPG with adaptive rival AI, shipped as a **static PWA** (no backend, no accounts). |
 | **Play** | **[Live demo](https://sauterreed24.github.io/Chess-of-Kings/)** — first step is always [Start here](#start-here). |
 | **Stack** | **TypeScript (strict)**, plain DOM, **Vite**, **Vitest**, `chess.js`; Capacitor shells for optional native builds. |
-| **Quality** | **264** automated tests, ESLint **0** warnings, CI on every PR (`lint` + `build` + full `test` + UI smoke). |
+| **Quality** | **304** automated tests, ESLint **0** warnings, CI on every PR (`lint` + `build` + full `test` + UI smoke). |
 | **Fit signals** | Accessibility-minded UI, save-format migrations, property-tested engine, small **gzip** JS budget (<90 KB). |
 
 **Suggested GitHub topics** (for discoverability): `typescript`, `vite`, `vitest`, `pwa`, `chess`, `game-development`, `accessibility`, `github-pages`, `no-framework`.
@@ -107,16 +107,13 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ## What's new in this release (v0.2.14)
 
-Ship-ready polish across narrative AI copy, navigation safety, accessibility, and tests:
+Reliability and board-feedback hardening across recovery, search, accessibility, and tests:
 
-- **Live rival talk lines.** `selectTalkLine` from each rival’s dossier profile now prefixes **match and duel** AI flavor text (opening / rattled / audacious buckets from recent results).
-- **Daily Calculus guard.** Starting today’s puzzle from the title confirms when a **recoverable save** or **in-progress simulation** would be replaced.
-- **Session streak honesty.** `recordToday` reports `persistOk`; failed writes show a visible ribbon warning (quota / private mode).
-- **Calibration Lens wording.** The adaptive dial’s center band is labeled **Equilibrium** so it cannot be confused with **Balanced** difficulty on the dossier (renamed to **Difficulty hint** / **Recommended next difficulty**).
-- **Simulation layer ARIA.** The lab overlay is `aria-hidden` when closed; when open it uses dialog semantics. **`public/accessibility.html`** is linked beside Privacy on the title plate.
-- **UX detail.** Mastery Trial uses secondary styling plus a one-line ceiling-difficulty hint; move-ledger memo keys avoid redundant rebuilds on FEN-only updates; thinking pill and square coordinates gain safer contrast.
-- **Shortcuts.** Global `?` / Advance routing ignores **`contenteditable`** regions.
-- **Tests.** **264** automated tests including duel flavor + streak persistence + shell markup gates; engine-vs-engine smoke described as seeded loss-cap regression guard.
+- **Recoverable sessions.** In-progress saves preserve ordered SAN logs, pad missing move-quality slots, and replay from the scene or duel starting FEN before restore. Corrupt board/ledger mismatches are rejected and cleared instead of resurfacing a broken resume.
+- **Board feedback.** Last-move squares now distinguish origin and destination with `.sq-last-from` / `.sq-last-to` while preserving the existing `.sq-last` contract. ARIA labels announce "last move origin" and "last move destination."
+- **Search safety.** Alpha-beta and rival profile ordering reuse attack-map analysis to de-prioritize poisoned captures and prefer safe captures before quiescence and candidate selection.
+- **Perf gate.** Board redraw perf smoke keeps its memoization assertions while gaining enough timeout headroom for full-suite pressure on Windows/CI.
+- **Tests.** **304** automated tests including recovery replay, move-highlight semantics, capture-safety search, engine-vs-engine, property, migration, DOM, UI-smoke, and perf coverage.
 
 Earlier roadmap highlights (rival doctrine, Mastery Trial, Daily Calculus ribbon, SFX, keyboard atlas, property-tested engine, architecture doc) remain in [`CHANGELOG.md`](./CHANGELOG.md).
 
@@ -171,7 +168,7 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` currently runs **264 tests across 39 files** (roughly 2-3 minutes on this machine with sequential Vitest execution for stability). The categories are:
+**Testing scopes.** `npm test` currently runs **304 tests across 43 files** (roughly 2-3 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
@@ -192,7 +189,7 @@ CI gates: `npm run lint`, `npm test`, `npm run build`, `npm run test:ui-smoke`.
 
 ```yaml
 project: The Calculus of Kings
-one_liner: Alt-history chess RPG that ships as a single ~72 KB gzipped JS bundle, installable on iOS without an app store.
+one_liner: Alt-history chess RPG that ships as a single ~75 KB gzipped JS bundle, installable on iOS without an app store.
 readme_play_path: "Start here → live demo URL → Enter the Archive → Chapters → Advance"
 live_demo_url: https://sauterreed24.github.io/Chess-of-Kings/
 language: TypeScript (strict)
@@ -204,7 +201,7 @@ ci_workflows:
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/ci.yml
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/pages.yml
 license: MIT
-tests: 264 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
+tests: 304 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke)
 skills_keywords:
   - TypeScript strict mode
   - Vite
@@ -215,8 +212,8 @@ skills_keywords:
   - Game AI (negamax, alpha-beta, transposition table)
   - Stateful client persistence and migrations
 performance_budget:
-  js_gzipped: < 90 KB (measured 71622 bytes gzip for `dist/assets/index-*.js` after `npm run build`, 2026-05-20)
-  css_gzipped: < 15 KB (measured 14254 bytes gzip for `dist/assets/index-*.css`, same build)
+  js_gzipped: < 90 KB (measured 74932 bytes gzip for `dist/assets/index-DtdMFuFy.js` after `npm run build`, 2026-05-23)
+  css_gzipped: < 15 KB (measured 14979 bytes gzip for `dist/assets/index-BZZ5Blxx.css`, same build)
 lighthouse_snapshot_mobile:
   report: docs/lighthouse-mobile-max-pass-2.json
   performance: 86
@@ -280,7 +277,7 @@ Open the URL Vite prints; asset paths use the same `/Chess-of-Kings/` base as th
 npm install              # install dependencies
 npm run dev              # local dev server (LAN-exposed for device testing)
 npm run build            # production build (tsc + vite)
-npm test                 # full test suite (264 tests)
+npm test                 # full test suite (304 tests)
 npm run lint             # eslint, max warnings 0
 npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay)
 ```

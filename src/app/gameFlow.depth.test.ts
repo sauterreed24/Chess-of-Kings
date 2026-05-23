@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { Chess } from 'chess.js'
 import type { BoardView } from '../chess/boardView'
 import { PLAYABLE_CHAPTERS } from '../data/chapters'
 
@@ -18,6 +19,32 @@ function mockBoard(): Pick<BoardView, 'draw' | 'setInteraction' | 'setOrientatio
     setOrientation: vi.fn(),
     setCheckSquare: vi.fn(),
     setSkin: vi.fn(),
+  }
+}
+
+function calibrationSceneIndex(): number {
+  const idx = PLAYABLE_CHAPTERS[0]!.scenes.findIndex((s) => s.type === 'calibration')
+  expect(idx).toBeGreaterThanOrEqual(0)
+  return idx
+}
+
+function makeCalibrationSnapshot() {
+  const chess = new Chess()
+  const startFen = chess.fen()
+  chess.move('e4')
+  const fen = chess.fen()
+  return {
+    mode: 'calibration' as const,
+    chapterIndex: 0,
+    sceneIndex: calibrationSceneIndex(),
+    fen,
+    history: [startFen, fen],
+    sanLog: ['e4'],
+    sanQuality: ['good'],
+    playerColor: 'w' as const,
+    calibrationMoves: 1,
+    scriptedMoveIndex: 0,
+    sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
   }
 }
 
@@ -178,11 +205,11 @@ describe('GameFlow depth systems', () => {
     })
     const f = flow as unknown as { pendingInProgressSnapshot: unknown }
     expect(flow.hasRecoverableSession()).toBe(false)
-    f.pendingInProgressSnapshot = { mode: 'match', chapterIndex: 0, sceneIndex: 0 }
+    f.pendingInProgressSnapshot = makeCalibrationSnapshot()
     expect(flow.hasRecoverableSession()).toBe(true)
   })
 
-  it('resumes recoverable match session into live board state', () => {
+  it('resumes recoverable board session into live board state', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),
       onChessUpdate: vi.fn(),
@@ -190,41 +217,48 @@ describe('GameFlow depth systems', () => {
       onCampaignFinished: vi.fn(),
     })
     flow.board = mockBoard() as unknown as BoardView
-    let chapterIdx = -1
-    let matchIdx = -1
-    for (let c = 0; c < PLAYABLE_CHAPTERS.length; c++) {
-      const idx = PLAYABLE_CHAPTERS[c]!.scenes.findIndex((s) => s.type === 'match')
-      if (idx >= 0) {
-        chapterIdx = c
-        matchIdx = idx
-        break
-      }
-    }
-    expect(chapterIdx).toBeGreaterThanOrEqual(0)
-    expect(matchIdx).toBeGreaterThanOrEqual(0)
     const f = flow as unknown as {
       pendingInProgressSnapshot: unknown
       highestUnlockedChapter: number
     }
-    f.highestUnlockedChapter = chapterIdx
-    const fen = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
-    f.pendingInProgressSnapshot = {
-      mode: 'match',
-      chapterIndex: chapterIdx,
-      sceneIndex: matchIdx,
-      fen,
-      history: [fen],
-      sanLog: ['e4'],
-      sanQuality: ['good'],
-      playerColor: 'w',
-      calibrationMoves: 0,
-      scriptedMoveIndex: 0,
-      sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 1, repeatedChecksWithoutGain: 0 },
-    }
+    f.highestUnlockedChapter = 0
+    const snapshot = makeCalibrationSnapshot()
+    f.pendingInProgressSnapshot = snapshot
     const ok = flow.resumeRecoverableSession()
     expect(ok).toBe(true)
-    expect(flow.chess.fen()).toBe(fen)
+    expect(flow.chess.fen()).toBe(snapshot.fen)
     expect(flow.hasRecoverableSession()).toBe(false)
+  })
+
+  it('rejects recovered snapshots when the SAN ledger cannot replay to the board FEN', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const chess = new Chess()
+    const startFen = chess.fen()
+    chess.move('e4')
+    const afterE4 = chess.fen()
+    chess.move('Nh6')
+    const afterNh6 = chess.fen()
+    const f = flow as unknown as {
+      pendingInProgressSnapshot: unknown | null
+      highestUnlockedChapter: number
+    }
+    f.highestUnlockedChapter = 0
+    f.pendingInProgressSnapshot = {
+      ...makeCalibrationSnapshot(),
+      fen: afterNh6,
+      history: [startFen, afterE4, afterNh6],
+      sanLog: ['e4'],
+      sanQuality: ['good'],
+    }
+
+    expect(flow.hasRecoverableSession()).toBe(false)
+    expect(flow.resumeRecoverableSession()).toBe(false)
+    expect(f.pendingInProgressSnapshot).toBeNull()
   })
 
   it('drops stale recoverable snapshot that targets locked chapter', () => {
@@ -254,7 +288,7 @@ describe('GameFlow depth systems', () => {
       onCampaignFinished: vi.fn(),
     })
     const f = flow as unknown as { pendingInProgressSnapshot: unknown }
-    f.pendingInProgressSnapshot = { mode: 'match', chapterIndex: 0, sceneIndex: 0 }
+    f.pendingInProgressSnapshot = makeCalibrationSnapshot()
     expect(flow.hasRecoverableSession()).toBe(true)
     flow.newGame()
     expect(flow.hasRecoverableSession()).toBe(false)
