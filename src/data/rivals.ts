@@ -242,6 +242,120 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  alexion: {
+    opponentId: 'alexion',
+    displayName: 'Alexion Demaratos-Serapis',
+    blend: {
+      primary: { school: 'Synthesis', weight: 65 },
+      secondary: { school: 'Achaemenid Patience', weight: 35 },
+    },
+    counterPrep: [
+      'Do not mistake the mentor mask for mercy; he invites complexity only after your development is accountable.',
+      'Trade into clear structures when ahead. Alexion is strongest when the position contains two competing plans.',
+      'Watch his quiet king-safety moves. They usually prepare a central break rather than a retreat.',
+    ],
+    whiteOpenings: ['Queen Pawn Mentor System', 'English Reversed Sicilian', 'Catalan Archive Lines'],
+    blackOpenings: ['Caro-Kann Mentor File', 'Queen\'s Gambit Declined', 'Classical e5 mirror'],
+    signature: 'Balanced doctrine that asks whether your plan survives its own consequences.',
+    talk: {
+      opening: [
+        'The Archive does not forget. It waits.',
+        'I will not punish every mistake. Only the instructive ones.',
+        'A candidate reveals more by choosing a plan than by finding a tactic.',
+      ],
+      punished: [
+        'Good. You found the cost hidden inside my invitation.',
+        'That move had a reason. Keep that habit.',
+      ],
+      rattled: [
+        'You are becoming less useful as a control specimen.',
+        'The chamber is beginning to answer you differently.',
+      ],
+      audacious: [
+        'Momentum is not mastery. Prove that you can convert it.',
+        'You are leaning on confidence. I will test the joint.',
+      ],
+      draw: [
+        'A draw can be a verdict when both plans survive cross-examination.',
+      ],
+    },
+  },
+  rowan: {
+    opponentId: 'rowan',
+    displayName: 'Rowan Vale',
+    blend: {
+      primary: { school: 'Indic Combinatorics', weight: 70 },
+      secondary: { school: 'Bactrian Frontier', weight: 30 },
+    },
+    counterPrep: [
+      'Decline at least one tempting capture before move 12; Rowan counts on greed to open your king.',
+      'Finish development before chasing his f-pawn. His worst attacks begin when you win material without shelter.',
+      'Force trades after his first wave. If the initiative stalls, his sacrifice ledger becomes expensive quickly.',
+    ],
+    whiteOpenings: ['King\'s Gambit Accepted', 'Evans Gambit', 'Vienna Gambit'],
+    blackOpenings: ['Latvian Countergambit', 'Two Knights Max Lange', 'Dragon-side pawn storm'],
+    signature: 'Tempo-first sacrifices that turn a poisoned pawn into a loyalty test.',
+    talk: {
+      opening: [
+        'Fire spreads.',
+        'A pawn is only poisoned if you insist on eating it.',
+        'Let us find out whether your king enjoys fresh air.',
+      ],
+      punished: [
+        'You left the bait on the table. That is deeply impolite.',
+        'I spent the tempo before I owned it.',
+      ],
+      rattled: [
+        'Fine. I will make the sacrifice earn its applause this time.',
+        'You keep refusing the dramatic move. I dislike that discipline.',
+      ],
+      audacious: [
+        'You are starting to like the flames. Dangerous habit.',
+        'If you want beauty, you must pay for it with accuracy.',
+      ],
+      draw: [
+        'A draw is just an attack that ran out of witnesses.',
+      ],
+    },
+  },
+  vega: {
+    opponentId: 'vega',
+    displayName: 'Vega Sorn',
+    blend: {
+      primary: { school: 'Macedonian Phalanx', weight: 45 },
+      secondary: { school: 'Indic Combinatorics', weight: 55 },
+    },
+    counterPrep: [
+      'Castle before ambition. Vega times central breaks around every king that lingers on e1.',
+      'Meet pressure with development, not pawn grabbing. Her sacrifices are strongest against loose back ranks.',
+      'When she improves a piece without check, ask which defender just became overloaded.',
+    ],
+    whiteOpenings: ['Italian Game pressure', 'Scotch Gambit with restraint', 'Bishop\'s Opening'],
+    blackOpenings: ['Two Knights Defense', 'Giuoco Piano counter-pressure', 'Classical e5 systems'],
+    signature: 'Romantic pressure audited by classical receipts: every sacrifice names its defender.',
+    talk: {
+      opening: [
+        'Bring your king to safety before you dream of attack.',
+        'Drama without calculation is just a shorter loss.',
+        'I prefer sacrifices that can explain themselves.',
+      ],
+      punished: [
+        'That refutation had structure. Rowan would hate it.',
+        'I omitted a defender from the receipt. Correctly noticed.',
+      ],
+      rattled: [
+        'You are castling earlier. Good. Irritating, but good.',
+        'The attack must now justify itself twice.',
+      ],
+      audacious: [
+        'Confidence is acceptable. Exposure is not.',
+        'You have learned to make danger useful. I will raise the price.',
+      ],
+      draw: [
+        'A draw with kings safe is not failure. It is accounting.',
+      ],
+    },
+  },
 }
 
 /**

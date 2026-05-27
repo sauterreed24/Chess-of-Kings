@@ -69,6 +69,23 @@ describe('mounted duel dossier', () => {
     expect(panelText.indexOf('Start Duel')).toBeLessThan(panelText.indexOf('Duel Analytics'))
   })
 
+  it('renders curated doctrine and counter-prep for the default Duel Archive rival', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    app.querySelector<HTMLButtonElement>('.duel-row')?.click()
+
+    const school = app.querySelector('.rival-school')?.textContent ?? ''
+    const panelText = app.querySelector('#duel-panel')?.textContent ?? ''
+    expect(school).toContain('Synthesis')
+    expect(school).toContain('Achaemenid Patience')
+    expect(panelText).toContain('Do not mistake the mentor mask for mercy')
+    expect(panelText).toContain('Opening Watchlist')
+  })
+
   it('closes the simulation layer before top-nav screen changes', () => {
     const app = document.createElement('div')
     document.body.appendChild(app)
@@ -83,6 +100,22 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(false)
     expect(app.querySelector('#screen-duel')?.classList.contains('hidden')).toBe(false)
     expect(app.querySelector('#btn-duel')?.getAttribute('aria-current')).toBe('page')
+  })
+
+  it('renders authored story beat context at the start of the Prologue', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn[data-idx="0"]')?.click()
+
+    const storyBeat = app.querySelector<HTMLElement>('#narrative-body .story-beat')
+    const narrative = app.querySelector('#narrative-body')?.textContent ?? ''
+    expect(storyBeat).not.toBeNull()
+    expect(storyBeat?.classList.contains('story-beat--pressure')).toBe(true)
+    expect(narrative).toContain('A player without a method')
+    expect(narrative).toContain('Rain threads the window')
   })
 
   it('renders a duel briefing instead of stale campaign text after starting from a lab session', () => {

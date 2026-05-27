@@ -9,6 +9,7 @@ import {
   labelForSpeaker,
   performanceDeltaLines,
   sceneTypeLabel,
+  storyBeatBlock,
   tierLabel,
 } from './mainUiFormatters'
 import type { MatchHistoryEntry } from '../types'
@@ -37,6 +38,22 @@ describe('mainUiFormatters', () => {
     expect(html).toContain('e5')
     expect(html).toContain('ledger-row--latest')
     expect(html).not.toContain('<script')
+  })
+
+  it('storyBeatBlock renders compact story context and escapes authored copy', () => {
+    const html = storyBeatBlock({
+      label: '<Pressure>',
+      title: 'Fire & calculation',
+      body: 'A poisoned <pawn> asks whether Reed can wait.',
+      tone: 'fire',
+    })
+
+    expect(html).toContain('story-beat--fire')
+    expect(html).toContain('&lt;Pressure&gt;')
+    expect(html).toContain('Fire &amp; calculation')
+    expect(html).toContain('A poisoned &lt;pawn&gt; asks whether Reed can wait.')
+    expect(html).not.toContain('<Pressure>')
+    expect(html).not.toContain('<pawn>')
   })
 
   it('getCaptured and capturedRow reflect starting position', () => {

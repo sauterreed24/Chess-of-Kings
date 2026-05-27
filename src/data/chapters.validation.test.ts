@@ -7,6 +7,17 @@ function materialAdvantage(chess: Chess, forColor: 'w' | 'b'): number {
   return materialAndPst(chess, forColor)
 }
 
+describe('campaign story beats', () => {
+  it('gives every campaign match explicit story stakes', () => {
+    const matches = PLAYABLE_CHAPTERS.flatMap((chapter) =>
+      chapter.scenes.filter((scene) => scene.type === 'match'),
+    )
+
+    expect(matches.length).toBeGreaterThan(0)
+    expect(matches.every((scene) => scene.storyBeat)).toBe(true)
+  })
+})
+
 describe('PLAYABLE_CHAPTERS — FENs & solvable goals', () => {
   for (const ch of PLAYABLE_CHAPTERS) {
     for (const sc of ch.scenes) {
@@ -52,6 +63,15 @@ describe('PLAYABLE_CHAPTERS — FENs & solvable goals', () => {
       if (sc.type === 'match') {
         it(`${ch.id} / ${sc.id}: match FEN loads`, () => {
           expect(() => new Chess(sc.fen ?? DEFAULT_POSITION)).not.toThrow()
+        })
+      }
+
+      if ('storyBeat' in sc && sc.storyBeat) {
+        it(`${ch.id} / ${sc.id}: story beat copy is complete`, () => {
+          expect(sc.storyBeat?.label.trim()).toBeTruthy()
+          expect(sc.storyBeat?.title.trim()).toBeTruthy()
+          expect(sc.storyBeat?.body.trim()).toBeTruthy()
+          expect(['quiet', 'pressure', 'fire', undefined]).toContain(sc.storyBeat?.tone)
         })
       }
     }

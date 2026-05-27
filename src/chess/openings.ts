@@ -57,6 +57,20 @@ const BOOKS: Record<string, OpeningBook> = {
     7: [{ san: 'Nf6', weight: 5 }, { san: 'Be7', weight: 5 }],
     9: [{ san: 'O-O', weight: 7 }, { san: 'd6', weight: 3 }],
   },
+  rowan_gambit: {
+    1: [{ san: 'exf4', weight: 8 }, { san: 'e5', weight: 6 }, { san: 'Nc6', weight: 2 }],
+    3: [{ san: 'Nf6', weight: 7 }, { san: 'd5', weight: 3 }],
+    5: [{ san: 'Bc5', weight: 6 }, { san: 'Qh4+', weight: 4 }],
+    7: [{ san: 'O-O', weight: 5 }, { san: 'd6', weight: 5 }],
+    9: [{ san: 'Re8', weight: 5 }, { san: 'Bg4', weight: 5 }],
+  },
+  vega_italian: {
+    1: [{ san: 'Nf6', weight: 7 }, { san: 'e5', weight: 6 }, { san: 'Bc5', weight: 3 }],
+    3: [{ san: 'Bc5', weight: 6 }, { san: 'Nf6', weight: 4 }],
+    5: [{ san: 'd6', weight: 6 }, { san: 'O-O', weight: 4 }],
+    7: [{ san: 'O-O', weight: 6 }, { san: 'Be6', weight: 4 }],
+    9: [{ san: 'Re8', weight: 6 }, { san: 'h6', weight: 4 }],
+  },
 }
 
 export function getBookTopLines(

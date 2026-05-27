@@ -146,6 +146,38 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.92, positional: 0.9, sacrificial: 0.55, prophylactic: 0.9 },
     motifBias: { fork: 0.74, pin: 0.94, skewer: 0.92, kingHunt: 0.7 },
   },
+  rowan_gambit: {
+    id: 'rowan_gambit',
+    label: 'Rowan Gambit Tabiya',
+    style: 'romantic',
+    searchDepth: 4,
+    thinkTimeMs: 1050,
+    blunderRate: 0.08,
+    riskAppetite: 0.82,
+    tacticalAlertness: 0.86,
+    openingDiscipline: 0.48,
+    kingSafetyUrgency: 0.58,
+    conversionStrictness: 0.5,
+    conversionPersona: 'tactical',
+    weights: { tactical: 0.92, positional: 0.38, sacrificial: 0.9, prophylactic: 0.25 },
+    motifBias: { fork: 0.84, pin: 0.48, skewer: 0.66, kingHunt: 0.92 },
+  },
+  vega_italian: {
+    id: 'vega_italian',
+    label: 'Vega Italian Pressure',
+    style: 'romantic',
+    searchDepth: 4,
+    thinkTimeMs: 1250,
+    blunderRate: 0.055,
+    riskAppetite: 0.62,
+    tacticalAlertness: 0.78,
+    openingDiscipline: 0.72,
+    kingSafetyUrgency: 0.88,
+    conversionStrictness: 0.72,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.78, positional: 0.62, sacrificial: 0.66, prophylactic: 0.58 },
+    motifBias: { fork: 0.62, pin: 0.74, skewer: 0.68, kingHunt: 0.76 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -162,7 +194,8 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('amara')) return AI_PROFILES.novice_court
   if (matchId.includes('lukas')) return AI_PROFILES.apprentice_court
   if (matchId.includes('edred')) return AI_PROFILES.scholar_guard
-  if (matchId.includes('rowan') || matchId.includes('vega')) return AI_PROFILES.scholar_guard
+  if (matchId.includes('rowan')) return AI_PROFILES.rowan_gambit
+  if (matchId.includes('vega')) return AI_PROFILES.vega_italian
   if (matchId.includes('marius')) return AI_PROFILES.veteran_scholar
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
@@ -174,8 +207,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('strategos')) return AI_PROFILES.alexion_strategos
   if (variantId.includes('apex')) return AI_PROFILES.alexion_apex
   if (variantId.includes('veteran')) return AI_PROFILES.veteran_scholar
-  if (variantId.includes('rowan')) return AI_PROFILES.scholar_guard
-  if (variantId.includes('vega')) return AI_PROFILES.scholar_guard
+  if (variantId.includes('rowan')) return AI_PROFILES.rowan_gambit
+  if (variantId.includes('vega')) return AI_PROFILES.vega_italian
   return AI_PROFILES.apprentice_court
 }
 

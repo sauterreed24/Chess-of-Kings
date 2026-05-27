@@ -21,6 +21,7 @@ import {
   labelForSpeaker,
   performanceDeltaLines,
   sceneTypeLabel,
+  storyBeatBlock,
   teachingBlock,
   tierLabel,
 } from './mainUiFormatters'
@@ -1357,7 +1358,7 @@ export function mountApp(app: HTMLDivElement) {
     if (scene.type === 'dialogue') {
       sceneTag.textContent = 'Dialogue'
       narrativeBody.classList.remove('narrative-body--interlude')
-      narrativeBody.innerHTML = scene.lines
+      narrativeBody.innerHTML = storyBeatBlock(scene.storyBeat) + scene.lines
         .map(
           (l, i) =>
             `<div class="line line--stagger" style="--d:${i}"><span class="who" data-speaker="${escapeHtml(l.speaker)}">${escapeHtml(labelForSpeaker(l.speaker))}</span><p class="said">${escapeHtml(l.text)}</p></div>`,
@@ -1366,7 +1367,7 @@ export function mountApp(app: HTMLDivElement) {
     } else if (scene.type === 'interlude') {
       sceneTag.textContent = 'Interlude'
       narrativeBody.classList.add('narrative-body--interlude')
-      narrativeBody.innerHTML = scene.lines
+      narrativeBody.innerHTML = storyBeatBlock(scene.storyBeat) + scene.lines
         .map(
           (t, i) =>
             `<p class="interlude-line interlude-line--stagger" style="--d:${i}">${escapeHtml(t)}</p>`,
@@ -1375,7 +1376,7 @@ export function mountApp(app: HTMLDivElement) {
     } else if (scene.type === 'codex') {
       sceneTag.textContent = scene.heading
       narrativeBody.classList.remove('narrative-body--interlude')
-      narrativeBody.innerHTML = scene.entries
+      narrativeBody.innerHTML = storyBeatBlock(scene.storyBeat) + scene.entries
         .map(
           (e, i) =>
             `<div class="codex-entry" style="animation:line-in 0.5s var(--ease-out) ${i * 0.07}s both"><h4>${escapeHtml(e.term)}</h4><p>${escapeHtml(e.body)}</p></div>`,
@@ -1384,7 +1385,7 @@ export function mountApp(app: HTMLDivElement) {
     } else if (scene.type === 'puzzle') {
       sceneTag.textContent = scene.title
       narrativeBody.classList.remove('narrative-body--interlude')
-      narrativeBody.innerHTML = `<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
+      narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
         scene.teaching ? teachingBlock(scene.teaching) : ''
       }${scene.hint ? `<p class="hint-block"><span class="hint-label">Hint</span> ${escapeHtml(scene.hint)}</p>` : ''}`
       lessonNote.textContent =
@@ -1418,6 +1419,7 @@ export function mountApp(app: HTMLDivElement) {
             </div>
           </div>
           ${ladderTrack}
+          ${storyBeatBlock(scene.storyBeat)}
           <p class="opponent-note">${escapeHtml(scene.opponentNote)}</p>
           <p class="match-mandate">No move cap. Play until checkmate or a true dead draw. You command the White pieces.</p>
         </div>`
@@ -1427,7 +1429,7 @@ export function mountApp(app: HTMLDivElement) {
     } else if (scene.type === 'calibration') {
       sceneTag.textContent = scene.title
       narrativeBody.classList.remove('narrative-body--interlude')
-      narrativeBody.innerHTML = `<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
+      narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
         scene.teaching ? teachingBlock(scene.teaching) : ''
       }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The trainer answers at random.</p>`
       lessonNote.textContent = 'Each of your moves is tallied on the right — the Lab is listening.'
@@ -1436,7 +1438,7 @@ export function mountApp(app: HTMLDivElement) {
     } else if (scene.type === 'freeplay') {
       sceneTag.textContent = scene.title
       narrativeBody.classList.remove('narrative-body--interlude')
-      narrativeBody.innerHTML = `<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
+      narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
         scene.teaching ? teachingBlock(scene.teaching) : ''
       }`
       lessonNote.textContent = 'Alternate sides as in a living game. Advance returns to the vestibule.'
