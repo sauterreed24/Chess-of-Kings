@@ -1,7 +1,7 @@
 import type { Chess } from 'chess.js'
 import type { MoveQuality } from './gameFlow'
 import { escapeHtml } from './htmlEscape'
-import type { MatchHistoryEntry, MatchScene, PuzzleScene, Scene } from '../types'
+import type { MatchHistoryEntry, MatchScene, PuzzleScene, Scene, StoryBeat } from '../types'
 
 /** Compiled once — applied on every chess HUD tick when AI persona is present. */
 export const BOSS_PROFILE_RE = /(Apex|Advisor|Counterpart|Strategos|Boss)/i
@@ -61,6 +61,17 @@ export function teachingBlock(teaching: NonNullable<PuzzleScene['teaching']>) {
         <p class="teach-body">${escapeHtml(teaching.concept)}</p>
       </div>
     </div>`
+}
+
+export function storyBeatBlock(storyBeat: StoryBeat | undefined): string {
+  if (!storyBeat) return ''
+  const tone = storyBeat.tone ?? 'quiet'
+  return `
+    <aside class="story-beat story-beat--${escapeHtml(tone)}">
+      <span class="story-beat__label">${escapeHtml(storyBeat.label)}</span>
+      <strong class="story-beat__title">${escapeHtml(storyBeat.title)}</strong>
+      <p class="story-beat__body">${escapeHtml(storyBeat.body)}</p>
+    </aside>`
 }
 
 const QUALITY_ICON: Record<string, string> = {

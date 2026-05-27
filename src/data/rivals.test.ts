@@ -1,12 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { RIVAL_PROFILES, getRivalProfile, selectTalkLine, inferRivalIdFromSceneId, type RivalProfile } from './rivals'
+import { DUEL_ROSTER } from './duelRoster'
 
 describe('RIVAL_PROFILES data', () => {
-  const expectedIds = ['amara', 'lukas', 'edred', 'marius', 'demetrios']
+  const expectedIds = ['amara', 'lukas', 'edred', 'marius', 'demetrios', 'alexion', 'rowan', 'vega']
 
-  it('contains all five named rivals', () => {
+  it('contains every named campaign and Duel Archive rival', () => {
     for (const id of expectedIds) {
       expect(RIVAL_PROFILES[id], `missing rival ${id}`).toBeDefined()
+    }
+  })
+
+  it('profiles every visible Duel Archive opponent', () => {
+    for (const rival of DUEL_ROSTER) {
+      expect(RIVAL_PROFILES[rival.opponentId], `missing duel profile ${rival.opponentId}`).toBeDefined()
     }
   })
 
@@ -37,6 +44,11 @@ describe('RIVAL_PROFILES data', () => {
       for (const b of r.counterPrep) {
         expect(b).not.toMatch(/<script|<\/?\w+>/)
       }
+      for (const bucket of Object.values(r.talk)) {
+        for (const line of bucket) {
+          expect(line).not.toMatch(/<script|<\/?\w+>/)
+        }
+      }
     }
   })
 })
@@ -44,6 +56,7 @@ describe('RIVAL_PROFILES data', () => {
 describe('getRivalProfile', () => {
   it('returns the profile when known', () => {
     expect(getRivalProfile('amara')?.displayName).toBe('Amara')
+    expect(getRivalProfile('alexion')?.displayName).toBe('Alexion Demaratos-Serapis')
   })
 
   it('returns null when unknown', () => {
@@ -78,6 +91,8 @@ describe('inferRivalIdFromSceneId', () => {
   it('matches a campaign scene id containing a rival key', () => {
     expect(inferRivalIdFromSceneId('c1-match-amara-intro')).toBe('amara')
     expect(inferRivalIdFromSceneId('c2-boss-demetrios-finale')).toBe('demetrios')
+    expect(inferRivalIdFromSceneId('c2-match-rowan')).toBe('rowan')
+    expect(inferRivalIdFromSceneId('c2-match-vega')).toBe('vega')
   })
 
   it('returns null when no rival substring matches', () => {

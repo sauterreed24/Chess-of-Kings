@@ -42,7 +42,7 @@ export const DUEL_ROSTER: DuelRosterEntry[] = [
         label: 'Archive Guard',
         bio: 'Direct attacking model derived from Edred\'s Dragon habits.',
         minChapterUnlock: 1,
-        profileId: 'scholar_guard',
+        profileId: 'rowan_gambit',
       },
       {
         id: 'edred-veteran',
@@ -100,7 +100,7 @@ export const DUEL_ROSTER: DuelRosterEntry[] = [
         label: 'Gambit Tabiya',
         bio: "King's Gambit accepted — the archive reconstruction from your Chapter II trial.",
         minChapterUnlock: 2,
-        profileId: 'scholar_guard',
+        profileId: 'vega_italian',
         fen: 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR w KQkq - 0 2',
       },
     ],

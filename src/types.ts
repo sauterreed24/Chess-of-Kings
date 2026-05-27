@@ -20,6 +20,13 @@ export interface TeachingLayer {
   concept: string
 }
 
+export interface StoryBeat {
+  label: string
+  title: string
+  body: string
+  tone?: 'quiet' | 'pressure' | 'fire'
+}
+
 export interface PuzzleScene {
   type: 'puzzle'
   id: string
@@ -30,6 +37,7 @@ export interface PuzzleScene {
   lesson: string
   hint?: string
   teaching?: TeachingLayer
+  storyBeat?: StoryBeat
   /** When your move leaves the opponent to play, they reply with the engine (default depth 2). Ramp up through the story. */
   opponentAiDepth?: number
   opponentAiStyle?: AIStyle
@@ -71,6 +79,7 @@ export interface MatchScene {
   ladderTier?: LadderTier
   /** 1 (easy) – 5 (expert) for difficulty display */
   difficulty?: 1 | 2 | 3 | 4 | 5
+  storyBeat?: StoryBeat
 }
 
 export interface CalibrationScene {
@@ -79,6 +88,7 @@ export interface CalibrationScene {
   title: string
   lesson: string
   teaching?: TeachingLayer
+  storyBeat?: StoryBeat
   /** Number of moves the human must complete (their color only). */
   minMovesByPlayer: number
 }
@@ -90,6 +100,7 @@ export interface FreeplayScene {
   lesson: string
   fen?: string
   teaching?: TeachingLayer
+  storyBeat?: StoryBeat
 }
 
 export interface CodexScene {
@@ -97,18 +108,21 @@ export interface CodexScene {
   id: string
   heading: string
   entries: { term: string; body: string }[]
+  storyBeat?: StoryBeat
 }
 
 export interface DialogueScene {
   type: 'dialogue'
   id: string
   lines: DialogueLine[]
+  storyBeat?: StoryBeat
 }
 
 export interface InterludeScene {
   type: 'interlude'
   id: string
   lines: string[]
+  storyBeat?: StoryBeat
 }
 
 export type Scene =

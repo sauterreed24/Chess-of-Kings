@@ -21,18 +21,24 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'pr-apartment',
+        storyBeat: {
+          label: 'Human pressure',
+          title: 'A player without a method',
+          body: 'Reed is not chasing mastery yet. He is chasing the feeling that one clear decision might prove his attention can still become discipline.',
+          tone: 'pressure',
+        },
         lines: [
           {
             speaker: 'narrator',
-            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. A chess trainer sits open on his laptop. He knows how pieces move — he has known since childhood. What he does not know is how to think.',
+            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. A chess trainer sits open on his laptop beside an untouched notebook and a cold cup of coffee. He knows how pieces move — he has known since childhood. What he does not know is how to think when a position refuses to explain itself.',
           },
           {
             speaker: 'reed',
-            text: '"Adaptive trainer. Any style in history. Learns as you play." Sounds like marketing.',
+            text: '"Adaptive trainer. Any style in history. Learns as you play." Sounds like marketing with a better font.',
           },
           {
             speaker: 'narrator',
-            text: 'He opens it anyway. The screen is the only light in the room.',
+            text: 'He opens it anyway. The screen is the only light in the room, and for once the room seems to wait for him to make the first move.',
           },
           {
             speaker: 'reed',
@@ -93,6 +99,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'calibration',
         id: 'pr-calibration',
         title: 'Calibration — adaptive trainer',
+        storyBeat: {
+          label: 'Archive pressure',
+          title: 'The trainer watches habits, not moves',
+          body: 'Every pawn push and repeated piece move becomes evidence. The Lab is building a portrait before Reed knows there is a Lab.',
+          tone: 'pressure',
+        },
         lesson:
           'Make at least four moves as White. The trainer replies with unpredictable moves — just enough resistance to reveal how you think. Develop pieces, control the center, keep your king safe.',
         minMovesByPlayer: 4,
@@ -136,6 +148,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'pr-lab',
+        storyBeat: {
+          label: 'Story hinge',
+          title: 'The archive names the real game',
+          body: 'The trainer is no longer a tool. It is a door into an institution that studies history by forcing players to inhabit its decisions.',
+          tone: 'quiet',
+        },
         lines: [
           {
             speaker: 'narrator',
@@ -159,7 +177,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'The interface accepted you. That is not nothing. I am Alexion Demaratos-Serapis — curator of these simulations. You should not be here. And yet here we are.',
+            text: 'The interface accepted you. That is not nothing. I am Alexion Demaratos-Serapis — curator of these simulations. You should not be here. The Lab only opens for candidates, witnesses, and errors. I have not decided which you are.',
           },
           {
             speaker: 'alexion',
@@ -196,6 +214,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'A court where every mistake has witnesses',
+          body: 'Reed enters a world that treats chess as proof of character. The first test is not brilliance; it is whether he can notice what everyone else is expected to notice.',
+          tone: 'pressure',
+        },
         lines: [
           {
             speaker: 'narrator',
@@ -221,6 +245,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'codex',
         id: 'c1-codex-principles',
         heading: 'The Ancient Laws — opening theory',
+        storyBeat: {
+          label: 'Doctrine',
+          title: 'Principles become obligations',
+          body: 'The court does not teach openings as memorized names. It teaches them as duties: develop, claim the center, secure the king, and waste no tempo without cause.',
+          tone: 'quiet',
+        },
         entries: [
           {
             term: 'Develop your pieces',
@@ -250,6 +280,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'puzzle',
         id: 'c1-tutorial-hanging',
         title: 'Tutorial — the hanging knight',
+        storyBeat: {
+          label: 'First lesson',
+          title: 'See the undefended thing',
+          body: 'Before Reed can plan, he has to learn attention. A loose piece is the board admitting where discipline has failed.',
+          tone: 'quiet',
+        },
         fen: '8/8/8/4k3/3n4/2B5/8/3K4 w - - 0 1',
         playerColor: 'w',
         goal: { kind: 'advantage', minCp: 250 },
@@ -294,6 +330,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'puzzle',
         id: 'c1-tutorial-castle',
         title: 'Tutorial — king safety',
+        storyBeat: {
+          label: 'Second lesson',
+          title: 'Safety is a tempo move',
+          body: 'The Lab frames castling as more than escape. Reed has to see how one quiet move can prepare every loud one that follows.',
+          tone: 'quiet',
+        },
         fen: 'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1',
         playerColor: 'w',
         goal: { kind: 'pieceOn', square: 'g1', color: 'w', pieceType: 'k' },
@@ -337,6 +379,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'puzzle',
         id: 'c1-puzzle-mate',
         title: 'Puzzle — the first verdict',
+        storyBeat: {
+          label: 'Third lesson',
+          title: 'Finish only when every door is shut',
+          body: 'Checkmate is the first moment where the archive stops asking for improvement and demands finality.',
+          tone: 'pressure',
+        },
         fen: '3k4/8/3K4/4Q3/8/8/8/8 w - - 0 1',
         playerColor: 'w',
         goal: { kind: 'mate' },
@@ -362,6 +410,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-before-amara',
+        storyBeat: {
+          label: 'Ladder opens',
+          title: 'The first opponent can still punish carelessness',
+          body: 'Amara is not a villain or a tutorial dummy. She is a mirror for Reed at the edge between knowing rules and making plans.',
+          tone: 'quiet',
+        },
         lines: [
           {
             speaker: 'alexion',
@@ -392,6 +446,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Amara',
         opponentNote:
           'The newest initiate of the court. Develops passively and delays castling. Use your opening principles to build an advantage quickly.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Win without inventing complications',
+          body: 'The cleanest victory proves Reed can follow the ancient laws when the board finally lets him choose.',
+          tone: 'quiet',
+        },
         playerColor: 'w',
         aiDepth: 2,
         aiStyle: 'development',
@@ -428,6 +488,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-before-lukas',
+        storyBeat: {
+          label: 'Theory pressure',
+          title: 'Names are not understanding',
+          body: 'Lukas knows the opening map. Reed has to prove that a smaller map, honestly understood, can outplay memorized territory.',
+          tone: 'pressure',
+        },
         lines: [
           {
             speaker: 'alexion',
@@ -458,6 +524,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Lukas',
         opponentNote:
           'A two-year court apprentice with solid opening knowledge. He follows scripted theory well but struggles when the position deviates. Look for imbalances.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Leave the book before the book leaves you',
+          body: 'This encounter rewards comprehension over recall. Reed should choose positions he can explain, not lines he can merely name.',
+          tone: 'pressure',
+        },
         playerColor: 'w',
         aiDepth: 3,
         aiStyle: 'development',
@@ -494,6 +566,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-before-edred',
+        storyBeat: {
+          label: 'First real threat',
+          title: 'Principles under attack',
+          body: 'Edred does not care whether Reed understands development. He wants to know whether those habits survive contact with danger.',
+          tone: 'pressure',
+        },
         lines: [
           {
             speaker: 'alexion',
@@ -528,6 +606,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Edred',
         opponentNote:
           'The court archive guard — tactical and aggressive. He plays the Dragon formation and creates kingside pressure. Castle decisively and counter-attack before he gains momentum.',
+        storyBeat: {
+          label: 'Mini-boss pressure',
+          title: 'Keep the attack short of oxygen',
+          body: 'Edred thrives on open lines. Reed has to deny space first, then punish the impatience that follows.',
+          tone: 'pressure',
+        },
         playerColor: 'w',
         aiDepth: 3,
         aiStyle: 'romantic',
@@ -570,6 +654,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-before-marius',
+        storyBeat: {
+          label: 'Structural pressure',
+          title: 'No obvious mistake is still a position',
+          body: 'Marius removes the easy targets. Reed must learn that equal material can still contain a plan, a preference, and a weakness.',
+          tone: 'pressure',
+        },
         lines: [
           {
             speaker: 'alexion',
@@ -604,6 +694,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Marius',
         opponentNote:
           'Senior court scholar with eleven years of teaching. Plays solidly with few weaknesses — classical structure and patient build-up. Outplay him in the middlegame.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Manufacture the imbalance',
+          body: 'Marius will not donate a tactic. Reed has to create pressure patiently enough that a small preference becomes a real weakness.',
+          tone: 'pressure',
+        },
         playerColor: 'w',
         aiDepth: 4,
         aiStyle: 'classical',
@@ -646,6 +742,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-before-demetrios',
+        storyBeat: {
+          label: 'Court pressure',
+          title: 'The record becomes personal',
+          body: 'Demetrios is not another rung. He is proof that the chamber can keep a hierarchy intact for decades.',
+          tone: 'pressure',
+        },
         lines: [
           {
             speaker: 'alexion',
@@ -680,6 +782,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Demetrios',
         opponentNote:
           'Court advisor — thirty unbeaten years in this chamber. Plays the Giuoco Piano with precision and punishes any inaccuracy. His endgame is ruthless. Win to become the first.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Break the office, not the man',
+          body: 'A victory here changes the court record. A loss proves Demetrios correct: students can threaten tradition, but not govern it.',
+          tone: 'pressure',
+        },
         playerColor: 'w',
         aiDepth: 5,
         aiStyle: 'alexandrine',
@@ -692,6 +800,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-after-demetrios',
+        storyBeat: {
+          label: 'Record broken',
+          title: 'Survival becomes evidence',
+          body: 'The win matters because Demetrios respects why it happened. Reed did not overpower the office; he found the moments where the office overtrusted itself.',
+          tone: 'pressure',
+        },
         lines: [
           {
             speaker: 'demetrios',
@@ -738,6 +852,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Composite Court Scholar',
         opponentNote:
           'The court distilled — every important game of the ancient era. Plays precise development with no weaknesses. Win by checkmate, or force a true dead draw if no side can still mate.',
+        storyBeat: {
+          label: 'Era verdict',
+          title: 'Play the court itself',
+          body: 'The Counterpart has no pride to exploit. It is the archive asking whether Reed learned habits or merely survived opponents.',
+          tone: 'pressure',
+        },
         fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2',
         playerColor: 'w',
         aiDepth: 4,
@@ -751,6 +871,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c1-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Ancient habits become Reed habits',
+          body: 'The first chamber ends when Reed stops treating principles as instructions from Alexion and starts hearing them as his own questions at the board.',
+          tone: 'quiet',
+        },
         lines: [
           {
             speaker: 'scholar',
@@ -788,6 +914,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'freeplay',
         id: 'c1-freeplay',
         title: 'Free board — open rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice without the court watching',
+          body: 'After the ladder, the free board turns judgment into repetition. This is where learned principles become quicker than narration.',
+          tone: 'quiet',
+        },
         lesson:
           'The board is yours. Move for both sides — alternate White and Black from the starting position. No story objective: only rehearsal. Return to the vestibule when you are done.',
         teaching: {
@@ -818,10 +950,16 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c2-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'Patience enters a room full of fire',
+          body: 'Chapter I taught Reed not to donate material. Chapter II asks whether he can spend material deliberately without mistaking heat for progress.',
+          tone: 'fire',
+        },
         lines: [
           {
             speaker: 'narrator',
-            text: 'The chamber walls change colour — less candle-wax, more forge-ember. The pieces are the same, but the air between them feels thinner, as though every exchange could ignite.',
+            text: 'The chamber walls change colour — less candle-wax, more forge-ember. The pieces are the same, but the air between them feels thinner, as though every exchange could ignite before anyone admits who struck the match.',
           },
           {
             speaker: 'alexion',
@@ -841,6 +979,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'codex',
         id: 'c2-codex-fire',
         heading: 'The Romantic Laws — fire without self-immolation',
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'Romance is calculation wearing a mask',
+          body: 'The era praises courage, but the archive is stricter: only sacrifices with follow-up deserve to be remembered as art.',
+          tone: 'fire',
+        },
         entries: [
           {
             term: 'Initiative',
@@ -864,6 +1008,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'puzzle',
         id: 'c2-puzzle-king-hunt',
         title: 'Puzzle — corner the king',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The attack must end cleanly',
+          body: 'A king hunt that lingers becomes self-indulgence. The lesson is restraint at full speed.',
+          tone: 'fire',
+        },
         fen: '3k4/6Q1/3K4/8/8/8/8/8 w - - 0 1',
         playerColor: 'w',
         goal: { kind: 'mate' },
@@ -885,6 +1035,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c2-after-puzzle',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'Speed still needs a destination',
+          body: 'The first Romantic lesson clarifies the era: an attack is only beautiful when every urgent move narrows the ending.',
+          tone: 'fire',
+        },
         lines: [
           {
             speaker: 'alexion',
@@ -903,10 +1059,16 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c2-before-rowan',
+        storyBeat: {
+          label: 'Rival pressure',
+          title: 'Rowan fights for tempo, not truth',
+          body: 'He wants Reed to answer noise with panic. The real test is whether the ancient habits survive a flamboyant opening.',
+          tone: 'fire',
+        },
         lines: [
           {
             speaker: 'rowan',
-            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy King\'s Gambit — gambits accepted, complications welcomed.',
+            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy King\'s Gambit — gambits accepted, complications welcomed, reputations set lightly on fire.',
           },
           {
             speaker: 'reed',
@@ -925,6 +1087,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Rowan Vale',
         opponentNote:
           'A Romantic duelist — sharp tactics from open games, loves piece contact after 1.e4 e5. Keep the king safe, accept complications only when you see the recapture.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Do not eat the poisoned pawn',
+          body: 'Rowan wins when greed replaces calculation. Survive the first wave, and his attack starts spending more than it earns.',
+          tone: 'fire',
+        },
         fen: 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR w KQkq - 0 2',
         playerColor: 'w',
         aiDepth: 3,
@@ -936,6 +1104,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c2-after-rowan',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'The archive rewards refusal',
+          body: 'Not every offered capture is a prize. Reed wins the moment he lets a tempting pawn remain bait.',
+          tone: 'quiet',
+        },
         lines: [
           {
             speaker: 'rowan',
@@ -954,6 +1128,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c2-before-vega',
+        storyBeat: {
+          label: 'Boss pressure',
+          title: 'Vega turns drama into accounting',
+          body: 'Rowan tests nerve. Vega tests receipts: every sacrifice must name the square, tempo, and defender it intends to ruin.',
+          tone: 'fire',
+        },
         lines: [
           {
             speaker: 'vega',
@@ -976,6 +1156,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         opponentName: 'Vega Sorn',
         opponentNote:
           'Romantic pressure with better discipline than Rowan — she punishes slow development and weak squares on the kingside. Castle early or pay in tempi.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Bring the king home before the board opens',
+          body: 'Vega is strongest when the center breaks while your king is still negotiating shelter. Castle before ambition becomes exposure.',
+          tone: 'fire',
+        },
         fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4',
         playerColor: 'w',
         aiDepth: 4,
@@ -987,6 +1173,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'dialogue',
         id: 'c2-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Fire becomes a tool',
+          body: 'The Romantic lesson is not to attack more often. It is to know when danger has become usable.',
+          tone: 'quiet',
+        },
         lines: [
           {
             speaker: 'alexion',
@@ -1010,6 +1202,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         type: 'freeplay',
         id: 'c2-freeplay',
         title: 'Free board — Romantic rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Turn heat into pattern',
+          body: 'The forge is quiet now. Free play lets Reed repeat the dangerous shapes until a sacrifice feels like calculation again.',
+          tone: 'fire',
+        },
         lesson:
           'Re-open any line you nearly lost — alternate sides from a sharp Italian or gambit position. No objective beyond rehearsal.',
         teaching: {

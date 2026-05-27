@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Chess } from 'chess.js'
 import { chooseOpeningBookMove, getBookTopLines } from './openings'
 
@@ -33,5 +33,26 @@ describe('opening books', () => {
     expect(lines.length).toBeGreaterThan(0)
     expect(lines[0]?.ply).toBe(1)
     expect(typeof lines[0]?.san).toBe('string')
+  })
+
+  it('exposes distinct Rowan and Vega opening previews', () => {
+    const rowan = getBookTopLines('rowan_gambit', 9)
+    const vega = getBookTopLines('vega_italian', 9)
+    expect(rowan.map((line) => line.san)).toContain('exf4')
+    expect(vega.map((line) => line.san)).toContain('Nf6')
+    expect(rowan.map((line) => line.san).join(' ')).not.toBe(vega.map((line) => line.san).join(' '))
+  })
+
+  it('keeps Rowan and Vega book choices legal when their target moves fit the board', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+    try {
+      const rowanPosition = new Chess('rnbqkbnr/pppp1ppp/8/4p3/4PP2/5N2/PPPP2PP/RNBQKB1R b KQkq - 1 2')
+      expect(chooseOpeningBookMove(rowanPosition, 'rowan_gambit', 1)).toBe('exf4')
+
+      const vegaPosition = new Chess('r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 1 4')
+      expect(chooseOpeningBookMove(vegaPosition, 'vega_italian', 1)).toBe('Nf6')
+    } finally {
+      vi.restoreAllMocks()
+    }
   })
 })
