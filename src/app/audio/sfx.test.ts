@@ -81,11 +81,21 @@ describe('createSfxController', () => {
     expect(factory).not.toHaveBeenCalled()
   })
 
-  it('lazily constructs the AudioContext on first use when enabled', () => {
+  it('does not construct the AudioContext from play calls before unlock', () => {
+    const factory = vi.fn(() => makeFakeAudioContext() as unknown as AudioContext)
+    const sfx = createSfxController({ enabled: true, audioContextFactory: factory })
+    sfx.playMoveSfx('e4', null)
+    sfx.playEventSfx('advance')
+    expect(factory).not.toHaveBeenCalled()
+  })
+
+  it('constructs the AudioContext on unlock and then reuses it for cues', () => {
     const fake = makeFakeAudioContext()
     const factory = vi.fn(() => fake as unknown as AudioContext)
     const sfx = createSfxController({ enabled: true, audioContextFactory: factory })
     expect(factory).not.toHaveBeenCalled()
+    sfx.unlock()
+    expect(factory).toHaveBeenCalledTimes(1)
     sfx.playMoveSfx('e4', null)
     expect(factory).toHaveBeenCalledTimes(1)
     sfx.playMoveSfx('Nf3', 'good')
@@ -93,17 +103,20 @@ describe('createSfxController', () => {
     expect(fake.oscillators).toHaveLength(2)
   })
 
-  it('resumes a suspended AudioContext on each play', () => {
+  it('resumes a suspended AudioContext only during unlock', () => {
     const fake = makeFakeAudioContext('suspended')
     const sfx = createSfxController({
       enabled: true,
       audioContextFactory: () => fake as unknown as AudioContext,
     })
+    sfx.unlock()
+    expect(fake.resumed).toBe(1)
     sfx.playMoveSfx('e4', null)
     expect(fake.resumed).toBe(1)
     fake.state = 'suspended'
     sfx.playMoveSfx('Nf3', null)
-    expect(fake.resumed).toBe(2)
+    expect(fake.resumed).toBe(1)
+    expect(fake.oscillators).toHaveLength(1)
   })
 
   it('encodes capture / check / mate / quality into oscillator type and frequency', () => {
@@ -112,6 +125,7 @@ describe('createSfxController', () => {
       enabled: true,
       audioContextFactory: () => fake as unknown as AudioContext,
     })
+    sfx.unlock()
     sfx.playMoveSfx('e4', null)
     sfx.playMoveSfx('exd5', null)
     sfx.playMoveSfx('Qh5+', null)
@@ -140,6 +154,7 @@ describe('createSfxController', () => {
       enabled: true,
       audioContextFactory: () => fake as unknown as AudioContext,
     })
+    sfx.unlock()
     sfx.playMoveSfx('O-O', null)
     sfx.playMoveSfx('O-O-O', null)
     expect(fake.oscillators[0]!.type).toBe('square')
@@ -153,6 +168,7 @@ describe('createSfxController', () => {
       enabled: true,
       audioContextFactory: () => fake as unknown as AudioContext,
     })
+    sfx.unlock()
     sfx.playMoveSfx('e8=Q', null)
     expect(fake.oscillators[0]!.type).toBe('triangle')
     expect(fake.oscillators[0]!.frequency.setValueAtTime.mock.calls[0]![0]).toBe(540)
@@ -164,6 +180,7 @@ describe('createSfxController', () => {
       enabled: true,
       audioContextFactory: () => fake as unknown as AudioContext,
     })
+    sfx.unlock()
     sfx.playEventSfx('undo')
     sfx.playEventSfx('advance')
     sfx.playEventSfx('reward')
@@ -200,6 +217,7 @@ describe('createSfxController', () => {
         throw new Error('audio not allowed')
       },
     })
+    expect(() => sfx.unlock()).not.toThrow()
     expect(() => sfx.playMoveSfx('e4', null)).not.toThrow()
   })
 })
