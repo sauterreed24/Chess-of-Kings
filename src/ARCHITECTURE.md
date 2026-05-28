@@ -152,7 +152,15 @@ board calls `GameFlow.onMove`, the flow updates state and emits a
 
 ## Testing scopes
 
-The full suite is `npm test`; the fast UI gate is `npm run test:ui-smoke`.
+The required release gate is `npm run quality:gate`; the full suite is
+`npm test`; the fast UI gate is `npm run test:ui-smoke`.
+
+`vitest.setup.ts` installs seeded `Math.random` before module-level test code
+and before every test case. The seed is stable per test file/name, test files
+run serially, hook order is explicit, and CI invokes
+`npm run test:deterministic` with one worker. Tests that need a different
+random stream should inject a local seeded generator or restore `Math.random`
+inside a `try` / `finally` block.
 
 - **Unit** — pure helpers (`recap/*`, `rankLabels`, `mainUiFormatters`,
   `escapeKeyRouting`, `htmlEscape`, `motifs`, `openings`, `aiProfiles`,
@@ -166,7 +174,9 @@ The full suite is `npm test`; the fast UI gate is `npm run test:ui-smoke`.
 - **DOM regression** — `chess/boardView.test.ts`, `app/chronicleReplay.test.ts`,
   `app/rewardOverlayController.test.ts`, `app/chronicleEchoTimer.test.ts`.
 
-CI gates: `npm run lint`, `npm test`, `npm run build`, `npm run test:ui-smoke`.
+CI gates: `npm run quality:gate`. The Pages workflow also runs the same gate
+before uploading `dist`, so a main-branch deploy cannot bypass the deterministic
+suite and production build.
 
 ## Invariants we will not break
 

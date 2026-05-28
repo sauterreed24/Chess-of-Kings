@@ -7,9 +7,11 @@ for contributions is "fits the existing voice and ships green," not
 
 ## Ground rules
 
-1. **Keep the build green.** `npm run lint`, `npm test`, `npm run
-   build`, and `npm run test:ui-smoke` must all pass before you open a
-   PR. The repo enforces this in CI; please match it locally first.
+1. **Keep the build green.** `npm run quality:gate` is the required
+   deterministic release gate before you open a PR. It runs lint,
+   typecheck, the serialized deterministic Vitest suite, UI smoke,
+   production build, and the bundle gzip report. CI and GitHub Pages
+   both use this same gate.
 2. **Add tests for every change.** New behavior gets a unit, property,
    or DOM test; new save fields get a migration test; new UI surfaces
    get a smoke mount test.
