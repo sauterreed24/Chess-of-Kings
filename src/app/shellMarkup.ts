@@ -45,10 +45,24 @@ export function getShellMarkup(): string {
             </div>
             <p class="mvp-note" id="mvp-flag"></p>
             <div class="daily-ribbon hidden" id="daily-ribbon" aria-live="polite"></div>
+            <section class="title-settings" id="title-settings" aria-label="Settings">
+              <h2 class="title-settings__heading">Settings</h2>
+              <div class="title-settings__grid">
+                <button type="button" class="ghost ghost--sound" id="btn-title-sfx" aria-pressed="true">Sound: On</button>
+                <button type="button" class="ghost ghost--sound" id="btn-title-move-guard" aria-pressed="false">Move Guard: Off</button>
+                <label class="title-settings__field hidden" id="title-skin-field">
+                  <span class="title-settings__label">Piece skin</span>
+                  <select id="title-skin" class="title-settings__select"></select>
+                </label>
+                <button type="button" class="ghost ghost--sound" id="btn-title-motion" aria-pressed="false">Motion: System</button>
+              </div>
+            </section>
             <p class="title-privacy">
               <a class="title-privacy__link" href="./privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
               <span aria-hidden="true"> · </span>
               <a class="title-privacy__link" href="./accessibility.html" target="_blank" rel="noopener noreferrer">Accessibility</a>
+              <span aria-hidden="true"> · </span>
+              <button type="button" class="title-privacy__link title-privacy__kbd" id="btn-title-kbdhelp">Keyboard atlas</button>
             </p>
           </div>
         </div>
@@ -58,6 +72,7 @@ export function getShellMarkup(): string {
         <div class="chapters-wrap">
           <button type="button" class="ghost chapters-back hidden" id="btn-chapters-back">← Return to title</button>
           <h2 class="section-heading">Chronicle index</h2>
+          <div id="chapter-progress-slot"></div>
           <p class="chapters-lede">Jump to an open passage — you will enter the simulation layer.</p>
           <div class="chapter-quick-actions" id="chapter-quick-actions"></div>
           <ul id="chapter-list" class="chapter-list"></ul>
@@ -83,6 +98,7 @@ export function getShellMarkup(): string {
           <div class="lab-overlay__bar">
             <button type="button" class="ghost lab-overlay__vestibule" id="btn-vestibule">← Chapters</button>
             <span class="lab-overlay__label" id="lab-era-label">Archive simulation · Alexandrine era</span>
+            <button type="button" class="ghost lab-overlay__kbd" id="btn-lab-kbdhelp" aria-label="Keyboard shortcuts">?</button>
           </div>
           <section id="screen-play" class="screen--play-inner">
             <header class="play-crawl">
@@ -139,6 +155,10 @@ export function getShellMarkup(): string {
                     <div class="calibration-rail__track" id="calibration-track"></div>
                   </div>
                   <p class="board-guide" id="board-guide">Select a piece to illuminate legal targets. Captures are framed in bronze; check is marked in crimson.</p>
+                  <details class="mobile-tips" id="mobile-tips">
+                    <summary class="mobile-tips__summary">Tips</summary>
+                    <p class="mobile-tips__body" id="mobile-board-guide"></p>
+                  </details>
                   <div class="board-stage" id="board-stage">
                     <div class="captured-row captured-row--top" id="captured-top" aria-label="Pieces captured by White"></div>
                     <div class="board-stage__inner">
@@ -176,7 +196,12 @@ export function getShellMarkup(): string {
       </div>
 
       <div id="reward-overlay" class="reward-overlay hidden" role="dialog" aria-modal="true" aria-label="Rewards and unlocks" aria-hidden="true"></div>
-      <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+      <div id="confirm-overlay" class="reward-overlay confirm-overlay hidden" aria-hidden="true"></div>
+      <div id="storage-failure-banner" class="storage-failure-banner hidden" role="status">
+        <p class="storage-failure-banner__text">Progress could not be saved in this browser. Check storage settings or exit private mode.</p>
+        <button type="button" class="ghost storage-failure-banner__dismiss" id="btn-storage-banner-dismiss">Dismiss</button>
+      </div>
+      <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="false"></div>
     </main>
   `
 }

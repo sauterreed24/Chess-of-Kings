@@ -13,12 +13,12 @@ describe('UI Escape smoke (controller + routing)', () => {
     const ctl = createRewardOverlayController(el)
 
     ctl.open('<div>reward</div>')
-    expect(routeEscapeKey({ rewardOverlayOpen: ctl.isOpen(), labActive: true })).toBe('close-reward-overlay')
+    expect(routeEscapeKey({ confirmOpen: false, rewardOverlayOpen: ctl.isOpen(), labActive: true })).toBe('close-reward-overlay')
     ctl.close()
     expect(ctl.isOpen()).toBe(false)
 
-    expect(routeEscapeKey({ rewardOverlayOpen: ctl.isOpen(), labActive: true })).toBe('exit-lab')
-    expect(routeEscapeKey({ rewardOverlayOpen: ctl.isOpen(), labActive: false })).toBe('none')
+    expect(routeEscapeKey({ confirmOpen: false, rewardOverlayOpen: ctl.isOpen(), labActive: true })).toBe('exit-lab')
+    expect(routeEscapeKey({ confirmOpen: false, rewardOverlayOpen: ctl.isOpen(), labActive: false })).toBe('none')
 
     document.body.removeChild(el)
   })
@@ -27,7 +27,7 @@ describe('UI Escape smoke (controller + routing)', () => {
     const labActive = true
     const overlayCtl = createRewardOverlayController(document.createElement('div'))
     overlayCtl.close()
-    const action = routeEscapeKey({ rewardOverlayOpen: overlayCtl.isOpen(), labActive })
+    const action = routeEscapeKey({ confirmOpen: false, rewardOverlayOpen: overlayCtl.isOpen(), labActive })
     expect(action).toBe('exit-lab')
   })
 })

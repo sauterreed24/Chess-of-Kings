@@ -26,6 +26,11 @@ describe('release quality gate contract', () => {
     ]) {
       expect(gate).toContain(`'${script}'`)
     }
+
+    const bundleReport = readProjectFile('scripts/report-bundle-gzip.mjs')
+    expect(bundleReport).toContain('JS_GZIP_MAX')
+    expect(bundleReport).toContain('CSS_GZIP_MAX')
+    expect(bundleReport).toContain('process.exit(1)')
   })
 
   it('requires CI and Pages deploys to run the same gate', () => {

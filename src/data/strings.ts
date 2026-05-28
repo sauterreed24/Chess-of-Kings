@@ -51,6 +51,22 @@ export const CALIBRATION_LEVEL_LABELS = {
 
 export const KEYBOARD_HELP_HEADING = 'Keyboard atlas'
 
+export const CONFIRM_COPY = {
+  dailyCalculus: {
+    title: 'Leave the current passage?',
+    message: "Today's Daily Calculus will replace your open simulation.",
+    confirmLabel: 'Open Daily Calculus',
+  },
+  newChronicle: {
+    title: 'Begin a new chronicle?',
+    message: 'Your saved expedition, unlocks, and chronicle will be cleared from this browser.',
+    confirmLabel: 'New chronicle',
+  },
+} as const
+
+export const STORAGE_FAILURE_MESSAGE =
+  'Progress could not be saved in this browser. Check storage settings or exit private mode.'
+
 /** Short coach line shown when there is no specific lesson context. */
 export const FALLBACK_LESSON = 'Apply the ancient laws — develop, castle early, avoid loose pieces.'
 

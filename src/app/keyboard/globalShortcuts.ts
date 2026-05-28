@@ -22,6 +22,8 @@
 import { routeEscapeKey } from '../escapeKeyRouting'
 
 export interface GlobalShortcutDeps {
+  isConfirmOpen(): boolean
+  closeConfirm(): void
   isRewardOverlayOpen(): boolean
   isLabActive(): boolean
   closeRewardOverlay(): void
@@ -56,9 +58,15 @@ export function handleGlobalKey(e: KeyboardEvent, deps: GlobalShortcutDeps): boo
 
   if (e.key === 'Escape') {
     const action = routeEscapeKey({
+      confirmOpen: deps.isConfirmOpen(),
       rewardOverlayOpen: deps.isRewardOverlayOpen(),
       labActive: deps.isLabActive(),
     })
+    if (action === 'close-confirm') {
+      e.preventDefault()
+      deps.closeConfirm()
+      return true
+    }
     if (action === 'close-reward-overlay') {
       e.preventDefault()
       deps.closeRewardOverlay()

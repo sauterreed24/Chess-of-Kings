@@ -1,7 +1,4 @@
-/**
- * Centralized reward / modal overlay lifecycle: content swap, visibility, and cleanup
- * (timers, etc.) so tests can assert behavior without the full app shell.
- */
+import { createFocusTrap } from './a11y/focusTrap'
 
 function focusFirstOverlayControl(root: HTMLElement) {
   const sel =
@@ -31,6 +28,7 @@ export function createRewardOverlayController(
   options?: RewardOverlayControllerOptions,
 ): RewardOverlayController {
   const onOpenChange = options?.onOpenChange
+  const trap = createFocusTrap(el)
   let onCleanup: (() => void) | null = null
   let focusBeforeOpen: HTMLElement | null = null
 
@@ -44,9 +42,12 @@ export function createRewardOverlayController(
     onCleanup = null
   }
 
+  const deactivateTrap = () => trap.deactivate()
+
   return {
     close() {
       runCleanup()
+      deactivateTrap()
       el.classList.add('hidden')
       el.setAttribute('aria-hidden', 'true')
       el.innerHTML = ''
@@ -60,6 +61,7 @@ export function createRewardOverlayController(
 
     open(html: string, setup?: (root: HTMLDivElement) => void, cleanup?: () => void) {
       runCleanup()
+      deactivateTrap()
       const wasHidden = el.classList.contains('hidden')
       if (wasHidden) {
         const ae = document.activeElement
@@ -71,12 +73,14 @@ export function createRewardOverlayController(
       onCleanup = cleanup ?? null
       setup?.(el)
       onOpenChange?.(true)
+      trap.activate()
       queueMicrotask(() => focusFirstOverlayControl(el))
     },
 
     replaceInner(html: string, setup?: (root: HTMLDivElement) => void) {
       el.innerHTML = html
       setup?.(el)
+      trap.activate()
       queueMicrotask(() => focusFirstOverlayControl(el))
     },
 
@@ -85,6 +89,7 @@ export function createRewardOverlayController(
       el.classList.remove('hidden')
       el.setAttribute('aria-hidden', 'false')
       if (wasHidden) onOpenChange?.(true)
+      trap.activate()
       queueMicrotask(() => focusFirstOverlayControl(el))
     },
 

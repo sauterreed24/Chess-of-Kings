@@ -327,10 +327,12 @@ export function loadSave(): SaveData | null {
   }
 }
 
-export function writeSave(data: SaveData) {
+/** @returns true when the save was written to localStorage. */
+export function writeSave(data: SaveData): boolean {
   const serialized = JSON.stringify(data)
   try {
     localStorage.setItem(KEY, serialized)
+    return true
   } catch (e) {
     const quota =
       e instanceof DOMException &&
@@ -346,11 +348,14 @@ export function writeSave(data: SaveData) {
               : data.rivalMemory,
         }
         localStorage.setItem(KEY, JSON.stringify(lean))
+        return true
       } catch {
         devWarn('writeSave: persist failed even after trimming history/rivalMemory')
+        return false
       }
     }
     // Other persist failures (privacy mode, disabled storage) should not crash gameplay.
+    return false
   }
 }
 

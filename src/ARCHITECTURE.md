@@ -79,9 +79,6 @@ src/
 │
 ├── game/
 │   └── trainingTips.ts      lossRecoveryMentorLine — coach copy after losses.
-│
-└── world/                   Legacy hub (no longer used by the title screen
-                              flow; kept for reference; see worldRunner.ts).
 ```
 
 ## Data flow

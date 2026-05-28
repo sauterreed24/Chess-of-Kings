@@ -130,6 +130,8 @@ export type FlowHandlers = {
   onChessUpdate: (payload: ChessUiPayload) => void
   onChapterComplete: (chapter: Chapter) => void
   onCampaignFinished: () => void
+  /** Fires when localStorage save could not be written (quota, private mode, etc.). */
+  onPersistFailure?: () => void
 }
 
 export class GameFlow {
@@ -275,7 +277,7 @@ export class GameFlow {
       rivalMemory: { ...this.rivalMemory },
       inProgress: this.buildInProgressSnapshot(),
     }
-    writeSave(data)
+    if (!writeSave(data)) this.handlers.onPersistFailure?.()
   }
 
   /** Flush pending debounced save + any pending UI emission (tab close / visibility). */

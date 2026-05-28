@@ -8,6 +8,8 @@ function makeDeps(over: Partial<GlobalShortcutDeps> = {}): GlobalShortcutDeps & 
   toggleKeyboardHelp: ReturnType<typeof vi.fn>
 } {
   return {
+    isConfirmOpen: () => false,
+    closeConfirm: vi.fn(),
     isRewardOverlayOpen: () => false,
     isLabActive: () => false,
     canAdvance: () => false,
@@ -54,6 +56,19 @@ describe('handleGlobalKey', () => {
     const e = makeKey('Escape')
     expect(handleGlobalKey(e, deps)).toBe(false)
     expect(deps.closeRewardOverlay).not.toHaveBeenCalled()
+  })
+
+  it('Escape closes confirm dialog before reward overlay', () => {
+    const deps = makeDeps({
+      isConfirmOpen: () => true,
+      isRewardOverlayOpen: () => true,
+      isLabActive: () => true,
+    })
+    const e = makeKey('Escape')
+    expect(handleGlobalKey(e, deps)).toBe(true)
+    expect(deps.closeConfirm).toHaveBeenCalledTimes(1)
+    expect(deps.closeRewardOverlay).not.toHaveBeenCalled()
+    expect(deps.exitLab).not.toHaveBeenCalled()
   })
 
   it('Escape closes a visible reward overlay first', () => {
