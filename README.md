@@ -47,7 +47,7 @@
 | **What it is** | Story-driven chess RPG with adaptive rival AI, shipped as a **static PWA** (no backend, no accounts). |
 | **Play** | **[Live demo](https://sauterreed24.github.io/Chess-of-Kings/)** — first step is always [Start here](#start-here). |
 | **Stack** | **TypeScript (strict)**, plain DOM, **Vite**, **Vitest**, `chess.js`; Capacitor shells for optional native builds. |
-| **Quality** | **394** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, bundle gzip report). |
+| **Quality** | **422** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, bundle gzip report). |
 | **Fit signals** | Accessibility-minded UI, save-format migrations, property-tested engine, small **gzip** JS budget (<90 KB). |
 
 **Suggested GitHub topics** (for discoverability): `typescript`, `vite`, `vitest`, `pwa`, `chess`, `game-development`, `accessibility`, `github-pages`, `no-framework`.
@@ -118,7 +118,7 @@ Story, Duel Archive, recovery, search, accessibility, and test hardening:
 - **Board feedback.** Last-move squares now distinguish origin and destination with `.sq-last-from` / `.sq-last-to` while preserving the existing `.sq-last` contract. ARIA labels announce "last move origin" and "last move destination."
 - **Search safety.** Alpha-beta and rival profile ordering reuse attack-map analysis to de-prioritize poisoned captures and prefer safe captures before quiescence and candidate selection.
 - **Release gate.** Mounted play smoke and bundle gzip budgets are part of the deterministic CI/Pages gate, and SFX now waits for user-gesture unlock before creating Web Audio.
-- **Tests.** **394** automated tests including release-gate contract coverage, Duel roster profile wiring, sealed dossier coverage, story rendering, Duel doctrine coverage, recovery replay, modal focus, lab overlay hit-target policy, move-highlight semantics, capture-safety search, engine-vs-engine, property, migration, DOM, UI-smoke, and perf coverage.
+- **Tests.** **422** automated tests including the new Stratarch Rating ladder (Elo math, migration, win/loss integration), feature-decomposed evaluation terms, opening-book bias, release-gate contract coverage, Duel roster profile wiring, sealed dossier coverage, story rendering, Duel doctrine coverage, recovery replay, modal focus, lab overlay hit-target policy, move-highlight semantics, capture-safety search, engine-vs-engine, property, migration, DOM, UI-smoke, and perf coverage.
 
 Earlier roadmap highlights (rival doctrine, Mastery Trial, Daily Calculus ribbon, SFX, keyboard atlas, property-tested engine, architecture doc) remain in [`CHANGELOG.md`](./CHANGELOG.md).
 
@@ -147,6 +147,7 @@ Earlier roadmap highlights (rival doctrine, Mastery Trial, Daily Calculus ribbon
 | Move guard | Optional tap-to-confirm on touch screens, off by default. |
 | Sound | Procedural oscillator cues, toggleable, reduced-motion-aware. |
 | Adaptive AI | Per-rival memory, anti-tilt, momentum hardening, profile composition by phase. |
+| Stratarch Rating | Persistent Elo-style ladder that rises and falls with every rated match/duel; shown on the title and after each result. |
 
 ---
 
@@ -173,7 +174,7 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` currently runs **394 tests across 51 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
+**Testing scopes.** `npm test` currently runs **422 tests across 53 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
@@ -209,7 +210,7 @@ ci_workflows:
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/ci.yml
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/pages.yml
 license: MIT
-tests: 394 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus)
+tests: 422 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus + Stratarch Rating ladder)
 skills_keywords:
   - TypeScript strict mode
   - Vite
@@ -286,7 +287,7 @@ npm install              # install dependencies
 npm run dev              # local dev server (LAN-exposed for device testing)
 npm run quality:gate     # deterministic release gate used by CI and Pages
 npm run build            # production build (tsc + vite)
-npm test                 # full test suite (394 tests)
+npm test                 # full test suite (422 tests)
 npm run test:deterministic # serialized seeded suite used by the release gate
 npm run lint             # eslint, max warnings 0
 npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay)

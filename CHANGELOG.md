@@ -20,6 +20,43 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [Unreleased] — Continuation Passes (2 / 3 / 4)
+
+Deterministic, additive improvements layered on the Maximum Effort Pass.
+Full `quality:gate` green at **422 tests** across 53 files; JS gzip
+**~82.9 KB** (budget < 90 KB), CSS gzip **~16.2 KB**.
+
+### Added
+
+- **Stratarch Rating (Pass 4)** — a persistent, Elo-style ladder number in
+  `src/game/rating.ts` (pure math: logistic expected score, provisional
+  K-factor, clamped 100–3000 band). After every rated match / duel,
+  `GameFlow` updates the rating against the rival's *stable* base-profile
+  strength plus a per-mode difficulty offset (so the published rival
+  strength is not perturbed by the dynamic anti-tilt / momentum ramps).
+  The current rating + peak appear on the title screen; the signed delta
+  appears in the reward overlay. Persisted in `SaveData.ladder` with a
+  forward migration (legacy saves default to 800; malformed values are
+  clamped). 20 new tests (rating math, migration round-trip, win/loss
+  integration, title surfacing).
+- **Exported evaluation feature terms (Pass 2)** — the pawn-structure and
+  coordination scorers in `src/chess/evaluate.ts` are now individually
+  exported and unit-tested in isolation.
+- **Opening-book bias in search (Pass 3)** — `openingSanBias()` nudges the
+  engine toward on-book replies during the opening; a guard re-selects a
+  booked candidate when the raw engine choice would wander off-book within
+  a discipline-scaled slack window.
+
+### Changed
+
+- Match-outcome labels on the board status pill now use the centralized
+  `STATUS_LABELS` (Victory / Defeat / Drawn).
+- The `?` keyboard-help shortcut is suppressed while a confirmation dialog
+  is open.
+- Higher-contrast thinking-pill colour and square coordinate labels.
+
+---
+
 ## [Unreleased] — Maximum Effort Pass
 
 A multi-pass polish, refactor, and test push. Current gate status in
@@ -204,7 +241,11 @@ pass that touched the surrounding area.
 - Feature-decomposed `evaluate.ts` (Pass 2-deep).
 - `selectTalkLine` integration into the live in-match flavor
   pipeline; opening-repertoire enforcement during play (Pass 3-deep).
-- Per-rival Elo-ish tracker on save with migration (Pass 4-deep).
+  *(Partially addressed: opening-book bias now nudges engine search —
+  see the Continuation Passes entry above.)*
+- ~~Per-rival Elo-ish tracker on save with migration (Pass 4-deep).~~
+  **Shipped** as the Stratarch Rating — see the Continuation Passes entry
+  above.
 - Web Worker for AI search (Pass 7-deep).
 - Color contrast audit beyond the existing token system (Pass 8-deep).
 - Mobile-viewport visual overflow check (jsdom limitation; needs a
