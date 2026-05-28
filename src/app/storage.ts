@@ -2,12 +2,14 @@ import { devWarn } from './devLog'
 import type {
   CosmeticInventory,
   InProgressSnapshot,
+  LadderRating,
   SavedMoveQuality,
   MatchHistoryEntry,
   PieceSkinId,
   PlayerTendencyProfile,
   RivalMemoryEntry,
 } from '../types'
+import { defaultLadderRating, clampRating } from '../game/rating'
 import { Chess } from 'chess.js'
 
 const KEY = 'calculus-of-kings-progress-v3'
@@ -36,6 +38,7 @@ export interface SaveData {
   tendencies: PlayerTendencyProfile
   matchHistory: MatchHistoryEntry[]
   rivalMemory: Record<string, RivalMemoryEntry>
+  ladder: LadderRating
   inProgress: InProgressSnapshot | null
 }
 
@@ -67,8 +70,19 @@ const defaultSave = (): SaveData => ({
   },
   matchHistory: [],
   rivalMemory: {},
+  ladder: defaultLadderRating(),
   inProgress: null,
 })
+
+function sanitizeLadder(v: unknown): LadderRating {
+  const fallback = defaultLadderRating()
+  if (!v || typeof v !== 'object') return fallback
+  const x = v as Partial<LadderRating>
+  const rating = typeof x.rating === 'number' ? clampRating(x.rating) : fallback.rating
+  const peak = typeof x.peak === 'number' ? clampRating(x.peak) : rating
+  const rated = typeof x.rated === 'number' && Number.isFinite(x.rated) ? Math.max(0, Math.floor(x.rated)) : 0
+  return { rating, peak: Math.max(peak, rating), rated }
+}
 
 function sanitizeStringArray(v: unknown, max: number): string[] {
   if (!Array.isArray(v)) return []
@@ -320,6 +334,7 @@ export function loadSave(): SaveData | null {
         }
         return out
       })(),
+      ladder: sanitizeLadder((o as { ladder?: unknown }).ladder),
       inProgress: sanitizeInProgress((o as { inProgress?: unknown }).inProgress),
     }
   } catch {

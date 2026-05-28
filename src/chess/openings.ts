@@ -118,3 +118,23 @@ export function chooseOpeningBookMove(
   if (!legalSans.length) return null
   return weightedPick(legalSans).san
 }
+
+/** Heuristic bonus when the engine falls back but should stay on-book. */
+export function openingSanBias(
+  chess: Chess,
+  profileId: string,
+  plyCount: number,
+  san: string,
+): number {
+  const book = BOOKS[profileId]
+  if (!book) return 0
+  const options = book[plyCount]
+  if (!options?.length) return 0
+  const legalSanSet = new Set(chess.moves())
+  if (!legalSanSet.has(san)) return 0
+  const match = options.find((o) => o.san === san)
+  if (!match) return 0
+  const maxWeight = Math.max(...options.map((o) => o.weight))
+  const ratio = match.weight / Math.max(1, maxWeight)
+  return Math.round(12 + ratio * 28)
+}

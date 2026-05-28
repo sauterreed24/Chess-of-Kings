@@ -7,6 +7,7 @@ import {
   materialAdvantage,
   PIECE_VALUES,
 } from '../chess/ai'
+import type { ProfileMoveOptions } from '../chess/ai'
 import type { AIStyle } from '../chess/evaluate'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
@@ -41,6 +42,13 @@ import {
 } from '../chess/aiProfiles'
 import { chooseOpeningBookMove } from '../chess/openings'
 import { detectTacticalMotifs } from '../chess/motifs'
+import {
+  applyRatingResult,
+  BASE_RATING,
+  defaultLadderRating,
+  opponentRatingFromProfile,
+} from '../game/rating'
+import type { LadderRating } from '../types'
 import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
@@ -180,6 +188,9 @@ export class GameFlow {
   private matchHistory: MatchHistoryEntry[] = []
   private lastResolvedOutcomeKey: string | null = null
   private rivalMemory: Record<string, RivalMemoryEntry> = {}
+  private ladder: LadderRating = defaultLadderRating()
+  /** Signed rating change from the most recently resolved rated game (for UI). */
+  private lastRatingDelta = 0
   private sceneTendencies: PlayerTendencyProfile = {
     flankPawnPushes: 0,
     earlyQueenMoves: 0,
@@ -221,6 +232,7 @@ export class GameFlow {
       this.tendencies = { ...s.tendencies }
       this.matchHistory = [...s.matchHistory]
       this.rivalMemory = { ...s.rivalMemory }
+      this.ladder = { ...s.ladder }
       this.pendingInProgressSnapshot = s.inProgress
     }
   }
@@ -275,6 +287,7 @@ export class GameFlow {
       tendencies: { ...this.tendencies },
       matchHistory: [...this.matchHistory],
       rivalMemory: { ...this.rivalMemory },
+      ladder: { ...this.ladder },
       inProgress: this.buildInProgressSnapshot(),
     }
     if (!writeSave(data)) this.handlers.onPersistFailure?.()
@@ -428,6 +441,16 @@ export class GameFlow {
 
   getRankPoints(): number {
     return this.rankPoints
+  }
+
+  /** Persistent Stratarch Rating snapshot (current / peak / rated-game count). */
+  getLadderRating(): LadderRating {
+    return { ...this.ladder }
+  }
+
+  /** Signed rating change from the most recently resolved rated game. */
+  getLastRatingDelta(): number {
+    return this.lastRatingDelta
   }
 
   getUnlockedTitles(): string[] {
@@ -1337,7 +1360,37 @@ export class GameFlow {
         prev.punishedCheckSpam + Math.round(this.sceneTendencies.repeatedChecksWithoutGain * punishedScale),
     }
 
+    const prevRating = this.ladder.rating
+    this.ladder = applyRatingResult(this.ladder, this.currentOpponentRating(), outcome)
+    this.lastRatingDelta = this.ladder.rating - prevRating
+
     this.persist()
+  }
+
+  /**
+   * Stable rating for the current rival, derived from its BASE profile plus a
+   * per-mode difficulty offset. Uses the base (untuned) profile so the rival's
+   * published strength is not perturbed by anti-tilt / momentum ramps.
+   */
+  private currentOpponentRating(): number {
+    if (this.mode === 'duel' && this.duelSession) {
+      const base = resolveProfileByDuelVariant(this.duelSession.variant.id)
+      const offset =
+        this.duelSession.difficulty === 'relentless'
+          ? 170
+          : this.duelSession.difficulty === 'novice'
+            ? -130
+            : 0
+      return opponentRatingFromProfile(base, offset)
+    }
+    if (this.mode === 'match' && this.matchScene) {
+      const base = resolveProfileByMatchId(this.matchScene.id)
+      const aiDepth = this.matchScene.aiDepth ?? base.searchDepth
+      const depthOffset = Math.max(0, aiDepth - base.searchDepth) * 80
+      const diffOffset = (Math.max(1, this.matchScene.difficulty ?? 1) - 1) * 40
+      return opponentRatingFromProfile(base, depthOffset + diffOffset)
+    }
+    return BASE_RATING
   }
 
   private pushRewardBundle(sourceId: string, sourceLabel: string, rewards: RewardDefinition[]) {
@@ -1704,8 +1757,12 @@ export class GameFlow {
     return result
   }
 
-  private profileMoveOpts() {
-    return { avoidMoveKey: this.lastAiMoveKey }
+  private profileMoveOpts(profile?: { id: string }): ProfileMoveOptions {
+    const opts: ProfileMoveOptions = { avoidMoveKey: this.lastAiMoveKey }
+    if (profile && this.sanLog.length < 20) {
+      opts.openingBook = { profileId: profile.id, plyIndex: this.openingBookPlyIndex() }
+    }
+    return opts
   }
 
   /**
@@ -1825,7 +1882,7 @@ export class GameFlow {
       }
       try {
         if (!openingPlayed) {
-          const mv = findBestMoveWithProfile(this.chess, profile, this.profileMoveOpts())
+          const mv = findBestMoveWithProfile(this.chess, profile, this.profileMoveOpts(profile))
           if (mv) {
             this.commitEnginePliesOrThrow(this.chess.move(mv), {
               mode: 'solo',
@@ -1911,7 +1968,7 @@ export class GameFlow {
               searchDepth: Math.max(profile.searchDepth, m.aiDepth),
               style: m.aiStyle ?? profile.style,
             },
-            this.profileMoveOpts(),
+            this.profileMoveOpts(profile),
           )
           if (best) {
             const result = this.commitEnginePliesOrThrow(this.chess.move(best), {
@@ -2266,6 +2323,8 @@ export class GameFlow {
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
     this.matchHistory = []
     this.rivalMemory = {}
+    this.ladder = defaultLadderRating()
+    this.lastRatingDelta = 0
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()

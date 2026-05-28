@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Chess } from 'chess.js'
-import { chooseOpeningBookMove, getBookTopLines } from './openings'
+import { chooseOpeningBookMove, getBookTopLines, openingSanBias } from './openings'
 
 describe('opening books', () => {
   it('returns legal weighted SAN for known profile', () => {
@@ -54,5 +54,23 @@ describe('opening books', () => {
     } finally {
       vi.restoreAllMocks()
     }
+  })
+
+  it('openingSanBias rewards book moves and ignores off-book replies', () => {
+    const c = new Chess()
+    c.move('e4')
+    const bookBias = openingSanBias(c, 'apprentice_court', 1, 'e5')
+    const offBook = openingSanBias(c, 'apprentice_court', 1, 'c5')
+    expect(bookBias).toBeGreaterThan(0)
+    expect(offBook).toBe(0)
+    expect(bookBias).toBeGreaterThan(offBook)
+  })
+
+  it('openingSanBias scales with book weight', () => {
+    const c = new Chess()
+    c.move('e4')
+    const top = openingSanBias(c, 'apprentice_court', 1, 'e5')
+    const alt = openingSanBias(c, 'apprentice_court', 1, 'd5')
+    expect(top).toBeGreaterThan(alt)
   })
 })

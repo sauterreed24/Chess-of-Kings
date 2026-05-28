@@ -97,6 +97,7 @@ describe('writeSave robustness', () => {
         },
         matchHistory: [],
         rivalMemory: {},
+        ladder: { rating: 800, peak: 800, rated: 0 },
         inProgress: null,
       }
       expect(() => writeSave(data)).not.toThrow()

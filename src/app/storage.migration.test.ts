@@ -59,6 +59,7 @@ describe('storage v3 migration and defaults', () => {
       tendencies: { flankPawnPushes: 1, earlyQueenMoves: 2, repeatedChecksWithoutGain: 0 },
       matchHistory: [],
       rivalMemory: {},
+      ladder: { rating: 800, peak: 800, rated: 0 },
       inProgress: null,
     }
     writeSave(save)
@@ -165,6 +166,41 @@ describe('storage v3 migration and defaults', () => {
     expect(s?.inProgress?.sanQuality).toEqual(['good', null, null])
   })
 
+  it('defaults the ladder rating for legacy saves and sanitizes bad values', () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({ chapterIndex: 0, sceneIndex: 0 }),
+    )
+    const legacy = loadSave()
+    expect(legacy?.ladder).toEqual({ rating: 800, peak: 800, rated: 0 })
+
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        chapterIndex: 0,
+        sceneIndex: 0,
+        ladder: { rating: 99999, peak: -5, rated: -3.7 },
+      }),
+    )
+    const sanitized = loadSave()
+    expect(sanitized?.ladder.rating).toBe(3000)
+    expect(sanitized?.ladder.peak).toBeGreaterThanOrEqual(sanitized!.ladder.rating)
+    expect(sanitized?.ladder.rated).toBe(0)
+  })
+
+  it('round-trips a persisted ladder rating', () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        chapterIndex: 0,
+        sceneIndex: 0,
+        ladder: { rating: 912, peak: 940, rated: 14 },
+      }),
+    )
+    const s = loadSave()
+    expect(s?.ladder).toEqual({ rating: 912, peak: 940, rated: 14 })
+  })
+
   it('writeSave does not throw when storage setItem fails', () => {
     const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('quota exceeded')
@@ -191,6 +227,7 @@ describe('storage v3 migration and defaults', () => {
         tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
         matchHistory: [],
         rivalMemory: {},
+        ladder: { rating: 800, peak: 800, rated: 0 },
         inProgress: null,
       }),
     ).not.toThrow()

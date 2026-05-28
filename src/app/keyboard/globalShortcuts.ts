@@ -91,6 +91,7 @@ export function handleGlobalKey(e: KeyboardEvent, deps: GlobalShortcutDeps): boo
   }
 
   if (e.key === '?') {
+    if (deps.isConfirmOpen()) return false
     e.preventDefault()
     deps.toggleKeyboardHelp()
     return true

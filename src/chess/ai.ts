@@ -16,6 +16,7 @@ import {
   squareIndex,
 } from './bitboard'
 import type { PositionAnalysis } from './bitboard'
+import { openingSanBias } from './openings'
 
 /* ─── Transposition table ────────────────────────────────────────────── */
 
@@ -94,7 +95,10 @@ function pickAvoidingRepeat(chosen: Move | null, avoid: string | null | undefine
   return other ?? chosen
 }
 
-export type ProfileMoveOptions = { avoidMoveKey?: string | null }
+export type ProfileMoveOptions = {
+  avoidMoveKey?: string | null
+  openingBook?: { profileId: string; plyIndex: number } | null
+}
 
 function nonKingPieceCount(chess: Chess): number {
   return analyzePosition(chess).nonKingPieceCount
@@ -520,10 +524,15 @@ function profileHeuristic(
   return score
 }
 
-function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move; score: number }> {
+function scoredCandidates(
+  chess: Chess,
+  profile: AiProfile,
+  opts?: ProfileMoveOptions,
+): Array<{ move: Move; score: number }> {
   const mover: Color = chess.turn()
   const moves = chess.moves({ verbose: true })
   const endgame = nonKingPieceCount(chess) <= 8
+  const openingCtx = opts?.openingBook ?? null
   const lastMove = (() => {
     const hist = chess.history({ verbose: true }) as Move[]
     return hist.length ? hist[hist.length - 1]! : null
@@ -544,6 +553,9 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
     chess.undo()
     const profileScore = profileHeuristic(move, profile, endgame, lastMove, motifs)
     const mobilityScore = (position.mobility[mover] - position.mobility[opponentOf(mover)]) * 0.35
+    const bookBias = openingCtx
+      ? openingSanBias(chess, openingCtx.profileId, openingCtx.plyIndex, move.san)
+      : 0
     return {
       move,
       score:
@@ -553,7 +565,8 @@ function scoredCandidates(chess: Chess, profile: AiProfile): Array<{ move: Move;
         rookDoctrine +
         oppositionDoctrine +
         passedPawnDoctrine +
-        captureSafety -
+        captureSafety +
+        bookBias -
         repetitionPenalty,
     }
   }).sort((a, b) => b.score - a.score)
@@ -576,7 +589,7 @@ export function findBestMoveWithProfile(
   }
 
   // Candidate pool keeps variety for weaker personalities while preserving quality.
-  const candidates = scoredCandidates(chess, profile)
+  const candidates = scoredCandidates(chess, profile, opts)
   const strictness = Math.max(0.05, Math.min(0.98, profile.conversionStrictness))
   const width = Math.max(1, Math.min(6, Math.round((1 - strictness) * 6)))
   const pool = candidates.slice(0, width)
@@ -615,6 +628,26 @@ export function findBestMoveWithProfile(
     // Blunder guard: strong/technical profiles avoid large heuristic drops.
     if (selectedScore !== undefined && selectedScore + guardThreshold < bestScore) {
       return pickAvoidingRepeat(pool[0]!.move, avoid, pool.map((c) => c.move))
+    }
+    const openingCtx = opts?.openingBook ?? null
+    if (openingCtx) {
+      const engineOnBook = openingSanBias(chess, openingCtx.profileId, openingCtx.plyIndex, engineMove.san) > 0
+      if (!engineOnBook) {
+        const bookCandidate = candidates.find(
+          (c) => openingSanBias(chess, openingCtx.profileId, openingCtx.plyIndex, c.move.san) > 0,
+        )
+        if (bookCandidate) {
+          const bookSlack = Math.round(16 + profile.openingDiscipline * 24)
+          const engineHeuristic = selectedScore ?? -Infinity
+          if (bookCandidate.score + bookSlack >= engineHeuristic) {
+            return pickAvoidingRepeat(
+              bookCandidate.move,
+              avoid,
+              [...pool.map((c) => c.move), ...candidates.slice(0, 12).map((c) => c.move)],
+            )
+          }
+        }
+      }
     }
     return pickAvoidingRepeat(
       engineMove,

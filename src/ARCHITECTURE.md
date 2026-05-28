@@ -78,7 +78,8 @@ src/
 │   └── rewards.ts           CHAPTER_CLEAR_REWARDS + BASE_VICTORY_REWARDS.
 │
 ├── game/
-│   └── trainingTips.ts      lossRecoveryMentorLine — coach copy after losses.
+│   ├── trainingTips.ts      lossRecoveryMentorLine — coach copy after losses.
+│   └── rating.ts            Stratarch Rating — pure Elo-style ladder math.
 ```
 
 ## Data flow
