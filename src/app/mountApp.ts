@@ -221,6 +221,13 @@ export function mountApp(app: HTMLDivElement) {
   const sfx = createSfxController({
     enabled: readPreference(SFX_PREF_KEY) !== '0',
   })
+  const unlockSfxFromUserGesture = (event: Event) => {
+    if (!event.isTrusted) return
+    if (sfx.enabled) sfx.unlock()
+  }
+  window.addEventListener('pointerdown', unlockSfxFromUserGesture, { once: true, capture: true })
+  window.addEventListener('keydown', unlockSfxFromUserGesture, { once: true, capture: true })
+  window.addEventListener('click', unlockSfxFromUserGesture, { once: true, capture: true })
 
   function focusWithoutScroll(el: HTMLElement | null | undefined) {
     if (!el) return

@@ -3,10 +3,10 @@
  *
  * Wraps a single `AudioContext` and the user-toggleable enabled flag so
  * `mountApp` (and tests) only see a tiny, well-typed surface. The controller
- * is lazy: the AudioContext is not constructed until SFX are first used, and
- * iOS Safari requires the context to be created/resumed inside a user
- * gesture -- callers should invoke {@link SfxController.unlock} right after
- * the user toggles sound on, or the first cue will be silenced.
+ * is lazy: the AudioContext is only constructed by {@link SfxController.unlock},
+ * which callers run from user-gesture handlers. Move and UI cues intentionally
+ * no-op until that unlock has succeeded, avoiding autoplay warnings from
+ * async AI replies or restored sessions.
  *
  * Cue design (deterministic from SAN + quality):
  * - Captures   ('x' in SAN): triangle wave, lower frequency.
@@ -69,9 +69,10 @@ function defaultAudioContextFactory(): AudioContext | null {
 export function createSfxController(opts: SfxControllerOptions): SfxController {
   let enabled = opts.enabled
   let ctx: AudioContext | null = null
+  let unlocked = false
   const factory = opts.audioContextFactory ?? defaultAudioContextFactory
 
-  function ensure(): AudioContext | null {
+  function unlockContext(): AudioContext | null {
     if (!enabled) return null
     if (!ctx) {
       try {
@@ -83,6 +84,12 @@ export function createSfxController(opts: SfxControllerOptions): SfxController {
     if (ctx && ctx.state === 'suspended') {
       ctx.resume().catch(() => {})
     }
+    unlocked = Boolean(ctx)
+    return ctx
+  }
+
+  function playableContext(): AudioContext | null {
+    if (!enabled || !unlocked || !ctx || ctx.state !== 'running') return null
     return ctx
   }
 
@@ -96,11 +103,11 @@ export function createSfxController(opts: SfxControllerOptions): SfxController {
     },
 
     unlock() {
-      ensure()
+      unlockContext()
     },
 
     playMoveSfx(san: string, quality: MoveQuality | null) {
-      const c = ensure()
+      const c = playableContext()
       if (!c) return
       const now = c.currentTime
       const osc = c.createOscillator()
@@ -143,7 +150,7 @@ export function createSfxController(opts: SfxControllerOptions): SfxController {
     },
 
     playEventSfx(event: SfxEvent) {
-      const c = ensure()
+      const c = playableContext()
       if (!c) return
       /* Reduced-motion users still hear cues, but at a softer envelope. */
       const reduced =

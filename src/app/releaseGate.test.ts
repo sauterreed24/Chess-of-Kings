@@ -11,6 +11,9 @@ describe('release quality gate contract', () => {
       scripts: Record<string, string>
     }
     expect(pkg.scripts['quality:gate']).toBe('node scripts/quality-gate.mjs')
+    expect(pkg.scripts.test).toContain('--no-file-parallelism')
+    expect(pkg.scripts.test).toContain('--maxWorkers=1')
+    expect(pkg.scripts.test).toContain('--sequence.shuffle=false')
     expect(pkg.scripts['test:deterministic']).toContain('--no-file-parallelism')
     expect(pkg.scripts['test:deterministic']).toContain('--maxWorkers=1')
     expect(pkg.scripts['test:deterministic']).toContain('--sequence.shuffle=false')

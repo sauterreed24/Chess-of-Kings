@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cok-static-v3'
+const CACHE_NAME = 'cok-static-v4'
 const APP_SHELL = [
   './',
   './index.html',

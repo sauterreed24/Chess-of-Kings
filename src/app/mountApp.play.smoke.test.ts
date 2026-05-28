@@ -92,6 +92,62 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(app.querySelector('#btn-sfx')?.textContent).toBe('Sound: Off')
   })
 
+  it('ignores untrusted programmatic clicks for the ambient sound unlock', () => {
+    let constructed = 0
+    let resumed = 0
+    const original = Object.getOwnPropertyDescriptor(window, 'AudioContext')
+    class FakeAudioContext {
+      currentTime = 0
+      state: 'suspended' | 'running' = 'suspended'
+      destination = {}
+
+      constructor() {
+        constructed += 1
+      }
+
+      resume() {
+        resumed += 1
+        this.state = 'running'
+        return Promise.resolve()
+      }
+
+      createOscillator() {
+        return {
+          type: 'sine' as OscillatorType,
+          frequency: { setValueAtTime: vi.fn() },
+          connect: vi.fn(),
+          start: vi.fn(),
+          stop: vi.fn(),
+        }
+      }
+
+      createGain() {
+        return {
+          gain: {
+            setValueAtTime: vi.fn(),
+            exponentialRampToValueAtTime: vi.fn(),
+          },
+          connect: vi.fn(),
+        }
+      }
+    }
+
+    Object.defineProperty(window, 'AudioContext', {
+      configurable: true,
+      value: FakeAudioContext,
+    })
+    try {
+      const app = boot()
+      expect(constructed).toBe(0)
+      app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+      expect(constructed).toBe(0)
+      expect(resumed).toBe(0)
+    } finally {
+      if (original) Object.defineProperty(window, 'AudioContext', original)
+      else delete (window as typeof window & { AudioContext?: unknown }).AudioContext
+    }
+  })
+
   it('mirrors board guide into the mobile tips drawer during play', () => {
     const app = boot()
     app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()

@@ -1749,6 +1749,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border: 1px solid rgba(201,169,98,0.22);
   border-bottom: none; border-radius: 6px 6px 0 0;
   position: relative;
+  z-index: 2;
 }
 
 /* Meander accent across bar top */
@@ -1773,6 +1774,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   background: linear-gradient(180deg, #13110a 0%, #0a0906 100%);
   border: 1px solid rgba(201,169,98,0.18);
   border-top: none; border-radius: 0 0 6px 6px;
+  position: relative;
+  z-index: 1;
 }
 .play-crawl { flex: 0 0 auto; }
 .shell--lab .top-bar { z-index: 50; position: relative; }

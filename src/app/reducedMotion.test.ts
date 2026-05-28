@@ -63,6 +63,15 @@ describe('reduced-motion CSS guarantees', () => {
   })
 })
 
+describe('lab overlay CSS hit targets', () => {
+  it('keeps the lab chrome above the scrollable play surface', () => {
+    expect(cssRule('.lab-overlay__bar')).toMatch(/position:\s*relative/)
+    expect(cssRule('.lab-overlay__bar')).toMatch(/z-index:\s*2/)
+    expect(cssRule('.screen--play-inner')).toMatch(/position:\s*relative/)
+    expect(cssRule('.screen--play-inner')).toMatch(/z-index:\s*1/)
+  })
+})
+
 /** Returns the contents of every `(prefers-reduced-motion: reduce)` media block. */
 function collectReducedMotionBlocks(css: string): string[] {
   const out: string[] = []
@@ -86,4 +95,10 @@ function collectReducedMotionBlocks(css: string): string[] {
     }
   }
   return out
+}
+
+function cssRule(selector: string): string {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const match = CSS.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`))
+  return match?.[1] ?? ''
 }
