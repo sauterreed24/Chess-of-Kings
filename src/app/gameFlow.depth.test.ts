@@ -69,6 +69,45 @@ describe('GameFlow depth systems', () => {
     expect(unlocked).toContain('amara')
   })
 
+  it('shows sealed Duel Archive dossiers without making them playable early', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+
+    const archive = flow.getDuelArchiveRoster()
+    expect(archive.map((entry) => entry.rival.opponentId)).toEqual(['amara', 'edred', 'alexion', 'rowan', 'vega'])
+    expect(archive.find((entry) => entry.rival.opponentId === 'alexion')?.isOpen).toBe(true)
+    const rowan = archive.find((entry) => entry.rival.opponentId === 'rowan')
+    expect(rowan?.isOpen).toBe(false)
+    expect(rowan?.unlockHint).toContain('Defeat Rowan Vale in Chapter II')
+    expect(flow.startDuel('rowan', 'rowan-gambit', 'w')).toBe(false)
+  })
+
+  it('opens non-Alexion duel variants once that rival is campaign-unlocked', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+
+    const f = flow as unknown as {
+      duelUnlockedOpponentIds: string[]
+      highestUnlockedChapter: number
+    }
+    f.duelUnlockedOpponentIds.push('amara')
+    f.highestUnlockedChapter = 1
+
+    expect(flow.isDuelVariantUnlocked('amara-initiate')).toBe(true)
+    expect(flow.startDuel('amara', 'amara-initiate', 'w')).toBe(true)
+    expect(flow.isDuelVariantUnlocked('alexion-apex')).toBe(false)
+  })
+
   it('supports skin persistence APIs and pending rewards buffer', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

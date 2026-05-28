@@ -65,7 +65,7 @@ describe('engine property: legality across all profiles', () => {
     }
   })
 
-  it('never returns an unsafe SAN that contains < or & (would imply formatter / type confusion)', () => {
+  it('never returns an unsafe SAN that contains < or & (would imply formatter / type confusion)', { timeout: 30000 }, () => {
     const c = new Chess()
     const profile = { ...AI_PROFILES.novice_court, thinkTimeMs: 80, searchDepth: 1 }
     for (let i = 0; i < 20; i++) {

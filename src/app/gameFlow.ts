@@ -50,6 +50,11 @@ import { findHangingPiece, hangingCoachTip } from './hangingInsight'
 const SYNC_IO = import.meta.env.MODE === 'test'
 const PERSIST_DEBOUNCE_MS = 180
 const IN_PROGRESS_PLY_LIMIT = 512
+const CHAPTER_LABELS = ['Prologue', 'Chapter I', 'Chapter II', 'Chapter III', 'Chapter IV', 'Chapter V']
+
+function chapterLabel(index: number): string {
+  return CHAPTER_LABELS[index] ?? `Chapter ${index}`
+}
 
 function emptyBoardSelection(): BoardSelectionState {
   return {
@@ -110,6 +115,14 @@ type LastDuelSetup = {
   variantId: string
   playerColor: 'w' | 'b'
   difficulty: 'novice' | 'balanced' | 'relentless'
+}
+
+export type DuelArchiveRosterEntry = {
+  rival: DuelRosterEntry
+  isOpen: boolean
+  unlockedVariantCount: number
+  totalVariantCount: number
+  unlockHint: string
 }
 
 export type FlowHandlers = {
@@ -619,13 +632,57 @@ export class GameFlow {
 
   getDuelRoster(): DuelRosterEntry[] {
     return DUEL_ROSTER.filter((r) => {
-      if (r.opponentId === 'alexion') return true
-      return this.duelUnlockedOpponentIds.includes(r.opponentId)
+      return this.isDuelOpponentUnlocked(r)
+    })
+  }
+
+  getDuelArchiveRoster(): DuelArchiveRosterEntry[] {
+    return DUEL_ROSTER.map((rival) => {
+      const unlockedVariantCount = rival.variants.filter((v) =>
+        this.isDuelVariantUnlocked(v.id) && this.highestUnlockedChapter >= v.minChapterUnlock,
+      ).length
+      return {
+        rival,
+        isOpen: this.isDuelOpponentUnlocked(rival) && unlockedVariantCount > 0,
+        unlockedVariantCount,
+        totalVariantCount: rival.variants.length,
+        unlockHint: this.duelUnlockHint(rival),
+      }
     })
   }
 
   isDuelVariantUnlocked(variantId: string): boolean {
-    return this.unlockedDuelVariantIds.includes(variantId)
+    if (this.unlockedDuelVariantIds.includes(variantId)) return true
+    const found = this.findDuelVariant(variantId)
+    if (!found) return false
+    if (found.rival.opponentId === 'alexion') return false
+    return (
+      this.duelUnlockedOpponentIds.includes(found.rival.opponentId) &&
+      this.highestUnlockedChapter >= found.variant.minChapterUnlock
+    )
+  }
+
+  private isDuelOpponentUnlocked(rival: DuelRosterEntry): boolean {
+    if (rival.opponentId === 'alexion') return true
+    return this.duelUnlockedOpponentIds.includes(rival.opponentId)
+  }
+
+  private findDuelVariant(variantId: string): { rival: DuelRosterEntry; variant: DuelVariant } | null {
+    for (const rival of DUEL_ROSTER) {
+      const variant = rival.variants.find((v) => v.id === variantId)
+      if (variant) return { rival, variant }
+    }
+    return null
+  }
+
+  private duelUnlockHint(rival: DuelRosterEntry): string {
+    if (this.isDuelOpponentUnlocked(rival)) {
+      const lockedByChapter = rival.variants.find((v) => this.highestUnlockedChapter < v.minChapterUnlock)
+      if (lockedByChapter) return `Reach ${chapterLabel(lockedByChapter.minChapterUnlock)} to open more files.`
+      return 'Open now.'
+    }
+    const minChapter = Math.min(...rival.variants.map((v) => v.minChapterUnlock))
+    return `Defeat ${rival.opponentName} in ${chapterLabel(minChapter)} to unseal this dossier.`
   }
 
   startDuel(

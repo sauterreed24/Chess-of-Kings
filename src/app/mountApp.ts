@@ -803,29 +803,77 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   function renderDuelUi() {
-    const roster = flow.getDuelRoster()
-    duelList.innerHTML = roster.map((r) =>
-      `<button type="button" class="chapter-btn duel-row" data-op="${escapeHtml(r.opponentId)}" aria-label="Open dossier for ${escapeHtml(r.opponentName)}">
+    const roster = [...flow.getDuelArchiveRoster()].sort((a, b) => Number(b.isOpen) - Number(a.isOpen))
+    duelList.innerHTML = roster.map((entry) => {
+      const r = entry.rival
+      const stamp = entry.isOpen ? `${entry.unlockedVariantCount}/${entry.totalVariantCount} files` : 'sealed'
+      const label = entry.isOpen
+        ? `Open dossier for ${r.opponentName}`
+        : `Sealed dossier for ${r.opponentName}. ${entry.unlockHint}`
+      return `<button type="button" class="chapter-btn duel-row ${entry.isOpen ? '' : 'duel-row--sealed'}" data-op="${escapeHtml(r.opponentId)}" aria-label="${escapeHtml(label)}">
         <span class="chapter-btn__main">
           <span class="ch-idx">${escapeHtml(r.era)}</span>
           <span class="ch-name">${escapeHtml(r.opponentName)}</span>
           <span class="ch-era">${escapeHtml(r.styleTags.join(' / '))}</span>
+          ${entry.isOpen ? '' : `<span class="duel-row__hint">${escapeHtml(entry.unlockHint)}</span>`}
         </span>
-        <span class="duel-row__stamp">${r.variants.length} files</span>
-      </button>`,
-    ).join('')
+        <span class="duel-row__stamp ${entry.isOpen ? '' : 'duel-row__stamp--sealed'}">${escapeHtml(stamp)}</span>
+      </button>`
+    }).join('')
 
     for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]) {
       btn.addEventListener('click', () => {
         const op = btn.dataset.op
         if (!op) return
-        const rival = roster.find((r) => r.opponentId === op)
-        if (!rival) return
+        const archiveEntry = roster.find((r) => r.rival.opponentId === op)
+        if (!archiveEntry) return
+        const rival = archiveEntry.rival
         for (const row of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]) {
           const active = row === btn
           row.classList.toggle('duel-row--active', active)
           if (active) row.setAttribute('aria-current', 'true')
           else row.removeAttribute('aria-current')
+        }
+        const rivalProfile = getRivalProfile(rival.opponentId)
+        if (!archiveEntry.isOpen) {
+          const schoolPreview = rivalProfile
+            ? `<div class="rival-school rival-school--sealed" aria-label="Sealed doctrinal preview">
+                <span class="rival-school__primary">${escapeHtml(rivalProfile.blend.primary.school)}</span>
+                <span class="rival-school__weight">${rivalProfile.blend.primary.weight}%</span>
+                ${rivalProfile.blend.secondary
+                  ? `<span class="rival-school__plus" aria-hidden="true">+</span>
+                     <span class="rival-school__secondary">${escapeHtml(rivalProfile.blend.secondary.school)}</span>
+                     <span class="rival-school__weight">${rivalProfile.blend.secondary.weight}%</span>`
+                  : ''}
+                <p class="rival-school__sig">${escapeHtml(rivalProfile.signature)}</p>
+              </div>`
+            : ''
+          duelPanel.innerHTML = `
+            <div class="match-card sealed-dossier">
+              <div class="match-card__top">
+                <div class="match-card__header">
+                  <span class="match-card__vs">Sealed dossier</span>
+                  <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
+                </div>
+                <span class="duel-row__stamp duel-row__stamp--sealed">${archiveEntry.totalVariantCount} sealed files</span>
+              </div>
+              <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
+              <div class="sealed-dossier__notice">
+                <span class="teach-label">Unlock path</span>
+                <p>${escapeHtml(archiveEntry.unlockHint)}</p>
+              </div>
+              ${schoolPreview}
+              <div class="reward-card">
+                <h4>Preview Intelligence</h4>
+                <ul>
+                  <li><strong>Era:</strong> ${escapeHtml(rival.era)}</li>
+                  <li><strong>Style:</strong> ${escapeHtml(rival.styleTags.join(' / '))}</li>
+                  <li><strong>Known strength:</strong> ${escapeHtml(rival.strengths)}</li>
+                  <li><strong>Likely pressure point:</strong> ${escapeHtml(rival.weaknesses)}</li>
+                </ul>
+              </div>
+            </div>`
+          return
         }
         const history = flow
           .getMatchHistory()
@@ -884,7 +932,6 @@ export function mountApp(app: HTMLDivElement) {
               Echo ${new Date(e.timestamp).toLocaleDateString()} · ${e.styleGrade} · ${e.turningPointSan}
             </button>`).join('')
           : '<p class="ledger-empty">Defeat this rival to inscribe chronicle echoes.</p>'
-        const rivalProfile = getRivalProfile(rival.opponentId)
         const prepLines = (() => {
           /* Prefer the curated counter-prep when we have a known rival;
            * fall back to the heuristic-driven bullets for unknown ids

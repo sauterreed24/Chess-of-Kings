@@ -86,6 +86,55 @@ describe('mounted duel dossier', () => {
     expect(panelText).toContain('Opening Watchlist')
   })
 
+  it('shows sealed Duel Archive rivals with unlock paths on a fresh save', () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+
+    const rows = [...app.querySelectorAll<HTMLButtonElement>('.duel-row')]
+    expect(rows.map((row) => row.dataset.op)).toContain('rowan')
+    expect(app.querySelector('[data-op="alexion"]')?.classList.contains('duel-row--sealed')).toBe(false)
+    expect(app.querySelector('[data-op="rowan"]')?.classList.contains('duel-row--sealed')).toBe(true)
+
+    app.querySelector<HTMLButtonElement>('[data-op="rowan"]')?.click()
+
+    const panelText = app.querySelector('#duel-panel')?.textContent ?? ''
+    expect(panelText).toContain('Sealed dossier')
+    expect(panelText).toContain('Defeat Rowan Vale in Chapter II')
+    expect(panelText).toContain('Tempo-first sacrifices')
+    expect(panelText).not.toContain('Start Duel')
+  })
+
+  it('surfaces distinct Rowan and Vega opening watchlists when unlocked', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 1,
+      sceneIndex: 0,
+      highestUnlockedChapter: 2,
+      lastScreen: 'duel',
+      duelUnlockedOpponentIds: ['rowan', 'vega'],
+      unlockedDuelVariantIds: ['alexion-mentor', 'rowan-gambit', 'vega-italian'],
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    app.querySelector<HTMLButtonElement>('[data-op="rowan"]')?.click()
+    const rowanText = app.querySelector('#duel-panel')?.textContent ?? ''
+    expect(rowanText).toContain('Ply 1: exf4')
+    expect(rowanText).toContain('Tempo-first sacrifices')
+
+    app.querySelector<HTMLButtonElement>('[data-op="vega"]')?.click()
+    const vegaText = app.querySelector('#duel-panel')?.textContent ?? ''
+    expect(vegaText).toContain('Ply 1: Nf6')
+    expect(vegaText).toContain('Romantic pressure audited by classical receipts')
+    expect(vegaText).not.toContain('Ply 1: exf4')
+  })
+
   it('closes the simulation layer before top-nav screen changes', () => {
     const app = document.createElement('div')
     document.body.appendChild(app)
