@@ -191,6 +191,31 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(app.querySelector('#confirm-overlay')?.classList.contains('hidden')).toBe(true)
   })
 
+  it('surfaces the Stratarch Rating on the title once rated games exist', () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        chapterIndex: 0,
+        sceneIndex: 0,
+        lastScreen: 'title',
+        ladder: { rating: 845, peak: 870, rated: 6 },
+      }),
+    )
+    const app = boot()
+    const rating = app.querySelector<HTMLParagraphElement>('#title-rating')!
+    expect(rating.classList.contains('hidden')).toBe(false)
+    expect(rating.textContent).toContain('845')
+    expect(rating.textContent).toContain('peak 870')
+  })
+
+  it('hides the Stratarch Rating until the first rated game', () => {
+    clearSave()
+    const app = boot()
+    const rating = app.querySelector<HTMLParagraphElement>('#title-rating')!
+    expect(rating.classList.contains('hidden')).toBe(true)
+    expect(rating.textContent).toBe('')
+  })
+
   it('resets chronicle state on confirmed new game', async () => {
     clearSave()
     const app = boot()

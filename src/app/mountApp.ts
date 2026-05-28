@@ -31,6 +31,7 @@ import {
 import { getShellMarkup } from './shellMarkup'
 import { styleGradeFromPayload, turningPointLine } from './recap/styleGrade'
 import { rankLabel, nextRankThreshold } from './recap/rankLabels'
+import { ratingDeltaLabel } from '../game/rating'
 import { createSfxController } from './audio/sfx'
 import { buildChapterRail, buildLadderTrack } from './play/chapterRail'
 import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
@@ -111,6 +112,7 @@ export function mountApp(app: HTMLDivElement) {
   const lessonNote = app.querySelector<HTMLParagraphElement>('#lesson-note')!
   const coachTipEl = app.querySelector<HTMLParagraphElement>('#coach-tip')!
   const mvpFlag = app.querySelector<HTMLParagraphElement>('#mvp-flag')!
+  const titleRating = app.querySelector<HTMLParagraphElement>('#title-rating')!
   const dailyRibbon = app.querySelector<HTMLDivElement>('#daily-ribbon')!
   const announcer = createAnnouncer(app.querySelector<HTMLDivElement>('#live-announcer')!)
   const boardGuide = app.querySelector<HTMLParagraphElement>('#board-guide')!
@@ -553,6 +555,18 @@ export function mountApp(app: HTMLDivElement) {
         : ''
   }
 
+  function syncTitleRating() {
+    const ladder = flow.getLadderRating()
+    if (ladder.rated <= 0) {
+      titleRating.textContent = ''
+      titleRating.classList.add('hidden')
+      return
+    }
+    const peak = ladder.peak > ladder.rating ? ` · peak ${ladder.peak}` : ''
+    titleRating.textContent = `Stratarch Rating ${ladder.rating}${peak}`
+    titleRating.classList.remove('hidden')
+  }
+
   /* ─── Session streak + Daily Calculus ribbon ─────────────────── */
   /* Recorded once per local day on app boot. The streak / daily pick
    * are stored in dedicated localStorage keys to keep them orthogonal
@@ -697,6 +711,7 @@ export function mountApp(app: HTMLDivElement) {
     setNavActive('title')
     syncTitleButtons()
     syncMvpFlag()
+    syncTitleRating()
     syncDailyRibbon()
     syncTitleSkinSelect()
     syncPreferenceButtons()
@@ -775,6 +790,14 @@ export function mountApp(app: HTMLDivElement) {
     focusWithoutScroll(btnChaptersBack)
   }
 
+  function ratingSummaryLine(): string {
+    const ladder = flow.getLadderRating()
+    if (ladder.rated <= 0) return ''
+    const delta = flow.getLastRatingDelta()
+    const peak = ladder.peak > ladder.rating ? ` · peak ${ladder.peak}` : ''
+    return `<p class="chapters-lede reward-rating">Stratarch Rating: <strong>${ladder.rating}</strong> <span class="reward-rating__delta reward-rating__delta--${delta >= 0 ? 'up' : 'down'}">${escapeHtml(ratingDeltaLabel(delta))}</span>${peak}</p>`
+  }
+
   function showRewardBundles(bundles: RewardBundle[]) {
     if (!bundles.length) return
     sfx.playEventSfx('reward')
@@ -831,6 +854,7 @@ export function mountApp(app: HTMLDivElement) {
           <ul>${deltaLines}</ul>
         </div>
         <p class="chapters-lede">Rank: ${rankLabel(rp)} · ${rp} RP</p>
+        ${ratingSummaryLine()}
         <div class="reward-progress">
           <div class="reward-progress__label">Next rank: ${next.nextLabel} at ${next.next} RP</div>
           <div class="reward-progress__bar"><div class="reward-progress__fill" style="width:${progress.toFixed(1)}%"></div></div>
@@ -1859,6 +1883,7 @@ export function mountApp(app: HTMLDivElement) {
 
   syncTitleButtons()
   syncMvpFlag()
+  syncTitleRating()
   syncDailyRibbon()
 
   if (hasSave()) {

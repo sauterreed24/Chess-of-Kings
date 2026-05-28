@@ -149,6 +149,69 @@ describe('GameFlow depth systems', () => {
     expect(mem['c1-match-test']?.games).toBe(1)
   })
 
+  it('raises the Stratarch Rating after a won match and records a positive delta', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const f = flow as unknown as {
+      mode: 'match'
+      matchScene: { id: string; opponentName: string; aiDepth: number } | null
+      sanLog: string[]
+      sanQuality: Array<'good' | null>
+      recordResolvedOutcomeIfNeeded: () => void
+    }
+    expect(flow.getLadderRating()).toEqual({ rating: 800, peak: 800, rated: 0 })
+    flow.chess.load('7k/6Q1/6K1/8/8/8/8/8 b - - 0 1')
+    f.mode = 'match'
+    f.matchScene = { id: 'c1-match-test', opponentName: 'Test Rival', aiDepth: 3 }
+    f.sanLog = ['Qg7#']
+    f.sanQuality = ['good']
+    f.recordResolvedOutcomeIfNeeded()
+
+    const ladder = flow.getLadderRating()
+    expect(ladder.rated).toBe(1)
+    expect(ladder.rating).toBeGreaterThan(800)
+    expect(ladder.peak).toBe(ladder.rating)
+    expect(flow.getLastRatingDelta()).toBeGreaterThan(0)
+
+    // Idempotent: the same resolved key must not double-count the rating.
+    f.recordResolvedOutcomeIfNeeded()
+    expect(flow.getLadderRating().rated).toBe(1)
+  })
+
+  it('lowers the Stratarch Rating after a lost match', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const f = flow as unknown as {
+      mode: 'match'
+      playerColor: 'w'
+      matchScene: { id: string; opponentName: string; aiDepth: number } | null
+      sanLog: string[]
+      sanQuality: Array<'good' | null>
+      recordResolvedOutcomeIfNeeded: () => void
+    }
+    // Fool's mate: White (the player) is checkmated, so the rival wins.
+    flow.chess.load('rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3')
+    f.mode = 'match'
+    f.playerColor = 'w'
+    f.matchScene = { id: 'c1-match-test', opponentName: 'Test Rival', aiDepth: 3 }
+    f.sanLog = ['f3', 'e5', 'g4', 'Qh4#']
+    f.sanQuality = ['ok', 'good', 'blunder', 'good']
+    f.recordResolvedOutcomeIfNeeded()
+
+    const ladder = flow.getLadderRating()
+    expect(ladder.rated).toBe(1)
+    expect(ladder.rating).toBeLessThan(800)
+    expect(flow.getLastRatingDelta()).toBeLessThan(0)
+  })
+
   it('adjudicates crushing sealed stalemate as win for stronger side (story rule)', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

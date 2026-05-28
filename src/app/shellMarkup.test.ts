@@ -53,6 +53,7 @@ const REQUIRED_IDS = [
   'lesson-note',
   'coach-tip',
   'mvp-flag',
+  'title-rating',
   'daily-ribbon',
   'move-ledger',
   'calibration-rail',

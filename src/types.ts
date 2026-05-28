@@ -200,6 +200,17 @@ export interface RivalMemoryEntry {
   punishedCheckSpam: number
 }
 
+/**
+ * Persistent ladder rating ("Stratarch Rating"). Evolves via an Elo-style
+ * update after every rated match / duel. `peak` is the all-time high;
+ * `rated` counts rating-affecting games and drives the provisional K-factor.
+ */
+export interface LadderRating {
+  rating: number
+  peak: number
+  rated: number
+}
+
 export type GamePhase = 'opening' | 'middlegame' | 'endgame'
 
 export interface AIWeights {

@@ -44,6 +44,7 @@ export function getShellMarkup(): string {
               <button type="button" class="primary" id="btn-enter-archive">Enter the Archive</button>
             </div>
             <p class="mvp-note" id="mvp-flag"></p>
+            <p class="title-rating hidden" id="title-rating" aria-live="polite"></p>
             <div class="daily-ribbon hidden" id="daily-ribbon" aria-live="polite"></div>
             <section class="title-settings" id="title-settings" aria-label="Settings">
               <h2 class="title-settings__heading">Settings</h2>
