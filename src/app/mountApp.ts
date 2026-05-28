@@ -1714,6 +1714,8 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   attachGlobalShortcuts(window, {
+    isConfirmOpen: () => confirmDialogCtl.isOpen(),
+    closeConfirm: () => confirmDialogCtl.close(),
     isRewardOverlayOpen: () => rewardOverlayCtl.isOpen(),
     isLabActive: () => labOverlay.classList.contains('lab-overlay--active'),
     closeRewardOverlay,
