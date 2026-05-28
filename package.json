@@ -36,10 +36,13 @@
     "cap:open:android": "npx cap open android",
     "cap:open:ios": "npx cap open ios",
     "lint": "eslint \"src/**/*.ts\" --max-warnings 0",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:deterministic": "vitest run --pool=forks --no-file-parallelism --maxWorkers=1 --sequence.shuffle=false",
     "test:watch": "vitest",
     "test:ui-smoke": "vitest run src/app/rewardOverlayController.test.ts src/app/escapeKeyRouting.test.ts src/app/chronicleEchoTimer.test.ts src/app/uiEscape.smoke.test.ts",
-    "report:bundle-gzip": "node scripts/report-bundle-gzip.mjs"
+    "report:bundle-gzip": "node scripts/report-bundle-gzip.mjs",
+    "quality:gate": "node scripts/quality-gate.mjs"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
