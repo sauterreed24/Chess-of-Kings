@@ -321,16 +321,25 @@ export function mountApp(app: HTMLDivElement) {
         'status-pill--draw',
       )
       boardStatus.classList.add('status-pill--thinking')
+    } else if (p.matchOutcome === 'win') {
+      boardStatus.textContent = STATUS_LABELS.win
+      boardStatus.classList.remove('status-pill--check', 'status-pill--thinking')
+      boardStatus.classList.add('status-pill--win')
+      boardStatus.classList.remove('status-pill--loss', 'status-pill--draw')
+    } else if (p.matchOutcome === 'loss') {
+      boardStatus.textContent = STATUS_LABELS.loss
+      boardStatus.classList.remove('status-pill--check', 'status-pill--thinking')
+      boardStatus.classList.add('status-pill--loss')
+      boardStatus.classList.remove('status-pill--win', 'status-pill--draw')
+    } else if (p.matchOutcome === 'draw') {
+      boardStatus.textContent = STATUS_LABELS.draw
+      boardStatus.classList.remove('status-pill--check', 'status-pill--thinking')
+      boardStatus.classList.add('status-pill--draw')
+      boardStatus.classList.remove('status-pill--win', 'status-pill--loss')
     } else {
       boardStatus.textContent = p.status
       boardStatus.classList.toggle('status-pill--check', p.inCheck)
-      boardStatus.classList.remove('status-pill--thinking')
-      boardStatus.classList.toggle(
-        'status-pill--win',
-        p.matchOutcome === 'win',
-      )
-      boardStatus.classList.toggle('status-pill--loss', p.matchOutcome === 'loss')
-      boardStatus.classList.toggle('status-pill--draw', p.matchOutcome === 'draw')
+      boardStatus.classList.remove('status-pill--thinking', 'status-pill--win', 'status-pill--loss', 'status-pill--draw')
     }
 
     /* Board-stage outcome flash */

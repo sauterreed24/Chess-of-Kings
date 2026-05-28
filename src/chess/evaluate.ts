@@ -122,16 +122,16 @@ function pstFor(piece: PieceSymbol, square: Square, color: Color, endgame: boole
   }
 }
 
-/* ─── Pawn structure ──────────────────────────────────────────────────── */
+/* ─── Pawn structure (exported for isolated feature tests) ───────────── */
 
-function doubledPawnPenalty(position: PositionAnalysis, c: Color): number {
+export function evaluateDoubledPawnPenalty(position: PositionAnalysis, c: Color): number {
   const perFile = position.pawnsByFile[c]
   let pen = 0
   for (const n of perFile) if (n >= 2) pen += 14 * (n - 1)
   return pen
 }
 
-function isolatedPawnPenalty(position: PositionAnalysis, c: Color): number {
+export function evaluateIsolatedPawnPenalty(position: PositionAnalysis, c: Color): number {
   const perFile = position.pawnsByFile[c]
   let pen = 0
   for (let f = 0; f < 8; f++) {
@@ -161,7 +161,7 @@ function boxMask(fileMin: number, fileMax: number, rankMin: number, rankMax: num
   return mask
 }
 
-function passedPawnBonus(position: PositionAnalysis, c: Color): number {
+export function evaluatePassedPawnBonus(position: PositionAnalysis, c: Color): number {
   let bonus = 0
   for (const piece of position.pieceList) {
     if (piece.type !== 'p' || piece.color !== c) continue
@@ -181,7 +181,7 @@ function passedPawnBonus(position: PositionAnalysis, c: Color): number {
 
 /* ─── Piece coordination ─────────────────────────────────────────────── */
 
-function rookFileBonus(position: PositionAnalysis, c: Color): number {
+export function evaluateRookFileBonus(position: PositionAnalysis, c: Color): number {
   const opp = opponentOf(c)
   const majorPieces = position.pieces[c].r | position.pieces[c].q
   let bonus = 0
@@ -196,7 +196,7 @@ function rookFileBonus(position: PositionAnalysis, c: Color): number {
   return bonus
 }
 
-function bishopPairBonus(position: PositionAnalysis, c: Color): number {
+export function evaluateBishopPairBonus(position: PositionAnalysis, c: Color): number {
   return position.bishopCount[c] >= 2 ? 22 : 0
 }
 
@@ -243,7 +243,7 @@ function pieceCoordinationBonus(position: PositionAnalysis, c: Color): number {
 
 /* ─── Activity, pressure, and king safety ────────────────────────────── */
 
-function mobilityBonus(position: PositionAnalysis, c: Color, endgame: boolean): number {
+export function evaluateMobilityBonus(position: PositionAnalysis, c: Color, endgame: boolean): number {
   const perMove = endgame ? 0.55 : 0.4
   return Math.round(position.mobility[c] * perMove)
 }
@@ -262,7 +262,7 @@ function centerControlBonus(position: PositionAnalysis, c: Color): number {
     popCount(position.attacks[c] & EXTENDED_CENTER_MASK) * 2
 }
 
-function kingSafetyPenalty(position: PositionAnalysis, c: Color): number {
+export function evaluateKingSafetyPenalty(position: PositionAnalysis, c: Color): number {
   const homeRank = c === 'w' ? 0 : 7
   const shieldRank = c === 'w' ? 1 : 6
   const king = position.kingIndex[c]
@@ -311,20 +311,20 @@ export function materialAndPst(
     const v = PIECE_VALUES[piece.type] + pstFor(piece.type, piece.square, piece.color, eg)
     score += piece.color === forColor ? v : -v
   }
-  score -= doubledPawnPenalty(position, forColor)
-  score += doubledPawnPenalty(position, opp)
-  score -= isolatedPawnPenalty(position, forColor)
-  score += isolatedPawnPenalty(position, opp)
-  score += passedPawnBonus(position, forColor)
-  score -= passedPawnBonus(position, opp)
-  score += rookFileBonus(position, forColor)
-  score -= rookFileBonus(position, opp)
-  score += bishopPairBonus(position, forColor)
-  score -= bishopPairBonus(position, opp)
+  score -= evaluateDoubledPawnPenalty(position, forColor)
+  score += evaluateDoubledPawnPenalty(position, opp)
+  score -= evaluateIsolatedPawnPenalty(position, forColor)
+  score += evaluateIsolatedPawnPenalty(position, opp)
+  score += evaluatePassedPawnBonus(position, forColor)
+  score -= evaluatePassedPawnBonus(position, opp)
+  score += evaluateRookFileBonus(position, forColor)
+  score -= evaluateRookFileBonus(position, opp)
+  score += evaluateBishopPairBonus(position, forColor)
+  score -= evaluateBishopPairBonus(position, opp)
   score += pieceCoordinationBonus(position, forColor)
   score -= pieceCoordinationBonus(position, opp)
-  score += mobilityBonus(position, forColor, eg)
-  score -= mobilityBonus(position, opp, eg)
+  score += evaluateMobilityBonus(position, forColor, eg)
+  score -= evaluateMobilityBonus(position, opp, eg)
   score += kingPressureBonus(position, forColor, eg)
   score -= kingPressureBonus(position, opp, eg)
   score += loosePiecePressureBonus(position, forColor)
@@ -332,8 +332,8 @@ export function materialAndPst(
   score += centerControlBonus(position, forColor)
   score -= centerControlBonus(position, opp)
   if (!eg) {
-    score -= kingSafetyPenalty(position, forColor)
-    score += kingSafetyPenalty(position, opp)
+    score -= evaluateKingSafetyPenalty(position, forColor)
+    score += evaluateKingSafetyPenalty(position, opp)
   }
   return score
 }

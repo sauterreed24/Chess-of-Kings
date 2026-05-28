@@ -1,6 +1,14 @@
 import { Chess } from 'chess.js'
 import { describe, expect, it } from 'vitest'
-import { materialAndPst, PIECE_VALUES } from './evaluate'
+import {
+  evaluateBishopPairBonus,
+  evaluateDoubledPawnPenalty,
+  evaluateIsolatedPawnPenalty,
+  evaluatePassedPawnBonus,
+  evaluateRookFileBonus,
+  materialAndPst,
+  PIECE_VALUES,
+} from './evaluate'
 import { analyzePosition } from './bitboard'
 
 describe('evaluate feature terms (via materialAndPst)', () => {
@@ -48,5 +56,38 @@ describe('evaluate feature terms (via materialAndPst)', () => {
     const pos = analyzePosition(chess)
     expect(pos.pieceList.length).toBe(32)
     expect(materialAndPst(chess, 'w', pos)).toBe(materialAndPst(chess, 'w'))
+  })
+})
+
+describe('evaluate feature exports (direct)', () => {
+  it('evaluateBishopPairBonus awards 22 for two bishops', () => {
+    const pair = analyzePosition(new Chess('8/8/8/8/8/2BB4/8/4K2k w - - 0 1'))
+    const lone = analyzePosition(new Chess('8/8/8/8/8/2B5/8/4K2k w - - 0 1'))
+    expect(evaluateBishopPairBonus(pair, 'w')).toBe(22)
+    expect(evaluateBishopPairBonus(lone, 'w')).toBe(0)
+  })
+
+  it('evaluatePassedPawnBonus exceeds blocked pawn material delta alone', () => {
+    const blocked = analyzePosition(new Chess('8/4k3/4p3/8/8/8/8/4K3 w - - 0 1'))
+    const passed = analyzePosition(new Chess('8/4k3/8/4P3/8/8/8/4K3 w - - 0 1'))
+    expect(evaluatePassedPawnBonus(passed, 'w')).toBeGreaterThan(evaluatePassedPawnBonus(blocked, 'w'))
+  })
+
+  it('evaluateRookFileBonus prefers open files', () => {
+    const blocked = analyzePosition(new Chess('8/4k3/4p3/8/8/8/4R3/4K3 w - - 0 1'))
+    const open = analyzePosition(new Chess('8/4k3/8/8/8/8/4R3/4K3 w - - 0 1'))
+    expect(evaluateRookFileBonus(open, 'w')).toBeGreaterThan(evaluateRookFileBonus(blocked, 'w'))
+  })
+
+  it('evaluateDoubledPawnPenalty penalizes stacked pawns', () => {
+    const doubled = analyzePosition(new Chess('8/8/3P4/3P4/8/4k3/8/4K3 w - - 0 1'))
+    const single = analyzePosition(new Chess('8/8/8/3P4/8/4k3/8/4K3 w - - 0 1'))
+    expect(evaluateDoubledPawnPenalty(doubled, 'w')).toBeGreaterThan(evaluateDoubledPawnPenalty(single, 'w'))
+  })
+
+  it('evaluateIsolatedPawnPenalty penalizes pawns without neighbors', () => {
+    const isolated = analyzePosition(new Chess('8/4k3/8/3P4/8/8/8/4K3 w - - 0 1'))
+    const supported = analyzePosition(new Chess('8/4k3/8/2PP4/8/8/8/4K3 w - - 0 1'))
+    expect(evaluateIsolatedPawnPenalty(isolated, 'w')).toBeGreaterThan(evaluateIsolatedPawnPenalty(supported, 'w'))
   })
 })

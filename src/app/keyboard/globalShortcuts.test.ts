@@ -170,6 +170,13 @@ describe('handleGlobalKey', () => {
     expect(deps2.toggleKeyboardHelp).toHaveBeenCalledTimes(1)
   })
 
+  it('? is suppressed when confirm dialog is open', () => {
+    const deps = makeDeps({ isConfirmOpen: () => true })
+    const e = makeKey('?')
+    expect(handleGlobalKey(e, deps)).toBe(false)
+    expect(deps.toggleKeyboardHelp).not.toHaveBeenCalled()
+  })
+
   it('? is suppressed when focus is in a form input (typing a question mark)', () => {
     const input = document.createElement('input')
     document.body.appendChild(input)

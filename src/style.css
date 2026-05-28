@@ -792,13 +792,13 @@ html.force-reduced-motion .primary--ready { animation: none !important; }
   50% { box-shadow: 0 0 28px rgba(140,44,30,0.22); }
 }
 .status-pill--thinking {
-  color: var(--gold);
+  color: var(--gold-bright);
   font-weight: 500;
-  border-color: rgba(201,169,98,0.2);
+  border-color: rgba(201,169,98,0.35);
   animation: thinking-breathe 1.2s ease-in-out infinite;
 }
 @keyframes thinking-breathe {
-  0%,100% { opacity: 0.5; }
+  0%,100% { opacity: 0.78; }
   50%      { opacity: 1.0; }
 }
 .status-pill--win {
@@ -1446,8 +1446,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   user-select: none; z-index: 1;
   font-weight: 500;
 }
-.sq-light .sq-label { color: #7a6a52; opacity: 0.75; }
-.sq-dark  .sq-label { color: #8aaed4; }
+.sq-light .sq-label { color: #5c4a32; opacity: 0.92; }
+.sq-dark  .sq-label { color: #a8c8ea; opacity: 0.95; }
 .sq-label--rank { top: 2px;    left: 3px;  }
 .sq-label--file { bottom: 2px; right: 3px; }
 

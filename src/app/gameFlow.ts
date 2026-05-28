@@ -7,6 +7,7 @@ import {
   materialAdvantage,
   PIECE_VALUES,
 } from '../chess/ai'
+import type { ProfileMoveOptions } from '../chess/ai'
 import type { AIStyle } from '../chess/evaluate'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
@@ -1704,8 +1705,12 @@ export class GameFlow {
     return result
   }
 
-  private profileMoveOpts() {
-    return { avoidMoveKey: this.lastAiMoveKey }
+  private profileMoveOpts(profile?: { id: string }): ProfileMoveOptions {
+    const opts: ProfileMoveOptions = { avoidMoveKey: this.lastAiMoveKey }
+    if (profile && this.sanLog.length < 20) {
+      opts.openingBook = { profileId: profile.id, plyIndex: this.openingBookPlyIndex() }
+    }
+    return opts
   }
 
   /**
@@ -1825,7 +1830,7 @@ export class GameFlow {
       }
       try {
         if (!openingPlayed) {
-          const mv = findBestMoveWithProfile(this.chess, profile, this.profileMoveOpts())
+          const mv = findBestMoveWithProfile(this.chess, profile, this.profileMoveOpts(profile))
           if (mv) {
             this.commitEnginePliesOrThrow(this.chess.move(mv), {
               mode: 'solo',
@@ -1911,7 +1916,7 @@ export class GameFlow {
               searchDepth: Math.max(profile.searchDepth, m.aiDepth),
               style: m.aiStyle ?? profile.style,
             },
-            this.profileMoveOpts(),
+            this.profileMoveOpts(profile),
           )
           if (best) {
             const result = this.commitEnginePliesOrThrow(this.chess.move(best), {
