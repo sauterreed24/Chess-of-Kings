@@ -1,0 +1,38 @@
+import { describe, expect, it } from 'vitest'
+import { AI_PROFILES } from '../chess/aiProfiles'
+import { getBookTopLines } from '../chess/openings'
+import { DUEL_ROSTER } from './duelRoster'
+
+function variantProfile(opponentId: string, variantId: string): string {
+  const rival = DUEL_ROSTER.find((entry) => entry.opponentId === opponentId)
+  const variant = rival?.variants.find((entry) => entry.id === variantId)
+  expect(variant, `${opponentId}/${variantId} exists`).toBeDefined()
+  return variant!.profileId
+}
+
+describe('DUEL_ROSTER profile wiring', () => {
+  it('points every duel variant at a known AI profile', () => {
+    for (const rival of DUEL_ROSTER) {
+      for (const variant of rival.variants) {
+        expect(AI_PROFILES[variant.profileId], `${variant.id} profile ${variant.profileId}`).toBeDefined()
+      }
+    }
+  })
+
+  it('keeps visible rival variants aligned with their authored AI identities', () => {
+    expect(variantProfile('edred', 'edred-guard')).toBe('scholar_guard')
+    expect(variantProfile('rowan', 'rowan-gambit')).toBe('rowan_gambit')
+    expect(variantProfile('vega', 'vega-italian')).toBe('vega_italian')
+  })
+
+  it('feeds the Duel Archive opening watchlist from the intended rival books', () => {
+    const rowanLines = getBookTopLines(variantProfile('rowan', 'rowan-gambit'), 9)
+    const vegaLines = getBookTopLines(variantProfile('vega', 'vega-italian'), 9)
+
+    expect(rowanLines.map((line) => line.san)).toContain('exf4')
+    expect(vegaLines.map((line) => line.san)).toContain('Nf6')
+    expect(rowanLines.map((line) => line.san).join(' ')).not.toBe(
+      vegaLines.map((line) => line.san).join(' '),
+    )
+  })
+})
