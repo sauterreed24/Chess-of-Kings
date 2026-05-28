@@ -64,6 +64,19 @@ const REQUIRED_IDS = [
   'captured-bot',
   'eval-bar-wrap',
   'reward-overlay',
+  'confirm-overlay',
+  'storage-failure-banner',
+  'btn-storage-banner-dismiss',
+  'chapter-progress-slot',
+  'mobile-board-guide',
+  'mobile-tips',
+  'title-settings',
+  'btn-title-sfx',
+  'btn-title-move-guard',
+  'btn-title-motion',
+  'title-skin',
+  'btn-title-kbdhelp',
+  'btn-lab-kbdhelp',
   'live-announcer',
   'chess-root',
   'chapter-quick-actions',
@@ -90,7 +103,7 @@ describe('shell markup structural integrity', () => {
     host.innerHTML = getShellMarkup()
     const announcer = host.querySelector('#live-announcer')!
     expect(announcer.getAttribute('aria-live')).toBe('polite')
-    expect(announcer.getAttribute('aria-atomic')).toBe('true')
+    expect(announcer.getAttribute('aria-atomic')).toBe('false')
   })
 
   it('declares the reward overlay as a modal dialog with aria-hidden initially', () => {

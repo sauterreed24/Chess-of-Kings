@@ -112,6 +112,26 @@ describe('createRewardOverlayController', () => {
     el.remove()
   })
 
+  it('traps Tab within the overlay', async () => {
+    const el = document.createElement('div')
+    el.classList.add('hidden')
+    document.body.appendChild(el)
+    const c = createRewardOverlayController(el)
+    c.open(
+      '<button type="button" id="first">First</button><button type="button" id="second">Second</button>',
+    )
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('first'))
+
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }))
+    expect(document.activeElement?.id).toBe('second')
+
+    el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }))
+    expect(document.activeElement?.id).toBe('first')
+
+    c.close()
+    el.remove()
+  })
+
   it('keeps original restore target when open is called again without close', async () => {
     const trigger = document.createElement('button')
     trigger.id = 'outer'

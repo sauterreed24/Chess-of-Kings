@@ -10,6 +10,9 @@ import { getBookTopLines } from '../chess/openings'
 import { escapeHtml } from './htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from './chronicleReplay'
 import { createRewardOverlayController } from './rewardOverlayController'
+import { createConfirmDialogController } from './overlays/confirmDialogController'
+import { setTopBarInertForLab } from './labModal'
+import { renderChapterProgressHtml } from './play/chapterProgress'
 import { createEchoReplayTimer } from './chronicleEchoTimer'
 import {
   BOSS_PROFILE_RE,
@@ -35,12 +38,13 @@ import { recordToday as recordStreakToday, readStreak } from './session/streak'
 import { pickDailyCalculus } from './session/dailyCalculus'
 import { deriveCalibrationLens } from './duel/calibrationLens'
 import { createAnnouncer } from './a11y/announcer'
-import { ANNOUNCE_TEMPLATES } from '../data/strings'
+import { ANNOUNCE_TEMPLATES, CONFIRM_COPY, KEYBOARD_HELP_HEADING, RIBBON_LABELS, STATUS_LABELS, STORAGE_FAILURE_MESSAGE } from '../data/strings'
 import { getRivalProfile } from '../data/rivals'
 import { syncTitleActionGroups } from './titleActions'
 
 const SFX_PREF_KEY = 'cok-sfx-enabled'
 const MOVE_GUARD_PREF_KEY = 'cok-move-guard'
+const MOTION_PREF_KEY = 'cok-reduce-motion'
 
 function readPreference(key: string): string | null {
   try {
@@ -62,6 +66,7 @@ export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
 
   const shell = app.querySelector<HTMLElement>('#shell')!
+  const topBar = app.querySelector<HTMLElement>('.top-bar')!
   const labOverlay = app.querySelector<HTMLDivElement>('#lab-overlay')!
   const playScreen = app.querySelector<HTMLElement>('#screen-play')!
   const screenTitle = app.querySelector('#screen-title')!
@@ -119,30 +124,69 @@ export function mountApp(app: HTMLDivElement) {
   const capturedBot = app.querySelector<HTMLDivElement>('#captured-bot')!
   const evalBarWrap = app.querySelector<HTMLDivElement>('#eval-bar-wrap')!
   const rewardOverlay = app.querySelector<HTMLDivElement>('#reward-overlay')!
+  const confirmOverlay = app.querySelector<HTMLDivElement>('#confirm-overlay')!
+  const storageFailureBanner = app.querySelector<HTMLDivElement>('#storage-failure-banner')!
+  const btnStorageBannerDismiss = app.querySelector<HTMLButtonElement>('#btn-storage-banner-dismiss')!
+  const chapterProgressSlot = app.querySelector<HTMLDivElement>('#chapter-progress-slot')!
+  const mobileBoardGuide = app.querySelector<HTMLParagraphElement>('#mobile-board-guide')!
+  const btnTitleSfx = app.querySelector<HTMLButtonElement>('#btn-title-sfx')!
+  const btnTitleMoveGuard = app.querySelector<HTMLButtonElement>('#btn-title-move-guard')!
+  const btnTitleMotion = app.querySelector<HTMLButtonElement>('#btn-title-motion')!
+  const titleSkinField = app.querySelector<HTMLLabelElement>('#title-skin-field')!
+  const titleSkinSelect = app.querySelector<HTMLSelectElement>('#title-skin')!
+  const btnTitleKbdhelp = app.querySelector<HTMLButtonElement>('#btn-title-kbdhelp')!
+  const btnLabKbdhelp = app.querySelector<HTMLButtonElement>('#btn-lab-kbdhelp')!
+  const liveAnnouncer = app.querySelector<HTMLDivElement>('#live-announcer')!
   /** Direct `#shell` children we marked `inert` while the reward dialog is open (reward node sits inside the shell). */
   const rewardInertRestore: HTMLElement[] = []
-  function setShellBehindRewardInert(active: boolean) {
+  const confirmInertRestore: HTMLElement[] = []
+  function setShellChildrenInert(
+    restore: HTMLElement[],
+    active: boolean,
+    exclude: HTMLElement[],
+  ) {
     if (!active) {
-      for (const el of rewardInertRestore) {
-        el.inert = false
-      }
-      rewardInertRestore.length = 0
+      for (const el of restore) el.inert = false
+      restore.length = 0
       return
     }
     for (const node of shell.children) {
       if (!(node instanceof HTMLElement)) continue
-      if (node === rewardOverlay || node.id === 'live-announcer') continue
+      if (exclude.includes(node)) continue
       if (!node.inert) {
         node.inert = true
-        rewardInertRestore.push(node)
+        restore.push(node)
       }
     }
+  }
+  function setShellBehindRewardInert(active: boolean) {
+    setShellChildrenInert(rewardInertRestore, active, [
+      rewardOverlay,
+      confirmOverlay,
+      liveAnnouncer,
+    ])
+  }
+  function setShellBehindConfirmInert(active: boolean) {
+    setShellChildrenInert(confirmInertRestore, active, [confirmOverlay, liveAnnouncer])
   }
   const rewardOverlayCtl = createRewardOverlayController(rewardOverlay, {
     onOpenChange(open) {
       setShellBehindRewardInert(open)
     },
   })
+  const confirmDialogCtl = createConfirmDialogController(confirmOverlay, {
+    onOpenChange(open) {
+      setShellBehindConfirmInert(open)
+    },
+  })
+  let storageFailureAnnounced = false
+  function showStorageFailureBanner() {
+    storageFailureBanner.classList.remove('hidden')
+    if (!storageFailureAnnounced) {
+      storageFailureAnnounced = true
+      announcer.say(STORAGE_FAILURE_MESSAGE)
+    }
+  }
   const closeRewardOverlay = () => rewardOverlayCtl.close()
   const openRewardOverlay = (
     html: string,
@@ -188,15 +232,45 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   function syncPreferenceButtons() {
-    btnSfx.textContent = `Sound: ${sfx.enabled ? 'On' : 'Off'}`
+    const sfxLabel = sfx.enabled ? 'On' : 'Off'
+    const guardLabel = moveGuardEnabled ? 'On' : 'Off'
+    btnSfx.textContent = `Sound: ${sfxLabel}`
     btnSfx.setAttribute('aria-pressed', sfx.enabled ? 'true' : 'false')
     btnSfx.setAttribute('aria-label', sfx.enabled ? 'Sound effects are on' : 'Sound effects are off')
-    btnMoveGuard.textContent = `Move Guard: ${moveGuardEnabled ? 'On' : 'Off'}`
+    btnMoveGuard.textContent = `Move Guard: ${guardLabel}`
     btnMoveGuard.setAttribute('aria-pressed', moveGuardEnabled ? 'true' : 'false')
     btnMoveGuard.setAttribute(
       'aria-label',
       moveGuardEnabled ? 'Move Guard is on' : 'Move Guard is off',
     )
+    btnTitleSfx.textContent = `Sound: ${sfxLabel}`
+    btnTitleSfx.setAttribute('aria-pressed', sfx.enabled ? 'true' : 'false')
+    btnTitleMoveGuard.textContent = `Move Guard: ${guardLabel}`
+    btnTitleMoveGuard.setAttribute('aria-pressed', moveGuardEnabled ? 'true' : 'false')
+    const motionForced = readPreference(MOTION_PREF_KEY) === '1'
+    btnTitleMotion.textContent = motionForced ? 'Motion: Reduced' : 'Motion: System'
+    btnTitleMotion.setAttribute('aria-pressed', motionForced ? 'true' : 'false')
+  }
+
+  function applyMotionPreference() {
+    const forced = readPreference(MOTION_PREF_KEY) === '1'
+    document.documentElement.classList.toggle('force-reduced-motion', forced)
+  }
+
+  function syncTitleSkinSelect() {
+    const skins = flowRef?.getUnlockedPieceSkins() ?? ['classic-royal']
+    if (skins.length <= 1) {
+      titleSkinField.classList.add('hidden')
+      return
+    }
+    titleSkinField.classList.remove('hidden')
+    const selected = flowRef?.getSelectedPieceSkin() ?? 'classic-royal'
+    titleSkinSelect.innerHTML = skins
+      .map(
+        (s) =>
+          `<option value="${s}" ${s === selected ? 'selected' : ''}>${escapeHtml(PIECE_SKIN_LABEL[s])}</option>`,
+      )
+      .join('')
   }
 
   /* ─── Chess UI updater ────────────────────────────────────────── */
@@ -232,7 +306,7 @@ export function mountApp(app: HTMLDivElement) {
 
     /* Status pill */
     if (p.aiThinking) {
-      boardStatus.textContent = 'Thinking…'
+      boardStatus.textContent = STATUS_LABELS.thinking
       boardStatus.classList.remove(
         'status-pill--check',
         'status-pill--win',
@@ -297,6 +371,7 @@ export function mountApp(app: HTMLDivElement) {
     }
     prevSessionRecovered = p.sessionRecovered
     boardGuide.textContent = p.boardGuide
+    mobileBoardGuide.textContent = p.boardGuide
     if (p.sessionRecovered) {
       recoveryControls.classList.remove('hidden')
       btnRecoveryRestore.disabled = !p.canRestoreStable
@@ -439,6 +514,7 @@ export function mountApp(app: HTMLDivElement) {
       maybeShowPendingChapterPrompt()
       syncMvpFlag()
     },
+    onPersistFailure: () => showStorageFailureBanner(),
   })
   flowRef = flow
 
@@ -479,14 +555,14 @@ export function mountApp(app: HTMLDivElement) {
         : ''
     const streakBadge =
       streak.count > 1
-        ? `<span class="daily-ribbon__streak"><strong>${streak.count}</strong> day streak</span>${persistNote}`
+        ? `<span class="daily-ribbon__streak"><strong>${streak.count}</strong> ${RIBBON_LABELS.dayStreakSuffix}</span>${persistNote}`
         : streak.count === 1
-          ? `<span class="daily-ribbon__streak"><strong>Day 1</strong> of a new streak</span>${persistNote}`
+          ? `<span class="daily-ribbon__streak"><strong>${RIBBON_LABELS.newStreak}</strong></span>${persistNote}`
           : persistNote
     const dailyBlock = daily
       ? `<button type="button" class="ghost daily-ribbon__cta" id="btn-daily-calculus"
             aria-label="Play today's Daily Calculus puzzle: ${escapeHtml(daily.title)}">
-            <span class="daily-ribbon__label">Daily Calculus</span>
+            <span class="daily-ribbon__label">${RIBBON_LABELS.dailyCalculus}</span>
             <span class="daily-ribbon__title">${escapeHtml(daily.title)}</span>
             <span class="daily-ribbon__chapter">${escapeHtml(daily.chapterTitle)} · ${escapeHtml(daily.dayKey)}</span>
           </button>`
@@ -499,12 +575,10 @@ export function mountApp(app: HTMLDivElement) {
     dailyRibbon.innerHTML = `${streakBadge}${dailyBlock}`
     dailyRibbon.classList.remove('hidden')
     if (daily) {
-      dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', () => {
+      dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', async () => {
         const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
         if (mustConfirm) {
-          const ok = window.confirm(
-            'Leave the current passage? Your open simulation will be replaced with today’s Daily Calculus puzzle.',
-          )
+          const ok = await confirmDialogCtl.open(CONFIRM_COPY.dailyCalculus)
           if (!ok) return
         }
         flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
@@ -519,6 +593,7 @@ export function mountApp(app: HTMLDivElement) {
     focusBeforeLab = document.activeElement instanceof HTMLElement ? document.activeElement : null
     setTopLevelScreen(null)
     setNavActive(null)
+    setTopBarInertForLab(topBar, true)
     shell.classList.add('shell--lab')
     labOverlay.classList.add('lab-overlay--active')
     labOverlay.setAttribute('aria-hidden', 'false')
@@ -536,6 +611,7 @@ export function mountApp(app: HTMLDivElement) {
 
   function closeLab() {
     closeRewardOverlay()
+    setTopBarInertForLab(topBar, false)
     labOverlay.classList.remove('lab-overlay--active')
     labOverlay.setAttribute('aria-hidden', 'true')
     labOverlay.removeAttribute('aria-modal')
@@ -594,6 +670,7 @@ export function mountApp(app: HTMLDivElement) {
   function showTitle() {
     closeRewardOverlay()
     if (hasSave()) flow.setLastScreen('title')
+    setTopBarInertForLab(topBar, false)
     labOverlay.classList.remove('lab-overlay--active')
     labOverlay.setAttribute('aria-hidden', 'true')
     labOverlay.removeAttribute('aria-modal')
@@ -605,16 +682,20 @@ export function mountApp(app: HTMLDivElement) {
     syncTitleButtons()
     syncMvpFlag()
     syncDailyRibbon()
+    syncTitleSkinSelect()
+    syncPreferenceButtons()
     focusTitleEntry()
   }
 
   function showChapters() {
     closeRewardOverlay()
+    setTopBarInertForLab(topBar, false)
     flow.setLastScreen('chapters')
     setTopLevelScreen('chapters')
     setNavActive('chapters')
     btnChaptersBack.classList.remove('hidden')
     btnChaptersBack.textContent = '← Return to title'
+    chapterProgressSlot.innerHTML = renderChapterProgressHtml(flow.highestUnlockedChapter)
     chapterList.innerHTML = ''
     if (flow.hasRecoverableSession()) {
       chapterQuickActions.innerHTML = `
@@ -1233,6 +1314,7 @@ export function mountApp(app: HTMLDivElement) {
 
   function showDuel() {
     closeRewardOverlay()
+    setTopBarInertForLab(topBar, false)
     flow.setLastScreen('chapters')
     setTopLevelScreen('duel')
     setNavActive('duel')
@@ -1579,7 +1661,7 @@ export function mountApp(app: HTMLDivElement) {
     keyboardHelpOpen = true
     openRewardOverlay(
       `<div class="reward-sheet reward-sheet--kbdhelp">
-         <p class="section-heading">Keyboard atlas</p>
+         <p class="section-heading">${escapeHtml(KEYBOARD_HELP_HEADING)}</p>
          <p class="reward-hero__copy">Every shortcut available without leaving the keyboard.</p>
          <div class="kbd-help-grid" aria-label="Keyboard shortcuts">
            <dl>
@@ -1653,9 +1735,14 @@ export function mountApp(app: HTMLDivElement) {
     showChapters()
   })
   btnEnterArchive.addEventListener('click', () => { showChapters() })
-  btnNew.addEventListener('click', () => {
+  btnNew.addEventListener('click', async () => {
+    if (hasSave()) {
+      const ok = await confirmDialogCtl.open(CONFIRM_COPY.newChronicle)
+      if (!ok) return
+    }
     clearSave()
     flow.newGame()
+    syncTitleSkinSelect()
     showChapters()
   })
   btnTitle.addEventListener('click', () => {
@@ -1686,6 +1773,34 @@ export function mountApp(app: HTMLDivElement) {
     syncPreferenceButtons()
     flow.board?.setMoveGuard(moveGuardEnabled)
   })
+  btnTitleSfx.addEventListener('click', () => {
+    sfx.setEnabled(!sfx.enabled)
+    writePreference(SFX_PREF_KEY, sfx.enabled ? '1' : '0')
+    syncPreferenceButtons()
+    if (sfx.enabled) sfx.unlock()
+  })
+  btnTitleMoveGuard.addEventListener('click', () => {
+    moveGuardEnabled = !moveGuardEnabled
+    writePreference(MOVE_GUARD_PREF_KEY, moveGuardEnabled ? '1' : '0')
+    syncPreferenceButtons()
+    flow.board?.setMoveGuard(moveGuardEnabled)
+  })
+  btnTitleMotion.addEventListener('click', () => {
+    const forced = readPreference(MOTION_PREF_KEY) === '1'
+    writePreference(MOTION_PREF_KEY, forced ? '0' : '1')
+    applyMotionPreference()
+    syncPreferenceButtons()
+  })
+  titleSkinSelect.addEventListener('change', () => {
+    const val = (titleSkinSelect.value ?? 'classic-royal') as PieceSkinId
+    flow.setPieceSkin(val)
+  })
+  btnTitleKbdhelp.addEventListener('click', () => showKeyboardHelp())
+  btnLabKbdhelp.addEventListener('click', () => showKeyboardHelp())
+  btnStorageBannerDismiss.addEventListener('click', () => {
+    storageFailureBanner.classList.add('hidden')
+  })
+  if (streakBoot.persistOk === false) showStorageFailureBanner()
   btnRecoveryDismiss.addEventListener('click', () => {
     flow.dismissSessionRecoveredNotice()
   })
@@ -1722,6 +1837,7 @@ export function mountApp(app: HTMLDivElement) {
     flow.flushDeferredIO()
   })
   syncPreferenceButtons()
+  applyMotionPreference()
 
   syncTitleButtons()
   syncMvpFlag()
