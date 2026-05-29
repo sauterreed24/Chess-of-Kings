@@ -4,7 +4,7 @@ import zlib from 'node:zlib'
 
 /** Documented release budgets (see README / CHANGELOG). JS: 90 KiB. CSS measured ~16 KiB gzip on v0.2.14+ builds. */
 const JS_GZIP_MAX = 92160 // 90 KiB
-const CSS_GZIP_MAX = 16600 // ~16.2 KiB — baseline post-font self-host is ~16.1 KiB gzip
+const CSS_GZIP_MAX = 16800 // ~16.4 KiB — includes self-hosted @font-face blocks (no google CSS import)
 
 const dir = path.join(process.cwd(), 'dist', 'assets')
 let failed = false

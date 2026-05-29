@@ -20,6 +20,16 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.18] — 2026-05-29
+
+Pass 3 PR1 — fonts and CSS budget:
+
+- **Self-hosted fonts** — Cinzel, Cormorant Garamond, and JetBrains Mono woff2 in `src/assets/fonts/`; removed blocking `fonts.googleapis.com` `@import`.
+- **CSS dedupe** — merged duplicate `:root`, body background, `.display-title`, and premium-pass blocks; consolidated v0.2.17 polish rules.
+- **PWA** — service worker cache bumped to `cok-static-v5` for hashed asset refreshes.
+
+---
+
 ## [0.2.17] — 2026-05-29
 
 README and visual polish:

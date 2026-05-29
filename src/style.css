@@ -1,5 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
-
+/* Self-hosted fonts (latin subsets) — no render-blocking fonts.googleapis.com */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/cinzel-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/cinzel-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/cinzel-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/cormorant-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/cormorant-400-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/cormorant-600-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/jetbrains-mono-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./assets/fonts/jetbrains-mono-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 @font-face {
   font-family: 'Cinzel Decorative';
   font-style: normal;
@@ -85,6 +148,10 @@
   --text-secondary:  var(--ivory-dim);
   --text-quiet:      var(--muted);
   --chrome-backdrop: blur(6px);
+  --line-bronze: rgba(201, 169, 98, 0.24);
+  --line-bronze-strong: rgba(232, 201, 126, 0.48);
+  --glass-ink: rgba(8, 7, 5, 0.7);
+  --parchment-glow: rgba(232, 201, 126, 0.08);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -127,7 +194,10 @@ html { scroll-behavior: smooth; }
 html, body {
   margin: 0;
   min-height: 100%;
-  background: var(--ink);
+  background:
+    radial-gradient(ellipse 95% 70% at 50% -10%, rgba(54, 42, 24, 0.28), transparent 64%),
+    radial-gradient(ellipse 80% 65% at 100% 30%, rgba(26, 58, 92, 0.2), transparent 62%),
+    linear-gradient(180deg, #100d08 0%, #080706 58%, #050403 100%);
   color: var(--ivory);
   font-family: var(--font-body);
   font-size: 20px;
@@ -264,7 +334,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   min-height: calc(100vh - 56px);
 }
 
-.title-hero { max-width: 40rem; text-align: center; padding: 2rem 0; }
+.title-hero { text-align: center; }
 
 /* Hellenistic ornamental rule */
 .title-ornament {
@@ -297,10 +367,24 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 
 .display-title {
-  font-family: var(--font-display-dec); font-weight: 400;
-  font-size: clamp(2rem, 7vw, 3.2rem); letter-spacing: 0.05em;
-  margin: 0 0 0.6rem; color: var(--marble);
-  text-shadow: 0 0 80px rgba(201,169,98,0.18);
+  font-family: var(--font-display-dec);
+  font-weight: 400;
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  letter-spacing: 0.05em;
+  margin: 0 auto 0.6rem;
+  max-width: 12ch;
+  line-height: 1.06;
+  color: var(--marble);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35), 0 0 48px rgba(201, 169, 98, 0.26);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .display-title {
+    background: linear-gradient(165deg, #f5f1e4 12%, #e8c97e 72%, #c9a96a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+  }
 }
 
 .lede {
@@ -348,7 +432,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 /* ═══════════════════════════════
    CHAPTERS
    ═══════════════════════════════ */
-.chapters-wrap { max-width: 46rem; margin: 0 auto; }
+.chapters-wrap { margin: 0 auto; }
 .duel-wrap {
   display: grid;
   grid-template-columns: minmax(220px, 300px) 1fr;
@@ -1897,9 +1981,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   color: color-mix(in srgb, var(--ivory) 82%, var(--muted));
   text-shadow: 0 1px 0 rgba(0,0,0,0.45);
 }
-.instrument-frame {
-  box-shadow: var(--shadow-panel), inset 0 0 0 1px rgba(232,201,126,0.08);
-}
 .status-pill {
   font-size: 0.76rem;
   border-color: rgba(201,169,98,0.2);
@@ -1911,35 +1992,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 
 /* ─── Premium archive polish pass ─── */
-:root {
-  --line-bronze: rgba(201,169,98,0.24);
-  --line-bronze-strong: rgba(232,201,126,0.48);
-  --glass-ink: rgba(8, 7, 5, 0.7);
-  --parchment-glow: rgba(232, 201, 126, 0.08);
-}
-
-body {
-  background:
-    radial-gradient(ellipse 95% 70% at 50% -10%, rgba(54, 42, 24, 0.28), transparent 64%),
-    radial-gradient(ellipse 80% 65% at 100% 30%, rgba(26, 58, 92, 0.2), transparent 62%),
-    linear-gradient(180deg, #100d08 0%, #080706 58%, #050403 100%);
-}
-
 .top-bar {
   padding-left: max(1.5rem, env(safe-area-inset-left));
   padding-right: max(1.5rem, env(safe-area-inset-right));
-}
-
-.top-nav .ghost--nav {
-  border-color: rgba(201,169,98,0.18);
-  background:
-    linear-gradient(180deg, rgba(232,201,126,0.045), rgba(0,0,0,0.12)),
-    rgba(0,0,0,0.18);
-}
-
-.top-nav .ghost--nav:hover:not(:disabled) {
-  background: rgba(201,169,98,0.09);
-  box-shadow: 0 0 18px rgba(201,169,98,0.08);
 }
 
 .title-hero {
@@ -1983,13 +2038,6 @@ body {
     radial-gradient(ellipse at 50% 0%, rgba(232,201,126,0.2), transparent 66%),
     linear-gradient(90deg, transparent, rgba(42,96,148,0.12), transparent);
   filter: blur(2px);
-}
-
-.display-title {
-  max-width: 12ch;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.06;
 }
 
 .lede {
@@ -2411,6 +2459,10 @@ body {
     linear-gradient(145deg, rgba(232,201,126,0.09), transparent 30%),
     radial-gradient(circle at 95% 5%, rgba(42,96,148,0.14), transparent 38%),
     linear-gradient(180deg, #1b1811 0%, #0f0d08 100%);
+  box-shadow:
+    var(--shadow-panel),
+    inset 0 0 0 1px rgba(232, 201, 126, 0.08),
+    0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .screen-play--board-scene .instrument-frame {
@@ -3146,6 +3198,18 @@ body {
   background: rgba(0,0,0,0.22);
 }
 
+.top-nav .ghost--nav {
+  border-color: rgba(201,169,98,0.18);
+  background:
+    linear-gradient(180deg, rgba(232,201,126,0.045), rgba(0,0,0,0.12)),
+    rgba(0,0,0,0.18);
+}
+
+.top-nav .ghost--nav:hover:not(:disabled) {
+  background: rgba(201,169,98,0.09);
+  box-shadow: 0 0 18px rgba(201,169,98,0.08);
+}
+
 .ghost--nav {
   border-radius: 999px;
   min-height: 2rem;
@@ -3717,19 +3781,7 @@ html.perf-lean .board-stage--finisher .board-brass {
   flex-wrap: wrap;
 }
 
-/* ── Visual polish v0.2.17 ── */
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .display-title {
-    background: linear-gradient(165deg, #f5f1e4 12%, #e8c97e 72%, #c9a96a 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: none;
-  }
-}
-.display-title {
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35), 0 0 48px rgba(201, 169, 98, 0.26);
-}
+/* ── Visual polish (title, play, chronicle) ── */
 .primary {
   font-family: var(--font-display);
   font-size: 0.72rem;
@@ -3783,9 +3835,4 @@ html.perf-lean .board-stage--finisher .board-brass {
 .chapter-btn:hover:not(:disabled) .chapter-btn__arrow {
   opacity: 1;
   transform: translateX(3px);
-}
-.instrument-frame {
-  box-shadow:
-    0 0 0 1px rgba(201, 169, 98, 0.1),
-    0 20px 50px rgba(0, 0, 0, 0.5);
 }
