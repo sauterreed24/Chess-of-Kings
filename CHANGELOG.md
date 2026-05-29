@@ -20,6 +20,17 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.17] — 2026-05-29
+
+README and visual polish:
+
+- **README** — specific skills table and At-a-glance skills row; removed location line; expanded reviewer YAML `creator_skills`.
+- **UI** — title gradient type, brass primary buttons, framed board, chronicle card panel, glass title plate, richer ambient blooms, daily-ribbon and reward depth, chapter arrow hover, instrument frame shadow.
+
+Gate unchanged at **428** tests.
+
+---
+
 ## [0.2.16] — 2026-05-29
 
 README and UI polish (no employer names in public docs):
