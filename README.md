@@ -50,6 +50,7 @@
 | **Quality** | **428** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, bundle gzip report). |
 | **Fit signals** | Accessibility-minded UI, save-format migrations, property-tested engine, small **gzip** JS budget (<90 KB). |
 | **Author** | **Reed Sauter** — [GitHub](https://github.com/sauterreed24) · [LinkedIn](https://www.linkedin.com/in/reed-sauter-205774208) |
+| **Core skills** | TypeScript · Vite · game development · chess engine / game AI · accessibility (ARIA, keyboard UI) · Vitest & property-based testing · PWA · client persistence · CI release gates · technical writing |
 
 **Suggested GitHub topics** (for discoverability): `typescript`, `vite`, `vitest`, `pwa`, `chess`, `game-development`, `accessibility`, `github-pages`, `no-framework`.
 
@@ -106,7 +107,14 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.2.16)
+## What's new in this release (v0.2.17)
+
+- **README** — Creator section lists specific skills (no location line); At-a-glance skills row for screeners.
+- **Visual polish** — title gradient, brass primary buttons, framed chess board, chronicle index card, stronger ambient blooms, daily-ribbon hover depth, reward overlay depth.
+
+---
+
+## Previous release (v0.2.16)
 
 - **README** — creator section refreshed (no employer names); public GitHub and LinkedIn links; chronicle index screen a11y smoke coverage.
 - **Keyboard atlas** — help overlay uses the same `reward-hero` header pattern as reward and chapter overlays.
@@ -222,6 +230,15 @@ project: The Calculus of Kings
 creator: Reed Sauter
 creator_github: https://github.com/sauterreed24
 creator_linkedin: https://www.linkedin.com/in/reed-sauter-205774208
+creator_skills:
+  - TypeScript (strict)
+  - Vite and modern front-end tooling
+  - Game development and systems design
+  - Chess engine / game AI (negamax, alpha-beta, transposition table)
+  - Accessibility engineering (ARIA, keyboard navigation, reduced motion)
+  - Vitest, property-based testing, and deterministic CI release gates
+  - PWA delivery and client-side persistence with save migrations
+  - Technical writing and developer documentation
 one_liner: Alt-history chess RPG that ships as a single ~80 KB gzipped JS bundle, installable on iOS without an app store.
 readme_play_path: "Start here → live demo URL → Enter the Archive → Chapters → Advance"
 live_demo_url: https://sauterreed24.github.io/Chess-of-Kings/
@@ -340,9 +357,21 @@ npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay
 
 ## Creator
 
-**[Reed Sauter](https://github.com/sauterreed24)** is a self-taught developer and game builder based in Indiana. He ships narrative, systems-heavy web games in strict TypeScript — campaign progression, opponent-specific AI, accessibility-first UI, and deterministic test gates — without leaning on a heavyweight front-end framework.
+**[Reed Sauter](https://github.com/sauterreed24)** is a self-taught developer and game builder. He ships narrative, systems-heavy web games in strict TypeScript — campaign progression, opponent-specific AI, accessibility-first UI, and deterministic test gates — without leaning on a heavyweight front-end framework.
 
-**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack (negamax, alpha-beta, transposition table), rival doctrine, post-loss coaching, PWA installability, and **428** automated tests behind every release.
+**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack, rival doctrine, post-loss coaching, PWA installability, and **428** automated tests behind every release.
+
+**Skills this repo demonstrates**
+
+| Area | Examples in this project |
+| --- | --- |
+| **Languages & tooling** | TypeScript (strict), Vite, Vitest, ESLint, GitHub Actions |
+| **Game development** | Campaign flow, duel archive, Daily Calculus, procedural SFX, piece skins |
+| **Chess engine / AI** | Negamax, alpha-beta, quiescence, transposition table, rival school blends, opening-book bias |
+| **Accessibility** | Roving tabindex on the board, modal focus traps, `aria-live` announcer, `prefers-reduced-motion` |
+| **Quality & persistence** | Property-based legality tests, save migrations, `localStorage` robustness, gzip bundle budgets |
+| **Delivery** | GitHub Pages PWA, service worker shell, Capacitor iOS/Android scaffolding |
+| **Communication** | README architecture map, CHANGELOG discipline, accessibility statement |
 
 | | |
 | --- | --- |
