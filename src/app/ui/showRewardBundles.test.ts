@@ -1,0 +1,33 @@
+import { describe, expect, it } from 'vitest'
+import { PLAYABLE_CHAPTERS } from '../../data/chapters'
+import { GameFlow } from '../gameFlow'
+import { buildRatingSummaryLine, buildRewardOverlayHtml } from './showRewardBundles'
+import { vi } from 'vitest'
+
+describe('showRewardBundles html', () => {
+  it('includes Stratarch rating line when the ladder is rated', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const f = flow as unknown as {
+      mode: 'match'
+      matchScene: { id: string; opponentName: string; aiDepth: number } | null
+      sanLog: string[]
+      sanQuality: Array<'good' | null>
+      recordResolvedOutcomeIfNeeded: () => void
+    }
+    flow.chess.load('7k/6Q1/6K1/8/8/8/8/8 b - - 0 1')
+    f.mode = 'match'
+    f.matchScene = { id: 'c1-match-test', opponentName: 'Test Rival', aiDepth: 3 }
+    f.sanLog = ['Qg7#']
+    f.sanQuality = ['good']
+    f.recordResolvedOutcomeIfNeeded()
+
+    expect(buildRatingSummaryLine(flow)).toContain('Stratarch Rating')
+    const html = buildRewardOverlayHtml(flow, [], null)
+    expect(html).toContain('Stratarch Rating')
+  })
+})

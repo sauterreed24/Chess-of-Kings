@@ -11,7 +11,8 @@ no state library** — the UI is plain DOM + a single `style.css`. The
 evaluation in `src/chess/`.
 
 The codebase is intentionally small and read-top-down: everything below
-fits inside ~6,000 lines of TypeScript and one CSS file.
+fits inside ~17,000 lines of TypeScript and one CSS file (`mountApp.ts` delegates
+chess UI, scene, duel, and reward rendering to `src/app/ui/*` via `mountContext.ts`).
 
 ## Directory map
 
@@ -25,6 +26,8 @@ src/
 │
 ├── app/                     Application shell, screens, and persistence.
 │   ├── mountApp.ts          Bootstraps the shell, wires GameFlow callbacks
+│   ├── mountContext.ts      Shared DOM refs + play-surface mutable state
+│   ├── ui/                  applyChessUi, renderScene, renderDuelUi, showRewardBundles
 │   │                        to the DOM, and drives the title / chapters /
 │   │                        duel / lab screens.
 │   ├── shellMarkup.ts       Single function returning the HTML shell that
@@ -141,7 +144,7 @@ board calls `GameFlow.onMove`, the flow updates state and emits a
 | A new rival | `data/duelRoster.ts` (entry + variants), maybe `data/rewards.ts` (unlock), and a profile id wired through `chess/aiProfiles.ts`. |
 | A new AI profile / school | `chess/aiProfiles.ts` (data + composition), `chess/evaluate.ts` (style bias if needed). |
 | A new piece skin | `types.ts` (`PieceSkinId` union), `chess/skins.ts` (`glyphForSkin`), `app/storage.ts` (`normalizeSkin`). |
-| A new scene type | `types.ts` (`Scene` union), `app/gameFlow.ts` (handlers), `mountApp.ts` `renderScene` branch. |
+| A new scene type | `types.ts` (`Scene` union), `app/gameFlow.ts` (handlers), `app/ui/renderScene.ts` branch. |
 | A new reward | `data/rewards.ts`, `types.ts` (`RewardKind` only if novel). |
 | A new move-cue SFX | `app/audio/sfx.ts` (extend `playMoveSfx` or add a sibling). |
 | A new modal | `mountApp.ts` (compose HTML; pass to `rewardOverlayCtl.open`). |
