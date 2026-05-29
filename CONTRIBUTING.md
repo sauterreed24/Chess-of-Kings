@@ -10,8 +10,10 @@ for contributions is "fits the existing voice and ships green," not
 1. **Keep the build green.** `npm run quality:gate` is the required
    deterministic release gate before you open a PR. It runs lint,
    typecheck, the serialized deterministic Vitest suite, UI smoke,
-   production build, and the bundle gzip report. CI and GitHub Pages
-   both use this same gate.
+   production build, GitHub Pages path assertions (`assert:pages-build`),
+   and the bundle gzip report. CI and GitHub Pages both use this gate.
+   A separate optional `e2e-smoke` job runs `npm run test:e2e`
+   (Playwright) on `main`.
 2. **Add tests for every change.** New behavior gets a unit, property,
    or DOM test; new save fields get a migration test; new UI surfaces
    get a smoke mount test.
@@ -76,19 +78,14 @@ recent maximum-effort commits in `git log` are reasonable templates.
 
 ## What we'd love help with
 
-- **Pass 1.5** — extracting the closure-heavy renderers in
-  `mountApp.ts` (`applyChessUi`, `renderScene`, `renderDuelUi`,
-  `showRewardBundles`) by introducing a typed mount context. The
-  existing extractions in `audio/`, `recap/`, `play/`, `keyboard/`
-  show the pattern.
 - **Pass 2 deep** — feature-decomposed `evaluate.ts` (per-phase
   PSTs, isolated / doubled / passed / connected pawns, mobility,
   bishop pair, rook on open file, knight outposts, space, tempo)
   with one tiny test per feature.
-- **Pass 3 deep** — wire `selectTalkLine` from `src/data/rivals.ts`
-  into the live `aiFlavor` / `tacticalPulse` pipeline in
-  `gameFlow.ts`; turn the documented rival opening repertoires into
-  real preference biases inside `chess/openings.ts`.
+- **`GameFlow` split** — campaign vs duel vs persistence modules now
+  that `screenController` and `src/app/ui/*` own mount rendering.
+- **Pass 3 deep (openings)** — turn documented rival opening repertoires
+  into measurable preference biases inside `chess/openings.ts`.
 - **Pass 4 deep** — per-rival Elo-ish tracker on `SaveData` (with
   migration + a 50-rivalry × 20-game property test of converged
   win-rate bands).
