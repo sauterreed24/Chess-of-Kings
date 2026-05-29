@@ -21,6 +21,21 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     return app
   }
 
+  it('inerts shell chrome while lab is open except the lab overlay', () => {
+    const app = boot()
+    const topBar = app.querySelector<HTMLElement>('.top-bar')!
+    const title = app.querySelector<HTMLElement>('#screen-title')!
+
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(topBar.inert).toBe(true)
+    expect(title.inert).toBe(true)
+    expect(app.querySelector('#lab-overlay')?.hasAttribute('inert')).toBe(false)
+    expect(app.querySelector('#btn-title')?.closest('.top-bar')?.hasAttribute('inert')).toBe(true)
+  })
+
   it('inerts top bar while lab is open and restores on exit', () => {
     const app = boot()
     const topBar = app.querySelector<HTMLElement>('.top-bar')!

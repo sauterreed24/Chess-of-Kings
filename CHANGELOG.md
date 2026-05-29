@@ -20,6 +20,16 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.19] — 2026-05-29
+
+Pass 3 PR2 — screen controller and lab accessibility:
+
+- **`screenController.ts`** — centralizes `hidden` / `aria-hidden` / `inert` for top-level screens; inerts `#shell` siblings while the lab is open (lab overlay and live modals exempt).
+- **Lab chrome** — top bar reflects `inert` as an HTML attribute; play-smoke asserts shell inert contract.
+- **Tests** — `screenController.test.ts` + expanded lab play-smoke (**433** gate tests).
+
+---
+
 ## [0.2.18] — 2026-05-29
 
 Pass 3 PR1 — fonts and CSS budget:
