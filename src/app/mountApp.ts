@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from './chronicleReplay'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
-import { setTopBarInertForLab } from './labModal'
+import { createScreenController } from './screenController'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { createEchoReplayTimer } from './chronicleEchoTimer'
 import {
@@ -139,46 +139,31 @@ export function mountApp(app: HTMLDivElement) {
   const btnTitleKbdhelp = app.querySelector<HTMLButtonElement>('#btn-title-kbdhelp')!
   const btnLabKbdhelp = app.querySelector<HTMLButtonElement>('#btn-lab-kbdhelp')!
   const liveAnnouncer = app.querySelector<HTMLDivElement>('#live-announcer')!
-  /** Direct `#shell` children we marked `inert` while the reward dialog is open (reward node sits inside the shell). */
   const rewardInertRestore: HTMLElement[] = []
   const confirmInertRestore: HTMLElement[] = []
-  function setShellChildrenInert(
-    restore: HTMLElement[],
-    active: boolean,
-    exclude: HTMLElement[],
-  ) {
-    if (!active) {
-      for (const el of restore) el.inert = false
-      restore.length = 0
-      return
-    }
-    for (const node of shell.children) {
-      if (!(node instanceof HTMLElement)) continue
-      if (exclude.includes(node)) continue
-      if (!node.inert) {
-        node.inert = true
-        restore.push(node)
-      }
-    }
-  }
-  function setShellBehindRewardInert(active: boolean) {
-    setShellChildrenInert(rewardInertRestore, active, [
-      rewardOverlay,
-      confirmOverlay,
-      liveAnnouncer,
-    ])
-  }
-  function setShellBehindConfirmInert(active: boolean) {
-    setShellChildrenInert(confirmInertRestore, active, [confirmOverlay, liveAnnouncer])
-  }
+  const screenCtl = createScreenController({
+    shell,
+    screens: {
+      title: screenTitle as HTMLElement,
+      chapters: screenChapters as HTMLElement,
+      duel: screenDuel as HTMLElement,
+    },
+    topBar,
+    labOverlay,
+    modalExempt: [rewardOverlay, confirmOverlay, liveAnnouncer],
+  })
   const rewardOverlayCtl = createRewardOverlayController(rewardOverlay, {
     onOpenChange(open) {
-      setShellBehindRewardInert(open)
+      screenCtl.setShellBackdropInert(rewardInertRestore, open, [
+        rewardOverlay,
+        confirmOverlay,
+        liveAnnouncer,
+      ])
     },
   })
   const confirmDialogCtl = createConfirmDialogController(confirmOverlay, {
     onOpenChange(open) {
-      setShellBehindConfirmInert(open)
+      screenCtl.setShellBackdropInert(confirmInertRestore, open, [confirmOverlay, liveAnnouncer])
     },
   })
   let storageFailureAnnounced = false
@@ -621,9 +606,8 @@ export function mountApp(app: HTMLDivElement) {
     closeRewardOverlay()
     flow.setLastScreen('play')
     focusBeforeLab = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    setTopLevelScreen(null)
+    screenCtl.setLabOpen(true)
     setNavActive(null)
-    setTopBarInertForLab(topBar, true)
     shell.classList.add('shell--lab')
     labOverlay.classList.add('lab-overlay--active')
     labOverlay.setAttribute('aria-hidden', 'false')
@@ -641,7 +625,7 @@ export function mountApp(app: HTMLDivElement) {
 
   function closeLab() {
     closeRewardOverlay()
-    setTopBarInertForLab(topBar, false)
+    screenCtl.setLabOpen(false)
     labOverlay.classList.remove('lab-overlay--active')
     labOverlay.setAttribute('aria-hidden', 'true')
     labOverlay.removeAttribute('aria-modal')
@@ -654,18 +638,6 @@ export function mountApp(app: HTMLDivElement) {
 
   function closeLabIfActive() {
     if (labOverlay.classList.contains('lab-overlay--active')) closeLab()
-  }
-
-  function setSectionVisibility(el: HTMLElement, visible: boolean) {
-    el.classList.toggle('hidden', !visible)
-    el.setAttribute('aria-hidden', visible ? 'false' : 'true')
-    ;(el as HTMLElement & { inert?: boolean }).inert = !visible
-  }
-
-  function setTopLevelScreen(active: 'title' | 'chapters' | 'duel' | null) {
-    setSectionVisibility(screenTitle as HTMLElement, active === 'title')
-    setSectionVisibility(screenChapters as HTMLElement, active === 'chapters')
-    setSectionVisibility(screenDuel as HTMLElement, active === 'duel')
   }
 
   function setNavActive(active: 'title' | 'chapters' | 'duel' | null) {
@@ -700,14 +672,14 @@ export function mountApp(app: HTMLDivElement) {
   function showTitle() {
     closeRewardOverlay()
     if (hasSave()) flow.setLastScreen('title')
-    setTopBarInertForLab(topBar, false)
+    screenCtl.setLabOpen(false)
     labOverlay.classList.remove('lab-overlay--active')
     labOverlay.setAttribute('aria-hidden', 'true')
     labOverlay.removeAttribute('aria-modal')
     labOverlay.removeAttribute('role')
     labOverlay.removeAttribute('aria-label')
     shell.classList.remove('shell--lab')
-    setTopLevelScreen('title')
+    screenCtl.setTopLevelScreen('title')
     setNavActive('title')
     syncTitleButtons()
     syncMvpFlag()
@@ -720,9 +692,9 @@ export function mountApp(app: HTMLDivElement) {
 
   function showChapters() {
     closeRewardOverlay()
-    setTopBarInertForLab(topBar, false)
+    screenCtl.setLabOpen(false)
     flow.setLastScreen('chapters')
-    setTopLevelScreen('chapters')
+    screenCtl.setTopLevelScreen('chapters')
     setNavActive('chapters')
     btnChaptersBack.classList.remove('hidden')
     btnChaptersBack.textContent = '← Return to title'
@@ -1354,9 +1326,9 @@ export function mountApp(app: HTMLDivElement) {
 
   function showDuel() {
     closeRewardOverlay()
-    setTopBarInertForLab(topBar, false)
+    screenCtl.setLabOpen(false)
     flow.setLastScreen('chapters')
-    setTopLevelScreen('duel')
+    screenCtl.setTopLevelScreen('duel')
     setNavActive('duel')
     renderDuelUi()
     focusWithoutScroll(duelList.querySelector<HTMLButtonElement>('.duel-row'))
