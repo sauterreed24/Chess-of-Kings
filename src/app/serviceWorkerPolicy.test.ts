@@ -3,7 +3,7 @@ import swSource from '../../public/sw.js?raw'
 
 describe('service worker caching policy', () => {
   it('uses a fresh cache version for app-shell policy changes', () => {
-    expect(swSource).toContain("const CACHE_NAME = 'cok-static-v4'")
+    expect(swSource).toContain("const CACHE_NAME = 'cok-static-v5'")
   })
 
   it('keeps navigations network-first with cached index fallback', () => {
