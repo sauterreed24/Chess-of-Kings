@@ -109,7 +109,19 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.2.17)
+## What's new in this release (v0.2.22)
+
+**Pass 3 (maximum-effort wave)** — five PRs merged; see [`CHANGELOG.md`](./CHANGELOG.md) and [release v0.2.22](https://github.com/sauterreed24/Chess-of-Kings/releases/tag/v0.2.22).
+
+- **Performance** — self-hosted fonts (no Google CSS); CSS dedupe; gzip headroom under the **16800** byte gate.
+- **Accessibility** — `screenController.ts` centralizes top-level screens, lab shell `inert`, and modal exemptions.
+- **UI** — lab board brass/eval bar, manuscript rhythm, duel dossier hierarchy, mobile lab touch targets.
+- **Architecture** — `mountContext` + `src/app/ui/*` extractors (`applyChessUi`, `renderScene`, `renderDuelUi`, `showRewardBundles`); `mountApp.ts` ~**1036** lines.
+- **Deploy** — `assert:pages-build` in `quality:gate`; optional Playwright `test:e2e` CI job; README hero image.
+
+---
+
+## Previous release (v0.2.17)
 
 - **README** — Creator section lists specific skills (no location line); At-a-glance skills row for screeners.
 - **Visual polish** — title gradient, brass primary buttons, framed chess board, chronicle index card, stronger ambient blooms, daily-ribbon hover depth, reward overlay depth.
@@ -334,16 +346,26 @@ npm test                 # full test suite (436 tests)
 npm run test:deterministic # serialized seeded suite used by the release gate
 npm run lint             # eslint, max warnings 0
 npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay)
+npm run test:e2e         # optional Playwright smoke (after build; uses preview server)
 ```
 
 ---
 
 ## Roadmap
 
-- **Pass 1.5** — extract the closure-heavy renderers in `mountApp` (`applyChessUi`, `renderScene`, `renderDuelUi`, `showRewardBundles`) by introducing a typed mount context, so the duel and play surfaces can be exercised in jsdom mounts.
-- **Pass 2 deep** — feature-decomposed `evaluate.ts` (per-phase PSTs, isolated / doubled / passed / connected pawns, mobility, bishop pair, rook on open file, knight outposts, space, tempo) with one tiny test per feature. Optional Web Worker for AI search if benchmarks justify it.
-- **Pass 3 deep** — tune opening repertoires into measurable preference biases inside `chess/openings.ts` (talk lines now prefix live match/duel flavor).
-- **Native shells** — Capacitor scaffolding for iOS / Android already exists; the next step is a TestFlight build.
+**Done (Pass 3 wave, v0.2.18–v0.2.22)**
+
+- **Pass 1.5** — `mountContext.ts` + `src/app/ui/*` renderers extracted from `mountApp`; focused jsdom tests.
+- **Fonts & CSS budget** — self-hosted woff2, deduped stylesheet, PWA cache bumps.
+- **Screen controller** — unified `hidden` / `aria-hidden` / `inert` for title, chapters, duel, lab, and modal backdrops.
+- **Deploy guards** — `npm run assert:pages-build`; optional `npm run test:e2e` (Playwright on `vite preview`).
+
+**Next (prioritized)**
+
+- **Pass 2 deep** — feature-decomposed `evaluate.ts` (per-phase PSTs, pawn structure, mobility, bishop pair, rook on open file, knight outposts, space, tempo) with one tiny test per feature. Optional Web Worker for AI search if benchmarks justify it.
+- **`GameFlow` decomposition** — split the ~2.3k-line orchestrator after the mount/UI extractions (campaign vs duel vs persistence seams).
+- **Pass 3 deep (content)** — tune opening repertoires into measurable preference biases inside `chess/openings.ts` (talk lines already prefix live match/duel flavor).
+- **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
 ---
 
