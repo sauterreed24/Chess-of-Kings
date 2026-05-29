@@ -47,8 +47,9 @@
 | **What it is** | Story-driven chess RPG with adaptive rival AI, shipped as a **static PWA** (no backend, no accounts). |
 | **Play** | **[Live demo](https://sauterreed24.github.io/Chess-of-Kings/)** — first step is always [Start here](#start-here). |
 | **Stack** | **TypeScript (strict)**, plain DOM, **Vite**, **Vitest**, `chess.js`; Capacitor shells for optional native builds. |
-| **Quality** | **427** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, bundle gzip report). |
+| **Quality** | **428** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, bundle gzip report). |
 | **Fit signals** | Accessibility-minded UI, save-format migrations, property-tested engine, small **gzip** JS budget (<90 KB). |
+| **Author** | **Reed Sauter** — [GitHub](https://github.com/sauterreed24) · [LinkedIn](https://www.linkedin.com/in/reed-sauter-205774208) |
 
 **Suggested GitHub topics** (for discoverability): `typescript`, `vite`, `vitest`, `pwa`, `chess`, `game-development`, `accessibility`, `github-pages`, `no-framework`.
 
@@ -105,7 +106,15 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.2.15)
+## What's new in this release (v0.2.16)
+
+- **README** — creator section refreshed (no employer names); public GitHub and LinkedIn links; chronicle index screen a11y smoke coverage.
+- **Keyboard atlas** — help overlay uses the same `reward-hero` header pattern as reward and chapter overlays.
+- **Chapters screen a11y** — title and duel surfaces stay `inert` and `aria-hidden` while the chronicle index is active (play-smoke locked).
+
+---
+
+## Previous release (v0.2.15)
 
 Play-test hardening on top of v0.2.14:
 
@@ -113,7 +122,7 @@ Play-test hardening on top of v0.2.14:
 - **Duel screen a11y** — title and chapters screens are `inert` and `aria-hidden` while the Duel Archive is active.
 - **Daily Calculus** — confirm dialog when abandoning a recoverable in-progress session (play-smoke locked).
 - **SFX** — capture-promotion and check/mate promotion SAN precedence tests (`exd8=N`, `exd8=Q+`, `axb8=R#`).
-- **Tests.** **427** automated tests (was 422).
+- **Tests.** **428** automated tests (was 422).
 
 ---
 
@@ -186,7 +195,7 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` currently runs **427 tests across 53 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
+**Testing scopes.** `npm test` currently runs **428 tests across 53 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
@@ -210,6 +219,9 @@ uploading production assets.
 
 ```yaml
 project: The Calculus of Kings
+creator: Reed Sauter
+creator_github: https://github.com/sauterreed24
+creator_linkedin: https://www.linkedin.com/in/reed-sauter-205774208
 one_liner: Alt-history chess RPG that ships as a single ~80 KB gzipped JS bundle, installable on iOS without an app store.
 readme_play_path: "Start here → live demo URL → Enter the Archive → Chapters → Advance"
 live_demo_url: https://sauterreed24.github.io/Chess-of-Kings/
@@ -222,7 +234,7 @@ ci_workflows:
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/ci.yml
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/pages.yml
 license: MIT
-tests: 427 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus + Stratarch Rating ladder)
+tests: 428 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus + Stratarch Rating ladder)
 skills_keywords:
   - TypeScript strict mode
   - Vite
@@ -299,7 +311,7 @@ npm install              # install dependencies
 npm run dev              # local dev server (LAN-exposed for device testing)
 npm run quality:gate     # deterministic release gate used by CI and Pages
 npm run build            # production build (tsc + vite)
-npm test                 # full test suite (427 tests)
+npm test                 # full test suite (428 tests)
 npm run test:deterministic # serialized seeded suite used by the release gate
 npm run lint             # eslint, max warnings 0
 npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay)
@@ -328,12 +340,17 @@ npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay
 
 ## Creator
 
-Built solo by **Reed Sauter**, an SDR at Artemis Distribution and a self-taught developer based in Indiana. The Calculus of Kings is a demonstration of what's possible when AI-assisted development meets careful game design.
+**[Reed Sauter](https://github.com/sauterreed24)** is a self-taught developer and game builder based in Indiana. He ships narrative, systems-heavy web games in strict TypeScript — campaign progression, opponent-specific AI, accessibility-first UI, and deterministic test gates — without leaning on a heavyweight front-end framework.
 
-If you're an AI company, startup, or engineering team looking for someone who ships with discipline, I'd love to connect.
+**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack (negamax, alpha-beta, transposition table), rival doctrine, post-loss coaching, PWA installability, and **428** automated tests behind every release.
 
-- GitHub: [@sauterreed24](https://github.com/sauterreed24)
-- Primary portfolio artifact: **[play the live demo](https://sauterreed24.github.io/Chess-of-Kings/)** (this README is written so that link is always the first actionable step).
+| | |
+| --- | --- |
+| **Play first** | **[Live demo](https://sauterreed24.github.io/Chess-of-Kings/)** — always the fastest review path |
+| **Source** | [github.com/sauterreed24/Chess-of-Kings](https://github.com/sauterreed24/Chess-of-Kings) |
+| **Profile** | [LinkedIn](https://www.linkedin.com/in/reed-sauter-205774208) |
+
+Questions about the engine, accessibility model, or save migrations? Open a [GitHub issue](https://github.com/sauterreed24/Chess-of-Kings/issues) or reach out through the links above.
 
 ---
 

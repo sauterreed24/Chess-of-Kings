@@ -1701,8 +1701,13 @@ export function mountApp(app: HTMLDivElement) {
     keyboardHelpOpen = true
     openRewardOverlay(
       `<div class="reward-sheet reward-sheet--kbdhelp">
-         <p class="section-heading">${escapeHtml(KEYBOARD_HELP_HEADING)}</p>
-         <p class="reward-hero__copy">Every shortcut available without leaving the keyboard.</p>
+         <div class="reward-hero">
+           <span class="reward-hero__sigil" aria-hidden="true">⌨</span>
+           <div>
+             <p class="section-heading">${escapeHtml(KEYBOARD_HELP_HEADING)}</p>
+             <p class="reward-hero__copy">Every shortcut available without leaving the keyboard.</p>
+           </div>
+         </div>
          <div class="kbd-help-grid" aria-label="Keyboard shortcuts">
            <dl>
              <dt><kbd>Enter</kbd> · <kbd>Space</kbd></dt>

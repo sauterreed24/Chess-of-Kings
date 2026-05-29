@@ -20,6 +20,18 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.16] — 2026-05-29
+
+README and UI polish (no employer names in public docs):
+
+- **README** — refreshed Creator / At-a-glance sections with GitHub and LinkedIn links only; removed third-party employer references.
+- **Keyboard atlas** — reward overlay help sheet now uses the shared `reward-hero` header block.
+- **Chapters screen a11y** — play smoke asserts title and duel stay `inert` while the chronicle index is active.
+
+Gate: **428** tests across 53 files.
+
+---
+
 ## [0.2.15] — 2026-05-29
 
 Play-test hardening and title-rating sync after **New chronicle**:

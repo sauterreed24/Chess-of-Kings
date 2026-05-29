@@ -49,6 +49,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     const app = boot()
     app.querySelector<HTMLButtonElement>('#btn-title-kbdhelp')?.click()
     expect(app.querySelector('#reward-overlay')?.textContent).toContain(KEYBOARD_HELP_HEADING)
+    expect(app.querySelector('#reward-overlay .reward-hero')).not.toBeNull()
     app.querySelector<HTMLButtonElement>('#btn-kbdhelp-close')?.click()
     expect(app.querySelector('#reward-overlay')?.classList.contains('hidden')).toBe(true)
 
@@ -234,6 +235,24 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(fresh?.rankPoints).toBe(0)
     expect(app.querySelector('#screen-chapters')?.classList.contains('hidden')).toBe(false)
     expect(app.querySelector('#chapter-progress')?.textContent).toMatch(/1 of/)
+  })
+
+  it('hides title and duel from assistive tech while the chronicle index is active', () => {
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+
+    const title = app.querySelector<HTMLElement>('#screen-title')!
+    const chapters = app.querySelector<HTMLElement>('#screen-chapters')!
+    const duel = app.querySelector<HTMLElement>('#screen-duel')!
+    expect(title.classList.contains('hidden')).toBe(true)
+    expect(title.getAttribute('aria-hidden')).toBe('true')
+    expect((title as HTMLElement & { inert?: boolean }).inert).toBe(true)
+    expect(duel.classList.contains('hidden')).toBe(true)
+    expect(duel.getAttribute('aria-hidden')).toBe('true')
+    expect((duel as HTMLElement & { inert?: boolean }).inert).toBe(true)
+    expect(chapters.classList.contains('hidden')).toBe(false)
+    expect(chapters.getAttribute('aria-hidden')).toBe('false')
+    expect((chapters as HTMLElement & { inert?: boolean }).inert).toBe(false)
   })
 
   it('hides title and chapters from assistive tech while the duel screen is active', () => {
