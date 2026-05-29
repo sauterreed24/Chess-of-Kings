@@ -20,6 +20,17 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.21] — 2026-05-29
+
+Pass 3 PR4 — mountApp Pass 1.5 extraction:
+
+- **`mountContext.ts`** — `MountDomRefs`, `MountPlayState`, `MountRuntime` for testable wiring.
+- **`src/app/ui/`** — `applyChessUi`, `renderScene`, `renderDuelUi`, `showRewardBundles` extracted from `mountApp.ts`.
+- **Tests** — focused jsdom coverage for prologue story-beat, Alexion dossier doctrine, rated reward HTML.
+- **`ARCHITECTURE.md`** — updated module map and TypeScript scale note.
+
+---
+
 ## [0.2.20] — 2026-05-29
 
 Pass 3 PR3 — play-surface visual polish:
