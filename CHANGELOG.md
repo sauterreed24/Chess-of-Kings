@@ -20,6 +20,19 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.20] — 2026-05-29
+
+Pass 3 PR3 — play-surface visual polish:
+
+- **Lab board** — stronger brass corners on turn/check; richer eval-bar fill gradient.
+- **Manuscript** — story-beat and interlude line rhythm.
+- **Duel** — launch block separator; sealed rival row glass depth.
+- **Mobile lab** — 44px vestibule/keyboard targets; safe-area play-inner padding.
+
+CSS gzip remains under the **16800** byte gate.
+
+---
+
 ## [0.2.19] — 2026-05-29
 
 Pass 3 PR2 — screen controller and lab accessibility:

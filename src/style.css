@@ -2202,8 +2202,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .duel-row--sealed {
   border-color: rgba(201,169,98,0.14);
   background:
-    linear-gradient(135deg, rgba(201,169,98,0.045), rgba(0,0,0,0.22)),
-    rgba(0,0,0,0.16);
+    linear-gradient(135deg, rgba(201,169,98,0.05), rgba(0,0,0,0.24)),
+    rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 0 1px rgba(201,169,98,0.06);
 }
 
 .duel-row--sealed .ch-name {
@@ -2724,6 +2725,31 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .eval-bar {
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45);
+}
+
+.eval-bar__fill {
+  background: linear-gradient(180deg, #faf6ec, #e9dfc8 55%, #c9b890);
+}
+
+.board-stage--white-turn .board-brass__corner,
+.board-stage--black-turn .board-brass__corner,
+.board-stage--boss .board-brass__corner,
+.board-brass:has(.sq-check) .board-brass__corner {
+  opacity: 0.95;
+  border-color: rgba(232, 201, 126, 0.78);
+}
+
+.board-brass:has(.sq-check) .board-brass__corner {
+  border-color: rgba(214, 70, 48, 0.85);
+}
+
+.story-beat__body { line-height: 1.58; }
+.narrative-body--interlude { line-height: 1.62; }
+
+.duel-panel .duel-launch {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(201, 169, 98, 0.18);
 }
 
 .move-ledger {
@@ -3415,6 +3441,16 @@ html.perf-lean .board-stage--finisher .board-brass {
     padding: 0.42rem max(0.62rem, env(safe-area-inset-right)) 0.42rem max(0.62rem, env(safe-area-inset-left));
   }
 
+  .lab-overlay__vestibule,
+  .lab-overlay__kbd {
+    min-height: 44px;
+    padding: 0.55rem 0.85rem;
+  }
+
+  .lab-overlay__kbd {
+    min-width: 44px;
+  }
+
   .lab-overlay__label {
     min-width: 0;
     overflow: hidden;
@@ -3437,7 +3473,7 @@ html.perf-lean .board-stage--finisher .board-brass {
     padding-left: max(0.85rem, env(safe-area-inset-left));
     padding-right: max(0.85rem, env(safe-area-inset-right));
     padding-top: 0.75rem;
-    padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
     overscroll-behavior: contain;
   }
 
