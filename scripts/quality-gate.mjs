@@ -6,6 +6,7 @@ const steps = [
   ['deterministic tests', ['run', 'test:deterministic']],
   ['ui smoke', ['run', 'test:ui-smoke']],
   ['production build', ['run', 'build']],
+  ['pages build assertions', ['run', 'assert:pages-build']],
   ['bundle gzip report', ['run', 'report:bundle-gzip']],
 ]
 

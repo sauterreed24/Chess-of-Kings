@@ -20,6 +20,16 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.22] — 2026-05-29
+
+Pass 3 PR5 — deploy guards, e2e smoke, recruiter visual:
+
+- **`scripts/assert-pages-build.mjs`** — fails builds with absolute `/favicon` or `start_url: "/"`; requires OG/Twitter tags and `./` manifest `start_url` (wired into `quality:gate`).
+- **Playwright** — `npm run test:e2e` against `vite preview` (`/Chess-of-Kings/`); optional `e2e-smoke` CI job (not in fast gate).
+- **README** — hero screenshot at `docs/at-a-glance-hero.png`; quality row updated (**436** tests).
+
+---
+
 ## [0.2.21] — 2026-05-29
 
 Pass 3 PR4 — mountApp Pass 1.5 extraction:
