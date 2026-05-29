@@ -1,7 +1,10 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { Chess } from 'chess.js'
 import { mountApp } from './mountApp'
 import { hasSave, clearSave, loadSave } from './storage'
-import { KEYBOARD_HELP_HEADING } from '../data/strings'
+import { CONFIRM_COPY, KEYBOARD_HELP_HEADING } from '../data/strings'
+import { PLAYABLE_CHAPTERS } from '../data/chapters'
+import { pickDailyCalculus } from './session/dailyCalculus'
 
 describe('mounted app play smoke (maximum-effort flows)', () => {
   beforeEach(() => {
@@ -231,5 +234,118 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(fresh?.rankPoints).toBe(0)
     expect(app.querySelector('#screen-chapters')?.classList.contains('hidden')).toBe(false)
     expect(app.querySelector('#chapter-progress')?.textContent).toMatch(/1 of/)
+  })
+
+  it('hides title and chapters from assistive tech while the duel screen is active', () => {
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+
+    const title = app.querySelector<HTMLElement>('#screen-title')!
+    const chapters = app.querySelector<HTMLElement>('#screen-chapters')!
+    const duel = app.querySelector<HTMLElement>('#screen-duel')!
+    expect(title.classList.contains('hidden')).toBe(true)
+    expect(title.getAttribute('aria-hidden')).toBe('true')
+    expect((title as HTMLElement & { inert?: boolean }).inert).toBe(true)
+    expect(chapters.classList.contains('hidden')).toBe(true)
+    expect(chapters.getAttribute('aria-hidden')).toBe('true')
+    expect((chapters as HTMLElement & { inert?: boolean }).inert).toBe(true)
+    expect(duel.classList.contains('hidden')).toBe(false)
+    expect(duel.getAttribute('aria-hidden')).toBe('false')
+    expect((duel as HTMLElement & { inert?: boolean }).inert).toBe(false)
+  })
+
+  it('gates Daily Calculus behind confirm when a recoverable session exists', async () => {
+    const daily = pickDailyCalculus(PLAYABLE_CHAPTERS)
+    expect(daily).not.toBeNull()
+    const calIdx = PLAYABLE_CHAPTERS[0]!.scenes.findIndex((s) => s.type === 'calibration')
+    expect(calIdx).toBeGreaterThanOrEqual(0)
+    const chess = new Chess()
+    const startFen = chess.fen()
+    chess.move('e4')
+    const fen = chess.fen()
+
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        version: 3,
+        chapterIndex: 0,
+        sceneIndex: calIdx,
+        highestUnlockedChapter: Math.max(daily!.chapterIndex, 0),
+        lastScreen: 'title',
+        chapter1Complete: false,
+        chapter2Complete: false,
+        completedSceneIds: [],
+        completedPuzzleIds: [],
+        stratarchiaUnlocked: false,
+        duelUnlockedOpponentIds: [],
+        unlockedDuelVariantIds: ['alexion-mentor'],
+        codexUnlocks: [],
+        titleUnlocks: [],
+        chronicleEchoes: [],
+        rankPoints: 0,
+        cosmetics: {
+          unlockedPieceSkins: ['classic-royal'],
+          selectedPieceSkin: 'classic-royal',
+        },
+        tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+        matchHistory: [],
+        rivalMemory: {},
+        ladder: { rating: 800, peak: 800, rated: 0 },
+        inProgress: {
+          mode: 'calibration',
+          chapterIndex: 0,
+          sceneIndex: calIdx,
+          fen,
+          history: [startFen, fen],
+          sanLog: ['e4'],
+          sanQuality: ['good'],
+          playerColor: 'w',
+          calibrationMoves: 1,
+          scriptedMoveIndex: 0,
+          sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+        },
+      }),
+    )
+
+    const app = boot()
+    const dailyBtn = app.querySelector<HTMLButtonElement>('#btn-daily-calculus')
+    expect(dailyBtn).not.toBeNull()
+
+    dailyBtn!.click()
+    expect(app.querySelector('#confirm-overlay')?.classList.contains('hidden')).toBe(false)
+    expect(app.querySelector('#confirm-overlay')?.textContent).toContain(CONFIRM_COPY.dailyCalculus.title)
+
+    app.querySelector<HTMLButtonElement>('#btn-confirm-cancel')?.click()
+    await Promise.resolve()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(false)
+
+    dailyBtn!.click()
+    app.querySelector<HTMLButtonElement>('#btn-confirm-ok')?.click()
+    await Promise.resolve()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+  })
+
+  it('resets Stratarch Rating on confirmed new chronicle', async () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        version: 3,
+        chapterIndex: 1,
+        sceneIndex: 0,
+        highestUnlockedChapter: 1,
+        lastScreen: 'title',
+        ladder: { rating: 845, peak: 870, rated: 6 },
+      }),
+    )
+    const app = boot()
+    expect(app.querySelector('#title-rating')?.textContent).toContain('845')
+
+    app.querySelector<HTMLButtonElement>('#btn-new')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-confirm-ok')?.click()
+    await Promise.resolve()
+
+    expect(loadSave()?.ladder).toEqual({ rating: 800, peak: 800, rated: 0 })
+    expect(app.querySelector('#title-rating')?.classList.contains('hidden')).toBe(true)
   })
 })

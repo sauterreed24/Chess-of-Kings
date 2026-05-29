@@ -20,6 +20,19 @@ suppression, expanded tests (**231**), README refresh.
 
 ---
 
+## [0.2.15] — 2026-05-29
+
+Play-test hardening and title-rating sync after **New chronicle**:
+
+- **New chronicle UX** — `syncTitleRating()` runs after a confirmed reset so the Stratarch Rating line clears immediately instead of showing a stale value when returning to the title screen.
+- **Play smoke** — duel screen `inert`/`aria-hidden` contract for title and chapters; Daily Calculus confirm gate when a recoverable session exists; ladder reset assertion on new chronicle.
+- **SFX** — capture-promotion and check/mate promotion SAN precedence locked (`exd8=N`, `exd8=Q+`, `axb8=R#`).
+- **GameFlow** — `newGame()` resets the Stratarch Rating ladder (unit test).
+
+Gate: **427** tests across 53 files.
+
+---
+
 ## [Unreleased] — Continuation Passes (2 / 3 / 4)
 
 Deterministic, additive improvements layered on the Maximum Effort Pass.

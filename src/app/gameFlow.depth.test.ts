@@ -396,6 +396,24 @@ describe('GameFlow depth systems', () => {
     expect(flow.hasRecoverableSession()).toBe(false)
   })
 
+  it('newGame resets the Stratarch Rating ladder', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const f = flow as unknown as {
+      ladder: { rating: number; peak: number; rated: number }
+      lastRatingDelta: number
+    }
+    f.ladder = { rating: 912, peak: 940, rated: 14 }
+    f.lastRatingDelta = 18
+    flow.newGame()
+    expect(flow.getLadderRating()).toEqual({ rating: 800, peak: 800, rated: 0 })
+    expect(flow.getLastRatingDelta()).toBe(0)
+  })
+
   it('newGame clears buffered reward overlays', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

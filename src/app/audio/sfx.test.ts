@@ -174,6 +174,26 @@ describe('createSfxController', () => {
     expect(fake.oscillators[0]!.frequency.setValueAtTime.mock.calls[0]![0]).toBe(540)
   })
 
+  it('capture-promotion and check-promotion SANs use the promotion cue precedence', () => {
+    const fake = makeFakeAudioContext()
+    const sfx = createSfxController({
+      enabled: true,
+      audioContextFactory: () => fake as unknown as AudioContext,
+    })
+    sfx.unlock()
+    sfx.playMoveSfx('exd8=N', null)
+    expect(fake.oscillators[0]!.type).toBe('triangle')
+    expect(fake.oscillators[0]!.frequency.setValueAtTime.mock.calls[0]![0]).toBe(540)
+
+    fake.oscillators.length = 0
+    sfx.playMoveSfx('exd8=Q+', null)
+    expect(fake.oscillators[0]!.frequency.setValueAtTime.mock.calls[0]![0]).toBe(360)
+
+    fake.oscillators.length = 0
+    sfx.playMoveSfx('axb8=R#', null)
+    expect(fake.oscillators[0]!.frequency.setValueAtTime.mock.calls[0]![0]).toBe(470)
+  })
+
   it('playEventSfx fires every cue label with its expected frequency', () => {
     const fake = makeFakeAudioContext()
     const sfx = createSfxController({
