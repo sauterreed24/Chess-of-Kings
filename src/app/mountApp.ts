@@ -1785,6 +1785,7 @@ export function mountApp(app: HTMLDivElement) {
     clearSave()
     flow.newGame()
     syncTitleSkinSelect()
+    syncTitleRating()
     showChapters()
   })
   btnTitle.addEventListener('click', () => {
