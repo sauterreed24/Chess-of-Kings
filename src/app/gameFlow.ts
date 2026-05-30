@@ -33,6 +33,15 @@ import { ledgerContentFingerprint } from './ledgerFingerprint'
 import { loadSave, type LastScreen } from './storage'
 import { devWarn } from './devLog'
 import { DUEL_ROSTER } from '../data/duelRoster'
+import {
+  buildDuelArchiveRoster,
+  filterUnlockedDuelRoster,
+  isDuelVariantUnlocked,
+  recommendDuelDifficulty as recommendDuelDifficultyFromHistory,
+  type DuelUnlockContext,
+} from './duel/DuelManager'
+
+export type { DuelArchiveRosterEntry } from './duel/DuelManager'
 import { CHAPTER_CLEAR_REWARDS, BASE_VICTORY_REWARDS } from '../data/rewards'
 import {
   adaptProfileToPhase,
@@ -121,14 +130,6 @@ type LastDuelSetup = {
   variantId: string
   playerColor: 'w' | 'b'
   difficulty: 'novice' | 'balanced' | 'relentless'
-}
-
-export type DuelArchiveRosterEntry = {
-  rival: DuelRosterEntry
-  isOpen: boolean
-  unlockedVariantCount: number
-  totalVariantCount: number
-  unlockHint: string
 }
 
 export type FlowHandlers = {
@@ -593,18 +594,15 @@ export class GameFlow {
   }
 
   recommendDuelDifficulty(opponentId: string): 'novice' | 'balanced' | 'relentless' {
-    const recent = this.matchHistory.filter((h) => h.opponentId === opponentId).slice(-12)
-    if (!recent.length) return 'balanced'
-    const score = recent.reduce((acc, h) => {
-      if (h.outcome === 'win') return acc + 1
-      if (h.outcome === 'draw') return acc + 0.5
-      return acc - 1
-    }, 0)
-    const mem = this.rivalMemory[opponentId]
-    const pressure = mem ? mem.losses - mem.wins : 0
-    if (score <= -2 || pressure >= 3) return 'novice'
-    if (score >= 3) return 'relentless'
-    return 'balanced'
+    return recommendDuelDifficultyFromHistory(opponentId, this.matchHistory, this.rivalMemory)
+  }
+
+  private duelUnlockContext(): DuelUnlockContext {
+    return {
+      duelUnlockedOpponentIds: this.duelUnlockedOpponentIds,
+      unlockedDuelVariantIds: this.unlockedDuelVariantIds,
+      highestUnlockedChapter: this.highestUnlockedChapter,
+    }
   }
 
   getTendencies(): PlayerTendencyProfile {
@@ -622,58 +620,15 @@ export class GameFlow {
   }
 
   getDuelRoster(): DuelRosterEntry[] {
-    return DUEL_ROSTER.filter((r) => {
-      return this.isDuelOpponentUnlocked(r)
-    })
+    return filterUnlockedDuelRoster(this.duelUnlockContext())
   }
 
-  getDuelArchiveRoster(): DuelArchiveRosterEntry[] {
-    return DUEL_ROSTER.map((rival) => {
-      const unlockedVariantCount = rival.variants.filter((v) =>
-        this.isDuelVariantUnlocked(v.id) && this.highestUnlockedChapter >= v.minChapterUnlock,
-      ).length
-      return {
-        rival,
-        isOpen: this.isDuelOpponentUnlocked(rival) && unlockedVariantCount > 0,
-        unlockedVariantCount,
-        totalVariantCount: rival.variants.length,
-        unlockHint: this.duelUnlockHint(rival),
-      }
-    })
+  getDuelArchiveRoster() {
+    return buildDuelArchiveRoster(this.duelUnlockContext(), chapterLabel)
   }
 
   isDuelVariantUnlocked(variantId: string): boolean {
-    if (this.unlockedDuelVariantIds.includes(variantId)) return true
-    const found = this.findDuelVariant(variantId)
-    if (!found) return false
-    if (found.rival.opponentId === 'alexion') return false
-    return (
-      this.duelUnlockedOpponentIds.includes(found.rival.opponentId) &&
-      this.highestUnlockedChapter >= found.variant.minChapterUnlock
-    )
-  }
-
-  private isDuelOpponentUnlocked(rival: DuelRosterEntry): boolean {
-    if (rival.opponentId === 'alexion') return true
-    return this.duelUnlockedOpponentIds.includes(rival.opponentId)
-  }
-
-  private findDuelVariant(variantId: string): { rival: DuelRosterEntry; variant: DuelVariant } | null {
-    for (const rival of DUEL_ROSTER) {
-      const variant = rival.variants.find((v) => v.id === variantId)
-      if (variant) return { rival, variant }
-    }
-    return null
-  }
-
-  private duelUnlockHint(rival: DuelRosterEntry): string {
-    if (this.isDuelOpponentUnlocked(rival)) {
-      const lockedByChapter = rival.variants.find((v) => this.highestUnlockedChapter < v.minChapterUnlock)
-      if (lockedByChapter) return `Reach ${chapterLabel(lockedByChapter.minChapterUnlock)} to open more files.`
-      return 'Open now.'
-    }
-    const minChapter = Math.min(...rival.variants.map((v) => v.minChapterUnlock))
-    return `Defeat ${rival.opponentName} in ${chapterLabel(minChapter)} to unseal this dossier.`
+    return isDuelVariantUnlocked(variantId, this.duelUnlockContext())
   }
 
   startDuel(
@@ -687,7 +642,7 @@ export class GameFlow {
     if (!roster) return false
     const variant = roster.variants.find((v) => v.id === variantId)
     if (!variant) return false
-    if (!this.isDuelVariantUnlocked(variant.id)) return false
+    if (!isDuelVariantUnlocked(variant.id, this.duelUnlockContext())) return false
     if (this.highestUnlockedChapter < variant.minChapterUnlock) return false
 
     this.cancelAiTimer()

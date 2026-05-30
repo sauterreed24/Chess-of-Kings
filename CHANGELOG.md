@@ -9,6 +9,16 @@ level (the save format has its own version field — see
 
 ---
 
+## [0.2.24] — 2026-05-30
+
+Pass 4 PR3 (kickoff) — DuelManager unlock/roster seam:
+
+- **`src/app/duel/DuelManager.ts`** — pure unlock checks, archive roster, difficulty recommendation.
+- **`GameFlow`** — delegates duel roster/archive/unlock/difficulty to the manager.
+- **Tests** — 8 focused `DuelManager.test.ts` cases.
+
+---
+
 ## [0.2.23] — 2026-05-30
 
 Pass 4 PR2 — SnapshotManager extraction:
