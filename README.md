@@ -144,7 +144,7 @@ Play-test hardening on top of v0.2.14:
 - **Duel screen a11y** — title and chapters screens are `inert` and `aria-hidden` while the Duel Archive is active.
 - **Daily Calculus** — confirm dialog when abandoning a recoverable in-progress session (play-smoke locked).
 - **SFX** — capture-promotion and check/mate promotion SAN precedence tests (`exd8=N`, `exd8=Q+`, `axb8=R#`).
-- **Tests.** **489** automated tests (Pass 4 wave in progress).
+- **Tests.** **489** automated tests (Pass 4 complete — v0.3.0).
 
 ---
 
@@ -362,7 +362,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 
 **Next (prioritized)**
 
-- **Pass 4 (current maximum-effort wave)** — see the full plan in [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). GameFlow decomposition (SnapshotManager, DuelManager, CampaignOrchestrator, AiOrchestrator) + AI surface hardening (feature-complete evaluate, benchmark harness, opening bias, first Worker path). PR1 (snapshot replay foundation) already in flight.
+- **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening (`searchBench`, phase PST, `aiAsync`).
 - **Pass 3 deep (content)** — tune opening repertoires into measurable preference biases inside `chess/openings.ts` (talk lines already prefix live match/duel flavor).
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
