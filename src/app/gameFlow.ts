@@ -19,7 +19,6 @@ import type {
   PuzzleScene,
   Scene,
   DuelRosterEntry,
-  DuelVariant,
   PieceSkinId,
   RewardBundle,
   RewardDefinition,
@@ -32,16 +31,18 @@ import type {
 import { ledgerContentFingerprint } from './ledgerFingerprint'
 import { loadSave, type LastScreen } from './storage'
 import { devWarn } from './devLog'
-import { DUEL_ROSTER } from '../data/duelRoster'
 import {
+  DuelManager,
   buildDuelArchiveRoster,
   filterUnlockedDuelRoster,
   isDuelVariantUnlocked,
   recommendDuelDifficulty as recommendDuelDifficultyFromHistory,
+  resolveSnapshotDuelSetup,
+  type DuelSession,
   type DuelUnlockContext,
 } from './duel/DuelManager'
 
-export type { DuelArchiveRosterEntry } from './duel/DuelManager'
+export type { DuelArchiveRosterEntry, DuelSession, LastDuelSetup } from './duel/DuelManager'
 import { CHAPTER_CLEAR_REWARDS, BASE_VICTORY_REWARDS } from '../data/rewards'
 import {
   adaptProfileToPhase,
@@ -117,21 +118,6 @@ export type ChessUiPayload = {
   boardGuide: string
 }
 
-type DuelSession = {
-  roster: DuelRosterEntry
-  variant: DuelVariant
-  playerColor: 'w' | 'b'
-  fen: string
-  difficulty: 'novice' | 'balanced' | 'relentless'
-}
-
-type LastDuelSetup = {
-  opponentId: string
-  variantId: string
-  playerColor: 'w' | 'b'
-  difficulty: 'novice' | 'balanced' | 'relentless'
-}
-
 export type FlowHandlers = {
   onSceneChange: (chapter: Chapter, scene: Scene, sceneIndex: number) => void
   onChessUpdate: (payload: ChessUiPayload) => void
@@ -183,7 +169,7 @@ export class GameFlow {
     earlyQueenMoves: 0,
     repeatedChecksWithoutGain: 0,
   }
-  private duelSession: DuelSession | null = null
+  private readonly duels = new DuelManager()
   private matchHistory: MatchHistoryEntry[] = []
   private lastResolvedOutcomeKey: string | null = null
   private rivalMemory: Record<string, RivalMemoryEntry> = {}
@@ -204,8 +190,15 @@ export class GameFlow {
     syncIo: SYNC_IO,
   })
   private sessionRecoveredNotice = false
-  private lastDuelSetup: LastDuelSetup | null = null
   private emitRafId = 0
+
+  private get duelSession(): DuelSession | null {
+    return this.duels.getSession()
+  }
+
+  private set duelSession(session: DuelSession | null) {
+    this.duels.setSession(session)
+  }
 
   constructor(chapters: Chapter[], handlers: FlowHandlers) {
     this.chapters = chapters
@@ -332,19 +325,12 @@ export class GameFlow {
     if (!recovery) return false
 
     if (snap.mode === 'duel' && snap.duel) {
-      const setup = this.resolveSnapshotDuelSetup(snap)
-      if (!setup) return false
+      const session = this.duels.restoreSessionFromSnapshot(snap.duel)
+      if (!session) return false
       this.mode = 'duel'
       this.puzzleScene = null
       this.matchScene = null
       this.calibrationScene = null
-      this.duelSession = {
-        roster: setup.roster,
-        variant: setup.variant,
-        playerColor: snap.duel.playerColor,
-        fen: snap.duel.startFen,
-        difficulty: snap.duel.difficulty,
-      }
       this.playerColor = snap.playerColor
       this.chess.load(snap.fen)
       this.history = recovery.history
@@ -384,19 +370,8 @@ export class GameFlow {
     return this.mode === 'duel'
   }
 
-  getActiveDuelBrief(): {
-    rival: DuelRosterEntry
-    variant: DuelVariant
-    playerColor: 'w' | 'b'
-    difficulty: 'novice' | 'balanced' | 'relentless'
-  } | null {
-    if (this.mode !== 'duel' || !this.duelSession) return null
-    return {
-      rival: this.duelSession.roster,
-      variant: this.duelSession.variant,
-      playerColor: this.duelSession.playerColor,
-      difficulty: this.duelSession.difficulty,
-    }
+  getActiveDuelBrief() {
+    return this.duels.getActiveBrief(this.mode === 'duel')
   }
 
   getSelectedPieceSkin(): PieceSkinId {
@@ -490,7 +465,7 @@ export class GameFlow {
     if (snap.sceneIndex < 0 || snap.sceneIndex >= ch.scenes.length) return false
     if (snap.chapterIndex > this.highestUnlockedChapter) return false
     const sc = ch.scenes[snap.sceneIndex]!
-    if (snap.mode === 'duel' && !this.resolveSnapshotDuelSetup(snap)) return false
+    if (snap.mode === 'duel' && (!snap.duel || !resolveSnapshotDuelSetup(snap.duel))) return false
     if (!this.snapshotRecoveryState(snap, sc)) return false
     return true
   }
@@ -501,14 +476,6 @@ export class GameFlow {
     if (sc.type === 'calibration') return 'calibration'
     if (sc.type === 'freeplay') return 'freeplay'
     return null
-  }
-
-  private resolveSnapshotDuelSetup(snap: InProgressSnapshot) {
-    if (snap.mode !== 'duel' || !snap.duel) return null
-    const roster = DUEL_ROSTER.find((r) => r.opponentId === snap.duel?.opponentId)
-    const variant = roster?.variants.find((v) => v.id === snap.duel?.variantId)
-    if (!roster || !variant) return null
-    return { roster, variant }
   }
 
   private snapshotStartFen(sc: Scene, snap: InProgressSnapshot): string | null {
@@ -556,7 +523,7 @@ export class GameFlow {
   }
 
   rematchLastDuel(): boolean {
-    const s = this.lastDuelSetup
+    const s = this.duels.getRematchParams()
     if (!s) return false
     return this.startDuel(s.opponentId, s.variantId, s.playerColor, undefined, s.difficulty)
   }
@@ -638,12 +605,15 @@ export class GameFlow {
     fen = DEFAULT_POSITION,
     difficulty: 'novice' | 'balanced' | 'relentless' = 'balanced',
   ): boolean {
-    const roster = DUEL_ROSTER.find((r) => r.opponentId === opponentId)
-    if (!roster) return false
-    const variant = roster.variants.find((v) => v.id === variantId)
-    if (!variant) return false
-    if (!isDuelVariantUnlocked(variant.id, this.duelUnlockContext())) return false
-    if (this.highestUnlockedChapter < variant.minChapterUnlock) return false
+    const session = this.duels.tryBeginDuel(
+      opponentId,
+      variantId,
+      playerColor,
+      this.duelUnlockContext(),
+      fen,
+      difficulty,
+    )
+    if (!session) return false
 
     this.cancelAiTimer()
     this.lastResolvedOutcomeKey = null
@@ -654,16 +624,8 @@ export class GameFlow {
     this.puzzleScene = null
     this.matchScene = null
     this.calibrationScene = null
-    this.duelSession = {
-      roster,
-      variant,
-      playerColor,
-      fen: variant.fen ?? fen,
-      difficulty,
-    }
-    this.lastDuelSetup = { opponentId, variantId, playerColor, difficulty }
     this.playerColor = playerColor
-    this.chess.load(this.duelSession.fen)
+    this.chess.load(session.fen)
     this.history = [this.chess.fen()]
     this.sanLog = []
     this.sanQuality = []
@@ -681,7 +643,7 @@ export class GameFlow {
 
   stopDuel() {
     if (this.mode !== 'duel') return
-    this.duelSession = null
+    this.duels.endSession()
     this.refreshScene()
   }
 
@@ -2249,7 +2211,7 @@ export class GameFlow {
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
-    this.lastDuelSetup = null
+    this.duels.clearLastSetup()
     this.pendingRewards = []
     this.snapshots.clearPendingSnapshot()
     this.sessionRecoveredNotice = false

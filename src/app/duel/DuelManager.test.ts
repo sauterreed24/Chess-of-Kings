@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import {
+  DuelManager,
   buildDuelArchiveRoster,
   findDuelVariant,
   isDuelOpponentUnlocked,
   isDuelVariantUnlocked,
   recommendDuelDifficulty,
   duelUnlockHint,
+  resolveSnapshotDuelSetup,
   type DuelUnlockContext,
 } from './DuelManager'
 import { DUEL_ROSTER } from '../../data/duelRoster'
@@ -76,5 +78,43 @@ describe('duelUnlockHint', () => {
     const alexion = DUEL_ROSTER.find((r) => r.opponentId === 'alexion')!
     const ctx: DuelUnlockContext = { ...baseCtx(), highestUnlockedChapter: 99 }
     expect(duelUnlockHint(alexion, ctx, (i) => `Ch${i}`)).toBe('Open now.')
+  })
+})
+
+describe('DuelManager session lifecycle', () => {
+  it('tryBeginDuel creates session and rematch params for alexion mentor', () => {
+    const mgr = new DuelManager()
+    const session = mgr.tryBeginDuel('alexion', 'alexion-mentor', 'w', baseCtx())
+    expect(session?.variant.id).toBe('alexion-mentor')
+    expect(mgr.getSession()?.fen).toBeTruthy()
+    expect(mgr.getRematchParams()?.variantId).toBe('alexion-mentor')
+  })
+
+  it('tryBeginDuel rejects locked variants', () => {
+    const mgr = new DuelManager()
+    expect(mgr.tryBeginDuel('edred', 'edred-guard', 'w', baseCtx())).toBeNull()
+    expect(mgr.getSession()).toBeNull()
+  })
+
+  it('restoreSessionFromSnapshot rebuilds roster + variant', () => {
+    const mgr = new DuelManager()
+    const duel = {
+      opponentId: 'alexion',
+      variantId: 'alexion-mentor',
+      difficulty: 'balanced' as const,
+      playerColor: 'w' as const,
+      startFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+    }
+    const session = mgr.restoreSessionFromSnapshot(duel)
+    expect(session?.roster.opponentId).toBe('alexion')
+    expect(resolveSnapshotDuelSetup(duel)).not.toBeNull()
+  })
+
+  it('endSession clears active session', () => {
+    const mgr = new DuelManager()
+    mgr.tryBeginDuel('alexion', 'alexion-mentor', 'w', baseCtx())
+    mgr.endSession()
+    expect(mgr.getSession()).toBeNull()
+    expect(mgr.getRematchParams()).not.toBeNull()
   })
 })

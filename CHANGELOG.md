@@ -11,11 +11,11 @@ level (the save format has its own version field — see
 
 ## [0.2.24] — 2026-05-30
 
-Pass 4 PR3 (kickoff) — DuelManager unlock/roster seam:
+Pass 4 PR3 — DuelManager seam (unlock + session lifecycle):
 
-- **`src/app/duel/DuelManager.ts`** — pure unlock checks, archive roster, difficulty recommendation.
-- **`GameFlow`** — delegates duel roster/archive/unlock/difficulty to the manager.
-- **Tests** — 8 focused `DuelManager.test.ts` cases.
+- **`DuelManager` class** — `tryBeginDuel`, session restore, rematch params, active brief, unlock/archive roster.
+- **`GameFlow`** — delegates duel validation/session; board/chess orchestration unchanged.
+- **Tests** — 12 `DuelManager.test.ts` cases (**467** total in gate).
 
 ---
 
