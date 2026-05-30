@@ -32,14 +32,14 @@ src/
 │   │                        duel / lab screens.
 │   ├── shellMarkup.ts       Single function returning the HTML shell that
 │   │                        mountApp injects into #app.
-│   ├── gameFlow.ts          The state machine. Owns chapter / scene / duel
-│   │                        progress, the chess engine bridge, the player
-│   │                        tendency profile, and rival memory. Emits
+│   ├── gameFlow.ts          Thin coordinator: chess/board/AI orchestration;
+│   │                        delegates to the four Pass 4 seams below. Emits
 │   │                        onSceneChange / onChessUpdate / onChapterComplete.
-│   │   ├── persistence/       Pure snapshot replay validation + (future)
-│   │   │                        SnapshotManager for debounced SaveData writes
-│   │   │                        and in-progress recovery. First seam extracted
-│   │   │                        in the Pass 4 GameFlow decomposition wave.
+│   ├── campaign/            CampaignOrchestrator — chapter/scene indices,
+│   │                        unlock flags, advance/jump, completion ids.
+│   ├── duel/                DuelManager — duel unlock, session, roster/archive.
+│   ├── persistence/         snapshotReplay (pure) + SnapshotManager (debounced
+│   │                        SaveData writes and in-progress snapshots).
 │   ├── storage.ts           localStorage-backed save (key
 │   │                        "calculus-of-kings-progress-v3"). Pure
 │   │                        sanitization on load — never trusts the disk.
@@ -68,7 +68,9 @@ src/
 ├── chess/                   Engine, board view, opening book, AI profiles.
 │   ├── ai.ts                Alpha-beta search with transposition table,
 │   │                        move ordering, profile-driven blunder + risk.
-│   ├── evaluate.ts          Material + PST + style-bias evaluation.
+│   ├── evaluate.ts          Material + phase PST + style-bias evaluation.
+│   ├── bench/               searchBench harness (nodes/ms on fixed FENs).
+│   ├── aiAsync.ts           Async findBestMove adapter (main-thread default).
 │   ├── bitboard.ts          Compact board + attack masks used by evaluation/search.
 │   ├── aiProfiles.ts        Phase adaptation + resolveProfileBy* helpers.
 │   ├── motifs.ts            Tactical motif detector (fork / pin / skewer / …).

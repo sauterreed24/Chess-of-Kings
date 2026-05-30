@@ -26,8 +26,8 @@ isProject: false
 
 | Signal                        | State |
 |-------------------------------|-------|
-| Tests                         | **442** passing (quality:gate) after PR1 snapshot replay extraction |
-| GameFlow.ts                   | **~2,336 lines** — largest remaining monolith; persistence seam partially extracted (pure replay in `src/app/persistence/`) |
+| Tests                         | **489** passing (quality:gate) after v0.3.0 wave |
+| GameFlow.ts                   | **~2,226 lines** — coordinator with four seams (`persistence/`, `duel/`, `campaign/`, AI bench); further shrink is incremental |
 | AI / evaluate surface         | Partial Pass 2: pawn structure, bishop pair, rook open file exported+tested. Missing per-phase PSTs, standalone connected pawns, exported mobility/king-safety with dedicated tests, space/tempo, benchmark harness, Worker path (explicitly deferred to this wave) |
 | Openings bias                 | Books exist and are used for first ~20 plies; no measurable preference/repertoire tuning yet |
 | Persistence seam              | `validateAndReplaySnapshot` pure + 12 tests; full `SnapshotManager` (debounce, SaveData assembly, recovery orchestration) still inside GameFlow |

@@ -41,9 +41,10 @@ import {
   type DuelSession,
   type DuelUnlockContext,
 } from './duel/DuelManager'
+import { CampaignOrchestrator } from './campaign/CampaignOrchestrator'
 
 export type { DuelArchiveRosterEntry, DuelSession, LastDuelSetup } from './duel/DuelManager'
-import { CHAPTER_CLEAR_REWARDS, BASE_VICTORY_REWARDS } from '../data/rewards'
+import { BASE_VICTORY_REWARDS } from '../data/rewards'
 import {
   adaptProfileToPhase,
   detectGamePhase,
@@ -128,16 +129,52 @@ export type FlowHandlers = {
 }
 
 export class GameFlow {
-  chapters: Chapter[]
-  chapterIndex = 0
-  sceneIndex = 0
-  highestUnlockedChapter = 0
+  readonly chapters: Chapter[]
+  private readonly campaign: CampaignOrchestrator
   lastScreen: LastScreen = 'title'
-  chapter1Complete = false
-  chapter2Complete = false
-  completedSceneIds: string[] = []
-  completedPuzzleIds: string[] = []
-  stratarchiaUnlocked = false
+
+  get chapterIndex(): number {
+    return this.campaign.progress.chapterIndex
+  }
+  set chapterIndex(v: number) {
+    this.campaign.progress.chapterIndex = v
+  }
+  get sceneIndex(): number {
+    return this.campaign.progress.sceneIndex
+  }
+  set sceneIndex(v: number) {
+    this.campaign.progress.sceneIndex = v
+  }
+  get highestUnlockedChapter(): number {
+    return this.campaign.progress.highestUnlockedChapter
+  }
+  set highestUnlockedChapter(v: number) {
+    this.campaign.progress.highestUnlockedChapter = v
+  }
+  get chapter1Complete(): boolean {
+    return this.campaign.progress.chapter1Complete
+  }
+  set chapter1Complete(v: boolean) {
+    this.campaign.progress.chapter1Complete = v
+  }
+  get chapter2Complete(): boolean {
+    return this.campaign.progress.chapter2Complete
+  }
+  set chapter2Complete(v: boolean) {
+    this.campaign.progress.chapter2Complete = v
+  }
+  get completedSceneIds(): string[] {
+    return this.campaign.progress.completedSceneIds
+  }
+  get completedPuzzleIds(): string[] {
+    return this.campaign.progress.completedPuzzleIds
+  }
+  get stratarchiaUnlocked(): boolean {
+    return this.campaign.progress.stratarchiaUnlocked
+  }
+  set stratarchiaUnlocked(v: boolean) {
+    this.campaign.progress.stratarchiaUnlocked = v
+  }
 
   chess = new Chess()
   private history: string[] = []
@@ -201,20 +238,12 @@ export class GameFlow {
   }
 
   constructor(chapters: Chapter[], handlers: FlowHandlers) {
-    this.chapters = chapters
     this.handlers = handlers
     const s = loadSave()
+    this.campaign = CampaignOrchestrator.hydrateFromSave(chapters, s)
+    this.chapters = this.campaign.chapters
     if (s) {
-      this.chapterIndex = Math.min(s.chapterIndex, chapters.length - 1)
-      const ch = chapters[this.chapterIndex]!
-      this.sceneIndex = Math.min(s.sceneIndex, ch.scenes.length - 1)
-      this.highestUnlockedChapter = Math.min(s.highestUnlockedChapter, chapters.length - 1)
       this.lastScreen = s.lastScreen
-      this.chapter1Complete = s.chapter1Complete
-      this.chapter2Complete = s.chapter2Complete
-      this.completedSceneIds = [...s.completedSceneIds]
-      this.completedPuzzleIds = [...s.completedPuzzleIds]
-      this.stratarchiaUnlocked = s.stratarchiaUnlocked
       this.duelUnlockedOpponentIds = [...s.duelUnlockedOpponentIds]
       this.unlockedDuelVariantIds = [...s.unlockedDuelVariantIds]
       this.codexUnlocks = [...s.codexUnlocks]
@@ -359,11 +388,11 @@ export class GameFlow {
   }
 
   currentChapter(): Chapter {
-    return this.chapters[this.chapterIndex]!
+    return this.campaign.currentChapter()
   }
 
   currentScene(): Scene {
-    return this.currentChapter().scenes[this.sceneIndex]!
+    return this.campaign.currentScene()
   }
 
   isInDuelMode(): boolean {
@@ -2102,41 +2131,25 @@ export class GameFlow {
     this.emitChess()
   }
 
-  private recordLeavingScene(id: string, sc: Scene) {
-    if (!this.completedSceneIds.includes(id)) this.completedSceneIds.push(id)
-    if (sc.type === 'puzzle' && !this.completedPuzzleIds.includes(id)) {
-      this.completedPuzzleIds.push(id)
-    }
-  }
-
   advanceScene() {
     this.cancelAiTimer()
 
-    const ch = this.currentChapter()
     const leaving = this.currentScene()
-    this.recordLeavingScene(leaving.id, leaving)
-    if (leaving.id === 'c1-reflection') this.chapter1Complete = true
-    if (leaving.id === 'c2-reflection') this.chapter2Complete = true
+    const result = this.campaign.advanceAfterLeaving(leaving)
 
-    if (this.sceneIndex < ch.scenes.length - 1) {
-      this.sceneIndex++
+    if (result.kind === 'next-scene') {
       this.persist()
       this.refreshScene()
       return
     }
 
-    this.handlers.onChapterComplete(ch)
-    const chapterRewards = CHAPTER_CLEAR_REWARDS[ch.id] ?? []
-    if (chapterRewards.length) {
-      chapterRewards.forEach((r) => this.applyReward(r))
-      this.rankPoints += 120
-      this.pushRewardBundle(ch.id, `${ch.title} Complete`, chapterRewards)
-    }
-
-    if (this.chapterIndex < this.chapters.length - 1) {
-      this.chapterIndex++
-      this.sceneIndex = 0
-      this.highestUnlockedChapter = Math.max(this.highestUnlockedChapter, this.chapterIndex)
+    if (result.kind === 'chapter-complete') {
+      this.handlers.onChapterComplete(result.chapter)
+      if (result.rewards.length) {
+        result.rewards.forEach((r) => this.applyReward(r))
+        this.rankPoints += 120
+        this.pushRewardBundle(result.chapter.id, `${result.chapter.title} Complete`, result.rewards)
+      }
       this.persist()
       this.refreshScene()
       return
@@ -2147,53 +2160,36 @@ export class GameFlow {
   }
 
   canAdvance(): boolean {
-    if (this.aiThinking) return false
-    if (this.mode === 'duel') return false
-    const sc = this.currentScene()
-    if (sc.type === 'dialogue' || sc.type === 'interlude' || sc.type === 'codex') return true
-    if (sc.type === 'freeplay') return true
-    if (sc.type === 'calibration') return this.calibrationSolved()
-    if (sc.type === 'puzzle') return this.puzzleSolved()
-    if (sc.type === 'match') {
-      if (this.chess.isCheckmate()) return this.chess.turn() !== this.playerColor
-      if (this.isBareKingLockmate()) return this.chess.turn() !== this.playerColor
-      if (this.isDominanceSealedStalemate()) return this.chess.turn() !== this.playerColor
-      if (this.chess.isStalemate()) return false
-      if (this.chess.isInsufficientMaterial()) return false
-      return false
-    }
-    return false
+    return this.campaign.canAdvance({
+      aiThinking: this.aiThinking,
+      mode: this.mode,
+      scene: this.currentScene(),
+      puzzleSolved: this.puzzleSolved(),
+      calibrationSolved: this.calibrationSolved(),
+      chessTurn: this.chess.turn(),
+      playerColor: this.playerColor,
+      isCheckmate: this.chess.isCheckmate(),
+      isStalemate: this.chess.isStalemate(),
+      isInsufficientMaterial: this.chess.isInsufficientMaterial(),
+      isBareKingLockmate: this.isBareKingLockmate(),
+      isDominanceSealedStalemate: this.isDominanceSealedStalemate(),
+    })
   }
 
   jumpToChapter(index: number) {
-    if (index < 0 || index >= this.chapters.length) return
-    if (index > this.highestUnlockedChapter) return
-    this.chapterIndex = index
-    this.sceneIndex = 0
+    if (!this.campaign.applyJumpToChapter(index)) return
     this.refreshScene()
   }
 
   jumpToScene(chapterIndex: number, sceneIndex: number) {
-    if (chapterIndex < 0 || chapterIndex >= this.chapters.length) return
-    if (chapterIndex > this.highestUnlockedChapter) return
-    const ch = this.chapters[chapterIndex]!
-    if (sceneIndex < 0 || sceneIndex >= ch.scenes.length) return
-    this.chapterIndex = chapterIndex
-    this.sceneIndex = sceneIndex
+    if (!this.campaign.applyJumpToScene(chapterIndex, sceneIndex)) return
     this.refreshScene()
   }
 
   newGame() {
     this.cancelAiTimer()
-    this.chapterIndex = 0
-    this.sceneIndex = 0
-    this.highestUnlockedChapter = 0
+    this.campaign.resetProgress()
     this.lastScreen = 'title'
-    this.chapter1Complete = false
-    this.chapter2Complete = false
-    this.completedSceneIds = []
-    this.completedPuzzleIds = []
-    this.stratarchiaUnlocked = false
     this.duelUnlockedOpponentIds = []
     this.unlockedDuelVariantIds = ['alexion-mentor']
     this.codexUnlocks = []

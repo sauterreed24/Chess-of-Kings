@@ -9,6 +9,19 @@ level (the save format has its own version field — see
 
 ---
 
+## [0.3.0] — 2026-05-30
+
+Pass 4 complete — GameFlow decomposition wave:
+
+- **PR1** — Pure `validateAndReplaySnapshot` + plan artifact.
+- **PR2** — `SnapshotManager` (debounced persist, in-progress build).
+- **PR3** — `DuelManager` (unlock, session lifecycle, roster/archive).
+- **PR4** — AI surface: eval exports, phase PST skeleton, `searchBench`, `aiAsync`, opening bias helpers.
+- **PR5** — `CampaignOrchestrator` (navigation, advance, jumps, completion bookkeeping).
+- **489** tests in `quality:gate`; four persistence/duel/campaign/AI seams documented in `ARCHITECTURE.md`.
+
+---
+
 ## [0.2.25] — 2026-05-30
 
 Pass 4 PR4 — AI surface hardening (Pass 2 deep kickoff):
