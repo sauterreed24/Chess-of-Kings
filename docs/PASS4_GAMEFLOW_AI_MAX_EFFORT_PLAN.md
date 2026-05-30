@@ -4,19 +4,19 @@ overview: "A phased maximum-effort wave on `main` that completes the GameFlow de
 todos:
   - id: pr1-foundation
     content: "PR1: Polish + merge snapshot replay foundation (DRY constants/types, plan artifact, docs pointers)"
-    status: in_progress
+    status: completed
   - id: pr2-snapshot-manager
     content: "PR2: Full SnapshotManager (debounced persist, provider contract, failure hook, heavy tests); GameFlow shrink"
-    status: pending
+    status: completed
   - id: pr3-duel-manager
     content: "PR3: DuelManager extraction (roster, session, tuning, archive) + focused tests; more GameFlow reduction"
-    status: pending
+    status: completed
   - id: pr4-ai-surface
     content: "PR4: AI surface deep — export + one-tiny-test-per-feature for remaining eval terms, per-phase PST skeleton, benchmark harness (nodes/sec + tactical suite) with before/after numbers, opening bias hooks, first non-breaking Worker adapter + perf delta"
-    status: pending
+    status: completed
   - id: pr5-campaign-seam-release
     content: "PR5: CampaignOrchestrator seam + final GameFlow LOC target (<1,350), full docs/ARCHITECTURE/CHANGELOG, v0.3.0 release hygiene"
-    status: pending
+    status: completed
 isProject: false
 ---
 
