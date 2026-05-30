@@ -119,6 +119,28 @@ export function chooseOpeningBookMove(
   return weightedPick(legalSans).san
 }
 
+/** Rank book options for a ply by descending weight (for bias / repertoire tests). */
+export function rankOpeningCandidates(
+  chess: Chess,
+  profileId: string,
+  plyCount: number,
+): Array<{ san: string; weight: number; bias: number }> {
+  const book = BOOKS[profileId]
+  if (!book) return []
+  const options = book[plyCount]
+  if (!options?.length) return []
+  const legalSanSet = new Set(chess.moves())
+  const legal = options.filter((o) => legalSanSet.has(o.san))
+  if (!legal.length) return []
+  return [...legal]
+    .sort((a, b) => b.weight - a.weight)
+    .map((o) => ({
+      san: o.san,
+      weight: o.weight,
+      bias: openingSanBias(chess, profileId, plyCount, o.san),
+    }))
+}
+
 /** Heuristic bonus when the engine falls back but should stay on-book. */
 export function openingSanBias(
   chess: Chess,

@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Chess } from 'chess.js'
-import { chooseOpeningBookMove, getBookTopLines, openingSanBias } from './openings'
+import {
+  chooseOpeningBookMove,
+  getBookTopLines,
+  openingSanBias,
+  rankOpeningCandidates,
+} from './openings'
 
 describe('opening books', () => {
   it('returns legal weighted SAN for known profile', () => {
@@ -72,5 +77,22 @@ describe('opening books', () => {
     const top = openingSanBias(c, 'apprentice_court', 1, 'e5')
     const alt = openingSanBias(c, 'apprentice_court', 1, 'd5')
     expect(top).toBeGreaterThan(alt)
+  })
+
+  it('rankOpeningCandidates exposes measurable rival repertoire differences', () => {
+    const rowanPosition = new Chess('rnbqkbnr/pppp1ppp/8/4p3/4PP2/5N2/PPPP2PP/RNBQKB1R b KQkq - 1 2')
+    const vegaPosition = new Chess('r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 1 4')
+    const rowanTop = rankOpeningCandidates(rowanPosition, 'rowan_gambit', 1)[0]?.san
+    const vegaTop = rankOpeningCandidates(vegaPosition, 'vega_italian', 1)[0]?.san
+    expect(rowanTop).toBe('exf4')
+    expect(vegaTop).toBe('Nf6')
+    expect(rowanTop).not.toBe(vegaTop)
+  })
+
+  it('rowan book bias favors exf4 over e5 on the gambit tabiya', () => {
+    const c = new Chess('rnbqkbnr/pppp1ppp/8/4p3/4PP2/5N2/PPPP2PP/RNBQKB1R b KQkq - 1 2')
+    const exf4 = openingSanBias(c, 'rowan_gambit', 1, 'exf4')
+    const e5 = openingSanBias(c, 'rowan_gambit', 1, 'e5')
+    expect(exf4).toBeGreaterThan(e5)
   })
 })

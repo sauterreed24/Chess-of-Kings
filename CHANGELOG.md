@@ -9,6 +9,17 @@ level (the save format has its own version field — see
 
 ---
 
+## [0.2.25] — 2026-05-30
+
+Pass 4 PR4 — AI surface hardening (Pass 2 deep kickoff):
+
+- **Evaluator** — exported mobility/king-safety/coordination terms; standalone `evaluateConnectedPawnBonus`; per-phase PST skeleton (`pieceSquareValue`, `resolveEvalPhase`); space + tempo terms.
+- **Benchmark** — `src/chess/bench/searchBench.ts` with nodes/ms reporting via `getLastSearchNodes()`.
+- **Openings** — `rankOpeningCandidates` for measurable rival repertoire bias.
+- **Async adapter** — `findBestMoveAsync` (main-thread default; worker surface reserved).
+
+---
+
 ## [0.2.24] — 2026-05-30
 
 Pass 4 PR3 — DuelManager seam (unlock + session lifecycle):

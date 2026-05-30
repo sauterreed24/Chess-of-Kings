@@ -1,20 +1,34 @@
 import { Chess } from 'chess.js'
 import { describe, expect, it } from 'vitest'
 import {
+  centerControlBonus,
   evaluateBishopPairBonus,
+  evaluateConnectedPawnBonus,
   evaluateDoubledPawnPenalty,
   evaluateIsolatedPawnPenalty,
+  evaluateKingSafetyPenalty,
+  evaluateMobilityBonus,
   evaluatePassedPawnBonus,
   evaluateRookFileBonus,
+  evaluateSpaceBonus,
+  evaluateTempoBonus,
+  kingPressureBonus,
+  knightOutpostBonus,
+  loosePiecePressureBonus,
   materialAndPst,
+  pieceSquareValue,
   PIECE_VALUES,
+  resolveEvalPhase,
+  rookSeventhBonus,
 } from './evaluate'
 import { analyzePosition } from './bitboard'
 
 describe('evaluate feature terms (via materialAndPst)', () => {
-  it('scores starting position as equal for White', () => {
+  it('scores starting position with only tempo/space skew for White', () => {
     const chess = new Chess()
-    expect(materialAndPst(chess, 'w')).toBe(0)
+    const score = materialAndPst(chess, 'w')
+    expect(score).toBeGreaterThan(0)
+    expect(score).toBeLessThan(20)
   })
 
   it('rewards material advantage for a missing enemy queen', () => {
@@ -89,5 +103,53 @@ describe('evaluate feature exports (direct)', () => {
     const isolated = analyzePosition(new Chess('8/4k3/8/3P4/8/8/8/4K3 w - - 0 1'))
     const supported = analyzePosition(new Chess('8/4k3/8/2PP4/8/8/8/4K3 w - - 0 1'))
     expect(evaluateIsolatedPawnPenalty(isolated, 'w')).toBeGreaterThan(evaluateIsolatedPawnPenalty(supported, 'w'))
+  })
+
+  it('evaluateMobilityBonus increases with side mobility', () => {
+    const start = analyzePosition(new Chess())
+    const open = analyzePosition(new Chess('rnbqkb1r/pppp1ppp/5n2/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 2 3'))
+    expect(evaluateMobilityBonus(open, 'w', false)).toBeGreaterThanOrEqual(evaluateMobilityBonus(start, 'w', false))
+  })
+
+  it('evaluateKingSafetyPenalty punishes a broken kingside pawn shield', () => {
+    const shielded = analyzePosition(new Chess('r1bqkb1r/pppp1ppp/2n5/8/4P3/8/PPPP1PPP/RNB1RK2 w KQkq - 0 1'))
+    const broken = analyzePosition(new Chess('r1bqkb1r/pppp1ppp/2n5/8/4P3/8/PPPP2PP/RNB1RK2 w KQkq - 0 1'))
+    expect(evaluateKingSafetyPenalty(broken, 'w')).toBeGreaterThan(evaluateKingSafetyPenalty(shielded, 'w'))
+  })
+
+  it('evaluateConnectedPawnBonus rewards chained pawns', () => {
+    const chain = analyzePosition(new Chess('8/4k3/8/2PP4/8/8/8/4K3 w - - 0 1'))
+    const lone = analyzePosition(new Chess('8/4k3/8/3P4/8/8/8/4K3 w - - 0 1'))
+    expect(evaluateConnectedPawnBonus(chain, 'w')).toBeGreaterThan(evaluateConnectedPawnBonus(lone, 'w'))
+  })
+
+  it('coordination helpers return non-negative bonuses on active positions', () => {
+    const pos = analyzePosition(new Chess('r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R b KQkq - 0 4'))
+    const knight = pos.pieceList.find((p) => p.type === 'n' && p.color === 'b')
+    const rook = pos.pieceList.find((p) => p.type === 'r' && p.color === 'w')
+    if (knight) expect(knightOutpostBonus(pos, knight)).toBeGreaterThanOrEqual(0)
+    if (rook) expect(rookSeventhBonus(pos, rook)).toBeGreaterThanOrEqual(0)
+    expect(kingPressureBonus(pos, 'w', false)).toBeGreaterThanOrEqual(0)
+    expect(loosePiecePressureBonus(pos, 'w')).toBeGreaterThanOrEqual(0)
+    expect(centerControlBonus(pos, 'w')).toBeGreaterThan(0)
+  })
+
+  it('evaluateSpaceBonus and evaluateTempoBonus are non-zero in typical middlegames', () => {
+    const chess = new Chess()
+    const pos = analyzePosition(chess)
+    expect(evaluateSpaceBonus(pos, 'w')).toBeGreaterThan(0)
+    expect(evaluateTempoBonus('w', 'w', 'middlegame')).toBeGreaterThan(0)
+  })
+
+  it('resolveEvalPhase classifies opening vs endgame material', () => {
+    expect(resolveEvalPhase(analyzePosition(new Chess()))).toBe('opening')
+    expect(resolveEvalPhase(analyzePosition(new Chess('8/4k3/8/8/8/8/4R3/4K3 w - - 0 1')))).toBe('endgame')
+  })
+
+  it('pieceSquareValue differs by phase for developing knights', () => {
+    const square = 'c3' as const
+    const opening = pieceSquareValue('n', square, 'w', 'opening', false)
+    const endgame = pieceSquareValue('n', square, 'w', 'endgame', true)
+    expect(opening).not.toBe(endgame)
   })
 })

@@ -108,18 +108,75 @@ const PST_KING_EG_W = [
   -50,-30,-30,-30,-30,-30,-30,-50,
 ]
 
-function pstFor(piece: PieceSymbol, square: Square, color: Color, endgame: boolean): number {
+export type EvalPhase = 'opening' | 'middlegame' | 'endgame'
+
+/** Mirrors campaign `GamePhase` heuristics using material on the board. */
+export function resolveEvalPhase(position: PositionAnalysis): EvalPhase {
+  const count = position.pieceList.filter((p) => p.type !== 'k').length
+  if (count >= 20) return 'opening'
+  if (count <= 8) return 'endgame'
+  return 'middlegame'
+}
+
+/* Opening: encourage knight development (c3/f3/c6/f6 style squares). */
+const OPENING_KNIGHT_DEV: readonly number[] = [
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 12, 8, 8, 12, 0, 0,
+  0, 0, 8, 4, 4, 8, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0,
+]
+
+/* Endgame skeleton: centralize minors slightly more than middlegame tables. */
+const PST_KNIGHT_EG_W = PST_KNIGHT_W.map((v, idx) => {
+  const file = idx % 8
+  const rank = Math.floor(idx / 8)
+  return file >= 2 && file <= 5 && rank >= 2 && rank <= 5 ? v + 10 : v
+})
+const PST_BISHOP_EG_W = PST_BISHOP_W.map((v, idx) => {
+  const file = idx % 8
+  const rank = Math.floor(idx / 8)
+  return file >= 2 && file <= 5 && rank >= 2 && rank <= 5 ? v + 6 : v
+})
+const PST_PAWN_EG_W = PST_PAWN_W.map((v, idx) => {
+  const rank = Math.floor(idx / 8)
+  return rank >= 4 && rank <= 6 ? v + 8 : v
+})
+
+export function pieceSquareValue(
+  piece: PieceSymbol,
+  square: Square,
+  color: Color,
+  phase: EvalPhase,
+  endgame: boolean,
+): number {
   const idxW = squareIndex(square)
   const idx = color === 'w' ? idxW : 63 - idxW
   switch (piece) {
-    case 'p': return PST_PAWN_W[idx]!
-    case 'n': return PST_KNIGHT_W[idx]!
-    case 'b': return PST_BISHOP_W[idx]!
-    case 'r': return PST_ROOK_W[idx]!
-    case 'q': return PST_QUEEN_W[idx]!
-    case 'k': return (endgame ? PST_KING_EG_W : PST_KING_MG_W)[idx]!
-    default:  return 0
+    case 'p':
+      return (phase === 'endgame' ? PST_PAWN_EG_W : PST_PAWN_W)[idx]!
+    case 'n':
+      if (phase === 'opening') return PST_KNIGHT_W[idx]! + (OPENING_KNIGHT_DEV[idx] ?? 0)
+      if (phase === 'endgame') return PST_KNIGHT_EG_W[idx]!
+      return PST_KNIGHT_W[idx]!
+    case 'b':
+      return (phase === 'endgame' ? PST_BISHOP_EG_W : PST_BISHOP_W)[idx]!
+    case 'r':
+      return PST_ROOK_W[idx]!
+    case 'q':
+      return PST_QUEEN_W[idx]!
+    case 'k':
+      return (endgame ? PST_KING_EG_W : PST_KING_MG_W)[idx]!
+    default:
+      return 0
   }
+}
+
+function pstFor(piece: PieceSymbol, square: Square, color: Color, phase: EvalPhase, endgame: boolean): number {
+  return pieceSquareValue(piece, square, color, phase, endgame)
 }
 
 /* ─── Pawn structure (exported for isolated feature tests) ───────────── */
@@ -170,11 +227,22 @@ export function evaluatePassedPawnBonus(position: PositionAnalysis, c: Color): n
     const rank = rankOfIndex(piece.index)
     const rankFromHome = c === 'w' ? rank : 7 - rank
     const protectedBonus = pawnDefendsSquare(position, c, piece.index) ? 9 : 0
+    bonus += (PASSED_BONUS[rankFromHome] ?? 0) + protectedBonus
+  }
+  return bonus
+}
+
+/** Connected pawn chains (neighbors on adjacent files), including non-passed pawns. */
+export function evaluateConnectedPawnBonus(position: PositionAnalysis, c: Color): number {
+  let bonus = 0
+  for (const piece of position.pieceList) {
+    if (piece.type !== 'p' || piece.color !== c) continue
     const file = fileOfIndex(piece.index)
     const connected =
       (file > 0 && position.pawnsByFile[c][file - 1]! > 0) ||
       (file < 7 && position.pawnsByFile[c][file + 1]! > 0)
-    bonus += (PASSED_BONUS[rankFromHome] ?? 0) + protectedBonus + (connected ? 5 : 0)
+    if (!connected) continue
+    bonus += isPawnPassed(position, c, piece.index) ? 5 : 3
   }
   return bonus
 }
@@ -200,7 +268,7 @@ export function evaluateBishopPairBonus(position: PositionAnalysis, c: Color): n
   return position.bishopCount[c] >= 2 ? 22 : 0
 }
 
-function knightOutpostBonus(position: PositionAnalysis, piece: PositionPiece): number {
+export function knightOutpostBonus(position: PositionAnalysis, piece: PositionPiece): number {
   const rank = rankOfIndex(piece.index)
   const file = fileOfIndex(piece.index)
   const rankFromHome = piece.color === 'w' ? rank : 7 - rank
@@ -213,7 +281,7 @@ function knightOutpostBonus(position: PositionAnalysis, piece: PositionPiece): n
   return enemyPawnCanChallenge ? 6 : 18
 }
 
-function rookSeventhBonus(position: PositionAnalysis, piece: PositionPiece): number {
+export function rookSeventhBonus(position: PositionAnalysis, piece: PositionPiece): number {
   const rank = rankOfIndex(piece.index)
   const targetRank = piece.color === 'w' ? 6 : 1
   if (rank !== targetRank) return 0
@@ -248,16 +316,16 @@ export function evaluateMobilityBonus(position: PositionAnalysis, c: Color, endg
   return Math.round(position.mobility[c] * perMove)
 }
 
-function kingPressureBonus(position: PositionAnalysis, c: Color, endgame: boolean): number {
+export function kingPressureBonus(position: PositionAnalysis, c: Color, endgame: boolean): number {
   if (endgame) return 0
   return position.kingPressure[c] * 7
 }
 
-function loosePiecePressureBonus(position: PositionAnalysis, c: Color): number {
+export function loosePiecePressureBonus(position: PositionAnalysis, c: Color): number {
   return Math.min(90, position.loosePiecePressure[c])
 }
 
-function centerControlBonus(position: PositionAnalysis, c: Color): number {
+export function centerControlBonus(position: PositionAnalysis, c: Color): number {
   return popCount(position.attacks[c] & CORE_CENTER_MASK) * 5 +
     popCount(position.attacks[c] & EXTENDED_CENTER_MASK) * 2
 }
@@ -297,6 +365,29 @@ export function evaluateKingSafetyPenalty(position: PositionAnalysis, c: Color):
   return pen
 }
 
+/** Space: attacks and pieces on the side's own half of the board. */
+export function evaluateSpaceBonus(position: PositionAnalysis, c: Color): number {
+  const ownHalfMask =
+    c === 'w'
+      ? boxMask(0, 7, 0, 3)
+      : boxMask(0, 7, 4, 7)
+  const pieces =
+    position.pieces[c].p |
+    position.pieces[c].n |
+    position.pieces[c].b |
+    position.pieces[c].r |
+    position.pieces[c].q
+  const occupied = popCount(pieces & ownHalfMask)
+  const attacked = popCount(position.attacks[c] & ownHalfMask)
+  return Math.round(occupied * 2 + attacked * 0.35)
+}
+
+/** Small tempo bonus when it is our turn to move (middlegame only). */
+export function evaluateTempoBonus(sideToMove: Color, forColor: Color, phase: EvalPhase): number {
+  if (phase === 'endgame' || sideToMove !== forColor) return 0
+  return phase === 'opening' ? 6 : 10
+}
+
 /* ─── Main evaluation ────────────────────────────────────────────────── */
 
 export function materialAndPst(
@@ -305,10 +396,12 @@ export function materialAndPst(
   position: PositionAnalysis = analyzePosition(chess),
 ): number {
   const eg = position.heavyPieceCount <= 2
+  const phase = resolveEvalPhase(position)
   const opp = opponentOf(forColor)
+  const sideToMove = chess.turn()
   let score = 0
   for (const piece of position.pieceList) {
-    const v = PIECE_VALUES[piece.type] + pstFor(piece.type, piece.square, piece.color, eg)
+    const v = PIECE_VALUES[piece.type] + pstFor(piece.type, piece.square, piece.color, phase, eg)
     score += piece.color === forColor ? v : -v
   }
   score -= evaluateDoubledPawnPenalty(position, forColor)
@@ -317,6 +410,8 @@ export function materialAndPst(
   score += evaluateIsolatedPawnPenalty(position, opp)
   score += evaluatePassedPawnBonus(position, forColor)
   score -= evaluatePassedPawnBonus(position, opp)
+  score += evaluateConnectedPawnBonus(position, forColor)
+  score -= evaluateConnectedPawnBonus(position, opp)
   score += evaluateRookFileBonus(position, forColor)
   score -= evaluateRookFileBonus(position, opp)
   score += evaluateBishopPairBonus(position, forColor)
@@ -331,6 +426,10 @@ export function materialAndPst(
   score -= loosePiecePressureBonus(position, opp)
   score += centerControlBonus(position, forColor)
   score -= centerControlBonus(position, opp)
+  score += evaluateSpaceBonus(position, forColor)
+  score -= evaluateSpaceBonus(position, opp)
+  score += evaluateTempoBonus(sideToMove, forColor, phase)
+  score -= evaluateTempoBonus(sideToMove, opp, phase)
   if (!eg) {
     score -= evaluateKingSafetyPenalty(position, forColor)
     score += evaluateKingSafetyPenalty(position, opp)

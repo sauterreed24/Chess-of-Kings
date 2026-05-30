@@ -267,6 +267,11 @@ let _deadline = 0
 let _aborted = false
 let _nodes = 0
 
+/** Nodes searched in the last completed `findBestMove` call (for benchmarks). */
+export function getLastSearchNodes(): number {
+  return _nodes
+}
+
 function nowMs(): number {
   return globalThis.performance?.now() ?? Date.now()
 }
