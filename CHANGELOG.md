@@ -9,6 +9,17 @@ level (the save format has its own version field — see
 
 ---
 
+## [0.3.1] — 2026-05-30
+
+Pass 5 — GameFlow shrink + real AI Worker:
+
+- **RewardGrantService** — `grantMatchVictory`, `grantDuelVictory`, chapter bundles; `GameFlow` delegates victory rewards.
+- **aiTurnController** — `runAiTurn`, `shouldScheduleAi`, pace delay; extracted ~250 lines from `playAiMove`.
+- **aiSearch.worker** — FEN-in / SAN-out search off the main thread; `findBestMoveAsync` + `localStorage['cok-ai-worker']`.
+- **495** tests in `quality:gate`; Playwright play-smoke green.
+
+---
+
 ## [0.3.0] — 2026-05-30
 
 Pass 4 complete — GameFlow decomposition wave:

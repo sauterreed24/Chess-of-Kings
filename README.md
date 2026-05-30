@@ -47,7 +47,7 @@
 | **What it is** | Story-driven chess RPG with adaptive rival AI, shipped as a **static PWA** (no backend, no accounts). |
 | **Play** | **[Live demo](https://sauterreed24.github.io/Chess-of-Kings/)** — first step is always [Start here](#start-here). |
 | **Stack** | **TypeScript (strict)**, plain DOM, **Vite**, **Vitest**, `chess.js`; Capacitor shells for optional native builds. |
-| **Quality** | **489** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, pages-build assertions, bundle gzip report). Optional Playwright smoke job on `main`. |
+| **Quality** | **495** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, pages-build assertions, bundle gzip report). Optional Playwright smoke job on `main`. |
 | **Fit signals** | Accessibility-minded UI, save-format migrations, property-tested engine, small **gzip** JS budget (<90 KB). |
 | **Author** | **Reed Sauter** — [GitHub](https://github.com/sauterreed24) · [LinkedIn](https://www.linkedin.com/in/reed-sauter-205774208) |
 | **Core skills** | TypeScript · Vite · game development · chess engine / game AI · accessibility (ARIA, keyboard UI) · Vitest & property-based testing · PWA · client persistence · CI release gates · technical writing |
@@ -144,7 +144,7 @@ Play-test hardening on top of v0.2.14:
 - **Duel screen a11y** — title and chapters screens are `inert` and `aria-hidden` while the Duel Archive is active.
 - **Daily Calculus** — confirm dialog when abandoning a recoverable in-progress session (play-smoke locked).
 - **SFX** — capture-promotion and check/mate promotion SAN precedence tests (`exd8=N`, `exd8=Q+`, `axb8=R#`).
-- **Tests.** **489** automated tests (Pass 4 complete — v0.3.0).
+- **Tests.** **495** automated tests (Pass 5 — v0.3.1).
 
 ---
 
@@ -217,7 +217,7 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` currently runs **489 tests across 64 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
+**Testing scopes.** `npm test` currently runs **495 tests across 65 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
@@ -265,7 +265,7 @@ ci_workflows:
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/ci.yml
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/pages.yml
 license: MIT
-tests: 489 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus + Stratarch Rating ladder)
+tests: 495 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus + Stratarch Rating ladder)
 skills_keywords:
   - TypeScript strict mode
   - Vite
@@ -342,7 +342,7 @@ npm install              # install dependencies
 npm run dev              # local dev server (LAN-exposed for device testing)
 npm run quality:gate     # deterministic release gate used by CI and Pages
 npm run build            # production build (tsc + vite)
-npm test                 # full test suite (489 tests)
+npm test                 # full test suite (495 tests)
 npm run test:deterministic # serialized seeded suite used by the release gate
 npm run lint             # eslint, max warnings 0
 npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay)
@@ -363,6 +363,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 **Next (prioritized)**
 
 - **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening (`searchBench`, phase PST, `aiAsync`).
+- **Pass 5 (shipped v0.3.1)** — `RewardGrantService`, `aiTurnController`, and `aiSearch.worker` (enable with `localStorage.setItem('cok-ai-worker','1')`).
 - **Pass 3 deep (content)** — tune opening repertoires into measurable preference biases inside `chess/openings.ts` (talk lines already prefix live match/duel flavor).
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
@@ -382,7 +383,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 
 **[Reed Sauter](https://github.com/sauterreed24)** is a self-taught developer and game builder. He ships narrative, systems-heavy web games in strict TypeScript — campaign progression, opponent-specific AI, accessibility-first UI, and deterministic test gates — without leaning on a heavyweight front-end framework.
 
-**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack, rival doctrine, post-loss coaching, PWA installability, and **489** automated tests behind every release.
+**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack, rival doctrine, post-loss coaching, PWA installability, and **495** automated tests behind every release.
 
 **Skills this repo demonstrates**
 

@@ -1,14 +1,7 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
 import type { Move, Square, PieceSymbol } from 'chess.js'
-import {
-  findBestMove,
-  findBestMoveWithProfile,
-  findRandomMove,
-  materialAdvantage,
-  PIECE_VALUES,
-} from '../chess/ai'
+import { materialAdvantage, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
-import type { AIStyle } from '../chess/evaluate'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
 import type { BoardPickMode, BoardSelectionState } from '../chess/boardView'
@@ -21,7 +14,6 @@ import type {
   DuelRosterEntry,
   PieceSkinId,
   RewardBundle,
-  RewardDefinition,
   PlayerTendencyProfile,
   AiProfile,
   InProgressSnapshot,
@@ -42,16 +34,27 @@ import {
   type DuelUnlockContext,
 } from './duel/DuelManager'
 import { CampaignOrchestrator } from './campaign/CampaignOrchestrator'
+import {
+  computeAiPaceDelay,
+  runAiTurn,
+  shouldScheduleAi,
+  type AiTurnHost,
+} from './ai/aiTurnController'
+import {
+  applyRewardToInventory,
+  createChapterRewardBundle,
+  grantDuelVictory,
+  grantMatchVictory,
+  type RewardInventoryState,
+} from './rewards/RewardGrantService'
 
 export type { DuelArchiveRosterEntry, DuelSession, LastDuelSetup } from './duel/DuelManager'
-import { BASE_VICTORY_REWARDS } from '../data/rewards'
 import {
   adaptProfileToPhase,
   detectGamePhase,
   resolveProfileByDuelVariant,
   resolveProfileByMatchId,
 } from '../chess/aiProfiles'
-import { chooseOpeningBookMove } from '../chess/openings'
 import { detectTacticalMotifs } from '../chess/motifs'
 import {
   applyRatingResult,
@@ -1305,74 +1308,31 @@ export class GameFlow {
     return BASE_RATING
   }
 
-  private pushRewardBundle(sourceId: string, sourceLabel: string, rewards: RewardDefinition[]) {
-    if (!rewards.length) return
-    this.pendingRewards.push({
-      sourceId,
-      sourceLabel,
-      rewards,
-    })
-  }
-
-  private applyReward(reward: RewardDefinition) {
-    if (reward.kind === 'skin' && reward.skinId) {
-      if (!this.unlockedPieceSkins.includes(reward.skinId)) this.unlockedPieceSkins.push(reward.skinId)
-      return
-    }
-    if (reward.kind === 'codex' && reward.codexId) {
-      if (!this.codexUnlocks.includes(reward.codexId)) this.codexUnlocks.push(reward.codexId)
-      return
-    }
-    if (reward.kind === 'title' && reward.titleId) {
-      if (!this.titleUnlocks.includes(reward.titleId)) this.titleUnlocks.push(reward.titleId)
-      return
-    }
-    if (reward.kind === 'duel-variant' && reward.duelVariantId) {
-      if (!this.unlockedDuelVariantIds.includes(reward.duelVariantId)) {
-        this.unlockedDuelVariantIds.push(reward.duelVariantId)
-      }
-      return
-    }
-    if (reward.kind === 'chronicle') {
-      if (!this.chronicleEchoes.includes(reward.id)) this.chronicleEchoes.push(reward.id)
+  private rewardInventory(): RewardInventoryState {
+    return {
+      unlockedPieceSkins: this.unlockedPieceSkins,
+      codexUnlocks: this.codexUnlocks,
+      titleUnlocks: this.titleUnlocks,
+      unlockedDuelVariantIds: this.unlockedDuelVariantIds,
+      chronicleEchoes: this.chronicleEchoes,
+      duelUnlockedOpponentIds: this.duelUnlockedOpponentIds,
     }
   }
 
   private grantVictoryRewards() {
-    if (this.mode === 'match') {
-      const m = this.matchScene
-      if (!m) return
-      const unlockId = m.id.includes('amara')
-        ? 'amara'
-        : m.id.includes('edred')
-          ? 'edred'
-          : m.id.includes('rowan')
-            ? 'rowan'
-            : m.id.includes('vega')
-              ? 'vega'
-              : m.id.includes('boss') || m.id.includes('demetrios')
-                ? 'alexion'
-                : ''
-      if (unlockId && !this.duelUnlockedOpponentIds.includes(unlockId)) this.duelUnlockedOpponentIds.push(unlockId)
-      const rewards = BASE_VICTORY_REWARDS[m.id] ?? []
-      rewards.forEach((r) => this.applyReward(r))
-      this.rankPoints += 30 + Math.max(0, (m.difficulty ?? 1) - 1) * 15
-      this.pushRewardBundle(m.id, m.title, rewards)
+    const inv = this.rewardInventory()
+    if (this.mode === 'match' && this.matchScene) {
+      const result = grantMatchVictory(inv, this.matchScene)
+      this.rankPoints += result.rankPointsDelta
+      if (result.bundle) this.pendingRewards.push(result.bundle)
       this.persist()
       return
     }
     if (this.mode === 'duel' && this.duelSession) {
-      const synthetic: RewardDefinition[] = [
-        {
-          id: `duel-echo-${this.duelSession.variant.id}`,
-          kind: 'chronicle',
-          label: 'Chronicle Echo Captured',
-          description: `Your duel with ${this.duelSession.roster.opponentName} was archived.`,
-        },
-      ]
-      synthetic.forEach((r) => this.applyReward(r))
-      this.rankPoints += 10
-      this.pushRewardBundle(this.duelSession.variant.id, `Duel · ${this.duelSession.variant.label}`, synthetic)
+      const result = grantDuelVictory(this.duelSession)
+      for (const r of result.bundle?.rewards ?? []) applyRewardToInventory(inv, r)
+      this.rankPoints += result.rankPointsDelta
+      if (result.bundle) this.pendingRewards.push(result.bundle)
       this.persist()
     }
   }
@@ -1731,12 +1691,62 @@ export class GameFlow {
     }
   }
 
+  private buildAiHost(): AiTurnHost {
+    return {
+      chess: this.chess,
+      mode: this.mode,
+      playerColor: this.playerColor,
+      sanLog: this.sanLog,
+      getScriptedMoveIndex: () => this.scriptedMoveIndex,
+      incrementScriptedMoveIndex: () => {
+        this.scriptedMoveIndex++
+      },
+      lastAiMoveKey: this.lastAiMoveKey,
+      duelSession: this.duelSession,
+      matchScene: this.matchScene,
+      puzzleScene: this.puzzleScene,
+      calibrationScene: this.calibrationScene,
+      tendencies: this.tendencies,
+      currentScene: () => this.currentScene(),
+      isSceneTerminal: () => this.isSceneTerminalForCurrentMode(),
+      computeMatchOutcome: () => this.computeMatchOutcome(),
+      puzzleSolved: () => this.puzzleSolved(),
+      commitEngineMove: (result, drawPick) => this.commitEnginePliesOrThrow(result, drawPick),
+      setBoardInteraction: (on) => this.board?.setInteraction(on),
+      emitChess: () => this.emitChess(),
+      persist: () => this.persist(),
+      recordResolvedOutcomeIfNeeded: () => this.recordResolvedOutcomeIfNeeded(),
+      grantVictoryRewards: () => this.grantVictoryRewards(),
+      scheduleAiMove: () => this.scheduleAiMove(),
+      tuneProfileForMatch: (base, m) => this.tuneProfileForMatch(base, m),
+      tuneProfileForDuel: (base, diff, oid) => this.tuneProfileForDuel(base, diff, oid),
+      profileMoveOpts: (profile) => this.profileMoveOpts(profile),
+      openingBookPlyIndex: () => this.openingBookPlyIndex(),
+    }
+  }
+
+  private executeAiTurn() {
+    this.aiThinking = false
+    this.aiTimer = 0
+    this.lastTacticalPulse = null
+    void runAiTurn(this.buildAiHost())
+  }
+
   private scheduleAiMove() {
     const sc = this.currentScene()
-    if (this.mode !== 'duel' && sc.type === 'freeplay') return
-    if (this.chess.turn() === this.playerColor) return
-    if (this.isSceneTerminalForCurrentMode()) return
-    if (this.aiThinking || this.aiTimer) return
+    if (
+      !shouldScheduleAi({
+        mode: this.mode,
+        scene: sc,
+        chessTurn: this.chess.turn(),
+        playerColor: this.playerColor,
+        terminal: this.isSceneTerminalForCurrentMode(),
+        aiThinking: this.aiThinking,
+        aiTimer: this.aiTimer,
+      })
+    ) {
+      return
+    }
 
     this.aiThinking = true
     this.board?.setInteraction(false)
@@ -1747,261 +1757,7 @@ export class GameFlow {
         : this.mode === 'match'
           ? this.recentLossStreak(this.matchScene?.id)
           : this.recentLossStreak()
-    const paceDelay = pressure >= 2 ? Math.min(620, 380 + pressure * 70) : 380
-    this.aiTimer = window.setTimeout(() => this.playAiMove(), paceDelay)
-  }
-
-  private playAiMove() {
-    this.aiThinking = false
-    this.aiTimer = 0
-    /* Keep the last player insight visible through the reply. */
-    this.lastTacticalPulse = null
-    const sc = this.currentScene()
-    if (this.isSceneTerminalForCurrentMode()) {
-      this.board?.setInteraction(false)
-      this.emitChess()
-      return
-    }
-    if (this.chess.turn() === this.playerColor) {
-      this.board?.setInteraction(true)
-      this.emitChess()
-      return
-    }
-
-    if (this.mode === 'duel' && this.duelSession) {
-      const base = resolveProfileByDuelVariant(this.duelSession.variant.id)
-      const phase = detectGamePhase(this.chess)
-      const adapted = adaptProfileToPhase(base, phase, this.tendencies)
-      const profile = this.tuneProfileForDuel(
-        adapted,
-        this.duelSession.difficulty,
-        this.duelSession.roster.opponentId,
-      )
-      let openingPlayed = false
-      if (this.sanLog.length < 18) {
-        const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.openingBookPlyIndex())
-        if (bookSan) {
-          try {
-            this.commitEnginePliesOrThrow(this.chess.move(bookSan), {
-              mode: 'solo',
-              soloColor: this.playerColor,
-            })
-            openingPlayed = true
-          } catch {
-            openingPlayed = false
-          }
-        }
-      }
-      try {
-        if (!openingPlayed) {
-          const mv = findBestMoveWithProfile(this.chess, profile, this.profileMoveOpts(profile))
-          if (mv) {
-            this.commitEnginePliesOrThrow(this.chess.move(mv), {
-              mode: 'solo',
-              soloColor: this.playerColor,
-            })
-          }
-        }
-      } catch {
-        try {
-          const rm = findRandomMove(this.chess, this.lastAiMoveKey)
-          if (rm) {
-            this.commitEnginePliesOrThrow(
-              this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
-              { mode: 'solo', soloColor: this.playerColor },
-            )
-          }
-        } catch { /* no legal move */ }
-      }
-      if (this.isSceneTerminalForCurrentMode()) {
-        this.board?.setInteraction(false)
-        this.recordResolvedOutcomeIfNeeded()
-        if (this.computeMatchOutcome() === 'win') this.grantVictoryRewards()
-        this.persist()
-        this.emitChess()
-        return
-      }
-      this.board?.setInteraction(true)
-      this.persist()
-      this.emitChess()
-      if (this.chess.turn() !== this.playerColor) this.scheduleAiMove()
-      return
-    }
-
-    if (sc.type === 'match' && this.matchScene) {
-      const m = this.matchScene
-      let lastSan: string | null = null
-      const base = resolveProfileByMatchId(m.id)
-      const phase = detectGamePhase(this.chess)
-      const adapted = adaptProfileToPhase(base, phase, this.tendencies)
-      const profile = this.tuneProfileForMatch(adapted, m)
-
-      const script = m.scriptedBlackSans
-      const shouldUseScript =
-        Boolean(script?.length) &&
-        this.scriptedMoveIndex < (script?.length ?? 0) &&
-        this.sanLog.length < 14 &&
-        Math.random() < Math.max(0.2, Math.min(0.9, profile.openingDiscipline))
-      if (shouldUseScript && script) {
-        const san = script[this.scriptedMoveIndex]!
-        try {
-          const result = this.commitEnginePliesOrThrow(this.chess.move(san), {
-            mode: 'solo',
-            soloColor: this.playerColor,
-          })
-          lastSan = result.san
-          this.scriptedMoveIndex++
-        } catch {
-          /* scripted move illegal — fall through to engine */
-        }
-      }
-
-      if (!lastSan && this.sanLog.length < 20) {
-        const bookSan = chooseOpeningBookMove(this.chess, profile.id, this.openingBookPlyIndex())
-        if (bookSan) {
-          try {
-            const result = this.commitEnginePliesOrThrow(this.chess.move(bookSan), {
-              mode: 'solo',
-              soloColor: this.playerColor,
-            })
-            lastSan = result.san
-          } catch {
-            // fall through to engine
-          }
-        }
-      }
-
-      if (!lastSan) {
-        try {
-          const best = findBestMoveWithProfile(
-            this.chess,
-            {
-              ...profile,
-              searchDepth: Math.max(profile.searchDepth, m.aiDepth),
-              style: m.aiStyle ?? profile.style,
-            },
-            this.profileMoveOpts(profile),
-          )
-          if (best) {
-            const result = this.commitEnginePliesOrThrow(this.chess.move(best), {
-              mode: 'solo',
-              soloColor: this.playerColor,
-            })
-            lastSan = result.san
-          }
-        } catch {
-          try {
-            const rm = findRandomMove(this.chess, this.lastAiMoveKey)
-            if (rm) {
-              const result = this.commitEnginePliesOrThrow(
-                this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
-                { mode: 'solo', soloColor: this.playerColor },
-              )
-              lastSan = result.san
-            }
-          } catch {
-            /* exhausted */
-          }
-        }
-      }
-
-      if (this.isSceneTerminalForCurrentMode()) {
-        this.board?.setInteraction(false)
-        this.recordResolvedOutcomeIfNeeded()
-        if (this.computeMatchOutcome() === 'win') this.grantVictoryRewards()
-        this.persist()
-        this.emitChess()
-        return
-      }
-
-      this.board?.setInteraction(true)
-      this.persist()
-      this.emitChess()
-      if (this.chess.turn() !== this.playerColor) this.scheduleAiMove()
-      return
-    }
-
-    if (sc.type === 'puzzle' && this.puzzleScene && this.chess.turn() !== this.playerColor) {
-      const p = this.puzzleScene
-      const depth = p.opponentAiDepth ?? 2
-      const style: AIStyle = p.opponentAiStyle ?? 'development'
-      let played = false
-      try {
-        const best = findBestMove(this.chess, depth, style)
-        if (best) {
-          this.commitEnginePliesOrThrow(this.chess.move(best), {
-            mode: 'solo',
-            soloColor: this.playerColor,
-          })
-          played = true
-        }
-      } catch {
-        /* fall through */
-      }
-      if (!played) {
-        try {
-          const rm = findRandomMove(this.chess)
-          if (rm) {
-            this.commitEnginePliesOrThrow(
-              this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion }),
-              { mode: 'solo', soloColor: this.playerColor },
-            )
-            played = true
-          }
-        } catch {
-          /* no legal moves */
-        }
-      }
-
-      if (this.puzzleSolved()) {
-        this.board?.setInteraction(false)
-        this.persist()
-        this.emitChess()
-        return
-      }
-      if (this.chess.isGameOver()) {
-        this.board?.setInteraction(false)
-        this.persist()
-        this.emitChess()
-        return
-      }
-      this.board?.setInteraction(true)
-      this.persist()
-      this.emitChess()
-      if (this.chess.turn() !== this.playerColor) this.scheduleAiMove()
-      return
-    }
-
-    if (sc.type === 'calibration' && this.chess.turn() === 'b') {
-      try {
-        const rm = findRandomMove(this.chess)
-        if (rm) {
-          const result = this.chess.move({ from: rm.from, to: rm.to, promotion: rm.promotion })
-          if (!result) {
-            devWarn('calibration: random black move returned null')
-          } else {
-            this.sanLog.push(result.san)
-            this.history.push(this.chess.fen())
-            this.board?.draw(this.chess, result, { mode: 'solo', soloColor: 'w' })
-          }
-        }
-      } catch {
-        /* Random calibration move failed (illegal position); ignore and continue. */
-      }
-
-      if (this.chess.isGameOver()) {
-        this.board?.setInteraction(false)
-      } else {
-        this.board?.setInteraction(true)
-      }
-      this.persist()
-      this.emitChess()
-      return
-    }
-
-    this.board?.setInteraction(true)
-    this.persist()
-    this.emitChess()
+    this.aiTimer = window.setTimeout(() => this.executeAiTurn(), computeAiPaceDelay(pressure))
   }
 
   private calibrationSolved(): boolean {
@@ -2146,9 +1902,15 @@ export class GameFlow {
     if (result.kind === 'chapter-complete') {
       this.handlers.onChapterComplete(result.chapter)
       if (result.rewards.length) {
-        result.rewards.forEach((r) => this.applyReward(r))
+        const inv = this.rewardInventory()
+        for (const r of result.rewards) applyRewardToInventory(inv, r)
         this.rankPoints += 120
-        this.pushRewardBundle(result.chapter.id, `${result.chapter.title} Complete`, result.rewards)
+        const bundle = createChapterRewardBundle(
+          result.chapter.id,
+          result.chapter.title,
+          result.rewards,
+        )
+        if (bundle) this.pendingRewards.push(bundle)
       }
       this.persist()
       this.refreshScene()

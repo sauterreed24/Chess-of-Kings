@@ -32,9 +32,11 @@ src/
 │   │                        duel / lab screens.
 │   ├── shellMarkup.ts       Single function returning the HTML shell that
 │   │                        mountApp injects into #app.
-│   ├── gameFlow.ts          Thin coordinator: chess/board/AI orchestration;
-│   │                        delegates to the four Pass 4 seams below. Emits
-│   │                        onSceneChange / onChessUpdate / onChapterComplete.
+│   ├── gameFlow.ts          Thin coordinator: chess/board orchestration;
+│   │                        delegates Pass 4 seams + Pass 5 reward/AI modules.
+│   │                        Emits onSceneChange / onChessUpdate / onChapterComplete.
+│   ├── rewards/             RewardGrantService — victory/chapter inventory grants.
+│   ├── ai/                  aiTurnController — AI pacing, async search host, runAiTurn.
 │   ├── campaign/            CampaignOrchestrator — chapter/scene indices,
 │   │                        unlock flags, advance/jump, completion ids.
 │   ├── duel/                DuelManager — duel unlock, session, roster/archive.
@@ -70,7 +72,8 @@ src/
 │   │                        move ordering, profile-driven blunder + risk.
 │   ├── evaluate.ts          Material + phase PST + style-bias evaluation.
 │   ├── bench/               searchBench harness (nodes/ms on fixed FENs).
-│   ├── aiAsync.ts           Async findBestMove adapter (main-thread default).
+│   ├── aiAsync.ts           Async findBestMove (main default; optional Worker).
+│   ├── workers/             aiSearch.worker — off-thread alpha-beta + node count.
 │   ├── bitboard.ts          Compact board + attack masks used by evaluation/search.
 │   ├── aiProfiles.ts        Phase adaptation + resolveProfileBy* helpers.
 │   ├── motifs.ts            Tactical motif detector (fork / pin / skewer / …).
