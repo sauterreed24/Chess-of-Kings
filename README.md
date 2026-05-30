@@ -342,7 +342,7 @@ npm install              # install dependencies
 npm run dev              # local dev server (LAN-exposed for device testing)
 npm run quality:gate     # deterministic release gate used by CI and Pages
 npm run build            # production build (tsc + vite)
-npm test                 # full test suite (436 tests)
+npm test                 # full test suite (467 tests)
 npm run test:deterministic # serialized seeded suite used by the release gate
 npm run lint             # eslint, max warnings 0
 npm run test:ui-smoke    # fast UI gate (rewardOverlay + escape routing + replay)
@@ -382,7 +382,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 
 **[Reed Sauter](https://github.com/sauterreed24)** is a self-taught developer and game builder. He ships narrative, systems-heavy web games in strict TypeScript — campaign progression, opponent-specific AI, accessibility-first UI, and deterministic test gates — without leaning on a heavyweight front-end framework.
 
-**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack, rival doctrine, post-loss coaching, PWA installability, and **436** automated tests behind every release.
+**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack, rival doctrine, post-loss coaching, PWA installability, and **467** automated tests behind every release.
 
 **Skills this repo demonstrates**
 
