@@ -130,8 +130,9 @@ board calls `GameFlow.onMove`, the flow updates state and emits a
 
 - **Key:** `calculus-of-kings-progress-v3` in `localStorage`.
 - **Shape:** `SaveData` (see `app/storage.ts`). Versioned (`version: 3`).
-- **Writes:** debounced 180 ms; flushed eagerly on `pagehide` and
-  `beforeunload` so closing the tab can never strand a result.
+- **Writes:** `SnapshotManager` debounces 180 ms (`app/persistence/SnapshotManager.ts`);
+  flushed eagerly on `pagehide` and `beforeunload` so closing the tab can never strand a result.
+- **In-progress snapshots:** built via pure `buildInProgressSnapshot()`; replay validation in `snapshotReplay.ts`.
 - **Loads:** every field is sanitized — unknown values fall back to
   defaults, FENs are validated by constructing a `Chess` from them.
 - **Test mode:** `import.meta.env.MODE === 'test'` flips `SYNC_IO` so

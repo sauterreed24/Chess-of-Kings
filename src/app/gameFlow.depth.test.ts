@@ -305,9 +305,9 @@ describe('GameFlow depth systems', () => {
       onChapterComplete: vi.fn(),
       onCampaignFinished: vi.fn(),
     })
-    const f = flow as unknown as { pendingInProgressSnapshot: unknown }
+    const f = flow as unknown as { snapshots: { setPendingSnapshot: (s: unknown) => void } }
     expect(flow.hasRecoverableSession()).toBe(false)
-    f.pendingInProgressSnapshot = makeCalibrationSnapshot()
+    f.snapshots.setPendingSnapshot(makeCalibrationSnapshot())
     expect(flow.hasRecoverableSession()).toBe(true)
   })
 
@@ -320,12 +320,12 @@ describe('GameFlow depth systems', () => {
     })
     flow.board = mockBoard() as unknown as BoardView
     const f = flow as unknown as {
-      pendingInProgressSnapshot: unknown
+      snapshots: { setPendingSnapshot: (s: unknown) => void }
       highestUnlockedChapter: number
     }
     f.highestUnlockedChapter = 0
     const snapshot = makeCalibrationSnapshot()
-    f.pendingInProgressSnapshot = snapshot
+    f.snapshots.setPendingSnapshot(snapshot)
     const ok = flow.resumeRecoverableSession()
     expect(ok).toBe(true)
     expect(flow.chess.fen()).toBe(snapshot.fen)
@@ -346,21 +346,21 @@ describe('GameFlow depth systems', () => {
     chess.move('Nh6')
     const afterNh6 = chess.fen()
     const f = flow as unknown as {
-      pendingInProgressSnapshot: unknown | null
+      snapshots: { setPendingSnapshot: (s: unknown) => void; getPendingSnapshot: () => unknown | null }
       highestUnlockedChapter: number
     }
     f.highestUnlockedChapter = 0
-    f.pendingInProgressSnapshot = {
+    f.snapshots.setPendingSnapshot({
       ...makeCalibrationSnapshot(),
       fen: afterNh6,
       history: [startFen, afterE4, afterNh6],
       sanLog: ['e4'],
       sanQuality: ['good'],
-    }
+    })
 
     expect(flow.hasRecoverableSession()).toBe(false)
     expect(flow.resumeRecoverableSession()).toBe(false)
-    expect(f.pendingInProgressSnapshot).toBeNull()
+    expect(f.snapshots.getPendingSnapshot()).toBeNull()
   })
 
   it('drops stale recoverable snapshot that targets locked chapter', () => {
@@ -371,11 +371,11 @@ describe('GameFlow depth systems', () => {
       onCampaignFinished: vi.fn(),
     })
     const f = flow as unknown as {
-      pendingInProgressSnapshot: unknown
+      snapshots: { setPendingSnapshot: (s: unknown) => void }
       highestUnlockedChapter: number
     }
     f.highestUnlockedChapter = 0
-    f.pendingInProgressSnapshot = { mode: 'match', chapterIndex: 2, sceneIndex: 0 }
+    f.snapshots.setPendingSnapshot({ mode: 'match', chapterIndex: 2, sceneIndex: 0 })
     expect(flow.hasRecoverableSession()).toBe(false)
     const ok = flow.resumeRecoverableSession()
     expect(ok).toBe(false)
@@ -389,8 +389,8 @@ describe('GameFlow depth systems', () => {
       onChapterComplete: vi.fn(),
       onCampaignFinished: vi.fn(),
     })
-    const f = flow as unknown as { pendingInProgressSnapshot: unknown }
-    f.pendingInProgressSnapshot = makeCalibrationSnapshot()
+    const f = flow as unknown as { snapshots: { setPendingSnapshot: (s: unknown) => void } }
+    f.snapshots.setPendingSnapshot(makeCalibrationSnapshot())
     expect(flow.hasRecoverableSession()).toBe(true)
     flow.newGame()
     expect(flow.hasRecoverableSession()).toBe(false)

@@ -9,6 +9,17 @@ level (the save format has its own version field — see
 
 ---
 
+## [0.2.23] — 2026-05-30
+
+Pass 4 PR2 — SnapshotManager extraction:
+
+- **`SnapshotManager`** — debounced persist, synchronous test mode, pending snapshot ownership, `onPersistFailure` hook.
+- **`buildInProgressSnapshot()`** — pure in-progress assembly moved out of `gameFlow.ts`.
+- **`GameFlow`** — delegates save I/O to the manager; recovery orchestration unchanged.
+- **Tests** — expanded `SnapshotManager.test.ts` (debounce coalescing, flush, failure hook, build paths).
+
+---
+
 ## [0.2.14] — 2026-04-30
 
 Product and reliability pass: live rival talk lines in AI flavor, Daily

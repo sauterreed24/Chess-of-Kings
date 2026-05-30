@@ -30,7 +30,7 @@ import type {
   RivalMemoryEntry,
 } from '../types'
 import { ledgerContentFingerprint } from './ledgerFingerprint'
-import { loadSave, writeSave, type LastScreen, type SaveData } from './storage'
+import { loadSave, type LastScreen } from './storage'
 import { devWarn } from './devLog'
 import { DUEL_ROSTER } from '../data/duelRoster'
 import { CHAPTER_CLEAR_REWARDS, BASE_VICTORY_REWARDS } from '../data/rewards'
@@ -54,10 +54,14 @@ import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../dat
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
 import { findHangingPiece, hangingCoachTip } from './hangingInsight'
 import { validateAndReplaySnapshot, IN_PROGRESS_PLY_LIMIT, type SnapshotRecoveryState } from './persistence/snapshotReplay'
+import {
+  SnapshotManager,
+  type BuildSavePayload,
+  type SnapshotBuildContext,
+} from './persistence/SnapshotManager'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
-const PERSIST_DEBOUNCE_MS = 180
 const CHAPTER_LABELS = ['Prologue', 'Chapter I', 'Chapter II', 'Chapter III', 'Chapter IV', 'Chapter V']
 
 function chapterLabel(index: number): string {
@@ -194,10 +198,12 @@ export class GameFlow {
   private boardSelection: BoardSelectionState = emptyBoardSelection()
   /** Last engine ply (from+to+promotion) — used to discourage immediate duplicate AI moves. */
   private lastAiMoveKey: string | null = null
-  private pendingInProgressSnapshot: InProgressSnapshot | null = null
+  private readonly snapshots = new SnapshotManager({
+    onPersistFailure: () => this.handlers.onPersistFailure?.(),
+    syncIo: SYNC_IO,
+  })
   private sessionRecoveredNotice = false
   private lastDuelSetup: LastDuelSetup | null = null
-  private persistTimer: ReturnType<typeof setTimeout> | null = null
   private emitRafId = 0
 
   constructor(chapters: Chapter[], handlers: FlowHandlers) {
@@ -227,7 +233,7 @@ export class GameFlow {
       this.matchHistory = [...s.matchHistory]
       this.rivalMemory = { ...s.rivalMemory }
       this.ladder = { ...s.ladder }
-      this.pendingInProgressSnapshot = s.inProgress
+      this.snapshots.setPendingSnapshot(s.inProgress)
     }
   }
 
@@ -236,29 +242,16 @@ export class GameFlow {
     this.persist()
   }
 
-  /**
-   * Debounced localStorage write (production) to avoid hammering storage during rapid play.
-   * Tests use synchronous writes (see SYNC_IO).
-   */
+  /** Debounced localStorage write (production). Tests flush synchronously via SnapshotManager. */
   persist() {
-    if (SYNC_IO) {
-      this.flushPersist()
-      return
-    }
-    if (this.persistTimer !== null) window.clearTimeout(this.persistTimer)
-    this.persistTimer = window.setTimeout(() => {
-      this.persistTimer = null
-      this.flushPersist()
-    }, PERSIST_DEBOUNCE_MS)
+    this.snapshots.persist(
+      () => this.buildSavePayload(),
+      () => this.snapshotBuildContext(),
+    )
   }
 
-  private flushPersist() {
-    if (this.persistTimer !== null) {
-      window.clearTimeout(this.persistTimer)
-      this.persistTimer = null
-    }
-    const data: SaveData = {
-      version: 3,
+  private buildSavePayload(): BuildSavePayload {
+    return {
       chapterIndex: this.chapterIndex,
       sceneIndex: this.sceneIndex,
       highestUnlockedChapter: this.highestUnlockedChapter,
@@ -282,14 +275,42 @@ export class GameFlow {
       matchHistory: [...this.matchHistory],
       rivalMemory: { ...this.rivalMemory },
       ladder: { ...this.ladder },
-      inProgress: this.buildInProgressSnapshot(),
     }
-    if (!writeSave(data)) this.handlers.onPersistFailure?.()
+  }
+
+  private snapshotBuildContext(): SnapshotBuildContext {
+    const sc = this.currentScene()
+    return {
+      mode: this.mode,
+      chapterIndex: this.chapterIndex,
+      sceneIndex: this.sceneIndex,
+      usesBoard: this.sceneUsesBoard(sc),
+      history: this.history,
+      sanLog: this.sanLog,
+      sanQuality: this.sanQuality,
+      playerColor: this.playerColor,
+      calibrationMoves: this.calibrationMoves,
+      scriptedMoveIndex: this.scriptedMoveIndex,
+      sceneTendencies: this.sceneTendencies,
+      duel:
+        this.mode === 'duel' && this.duelSession
+          ? {
+              opponentId: this.duelSession.roster.opponentId,
+              variantId: this.duelSession.variant.id,
+              difficulty: this.duelSession.difficulty,
+              playerColor: this.duelSession.playerColor,
+              startFen: this.duelSession.fen,
+            }
+          : null,
+    }
   }
 
   /** Flush pending debounced save + any pending UI emission (tab close / visibility). */
   flushDeferredIO() {
-    this.flushPersist()
+    this.snapshots.flushPersist(
+      () => this.buildSavePayload(),
+      () => this.snapshotBuildContext(),
+    )
     this.flushEmit()
   }
 
@@ -301,46 +322,10 @@ export class GameFlow {
     this.emitChessNow()
   }
 
-  private buildInProgressSnapshot(): InProgressSnapshot | null {
-    if (this.mode === 'idle') return null
-    const sc = this.currentScene()
-    if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return null
-    if (!this.history.length) return null
-    const plyCount = Math.min(this.sanLog.length, Math.max(0, this.history.length - 1), IN_PROGRESS_PLY_LIMIT)
-    const history = this.history.slice(0, plyCount + 1)
-    if (!history.length) return null
-    const sanLog = this.sanLog.slice(0, plyCount)
-    const sanQuality = Array.from({ length: plyCount }, (_, i) => this.sanQuality[i] ?? null)
-    const snap: InProgressSnapshot = {
-      mode: this.mode,
-      chapterIndex: this.chapterIndex,
-      sceneIndex: this.sceneIndex,
-      fen: history[history.length - 1]!,
-      history,
-      sanLog,
-      sanQuality,
-      playerColor: this.playerColor,
-      calibrationMoves: this.calibrationMoves,
-      scriptedMoveIndex: this.scriptedMoveIndex,
-      sceneTendencies: { ...this.sceneTendencies },
-      duel: undefined,
-    }
-    if (this.mode === 'duel' && this.duelSession) {
-      snap.duel = {
-        opponentId: this.duelSession.roster.opponentId,
-        variantId: this.duelSession.variant.id,
-        difficulty: this.duelSession.difficulty,
-        playerColor: this.duelSession.playerColor,
-        startFen: this.duelSession.fen,
-      }
-    }
-    return snap
-  }
-
   private maybeRestoreInProgressSnapshot(sc: Scene): boolean {
-    const snap = this.pendingInProgressSnapshot
+    const snap = this.snapshots.getPendingSnapshot()
     if (!snap) return false
-    this.pendingInProgressSnapshot = null
+    this.snapshots.clearPendingSnapshot()
     if (snap.chapterIndex !== this.chapterIndex || snap.sceneIndex !== this.sceneIndex) return false
     const recovery = this.snapshotRecoveryState(snap, sc)
     if (!recovery) return false
@@ -464,7 +449,7 @@ export class GameFlow {
   }
 
   hasRecoverableSession(): boolean {
-    return this.canResumeSnapshot(this.pendingInProgressSnapshot)
+    return this.canResumeSnapshot(this.snapshots.getPendingSnapshot())
   }
 
   /**
@@ -479,11 +464,11 @@ export class GameFlow {
   }
 
   resumeRecoverableSession(): boolean {
-    const snap = this.pendingInProgressSnapshot
+    const snap = this.snapshots.getPendingSnapshot()
     if (!this.canResumeSnapshot(snap)) {
       if (snap) {
         // Clear stale/corrupt recovery state so UI does not keep surfacing a dead resume action.
-        this.pendingInProgressSnapshot = null
+        this.snapshots.clearPendingSnapshot()
         this.persist()
       }
       return false
@@ -2311,7 +2296,7 @@ export class GameFlow {
     this.boardSelection = emptyBoardSelection()
     this.lastDuelSetup = null
     this.pendingRewards = []
-    this.pendingInProgressSnapshot = null
+    this.snapshots.clearPendingSnapshot()
     this.sessionRecoveredNotice = false
     this.mode = 'idle'
     this.puzzleScene = null
