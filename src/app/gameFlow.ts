@@ -53,12 +53,11 @@ import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
 import { findHangingPiece, hangingCoachTip } from './hangingInsight'
-import { validateAndReplaySnapshot } from './persistence/snapshotReplay'
+import { validateAndReplaySnapshot, IN_PROGRESS_PLY_LIMIT, type SnapshotRecoveryState } from './persistence/snapshotReplay'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
 const PERSIST_DEBOUNCE_MS = 180
-const IN_PROGRESS_PLY_LIMIT = 512
 const CHAPTER_LABELS = ['Prologue', 'Chapter I', 'Chapter II', 'Chapter III', 'Chapter IV', 'Chapter V']
 
 function chapterLabel(index: number): string {
@@ -77,12 +76,6 @@ function emptyBoardSelection(): BoardSelectionState {
 
 export type MatchOutcome = 'win' | 'loss' | 'draw' | null
 export type MoveQuality = 'brilliant' | 'good' | 'ok' | 'inaccuracy' | 'mistake' | 'blunder' | null
-
-type SnapshotRecoveryState = {
-  history: string[]
-  sanLog: string[]
-  sanQuality: MoveQuality[]
-}
 
 export type ChessUiPayload = {
   chess: Chess

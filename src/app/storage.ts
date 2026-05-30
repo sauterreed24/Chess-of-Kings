@@ -11,9 +11,9 @@ import type {
 } from '../types'
 import { defaultLadderRating, clampRating } from '../game/rating'
 import { Chess } from 'chess.js'
+import { IN_PROGRESS_PLY_LIMIT } from './persistence/snapshotReplay'
 
 const KEY = 'calculus-of-kings-progress-v3'
-const IN_PROGRESS_PLY_LIMIT = 512
 
 export type LastScreen = 'title' | 'chapters' | 'play'
 

@@ -78,19 +78,17 @@ recent maximum-effort commits in `git log` are reasonable templates.
 
 ## What we'd love help with
 
-- **Pass 2 deep** — feature-decomposed `evaluate.ts` (per-phase
-  PSTs, isolated / doubled / passed / connected pawns, mobility,
-  bishop pair, rook on open file, knight outposts, space, tempo)
-  with one tiny test per feature.
-- **`GameFlow` split** — campaign vs duel vs persistence modules now
-  that `screenController` and `src/app/ui/*` own mount rendering.
-- **Pass 3 deep (openings)** — turn documented rival opening repertoires
-  into measurable preference biases inside `chess/openings.ts`.
-- **Pass 4 deep** — per-rival Elo-ish tracker on `SaveData` (with
-  migration + a 50-rivalry × 20-game property test of converged
-  win-rate bands).
-- **Native shells** — Capacitor scaffolding exists for iOS / Android;
-  a TestFlight / Play Internal Testing pipeline would help a lot.
+See the active **Maximum Effort Pass 4** plan: [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md).
+
+Current focus (in flight / next PRs):
+- GameFlow decomposition (SnapshotManager, DuelManager, CampaignOrchestrator, AiOrchestrator seams)
+- AI surface (exported + tested eval features, per-phase PSTs, benchmark harness, opening bias, first Worker adapter)
+
+Later (after this wave):
+- Per-rival Elo-ish tracker (the old "Pass 4 deep")
+- Native TestFlight / Play Internal pipeline (environment-dependent)
+
+The plan follows the same gated-PR, quality:gate, `cursor/*-9ff3` rules as Pass 3.
 
 ## Reporting issues
 
