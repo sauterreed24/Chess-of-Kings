@@ -53,6 +53,7 @@ import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
 import { findHangingPiece, hangingCoachTip } from './hangingInsight'
+import { validateAndReplaySnapshot } from './persistence/snapshotReplay'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
@@ -564,27 +565,14 @@ export class GameFlow {
     }
     const startFen = this.snapshotStartFen(sc, snap)
     if (!startFen) return null
-    try {
-      const replay = new Chess(startFen)
-      const history = [replay.fen()]
-      const sanLog: string[] = []
-      for (const raw of snap.sanLog) {
-        if (typeof raw !== 'string') return null
-        const san = raw.trim()
-        if (!san) return null
-        const move = replay.move(san)
-        if (!move) return null
-        sanLog.push(san)
-        history.push(replay.fen())
-      }
-      if (replay.fen() !== snap.fen) return null
-      return {
-        history,
-        sanLog,
-        sanQuality: sanLog.map((_, i) => this.snapshotMoveQualityAt(snap, i)),
-      }
-    } catch {
-      return null
+
+    const replayed = validateAndReplaySnapshot(snap, startFen)
+    if (!replayed) return null
+
+    return {
+      history: replayed.history,
+      sanLog: replayed.sanLog,
+      sanQuality: replayed.sanLog.map((_, i) => this.snapshotMoveQualityAt(snap, i)),
     }
   }
 
