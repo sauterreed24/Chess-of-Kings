@@ -36,6 +36,10 @@ src/
 │   │                        progress, the chess engine bridge, the player
 │   │                        tendency profile, and rival memory. Emits
 │   │                        onSceneChange / onChessUpdate / onChapterComplete.
+│   │   ├── persistence/       Pure snapshot replay validation + (future)
+│   │   │                        SnapshotManager for debounced SaveData writes
+│   │   │                        and in-progress recovery. First seam extracted
+│   │   │                        in the Pass 4 GameFlow decomposition wave.
 │   ├── storage.ts           localStorage-backed save (key
 │   │                        "calculus-of-kings-progress-v3"). Pure
 │   │                        sanitization on load — never trusts the disk.

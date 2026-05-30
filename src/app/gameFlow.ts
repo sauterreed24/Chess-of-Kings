@@ -53,11 +53,11 @@ import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
 import { findHangingPiece, hangingCoachTip } from './hangingInsight'
+import { validateAndReplaySnapshot, IN_PROGRESS_PLY_LIMIT, type SnapshotRecoveryState } from './persistence/snapshotReplay'
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
 const PERSIST_DEBOUNCE_MS = 180
-const IN_PROGRESS_PLY_LIMIT = 512
 const CHAPTER_LABELS = ['Prologue', 'Chapter I', 'Chapter II', 'Chapter III', 'Chapter IV', 'Chapter V']
 
 function chapterLabel(index: number): string {
@@ -76,12 +76,6 @@ function emptyBoardSelection(): BoardSelectionState {
 
 export type MatchOutcome = 'win' | 'loss' | 'draw' | null
 export type MoveQuality = 'brilliant' | 'good' | 'ok' | 'inaccuracy' | 'mistake' | 'blunder' | null
-
-type SnapshotRecoveryState = {
-  history: string[]
-  sanLog: string[]
-  sanQuality: MoveQuality[]
-}
 
 export type ChessUiPayload = {
   chess: Chess
@@ -564,27 +558,14 @@ export class GameFlow {
     }
     const startFen = this.snapshotStartFen(sc, snap)
     if (!startFen) return null
-    try {
-      const replay = new Chess(startFen)
-      const history = [replay.fen()]
-      const sanLog: string[] = []
-      for (const raw of snap.sanLog) {
-        if (typeof raw !== 'string') return null
-        const san = raw.trim()
-        if (!san) return null
-        const move = replay.move(san)
-        if (!move) return null
-        sanLog.push(san)
-        history.push(replay.fen())
-      }
-      if (replay.fen() !== snap.fen) return null
-      return {
-        history,
-        sanLog,
-        sanQuality: sanLog.map((_, i) => this.snapshotMoveQualityAt(snap, i)),
-      }
-    } catch {
-      return null
+
+    const replayed = validateAndReplaySnapshot(snap, startFen)
+    if (!replayed) return null
+
+    return {
+      history: replayed.history,
+      sanLog: replayed.sanLog,
+      sanQuality: replayed.sanLog.map((_, i) => this.snapshotMoveQualityAt(snap, i)),
     }
   }
 

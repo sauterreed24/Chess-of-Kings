@@ -362,8 +362,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 
 **Next (prioritized)**
 
-- **Pass 2 deep** — feature-decomposed `evaluate.ts` (per-phase PSTs, pawn structure, mobility, bishop pair, rook on open file, knight outposts, space, tempo) with one tiny test per feature. Optional Web Worker for AI search if benchmarks justify it.
-- **`GameFlow` decomposition** — split the ~2.3k-line orchestrator after the mount/UI extractions (campaign vs duel vs persistence seams).
+- **Pass 4 (current maximum-effort wave)** — see the full plan in [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). GameFlow decomposition (SnapshotManager, DuelManager, CampaignOrchestrator, AiOrchestrator) + AI surface hardening (feature-complete evaluate, benchmark harness, opening bias, first Worker path). PR1 (snapshot replay foundation) already in flight.
 - **Pass 3 deep (content)** — tune opening repertoires into measurable preference biases inside `chess/openings.ts` (talk lines already prefix live match/duel flavor).
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
