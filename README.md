@@ -217,7 +217,7 @@ flowchart LR
 
 Engine search includes iterative deepening, principal variation search, quiescence at leaves, killer-move + history move ordering, transposition table (200K-entry LRU), aspiration windows, check extensions, and late-move reductions. See `src/chess/ai.ts` and `src/ARCHITECTURE.md` for the full map.
 
-**Testing scopes.** `npm test` currently runs **436 tests across 57 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
+**Testing scopes.** `npm test` currently runs **467 tests across 60 files** (roughly 3-4 minutes on this machine with sequential Vitest execution for stability). The categories are:
 
 - **Unit** — every pure helper (recap, rank labels, audio cues, keyboard shortcuts, escape routing, ledger fingerprint, motifs, openings, AI profiles, calibration lens, daily calculus, streak, rivals, formatters).
 - **Property** — engine returns legal moves across random positions and all profiles; never emits unsafe SAN.
@@ -265,7 +265,7 @@ ci_workflows:
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/ci.yml
   - https://github.com/sauterreed24/Chess-of-Kings/blob/main/.github/workflows/pages.yml
 license: MIT
-tests: 436 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus + Stratarch Rating ladder)
+tests: 467 (unit + property + engine-vs-engine + migration + DOM + a11y + perf smoke + release gate contract + Duel roster wiring + sealed dossiers + modal focus + Stratarch Rating ladder)
 skills_keywords:
   - TypeScript strict mode
   - Vite
