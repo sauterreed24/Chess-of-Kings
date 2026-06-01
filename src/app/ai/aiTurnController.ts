@@ -14,6 +14,7 @@ import {
   resolveProfileByMatchId,
 } from '../../chess/aiProfiles'
 import { chooseOpeningBookMove } from '../../chess/openings'
+import { inferRivalIdFromSceneId } from '../../data/rivals'
 import type { BoardPickMode } from '../../chess/boardView'
 import { devWarn } from '../devLog'
 import type { DuelSession } from '../duel/DuelManager'
@@ -115,7 +116,12 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     )
     let openingPlayed = false
     if (host.sanLog.length < 18) {
-      const bookSan = chooseOpeningBookMove(host.chess, profile.id, host.openingBookPlyIndex())
+      const bookSan = chooseOpeningBookMove(
+        host.chess,
+        profile.id,
+        host.openingBookPlyIndex(),
+        host.duelSession.roster.opponentId,
+      )
       if (bookSan) {
         try {
           host.commitEngineMove(host.chess.move(bookSan), soloPick)
@@ -184,7 +190,12 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     }
 
     if (!lastSan && host.sanLog.length < 20) {
-      const bookSan = chooseOpeningBookMove(host.chess, profile.id, host.openingBookPlyIndex())
+      const bookSan = chooseOpeningBookMove(
+        host.chess,
+        profile.id,
+        host.openingBookPlyIndex(),
+        inferRivalIdFromSceneId(m.id) ?? undefined,
+      )
       if (bookSan) {
         try {
           const result = host.commitEngineMove(host.chess.move(bookSan), soloPick)

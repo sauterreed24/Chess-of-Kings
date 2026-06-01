@@ -198,6 +198,8 @@ export interface RivalMemoryEntry {
   punishedFlankPushes: number
   punishedEarlyQueen: number
   punishedCheckSpam: number
+  /** Elo-ish archive calibration for this rival (1200–2200). */
+  calibrationRating: number
 }
 
 /**

@@ -1,4 +1,5 @@
 import { devWarn } from './devLog'
+import { sanitizeRivalCalibrationRating } from './duel/rivalCalibration'
 import type {
   CosmeticInventory,
   InProgressSnapshot,
@@ -330,6 +331,7 @@ export function loadSave(): SaveData | null {
               typeof x.punishedCheckSpam === 'number'
                 ? Math.max(0, Math.floor(x.punishedCheckSpam))
                 : 0,
+            calibrationRating: sanitizeRivalCalibrationRating(x.calibrationRating),
           }
         }
         return out

@@ -1,4 +1,5 @@
 import { Chess } from 'chess.js'
+import { rivalOpeningWeightBoost } from './rivalOpeningBias'
 
 type WeightedSan = { san: string; weight: number }
 type OpeningBook = Record<number, WeightedSan[]>
@@ -108,13 +109,19 @@ export function chooseOpeningBookMove(
   chess: Chess,
   profileId: string,
   plyCount: number,
+  rivalId?: string,
 ): string | null {
   const book = BOOKS[profileId]
   if (!book) return null
   const options = book[plyCount]
   if (!options?.length) return null
   const legalSanSet = new Set(chess.moves())
-  const legalSans = options.filter((o) => legalSanSet.has(o.san))
+  const legalSans = options
+    .filter((o) => legalSanSet.has(o.san))
+    .map((o) => ({
+      ...o,
+      weight: o.weight + rivalOpeningWeightBoost(rivalId, plyCount, o.san),
+    }))
   if (!legalSans.length) return null
   return weightedPick(legalSans).san
 }

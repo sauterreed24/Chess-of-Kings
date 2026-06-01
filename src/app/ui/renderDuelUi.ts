@@ -6,6 +6,7 @@ import { escapeHtml } from '../htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from '../chronicleReplay'
 import { createEchoReplayTimer } from '../chronicleEchoTimer'
 import { deriveCalibrationLens } from '../duel/calibrationLens'
+import { formatRivalCalibrationLabel } from '../duel/rivalCalibration'
 import { getRivalProfile } from '../../data/rivals'
 import type { GameFlow } from '../gameFlow'
 import type { RewardOverlayController } from '../rewardOverlayController'
@@ -287,6 +288,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <li><strong>Weakness map:</strong> ${escapeHtml(weaknessMap)}</li>
             <li><strong>Recommended next difficulty:</strong> ${recommendedDifficulty}</li>
             ${rivalMem ? `<li><strong>Rival memory:</strong> ${rivalMem.games} logged games · adaptation intensity ${(Math.min(100, (rivalMem.punishedFlankPushes + rivalMem.punishedEarlyQueen + rivalMem.punishedCheckSpam) * 3)).toFixed(0)}%</li>` : ''}
+            ${rivalMem?.games ? `<li><strong>Archive calibration:</strong> ${rivalMem.calibrationRating} (${formatRivalCalibrationLabel(rivalMem.calibrationRating)})</li>` : ''}
           </ul>
         </div>
         <div class="reward-card">

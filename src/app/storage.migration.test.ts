@@ -234,6 +234,42 @@ describe('storage v3 migration and defaults', () => {
     spy.mockRestore()
   })
 
+  it('hydrates rival memory calibration rating with safe defaults', () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        chapterIndex: 0,
+        sceneIndex: 0,
+        rivalMemory: {
+          amara: {
+            games: 3,
+            wins: 1,
+            losses: 2,
+            draws: 0,
+            avgMoves: 40,
+            punishedFlankPushes: 0,
+            punishedEarlyQueen: 0,
+            punishedCheckSpam: 0,
+          },
+          edred: {
+            games: 2,
+            wins: 0,
+            losses: 2,
+            draws: 0,
+            avgMoves: 35,
+            punishedFlankPushes: 1,
+            punishedEarlyQueen: 0,
+            punishedCheckSpam: 0,
+            calibrationRating: 1780,
+          },
+        },
+      }),
+    )
+    const s = loadSave()
+    expect(s?.rivalMemory.amara?.calibrationRating).toBe(1500)
+    expect(s?.rivalMemory.edred?.calibrationRating).toBe(1780)
+  })
+
   it('clearSave does not throw when storage removeItem fails', () => {
     const spy = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
       throw new Error('privacy mode block')

@@ -65,6 +65,10 @@ import {
 import type { LadderRating } from '../types'
 import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
+import {
+  DEFAULT_RIVAL_CALIBRATION,
+  updateRivalCalibrationRating,
+} from './duel/rivalCalibration'
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
 import { findHangingPiece, hangingCoachTip } from './hangingInsight'
 import { validateAndReplaySnapshot, IN_PROGRESS_PLY_LIMIT, type SnapshotRecoveryState } from './persistence/snapshotReplay'
@@ -1256,6 +1260,7 @@ export class GameFlow {
       punishedFlankPushes: 0,
       punishedEarlyQueen: 0,
       punishedCheckSpam: 0,
+      calibrationRating: DEFAULT_RIVAL_CALIBRATION,
     }
     const games = prev.games + 1
     const wins = prev.wins + (outcome === 'win' ? 1 : 0)
@@ -1273,6 +1278,7 @@ export class GameFlow {
       punishedEarlyQueen: prev.punishedEarlyQueen + Math.round(this.sceneTendencies.earlyQueenMoves * punishedScale),
       punishedCheckSpam:
         prev.punishedCheckSpam + Math.round(this.sceneTendencies.repeatedChecksWithoutGain * punishedScale),
+      calibrationRating: updateRivalCalibrationRating(prev.calibrationRating, outcome),
     }
 
     const prevRating = this.ladder.rating

@@ -9,6 +9,13 @@ level (the save format has its own version field — see
 
 ---
 
+## [Unreleased]
+
+- Per-rival **archive calibration rating** on `RivalMemoryEntry` (persisted, dossier-visible), updated after each logged duel/ladder result.
+- **Rival opening SAN bias** in `chooseOpeningBookMove` (wired through `aiTurnController` for duel + campaign).
+
+---
+
 ## [0.3.1] — 2026-05-30
 
 Pass 5 — GameFlow shrink + real AI Worker:

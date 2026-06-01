@@ -89,6 +89,7 @@ describe('deriveCalibrationLens', () => {
       punishedFlankPushes: 0,
       punishedEarlyQueen: 0,
       punishedCheckSpam: 0,
+      calibrationRating: 1620,
     }
     /* Two wins normally would lean Sharpened, but heavy loss pressure
      * (5 net losses) drags the dial back toward Equilibrium/Forgiving. */
