@@ -5,6 +5,7 @@ export function getShellMarkup(): string {
       <div class="ambient__bloom ambient__bloom--a"></div>
       <div class="ambient__bloom ambient__bloom--b"></div>
       <div class="ambient__bloom ambient__bloom--c"></div>
+      <div class="ambient__bloom ambient__bloom--d" aria-hidden="true"></div>
       <div class="ambient__grid"></div>
       <div class="ambient__grain"></div>
       <div class="ambient__vignette"></div>

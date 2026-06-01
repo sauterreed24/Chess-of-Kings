@@ -991,12 +991,14 @@ export function mountApp(app: HTMLDivElement) {
 
   let advanceTicker = 0
   const scheduleAdvanceTick = () => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return
     if (advanceTicker) window.clearTimeout(advanceTicker)
     const delay = document.hidden ? 2500 : 350
     advanceTicker = window.setTimeout(runAdvanceTick, delay)
   }
   const runAdvanceTick = () => {
     advanceTicker = 0
+    if (typeof document === 'undefined') return
     if (!document.hidden) updateAdvance(flow)
     scheduleAdvanceTick()
   }

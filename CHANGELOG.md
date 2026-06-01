@@ -13,6 +13,8 @@ level (the save format has its own version field — see
 
 - Per-rival **archive calibration rating** on `RivalMemoryEntry` (persisted, dossier-visible), updated after each logged duel/ladder result.
 - **Rival opening SAN bias** in `chooseOpeningBookMove` (wired through `aiTurnController` for duel + campaign).
+- **Alexandrine Imperial** UI polish (`style-alexandrine-imperial.css`): budget-conscious layer on the Hellenistic palette — stratarchic chrome, lapis/gold ambient bloom, forged buttons, archive lab scrim, duel/reward accents (no neon cyber accents). CSS gzip gate raised to **17600** B (base sheet was already at ~16.8 KiB).
+- **mountApp** advance ticker stops rescheduling when `document` is unavailable (fixes vitest teardown races in `quality:gate`).
 
 ---
 

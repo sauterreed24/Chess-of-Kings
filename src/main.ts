@@ -1,4 +1,5 @@
 import './style.css'
+import './style-alexandrine-imperial.css'
 import { mountApp } from './app/mountApp'
 
 function applyRuntimeUiProfile() {
