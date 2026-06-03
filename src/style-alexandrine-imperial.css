@@ -16,7 +16,7 @@
   height: 58px;
   border-bottom-color: rgba(232, 201, 126, 0.18);
   background:
-    linear-gradient(90deg, rgba(42, 96, 148, 0.12), transparent 34%, rgba(201, 169, 98, 0.08)),
+    linear-gradient(90deg, rgba(42, 96, 148, 0.16), transparent 34%, rgba(201, 169, 98, 0.1)),
     linear-gradient(180deg, rgba(25, 20, 14, 0.97), rgba(8, 7, 5, 0.92));
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
 }
@@ -38,16 +38,12 @@ html:not(.perf-lean) .top-bar {
 
 .chapters-wrap {
   padding: 1.35rem 1.5rem 2rem;
-  border: 1px solid rgba(232, 201, 126, 0.16);
+  border: 1px solid rgba(232, 201, 126, 0.22);
   border-radius: 14px;
   background:
-    radial-gradient(circle at 12% 6%, rgba(232, 201, 126, 0.08), transparent 26%),
-    linear-gradient(118deg, transparent 0 66%, rgba(42, 96, 148, 0.09) 66.3%, transparent 66.9%),
+    radial-gradient(circle at 12% 6%, rgba(232, 201, 126, 0.12), transparent 26%),
+    linear-gradient(118deg, transparent 0 66%, rgba(42, 96, 148, 0.11) 66.3%, transparent 66.9%),
     linear-gradient(180deg, rgba(232, 201, 126, 0.045), rgba(0, 0, 0, 0.16)),
     rgba(0, 0, 0, 0.22);
   box-shadow: var(--shadow-panel);
-}
-
-html.perf-lean .ambient__bloom--d {
-  display: none;
 }
