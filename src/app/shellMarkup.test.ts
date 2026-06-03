@@ -148,6 +148,14 @@ describe('shell markup structural integrity', () => {
     expect(host.textContent).toContain('Alexander III')
   })
 
+  it('seeds the Duel Archive with a graphical dossier vestibule', () => {
+    const host = document.createElement('div')
+    host.innerHTML = getShellMarkup()
+    expect(host.querySelector('.duel-empty__map')).not.toBeNull()
+    expect(host.querySelector('#duel-panel')?.textContent).toContain('Choose a living doctrine')
+    expect(host.querySelector('#duel-panel')?.textContent).toContain('counter-prep')
+  })
+
   it('declares the chess board with aria-describedby including the kbd hint and board guide', () => {
     const host = document.createElement('div')
     host.innerHTML = getShellMarkup()

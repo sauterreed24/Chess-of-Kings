@@ -228,7 +228,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 .ambient__bloom {
   position: absolute; border-radius: 50%;
-  filter: blur(74px); opacity: 0.35;
+  filter: blur(74px); opacity: 0.42;
   animation: bloom-drift 32s ease-in-out infinite alternate;
 }
 .ambient__bloom--a {
@@ -2307,7 +2307,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border-radius: 12px;
   padding: 0.7rem;
   background:
-    linear-gradient(180deg, rgba(232,201,126,0.045), rgba(0,0,0,0.08)),
+    radial-gradient(circle at 10% 0%, rgba(232,201,126,0.08), transparent 34%),
+    linear-gradient(180deg, rgba(232,201,126,0.04), rgba(0,0,0,0.1)),
     rgba(0,0,0,0.16);
 }
 
@@ -2504,8 +2505,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .manuscript-panel {
   border-radius: 12px;
   background:
-    linear-gradient(90deg, rgba(232,201,126,0.06), transparent 26%),
-    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.11), transparent 38%),
+    radial-gradient(circle at 14% 0%, rgba(232,201,126,0.1), transparent 30%),
+    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.13), transparent 40%),
+    linear-gradient(90deg, rgba(232,201,126,0.045), transparent 28%),
     linear-gradient(180deg, #1b1710 0%, #100e09 100%);
 }
 
@@ -2692,9 +2694,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   padding: clamp(8px, 1.4vw, 14px);
   border-radius: 12px;
   background:
-    linear-gradient(135deg, rgba(232,201,126,0.26), transparent 22%),
-    linear-gradient(315deg, rgba(42,96,148,0.16), transparent 26%),
-    linear-gradient(150deg, #4b3b24 0%, #2d2418 42%, #17120c 100%);
+    radial-gradient(circle at 18% 14%, rgba(232,201,126,0.34), transparent 24%),
+    linear-gradient(315deg, rgba(42,96,148,0.2), transparent 28%),
+    linear-gradient(150deg, #574327 0%, #302518 44%, #15100b 100%);
 }
 
 .board-brass::before {
@@ -3966,12 +3968,12 @@ html.perf-lean .board-stage--finisher .board-brass {
   border-radius: 14px;
   border: 1px solid rgba(201, 169, 98, 0.12);
   background:
-    linear-gradient(180deg, rgba(232, 201, 126, 0.04), transparent 28%),
+    radial-gradient(circle at 14% 12%, rgba(232, 201, 126, 0.07), transparent 28%),
+    linear-gradient(180deg, rgba(232, 201, 126, 0.035), transparent 30%),
     rgba(0, 0, 0, 0.22);
   box-shadow: var(--shadow-panel);
 }
 .title-hero__plate { backdrop-filter: blur(10px); }
-.ambient__bloom { opacity: 0.42; }
 .daily-ribbon__cta {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
   transition: transform 0.2s var(--ease-out), box-shadow 0.25s, border-color 0.25s;
@@ -3984,7 +3986,6 @@ html.perf-lean .board-stage--finisher .board-brass {
 .reward-overlay:not(.hidden) .reward-sheet {
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(201, 169, 98, 0.14);
 }
-.mark { text-shadow: 0 0 24px rgba(201, 169, 98, 0.2); }
 .chapter-btn__arrow {
   transition: transform 0.22s var(--ease-out), opacity 0.22s;
 }
