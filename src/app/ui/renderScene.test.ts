@@ -102,6 +102,10 @@ describe('renderScene', () => {
     expect(dom.narrativeBody.querySelector('.story-beat')).not.toBeNull()
     expect(dom.narrativeBody.querySelector('.line')?.getAttribute('data-voice')).toBe('archive')
     expect(dom.narrativeBody.querySelector('.line')?.getAttribute('data-spoken-duration-ms')).toMatch(/^\d+$/)
+    const lineDelays = [...dom.narrativeBody.querySelectorAll<HTMLElement>('.line')].map((line) =>
+      line.style.getPropertyValue('--line-delay'),
+    )
+    expect(lineDelays.slice(0, 3)).toEqual(['90ms', '1080ms', '2070ms'])
     expect(dom.narrativeBody.querySelector('.speaker-seal')?.textContent).toBe('AR')
     expect(dom.narrativeBody.querySelector('.spoken-char')).not.toBeNull()
     expect(dom.narrativeBody.querySelector('.spoken-text')?.getAttribute('aria-hidden')).toBe('true')

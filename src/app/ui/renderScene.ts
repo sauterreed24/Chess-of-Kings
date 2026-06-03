@@ -105,7 +105,7 @@ export function renderScene(
     dom.narrativeBody.classList.remove('narrative-body--interlude')
     dom.narrativeBody.innerHTML = storyBeatBlock(scene.storyBeat) + scene.lines
       .map((l, i) => {
-        const lineDelayMs = i * 190 + 90
+        const lineDelayMs = i * 990 + 90
         const durationMs = spokenLineDurationMs(l.text, l.speaker, lineDelayMs)
         const talkMs = Math.max(420, durationMs - lineDelayMs)
         return `<div class="line line--stagger" data-voice="${escapeHtml(speakerVoiceFor(l.speaker))}" data-spoken-duration-ms="${durationMs}" style="--d:${i}; --line-delay:${lineDelayMs}ms; --line-talk-ms:${talkMs}ms">

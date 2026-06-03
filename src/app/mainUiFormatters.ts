@@ -16,18 +16,18 @@ type SpeakerMeta = {
 }
 
 const SPEAKER_META: Record<string, SpeakerMeta> = {
-  narrator: { label: 'Archive', sigil: 'AR', voice: 'archive', cadenceMs: 6 },
-  reed: { label: 'Reed', sigil: 'R', voice: 'reed', cadenceMs: 5 },
-  alexion: { label: 'Alexion Demaratos-Serapis', sigil: 'A', voice: 'alexion', cadenceMs: 8 },
-  system: { label: 'Adaptive trainer', sigil: 'SYS', voice: 'system', cadenceMs: 4 },
-  scholar: { label: 'Composite Scholar', sigil: 'SC', voice: 'scholar', cadenceMs: 7 },
-  amara: { label: 'Amara', sigil: 'AM', voice: 'scholar', cadenceMs: 7 },
-  lukas: { label: 'Lukas', sigil: 'LU', voice: 'scholar', cadenceMs: 6 },
-  edred: { label: 'Edred', sigil: 'ED', voice: 'scholar', cadenceMs: 6 },
-  marius: { label: 'Marius', sigil: 'MA', voice: 'scholar', cadenceMs: 7 },
-  demetrios: { label: 'Demetrios', sigil: 'DE', voice: 'scholar', cadenceMs: 7 },
-  rowan: { label: 'Rowan Vale', sigil: 'RO', voice: 'fire', cadenceMs: 4 },
-  vega: { label: 'Vega Sorn', sigil: 'VE', voice: 'rival', cadenceMs: 5 },
+  narrator: { label: 'Archive', sigil: 'AR', voice: 'archive', cadenceMs: 8 },
+  reed: { label: 'Reed', sigil: 'R', voice: 'reed', cadenceMs: 8 },
+  alexion: { label: 'Alexion Demaratos-Serapis', sigil: 'A', voice: 'alexion', cadenceMs: 9 },
+  system: { label: 'Adaptive trainer', sigil: 'SYS', voice: 'system', cadenceMs: 7 },
+  scholar: { label: 'Composite Scholar', sigil: 'SC', voice: 'scholar', cadenceMs: 9 },
+  amara: { label: 'Amara', sigil: 'AM', voice: 'scholar', cadenceMs: 9 },
+  lukas: { label: 'Lukas', sigil: 'LU', voice: 'scholar', cadenceMs: 8 },
+  edred: { label: 'Edred', sigil: 'ED', voice: 'scholar', cadenceMs: 8 },
+  marius: { label: 'Marius', sigil: 'MA', voice: 'scholar', cadenceMs: 9 },
+  demetrios: { label: 'Demetrios', sigil: 'DE', voice: 'scholar', cadenceMs: 9 },
+  rowan: { label: 'Rowan Vale', sigil: 'RO', voice: 'fire', cadenceMs: 7 },
+  vega: { label: 'Vega Sorn', sigil: 'VE', voice: 'rival', cadenceMs: 8 },
 }
 
 function fallbackSpeakerLabel(s: string): string {
@@ -108,8 +108,8 @@ export function storyBeatBlock(storyBeat: StoryBeat | undefined): string {
 }
 
 function glyphPauseMs(char: string): number {
-  if (/[.!?]/u.test(char)) return 42
-  if (/[,;:]/u.test(char)) return 24
+  if (/[.!?]/u.test(char)) return 90
+  if (/[,;:]/u.test(char)) return 45
   if (/["')\]]/u.test(char)) return 8
   return 0
 }
