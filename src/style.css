@@ -495,11 +495,15 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   box-shadow: var(--shadow-panel);
 }
 .chapter-btn:hover:not(:disabled) {
-  border-color: rgba(201,169,98,0.42);
-  box-shadow: 0 8px 36px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,169,98,0.08);
-  transform: translateY(-1px);
+  border-color: rgba(232,201,126,0.44);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.4), 0 0 22px rgba(232,201,126,0.08);
+  transform: translateY(-2px);
 }
-.chapter-btn__arrow { font-family: var(--font-display); color: var(--gold); opacity: 0.7; }
+.chapter-btn__arrow {
+  font-family: var(--font-display); color: var(--gold); opacity: 0.7;
+  transition: transform 0.22s var(--ease-out), opacity 0.22s;
+}
+.chapter-btn:hover:not(:disabled) .chapter-btn__arrow { opacity: 1; transform: translateX(3px); }
 
 .chapter-locked {
   padding: 1.1rem 1.35rem;
@@ -1397,10 +1401,14 @@ button:focus-visible {
 button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !important; }
 
 .primary {
-  background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 4px;
+  letter-spacing: 0.18em;
+  background: linear-gradient(180deg, #f3e3ad, var(--gold-bright) 36%, #9a7d42);
   color: var(--ink);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.28) inset, 0 9px 26px rgba(0,0,0,0.42), 0 0 22px rgba(232,201,126,0.18);
 }
-.primary:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+.primary:hover:not(:disabled) { filter: brightness(1.05); transform: translateY(-2px); }
 
 .primary--ready {
   animation: advance-ready 3s ease-in-out infinite;
@@ -1411,10 +1419,11 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 
 .secondary {
-  background: transparent; color: var(--ivory);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(237,233,222,0.045), transparent), rgba(0,0,0,0.28); color: var(--ivory);
   border: 1px solid rgba(201,169,98,0.38);
 }
-.secondary:hover:not(:disabled) { border-color: var(--gold-bright); color: var(--gold-bright); }
+.secondary:hover:not(:disabled) { border-color: var(--gold-bright); color: var(--marble); }
 
 .ghost {
   background: rgba(0,0,0,0.22); color: var(--muted);
@@ -2129,12 +2138,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   display: grid;
   gap: 0.12rem;
   padding: 0.64rem 0.72rem;
-  border: 1px solid rgba(201,169,98,0.18);
+  border: 1px solid rgba(201,169,98,0.22);
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(232,201,126,0.07), rgba(0,0,0,0.22)),
-    rgba(0,0,0,0.24);
+    linear-gradient(180deg, rgba(237,233,222,0.05), transparent),
+    rgba(0,0,0,0.3);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+}
+
+.title-stats span:hover {
+  border-color: rgba(232,201,126,0.42);
+  box-shadow: 0 0 20px rgba(232,201,126,0.12);
 }
 
 .title-stats strong {
@@ -2693,7 +2707,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .board-stage {
   margin-top: 0.45rem;
-  filter: drop-shadow(0 22px 44px rgba(0,0,0,0.42));
+  filter: drop-shadow(0 26px 52px rgba(0,0,0,0.56)) drop-shadow(0 0 26px rgba(42,96,148,0.12));
 }
 
 .screen-play--board-scene .board-stage {
@@ -3334,9 +3348,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
    ═══════════════════════════════ */
 .top-nav {
   padding: 0.18rem;
-  border: 1px solid rgba(201,169,98,0.16);
+  border: 1px solid rgba(201,169,98,0.22);
   border-radius: 999px;
-  background: rgba(0,0,0,0.22);
+  background: rgba(8,7,5,0.5);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .top-nav .ghost--nav {
@@ -3358,12 +3373,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .ghost--nav-active,
 .ghost--nav[aria-current='page'] {
-  color: #f5e7c8;
+  color: var(--marble);
   border-color: rgba(232,201,126,0.56);
   background:
     linear-gradient(180deg, rgba(232,201,126,0.16), rgba(201,169,98,0.1)),
     rgba(0,0,0,0.32);
-  box-shadow: 0 0 20px rgba(232,201,126,0.14);
+  box-shadow: 0 0 20px rgba(232,201,126,0.16), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .chapters-wrap,
@@ -3560,6 +3575,7 @@ html.perf-lean .board-stage--finisher .board-brass {
 
   .coarse-pointer .ghost--nav,
   .top-nav .ghost--nav {
+    flex: 1;
     min-width: 0;
     min-height: 2.35rem;
     padding-inline: 0.58rem;
