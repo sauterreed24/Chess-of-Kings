@@ -4,6 +4,10 @@ import {
   aiTraitBars,
   diffStars,
   labelForSpeaker,
+  speakerCadenceMs,
+  speakerSigilFor,
+  speakerVoiceFor,
+  spokenLineDurationMs,
   spokenLineText,
   storyBeatBlock,
   teachingBlock,
@@ -100,10 +104,16 @@ export function renderScene(
     dom.sceneTag.textContent = 'Dialogue'
     dom.narrativeBody.classList.remove('narrative-body--interlude')
     dom.narrativeBody.innerHTML = storyBeatBlock(scene.storyBeat) + scene.lines
-      .map(
-        (l, i) =>
-          `<div class="line line--stagger" style="--d:${i}; --line-delay:${i * 110 + 80}ms"><span class="who" data-speaker="${escapeHtml(l.speaker)}">${escapeHtml(labelForSpeaker(l.speaker))}</span><p class="said">${spokenLineText(l.text)}</p></div>`,
-      )
+      .map((l, i) => {
+        const lineDelayMs = i * 190 + 90
+        const durationMs = spokenLineDurationMs(l.text, l.speaker, lineDelayMs)
+        const talkMs = Math.max(420, durationMs - lineDelayMs)
+        return `<div class="line line--stagger" data-voice="${escapeHtml(speakerVoiceFor(l.speaker))}" data-spoken-duration-ms="${durationMs}" style="--d:${i}; --line-delay:${lineDelayMs}ms; --line-talk-ms:${talkMs}ms">
+          <span class="speaker-seal" aria-hidden="true">${escapeHtml(speakerSigilFor(l.speaker))}</span>
+          <span class="who" data-speaker="${escapeHtml(l.speaker)}">${escapeHtml(labelForSpeaker(l.speaker))}</span>
+          <p class="said">${spokenLineText(l.text, speakerCadenceMs(l.speaker))}</p>
+        </div>`
+      })
       .join('')
   } else if (scene.type === 'interlude') {
     dom.sceneTag.textContent = 'Interlude'

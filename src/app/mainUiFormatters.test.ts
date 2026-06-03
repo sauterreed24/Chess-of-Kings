@@ -9,6 +9,10 @@ import {
   labelForSpeaker,
   performanceDeltaLines,
   sceneTypeLabel,
+  speakerCadenceMs,
+  speakerSigilFor,
+  speakerVoiceFor,
+  spokenLineDurationMs,
   spokenLineText,
   storyBeatBlock,
   tierLabel,
@@ -26,6 +30,10 @@ describe('mainUiFormatters', () => {
 
   it('labelForSpeaker uses map and title-cases unknown ids', () => {
     expect(labelForSpeaker('reed')).toBe('Reed')
+    expect(labelForSpeaker('rowan')).toBe('Rowan Vale')
+    expect(speakerSigilFor('vega')).toBe('VE')
+    expect(speakerVoiceFor('rowan')).toBe('fire')
+    expect(speakerCadenceMs('alexion')).toBeGreaterThan(speakerCadenceMs('system'))
     expect(labelForSpeaker('custom-npc')).toBe('Custom Npc')
   })
 
@@ -60,12 +68,15 @@ describe('mainUiFormatters', () => {
   })
 
   it('spokenLineText exposes full AT text while hiding animated character spans', () => {
-    const html = spokenLineText('Reed says <check>.')
+    const html = spokenLineText('Reed says <check>.', 9)
     expect(html).toContain('class="sr-only"')
     expect(html).toContain('aria-hidden="true"')
     expect(html).toContain('spoken-char')
+    expect(html).toContain('spoken-word" style="display:inline-block"')
+    expect(html).toContain('--char-delay:9ms')
     expect(html).toContain('Reed says &lt;check&gt;.')
     expect(html).not.toContain('<check>')
+    expect(spokenLineDurationMs('Reed says <check>.', 'reed', 120)).toBeGreaterThan(120)
   })
 
   it('aiTraitBars renders escaped rival doctrine traits', () => {

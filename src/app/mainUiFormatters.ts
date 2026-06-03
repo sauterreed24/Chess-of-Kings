@@ -6,20 +6,53 @@ import type { AiProfile, MatchHistoryEntry, MatchScene, PuzzleScene, Scene, Stor
 /** Compiled once — applied on every chess HUD tick when AI persona is present. */
 export const BOSS_PROFILE_RE = /(Apex|Advisor|Counterpart|Strategos|Boss)/i
 
+type DialogueVoice = 'archive' | 'reed' | 'alexion' | 'system' | 'scholar' | 'fire' | 'rival'
+
+type SpeakerMeta = {
+  label: string
+  sigil: string
+  voice: DialogueVoice
+  cadenceMs: number
+}
+
+const SPEAKER_META: Record<string, SpeakerMeta> = {
+  narrator: { label: 'Archive', sigil: 'AR', voice: 'archive', cadenceMs: 6 },
+  reed: { label: 'Reed', sigil: 'R', voice: 'reed', cadenceMs: 5 },
+  alexion: { label: 'Alexion Demaratos-Serapis', sigil: 'A', voice: 'alexion', cadenceMs: 8 },
+  system: { label: 'Adaptive trainer', sigil: 'SYS', voice: 'system', cadenceMs: 4 },
+  scholar: { label: 'Composite Scholar', sigil: 'SC', voice: 'scholar', cadenceMs: 7 },
+  amara: { label: 'Amara', sigil: 'AM', voice: 'scholar', cadenceMs: 7 },
+  lukas: { label: 'Lukas', sigil: 'LU', voice: 'scholar', cadenceMs: 6 },
+  edred: { label: 'Edred', sigil: 'ED', voice: 'scholar', cadenceMs: 6 },
+  marius: { label: 'Marius', sigil: 'MA', voice: 'scholar', cadenceMs: 7 },
+  demetrios: { label: 'Demetrios', sigil: 'DE', voice: 'scholar', cadenceMs: 7 },
+  rowan: { label: 'Rowan Vale', sigil: 'RO', voice: 'fire', cadenceMs: 4 },
+  vega: { label: 'Vega Sorn', sigil: 'VE', voice: 'rival', cadenceMs: 5 },
+}
+
+function fallbackSpeakerLabel(s: string): string {
+  return s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function fallbackSpeakerSigil(s: string): string {
+  const clean = s.replace(/[^a-z0-9]/gi, '').slice(0, 2).toUpperCase()
+  return clean || 'V'
+}
+
 export function labelForSpeaker(s: string): string {
-  const map: Record<string, string> = {
-    reed: 'Reed',
-    alexion: 'Alexion Demaratos-Serapis',
-    narrator: 'Archive',
-    system: 'Adaptive trainer',
-    scholar: 'Composite Scholar',
-    amara: 'Amara',
-    lukas: 'Lukas',
-    edred: 'Edred',
-    marius: 'Marius',
-    demetrios: 'Demetrios',
-  }
-  return map[s] ?? s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  return SPEAKER_META[s]?.label ?? fallbackSpeakerLabel(s)
+}
+
+export function speakerSigilFor(s: string): string {
+  return SPEAKER_META[s]?.sigil ?? fallbackSpeakerSigil(s)
+}
+
+export function speakerVoiceFor(s: string): DialogueVoice {
+  return SPEAKER_META[s]?.voice ?? 'rival'
+}
+
+export function speakerCadenceMs(s: string): number {
+  return SPEAKER_META[s]?.cadenceMs ?? 6
 }
 
 export function sceneTypeLabel(sc: Scene): string {
@@ -74,8 +107,35 @@ export function storyBeatBlock(storyBeat: StoryBeat | undefined): string {
     </aside>`
 }
 
-export function spokenLineText(text: string): string {
-  let charIndex = 0
+function glyphPauseMs(char: string): number {
+  if (/[.!?]/u.test(char)) return 42
+  if (/[,;:]/u.test(char)) return 24
+  if (/["')\]]/u.test(char)) return 8
+  return 0
+}
+
+function spokenGlyphOffsets(text: string, charStepMs: number): number[] {
+  const offsets: number[] = []
+  let cursor = 0
+  for (const token of text.split(/(\s+)/u)) {
+    if (!token || /^\s+$/u.test(token)) continue
+    for (const char of Array.from(token)) {
+      offsets.push(cursor)
+      cursor += charStepMs + glyphPauseMs(char)
+    }
+  }
+  return offsets
+}
+
+export function spokenLineDurationMs(text: string, speaker: string, lineDelayMs: number): number {
+  const offsets = spokenGlyphOffsets(text, speakerCadenceMs(speaker))
+  const lastDelay = offsets.length ? offsets[offsets.length - 1]! : 0
+  return Math.round(lineDelayMs + lastDelay + 260)
+}
+
+export function spokenLineText(text: string, charStepMs = 6): string {
+  const offsets = spokenGlyphOffsets(text, Math.max(1, Math.round(charStepMs)))
+  let offsetIndex = 0
   const visible = text
     .split(/(\s+)/u)
     .map((token) => {
@@ -83,12 +143,12 @@ export function spokenLineText(text: string): string {
       if (/^\s+$/u.test(token)) return escapeHtml(token)
       const chars = Array.from(token)
         .map((char) => {
-          const delay = charIndex * 6
-          charIndex += 1
+          const delay = offsets[offsetIndex] ?? 0
+          offsetIndex += 1
           return `<span class="spoken-char" style="--char-delay:${delay}ms">${escapeHtml(char)}</span>`
         })
         .join('')
-      return `<span class="spoken-word">${chars}</span>`
+      return `<span class="spoken-word" style="display:inline-block">${chars}</span>`
     })
     .join('')
   return `<span class="spoken-line"><span class="sr-only">${escapeHtml(text)}</span><span class="spoken-text" aria-hidden="true">${visible}</span></span>`

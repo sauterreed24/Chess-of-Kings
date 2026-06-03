@@ -779,6 +779,11 @@ export function mountApp(app: HTMLDivElement) {
   function currentDialogueRevealMs(): number {
     let longest = 0
     for (const line of [...narrativeBody.querySelectorAll<HTMLElement>('.line')]) {
+      const authoredDuration = Number(line.dataset.spokenDurationMs)
+      if (Number.isFinite(authoredDuration) && authoredDuration > 0) {
+        longest = Math.max(longest, authoredDuration)
+        continue
+      }
       const lineDelay = msFromStyle(line.style.getPropertyValue('--line-delay'))
       const charCount = line.querySelectorAll('.spoken-char').length
       if (charCount <= 0) continue
@@ -792,12 +797,11 @@ export function mountApp(app: HTMLDivElement) {
     narrativeBody.classList.remove('narrative-body--revealed')
     const hasAnimatedText = scene.type === 'dialogue' && narrativeBody.querySelector('.spoken-char') !== null
     dialogueRevealDone = !hasAnimatedText || prefersInstantDialogue()
+    narrativeBody.classList.toggle('narrative-body--revealed', dialogueRevealDone)
     if (!dialogueRevealDone) {
       dialogueRevealTimer = window.setTimeout(() => {
         dialogueRevealTimer = 0
-        dialogueRevealDone = true
-        updateAdvance(flow)
-        announcer.say('Passage fully revealed. Advance when ready.')
+        revealDialogueNow()
       }, currentDialogueRevealMs())
     }
     updateAdvance(flow)

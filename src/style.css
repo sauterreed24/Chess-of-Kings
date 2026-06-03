@@ -1016,7 +1016,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .line { margin-bottom: 1.1rem; }
 .line--stagger {
   animation: line-in 0.55s var(--ease-out) both;
-  animation-delay: calc(var(--d) * 0.06s);
+  animation-delay: var(--line-delay, calc(var(--d) * 0.06s));
 }
 @keyframes line-in {
   from { opacity: 0; transform: translateX(-8px); }
@@ -1039,18 +1039,19 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .said { margin: 0; font-size: 1.08rem; color: var(--marble); line-height: 1.58; }
 
 .narrative-body--dialogue .line {
-  padding: 0.6rem 0.85rem 0.65rem;
+  position: relative;
+  padding: 0.66rem 0.9rem 0.72rem 3.45rem;
   margin-bottom: 0.65rem;
   background: rgba(0,0,0,0.22);
   border-radius: 0 4px 4px 0;
-  border-left: 3px solid rgba(201,169,98,0.28);
+  border-left: 3px solid rgba(201,169,98,0.3);
 }
-.narrative-body--dialogue .line:has(.who[data-speaker='alexion']) {
-  border-left-color: rgba(232,201,126,0.55);
-  background: rgba(201,169,98,0.04);
-}
-.narrative-body--dialogue .line:has(.who[data-speaker='reed']) {
-  border-left-color: rgba(111,168,208,0.45);
+.speaker-seal {
+  position: absolute;
+  left: 0.85rem;
+  top: 0.72rem;
+  color: var(--gold-dim);
+  font-size: 0.52rem;
 }
 
 /* ─── Interlude ─── */

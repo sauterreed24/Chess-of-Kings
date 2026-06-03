@@ -100,8 +100,12 @@ describe('renderScene', () => {
       revealBoardScene: () => {},
     })
     expect(dom.narrativeBody.querySelector('.story-beat')).not.toBeNull()
+    expect(dom.narrativeBody.querySelector('.line')?.getAttribute('data-voice')).toBe('archive')
+    expect(dom.narrativeBody.querySelector('.line')?.getAttribute('data-spoken-duration-ms')).toMatch(/^\d+$/)
+    expect(dom.narrativeBody.querySelector('.speaker-seal')?.textContent).toBe('AR')
     expect(dom.narrativeBody.querySelector('.spoken-char')).not.toBeNull()
     expect(dom.narrativeBody.querySelector('.spoken-text')?.getAttribute('aria-hidden')).toBe('true')
+    expect(dom.narrativeBody.querySelector<HTMLElement>('.spoken-char')?.style.getPropertyValue('--char-delay')).toContain('ms')
     expect(dom.narrativeBody.querySelector('.sr-only')?.textContent).toContain('Rain threads the window')
     expect(dom.narrativeBody.textContent).toContain('A player without a method')
   })
