@@ -87,7 +87,7 @@ export function shouldScheduleAi(opts: {
 }
 
 export function computeAiPaceDelay(lossPressure: number): number {
-  return lossPressure >= 2 ? Math.min(620, 380 + lossPressure * 70) : 380
+  return lossPressure >= 2 ? Math.min(540, 300 + lossPressure * 70) : 300
 }
 
 export async function runAiTurn(host: AiTurnHost): Promise<void> {

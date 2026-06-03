@@ -1092,7 +1092,7 @@ export class GameFlow {
       return {
         ...tunedBase,
         searchDepth: Math.max(1, tunedBase.searchDepth - 1),
-        thinkTimeMs: Math.max(320, tunedBase.thinkTimeMs - 220 - Math.round(120 * (rivalryRelief + antiTiltRelief))),
+        thinkTimeMs: Math.max(260, tunedBase.thinkTimeMs - 260 - Math.round(120 * (rivalryRelief + antiTiltRelief))),
         blunderRate: Math.min(0.36, tunedBase.blunderRate + 0.09 + rivalryRelief * 0.2 + antiTiltRelief * 0.2),
         tacticalAlertness: Math.max(0.2, tunedBase.tacticalAlertness - 0.14 - rivalryRelief * 0.2 - antiTiltRelief),
         conversionStrictness: Math.max(

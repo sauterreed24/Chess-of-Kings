@@ -4,8 +4,9 @@ import { computeAiPaceDelay, shouldScheduleAi } from './aiTurnController'
 
 describe('aiTurnController scheduling', () => {
   it('computeAiPaceDelay increases under loss pressure', () => {
-    expect(computeAiPaceDelay(0)).toBe(380)
+    expect(computeAiPaceDelay(0)).toBe(300)
     expect(computeAiPaceDelay(3)).toBeGreaterThan(computeAiPaceDelay(0))
+    expect(computeAiPaceDelay(6)).toBe(540)
   })
 
   it('shouldScheduleAi blocks freeplay and player turn', () => {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Chess } from 'chess.js'
 import {
+  AI_PROFILES,
   detectGamePhase,
   resolveProfileByDuelVariant,
   resolveProfileByMatchId,
@@ -70,6 +71,17 @@ describe('AI profile resolver', () => {
     expect(vega.kingSafetyUrgency).toBeGreaterThan(0.9)
     expect(vega.conversionStrictness).toBeGreaterThan(rowan.conversionStrictness)
     expect(vega.motifBias.pin).toBeGreaterThan(rowan.motifBias.pin)
+  })
+
+  it('keeps early rivals brisk while bosses still feel deliberate', () => {
+    const novice = AI_PROFILES.novice_court
+    const apprentice = AI_PROFILES.apprentice_court
+    const rowan = resolveProfileByMatchId('c2-match-rowan')
+    const vega = resolveProfileByMatchId('c2-match-vega')
+    const apex = resolveProfileByDuelVariant('alexion-apex')
+    expect(novice.thinkTimeMs).toBeLessThan(apprentice.thinkTimeMs)
+    expect(rowan.thinkTimeMs).toBeLessThan(vega.thinkTimeMs)
+    expect(apex.thinkTimeMs).toBeGreaterThan(vega.thinkTimeMs)
   })
 
   it('makes Alexion and apotheosis profiles feel inevitable rather than reckless', () => {
