@@ -17,11 +17,11 @@ describe('move insight', () => {
   })
 
   it('coaches minor-piece development', () => {
-    expect(insight({ san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' })).toMatch(/Minor piece developed/)
+    expect(insight({ san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' })).toMatch(/minor piece/i)
   })
 
   it('warns on early queen moves', () => {
-    expect(insight({ san: 'Qh5', from: 'd1', to: 'h5', piece: 'q' }, 3)).toMatch(/Early queens/)
+    expect(insight({ san: 'Qh5', from: 'd1', to: 'h5', piece: 'q' }, 3)).toMatch(/queen has spoken early/)
   })
 
   it('warns on opening wing pawn drift', () => {
@@ -39,5 +39,25 @@ describe('move insight', () => {
 
   it('warns on speculative checks', () => {
     expect(insight({ san: 'Qh5+', from: 'd1', to: 'h5', piece: 'q' }, 7, 0)).toMatch(/concrete follow-up/)
+  })
+
+  it('surfaces quality verdicts for quiet brilliant moves and blunders', () => {
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 18,
+      materialAfterCp: 240,
+      playerColor: 'w',
+      mode: 'match',
+      quality: 'brilliant',
+    })).toMatch(/Archive judgment: brilliant/)
+
+    expect(moveInsightFor({
+      move: { san: 'Kh2', from: 'g1', to: 'h2', piece: 'k' },
+      halfMoveCount: 18,
+      materialAfterCp: -260,
+      playerColor: 'w',
+      mode: 'match',
+      quality: 'blunder',
+    })).toMatch(/line cracked sharply/)
   })
 })

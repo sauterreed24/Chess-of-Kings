@@ -5,7 +5,7 @@ export interface HangingThreat {
   /** Square of the player piece the opponent can win the most material from. */
   square: string
   pieceType: PieceSymbol
-  /** Estimated material (centipawns) the opponent nets from the capture. */
+  /** Estimated material in centipawns the opponent nets from the capture. */
   oppGain: number
 }
 
@@ -18,23 +18,20 @@ const PIECE_NAMES: Record<PieceSymbol, string> = {
   k: 'king',
 }
 
-/** Minimum opponent gain (cp) worth surfacing — about an exchange or a clean
- *  minor piece. Keeps the signal high and avoids nagging over loose pawns. */
+/** Minimum opponent gain worth surfacing: about an exchange or a clean minor piece. */
 const MIN_GAIN = 160
 
 /**
- * Called with the position AFTER the player's move (opponent on move). Finds the
- * player piece the opponent can win the most material from with an immediate
- * legal capture, using a one-exchange static estimate:
- *   - undefended piece → opponent wins its full value
- *   - defended piece   → opponent captures with its least valuable attacker and
- *                        the player recaptures, so the opponent nets
- *                        (piece value − cheapest attacker value)
+ * Called with the position after the player's move, with the opponent on move.
+ * Finds the player piece the opponent can win the most material from with an
+ * immediate legal capture, using a one-exchange static estimate:
+ * - undefended piece: opponent wins its full value
+ * - defended piece: opponent captures with its least valuable attacker and the
+ *   player recaptures, so the opponent nets piece value minus attacker value
  *
- * Building it from the opponent's *legal* captures means pinned or otherwise
- * illegal "attackers" never raise a false alarm. Returns null while the
- * opponent is in check (forcing dynamics differ) or when nothing meaningful
- * hangs.
+ * Building it from the opponent's legal captures means pinned or otherwise
+ * illegal attackers never raise a false alarm. Returns null while the opponent
+ * is in check or when nothing meaningful hangs.
  */
 export function findHangingPiece(chess: Chess, playerColor: Color): HangingThreat | null {
   if (chess.isGameOver() || chess.inCheck()) return null
@@ -67,5 +64,5 @@ export function findHangingPiece(chess: Chess, playerColor: Color): HangingThrea
 
 export function hangingCoachTip(threat: HangingThreat): string {
   const name = PIECE_NAMES[threat.pieceType]
-  return `Careful — your ${name} on ${threat.square} can be won. Defend it, move it, or make a bigger threat before you commit elsewhere.`
+  return `Careful - the archive sees your ${name} on ${threat.square} can be won. Defend it, move it, or answer with a stronger threat before the reply becomes law.`
 }

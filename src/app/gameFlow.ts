@@ -1012,15 +1012,15 @@ export class GameFlow {
   ): string | null {
     if (move.san.includes('#')) return 'Tactical motif: checkmate net sealed.'
     if (motifs?.fork) {
-      return 'Tactical motif: knight fork pressure pattern detected.'
+      return 'Tactical seal: fork geometry. Two threats now demand one answer.'
     }
     if (motifs?.skewer) {
-      return 'Tactical motif: line-piece skewer pattern activated.'
+      return 'Tactical seal: skewer pressure. The front piece must move; the prize behind it remains.'
     }
-    if (motifs?.pin) return 'Tactical motif: absolute pin geometry formed.'
-    if (motifs?.kingHunt) return 'King hunt initiated: forcing checks drive the enemy king.'
-    if (quality === 'brilliant') return 'Brilliant conversion: initiative spike achieved.'
-    if (quality === 'mistake' || quality === 'blunder') return 'Warning: tactical liability created.'
+    if (motifs?.pin) return 'Tactical seal: pin geometry. One piece now answers for the king behind it.'
+    if (motifs?.kingHunt) return 'King hunt initiated. The rival king is being driven, not merely checked.'
+    if (quality === 'brilliant') return 'Archive verdict: initiative granted. Keep asking forcing questions.'
+    if (quality === 'mistake' || quality === 'blunder') return 'Archive warning: a liability appeared. Count checks, captures, and loose pieces.'
     return null
   }
 
@@ -1489,7 +1489,11 @@ export class GameFlow {
   }
 
   /* ─── Coaching tips ────────────────────────────────────────────────── */
-  private computeCoachTip(move: Move, mover: 'w' | 'b'): string | null {
+  private computeCoachTip(
+    move: Move,
+    mover: 'w' | 'b',
+    quality: MoveQuality,
+  ): string | null {
     if (this.mode === 'idle') return null
     return moveInsightFor({
       move,
@@ -1497,6 +1501,7 @@ export class GameFlow {
       materialAfterCp: materialAdvantage(this.chess, mover),
       playerColor: mover,
       mode: this.mode as MoveInsightMode,
+      quality,
     })
   }
 
@@ -1575,7 +1580,7 @@ export class GameFlow {
     this.lastTacticalPulse = this.tacticalPulseFromMove(last, playerQuality, motifs)
 
     /* Coaching follows player moves across every board mode. */
-    this.lastCoachTip = this.computeCoachTip(last, piece.color)
+    this.lastCoachTip = this.computeCoachTip(last, piece.color, playerQuality)
 
     /* Highest-priority real-world lesson: did this move leave material to be
      * won on the reply? Skip puzzles, where curated sacrifices are the point. */
