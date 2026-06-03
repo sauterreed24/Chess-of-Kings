@@ -26,53 +26,53 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   if (halfMoveCount > 28) return null
 
   if (san.includes('#')) {
-    return 'Mate entered in the archive. Review the forcing path that made flight impossible.'
+    return 'Mate inscribed. Replay the forcing path; every flight square closed by design.'
   }
 
   if (san === 'O-O' || san === 'O-O-O') {
-    return 'King housed. The court is safer now; bring the rooks into the same argument.'
+    return 'King housed. The room gets quieter; now give the rooks a file to govern.'
   }
 
   if (san.includes('x') && !san.includes('#')) {
     if (materialAfterCp < -50) {
-      return 'The capture was legal, not yet wise. The position worsened; check recaptures and counter-threats before taking tribute.'
+      return 'Legal tribute, bad account. The position worsened; check recaptures and counter-threats before taking.'
     }
-    return 'Material won. Complete the proof by checking what the rival can take in return.'
+    return 'Material won. Finish the proof: what can the rival take next?'
   }
 
   if (input.quality === 'brilliant') {
-    return 'Archive judgment: brilliant. You changed the initiative; keep asking forcing questions.'
+    return 'Archive judgment: brilliant. You seized initiative; keep asking forcing questions.'
   }
 
   if (input.quality === 'blunder') {
-    return 'Archive warning: the line cracked sharply. Before the reply, name every check, capture, and loose defender.'
+    return 'Archive warning: the line broke. Before the reply, name every check, capture, and loose defender.'
   }
 
   if (input.quality === 'mistake') {
-    return 'Archive warning: the line slipped. Spend the next tempo repairing king safety, material, or coordination before chasing plans.'
+    return 'Archive warning: the line slipped. Spend one tempo on king safety, material, or coordination before chasing plans.'
   }
 
   if (halfMoveCount <= 14 && /^Q/.test(san) && !san.includes('=') && !san.includes('#') && !san.includes('+')) {
-    return 'The queen has spoken early. Exposed authority becomes a target; develop knights and bishops first.'
+    return 'The queen spoke early. Public authority becomes a target; develop knights and bishops first.'
   }
 
   if (san.endsWith('+') && !san.includes('x') && halfMoveCount <= 18 && materialAfterCp <= 20) {
-    return 'A check without profit only teaches the king where to flee. Give checks with a concrete follow-up.'
+    return 'A check without profit only teaches the king where to run. Give checks with a concrete follow-up.'
   }
 
   if (halfMoveCount <= 12 && /^[ah]/.test(san) && san[1] !== 'x') {
-    return 'Wing pawn drift recorded. The edge can wait until the center and development are under seal.'
+    return 'Wing pawn drift recorded. Let the edge wait until center and development are under seal.'
   }
 
   if (move.piece === 'p' && CENTER_SQUARES.has(move.to)) {
-    return 'Center claimed. Now make the claim durable with a knight or bishop behind it.'
+    return 'Center claimed. Make it durable with a knight or bishop behind it.'
   }
 
   if (
     (move.piece === 'n' || move.piece === 'b') &&
     (playerColor === 'w' ? WHITE_BACK_RANK_MINORS : BLACK_BACK_RANK_MINORS).has(move.from)
   ) {
-    return 'A minor piece joins the record. Finish development before asking the same piece to serve twice.'
+    return 'A minor piece joins the record. Finish development before asking it to serve twice.'
   }
 
   if (input.mode === 'calibration' && halfMoveCount <= 8) {
@@ -80,15 +80,15 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (input.mode === 'freeplay' && halfMoveCount <= 10) {
-    return 'Position updated. Ask what the move attacks, what it guards, and what it leaves behind.'
+    return 'Position updated. Ask what it attacks, guards, and leaves behind.'
   }
 
   if (input.quality === 'good') {
-    return 'Archive judgment: sound. Convert the gain into development, king safety, or a cleaner file.'
+    return 'Archive judgment: sound. Convert the gain into development, safety, or a cleaner file.'
   }
 
   if (input.quality === 'inaccuracy') {
-    return 'Small concession recorded. Recheck whether the move improved center, development, or king safety.'
+    return 'Small concession recorded. Recheck center, development, and king safety.'
   }
 
   return null

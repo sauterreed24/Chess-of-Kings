@@ -12,7 +12,7 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 30,
     })
-    expect(s).toContain('heavy slips')
+    expect(s).toContain('repeated collapses')
   })
 
   it('responds to flank-heavy games', () => {
@@ -23,7 +23,7 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 40,
     })
-    expect(s).toContain('wing')
+    expect(s).toContain('wings')
   })
 
   it('falls back to default guidance', () => {

@@ -16,25 +16,25 @@ export function lossRecoveryMentorLine(input: LossTipInput): string {
   const { lossStreakVsOpponent, sceneTendencies, blunderCount, mistakeCount, moveCount } = input
 
   if (blunderCount >= 4) {
-    return 'Mentor Insight: several heavy slips - use the Alexandrine three-count before you move: checks, captures, then loose back-rank defenders.'
+    return 'Mentor Insight: the ledger shows repeated collapses - count checks, captures, loose defenders, then move.'
   }
   if (blunderCount >= 2 && moveCount > 22) {
-    return 'Mentor Insight: late blunders hurt - in the endgame, ask whether your king marches first or your pieces infiltrate first before each pawn push.'
+    return 'Mentor Insight: the endgame cracked late - choose whether the king, pieces, or pawns lead before each push.'
   }
   if (sceneTendencies.flankPawnPushes >= 5) {
-    return 'Mentor Insight: this game leaned on wing pawns - secure the center or a half-open file before the next flank stab.'
+    return 'Mentor Insight: the wings moved before the center held - claim a square or half-open file before another edge thrust.'
   }
   if (sceneTendencies.earlyQueenMoves >= 2) {
-    return 'Mentor Insight: the queen stirred too early - develop knights and bishops toward the center first; she should enter with tempo, not ask for it.'
+    return 'Mentor Insight: the queen went public too soon - let knights and bishops make her entrance a threat, not an invitation.'
   }
   if (sceneTendencies.repeatedChecksWithoutGain >= 3) {
-    return 'Mentor Insight: checks without follow-through burned time - pair every check with a concrete threat, a won tempo, or a king march.'
+    return 'Mentor Insight: checks became announcements, not plans - attach each one to mate, material, or a won tempo.'
   }
   if (lossStreakVsOpponent >= 2) {
-    return 'Mentor Insight: back-to-back losses in this pairing - try a calmer opening next run; one extra development move often changes the whole trial.'
+    return 'Mentor Insight: this rival has your rhythm - begin quieter, finish development, and make them prove the attack.'
   }
   if (mistakeCount >= 4) {
-    return 'Mentor Insight: accuracy drifted - after each opponent move, list what changed: unsafe pieces, weak squares, and king exposure.'
+    return 'Mentor Insight: accuracy thinned by degrees - after each reply, name the loose piece, weak square, and king question.'
   }
-  return 'Mentor Insight: study the recap\'s turning point - next run, spend one extra tempo on king safety before launching.'
+  return 'Mentor Insight: the turning point is in the ledger - next run, add one quiet tempo for king safety before the charge.'
 }

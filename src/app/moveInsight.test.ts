@@ -21,7 +21,7 @@ describe('move insight', () => {
   })
 
   it('warns on early queen moves', () => {
-    expect(insight({ san: 'Qh5', from: 'd1', to: 'h5', piece: 'q' }, 3)).toMatch(/queen has spoken early/)
+    expect(insight({ san: 'Qh5', from: 'd1', to: 'h5', piece: 'q' }, 3)).toMatch(/queen spoke early/)
   })
 
   it('warns on opening wing pawn drift', () => {
@@ -58,6 +58,6 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'match',
       quality: 'blunder',
-    })).toMatch(/line cracked sharply/)
+    })).toMatch(/line broke/)
   })
 })
