@@ -1,7 +1,7 @@
 import type { Chess } from 'chess.js'
 import type { MoveQuality } from './gameFlow'
 import { escapeHtml } from './htmlEscape'
-import type { MatchHistoryEntry, MatchScene, PuzzleScene, Scene, StoryBeat } from '../types'
+import type { AiProfile, MatchHistoryEntry, MatchScene, PuzzleScene, Scene, StoryBeat } from '../types'
 
 /** Compiled once — applied on every chess HUD tick when AI persona is present. */
 export const BOSS_PROFILE_RE = /(Apex|Advisor|Counterpart|Strategos|Boss)/i
@@ -72,6 +72,92 @@ export function storyBeatBlock(storyBeat: StoryBeat | undefined): string {
       <strong class="story-beat__title">${escapeHtml(storyBeat.title)}</strong>
       <p class="story-beat__body">${escapeHtml(storyBeat.body)}</p>
     </aside>`
+}
+
+export function spokenLineText(text: string): string {
+  let charIndex = 0
+  const visible = text
+    .split(/(\s+)/u)
+    .map((token) => {
+      if (!token) return ''
+      if (/^\s+$/u.test(token)) return escapeHtml(token)
+      const chars = Array.from(token)
+        .map((char) => {
+          const delay = charIndex * 6
+          charIndex += 1
+          return `<span class="spoken-char" style="--char-delay:${delay}ms">${escapeHtml(char)}</span>`
+        })
+        .join('')
+      return `<span class="spoken-word">${chars}</span>`
+    })
+    .join('')
+  return `<span class="spoken-line"><span class="sr-only">${escapeHtml(text)}</span><span class="spoken-text" aria-hidden="true">${visible}</span></span>`
+}
+
+function pct01(n: number): number {
+  return Math.round(Math.max(0, Math.min(1, n)) * 100)
+}
+
+function traitBand(value: number): string {
+  if (value >= 0.78) return 'high'
+  if (value >= 0.52) return 'measured'
+  return 'low'
+}
+
+export function aiTraitBars(profile: AiProfile): string {
+  const rows = [
+    {
+      label: 'Risk',
+      value: profile.riskAppetite,
+      note:
+        profile.riskAppetite >= 0.74
+          ? 'forces complications'
+          : profile.riskAppetite >= 0.48
+            ? 'chooses timed pressure'
+            : 'prefers structure',
+    },
+    {
+      label: 'Discipline',
+      value: profile.openingDiscipline,
+      note:
+        profile.openingDiscipline >= 0.78
+          ? 'keeps repertoire shape'
+          : profile.openingDiscipline >= 0.55
+            ? 'mostly stays on-book'
+            : 'will improvise early',
+    },
+    {
+      label: 'King safety',
+      value: profile.kingSafetyUrgency,
+      note:
+        profile.kingSafetyUrgency >= 0.82
+          ? 'shelter before spectacle'
+          : profile.kingSafetyUrgency >= 0.58
+            ? 'safety with pressure'
+            : 'invites fire',
+    },
+  ]
+  const rowsHtml = rows
+    .map((row) => {
+      const pct = pct01(row.value)
+      return `<div class="ai-trait ai-trait--${traitBand(row.value)}">
+        <div class="ai-trait__head">
+          <span>${escapeHtml(row.label)}</span>
+          <strong>${pct}%</strong>
+        </div>
+        <div class="ai-trait__bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
+        <p>${escapeHtml(row.note)}</p>
+      </div>`
+    })
+    .join('')
+  return `<div class="ai-traits" aria-label="${escapeHtml(profile.label)} AI trait profile">
+    <div class="ai-traits__title">
+      <span class="teach-label">AI Doctrine</span>
+      <strong>${escapeHtml(profile.label)}</strong>
+      <small>${escapeHtml(profile.conversionPersona)} conversion</small>
+    </div>
+    ${rowsHtml}
+  </div>`
 }
 
 const QUALITY_ICON: Record<string, string> = {

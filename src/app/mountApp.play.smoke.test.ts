@@ -178,6 +178,30 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(mobile.textContent).toBe(guide.textContent)
   })
 
+  it('reveals active dialogue before advancing to the next passage', async () => {
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+
+    const next = app.querySelector<HTMLButtonElement>('#btn-next')!
+    const label = app.querySelector<HTMLSpanElement>('.btn-advance-label')!
+    const progress = app.querySelector<HTMLSpanElement>('#scene-progress')!
+
+    expect(label.textContent).toBe('Reveal')
+    expect(progress.textContent).toContain('Passage 1')
+
+    next.click()
+    expect(label.textContent).toBe('Advance')
+    expect(progress.textContent).toContain('Passage 1')
+    expect(app.querySelector('.narrative-body--revealed')).not.toBeNull()
+    expect(app.querySelector<HTMLElement>('.spoken-char')?.style.animation).toBe('none')
+    await Promise.resolve()
+    expect(app.querySelector('#live-announcer')?.textContent).toContain('Passage fully revealed')
+
+    next.click()
+    expect(progress.textContent).toContain('Passage 2')
+  })
+
   it('shows storage failure banner when streak persist fails at boot', () => {
     const original = Storage.prototype.setItem
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (this: Storage, key: string, value: string) {

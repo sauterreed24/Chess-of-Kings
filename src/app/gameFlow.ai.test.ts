@@ -180,7 +180,9 @@ describe('GameFlow AI / puzzles', () => {
       onCampaignFinished: vi.fn(),
     })
     flow.board = mockBoard() as unknown as BoardView
-    flow.jumpToScene(0, 3)
+    const calibrationIdx = PLAYABLE_CHAPTERS[0]!.scenes.findIndex((s) => s.id === 'pr-calibration')
+    expect(calibrationIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(0, calibrationIdx)
     onChessUpdate.mockClear()
 
     flow.tryPlayerMove('e2', 'e4')

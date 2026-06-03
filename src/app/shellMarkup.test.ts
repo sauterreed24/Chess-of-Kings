@@ -139,6 +139,15 @@ describe('shell markup structural integrity', () => {
     expect(host.innerHTML).toContain('href="./accessibility.html"')
   })
 
+  it('declares Long Reign world markers on the title and Chronicle Index', () => {
+    const host = document.createElement('div')
+    host.innerHTML = getShellMarkup()
+    expect(host.querySelector('.title-ornament__map')).not.toBeNull()
+    expect(host.querySelector('.title-world-panel')?.textContent).toContain('Alexandrine Reckoning')
+    expect(host.querySelector('.chronicle-index-codex')?.textContent).toContain('Civic Chess')
+    expect(host.textContent).toContain('Alexander III')
+  })
+
   it('declares the chess board with aria-describedby including the kbd hint and board guide', () => {
     const host = document.createElement('div')
     host.innerHTML = getShellMarkup()

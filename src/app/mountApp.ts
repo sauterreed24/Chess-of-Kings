@@ -5,12 +5,13 @@ import type { ChessUiPayload } from './gameFlow'
 import { clearSave, hasSave } from './storage'
 import type { Chapter, DuelRosterEntry, DuelVariant, Scene, PieceSkinId, RewardBundle } from '../types'
 import { PIECE_SKIN_LABEL } from '../chess/skins'
+import { AI_PROFILES } from '../chess/aiProfiles'
 import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
 import { renderChapterProgressHtml } from './play/chapterProgress'
-import { sceneTypeLabel } from './mainUiFormatters'
+import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
 import { createSfxController } from './audio/sfx'
 import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
@@ -73,6 +74,7 @@ export function mountApp(app: HTMLDivElement) {
   const duelList = app.querySelector<HTMLDivElement>('#duel-list')!
   const duelPanel = app.querySelector<HTMLDivElement>('#duel-panel')!
   const btnNext = app.querySelector<HTMLButtonElement>('#btn-next')!
+  const btnNextLabel = app.querySelector<HTMLSpanElement>('.btn-advance-label')!
   const btnNextHint = app.querySelector<HTMLSpanElement>('#btn-next-hint')!
   const btnUndo = app.querySelector<HTMLButtonElement>('#btn-undo')!
   const btnReset = app.querySelector<HTMLButtonElement>('#btn-reset')!
@@ -167,6 +169,8 @@ export function mountApp(app: HTMLDivElement) {
 
   let flowRef: GameFlow | null = null
   let currentSceneType: Scene['type'] | null = null
+  let dialogueRevealDone = true
+  let dialogueRevealTimer = 0
   const play = createMountPlayState()
   const mountDom: MountDomRefs = {
     app,
@@ -668,6 +672,7 @@ export function mountApp(app: HTMLDivElement) {
         : difficulty === 'relentless'
           ? 'Relentless'
           : 'Balanced'
+    const variantProfile = AI_PROFILES[variant.profileId]
     currentSceneType = null
     play.lastAdvanceSig = ''
     play.advanceWasReady = false
@@ -725,6 +730,7 @@ export function mountApp(app: HTMLDivElement) {
         </div>
         <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
         <p class="opponent-note">${escapeHtml(variant.bio)}</p>
+        ${variantProfile ? aiTraitBars(variantProfile) : ''}
         <p class="match-mandate">No move cap. Play until checkmate or a true dead draw.</p>
         <div class="reward-card">
           <h4>Counter-Prep Briefing</h4>
@@ -747,6 +753,78 @@ export function mountApp(app: HTMLDivElement) {
       syncNarrativeFade,
       revealBoardScene,
     })
+    scheduleDialogueReveal(scene)
+  }
+
+  function clearDialogueRevealTimer() {
+    if (!dialogueRevealTimer) return
+    window.clearTimeout(dialogueRevealTimer)
+    dialogueRevealTimer = 0
+  }
+
+  function prefersInstantDialogue(): boolean {
+    const html = document.documentElement
+    return (
+      html.classList.contains('force-reduced-motion') ||
+      html.classList.contains('perf-lean') ||
+      Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
+    )
+  }
+
+  function msFromStyle(value: string): number {
+    const n = Number(value.trim().replace(/ms$/i, ''))
+    return Number.isFinite(n) ? n : 0
+  }
+
+  function currentDialogueRevealMs(): number {
+    let longest = 0
+    for (const line of [...narrativeBody.querySelectorAll<HTMLElement>('.line')]) {
+      const lineDelay = msFromStyle(line.style.getPropertyValue('--line-delay'))
+      const charCount = line.querySelectorAll('.spoken-char').length
+      if (charCount <= 0) continue
+      longest = Math.max(longest, lineDelay + Math.max(0, charCount - 1) * 6 + 220)
+    }
+    return Math.min(6000, Math.max(0, longest))
+  }
+
+  function scheduleDialogueReveal(scene: Scene) {
+    clearDialogueRevealTimer()
+    narrativeBody.classList.remove('narrative-body--revealed')
+    const hasAnimatedText = scene.type === 'dialogue' && narrativeBody.querySelector('.spoken-char') !== null
+    dialogueRevealDone = !hasAnimatedText || prefersInstantDialogue()
+    if (!dialogueRevealDone) {
+      dialogueRevealTimer = window.setTimeout(() => {
+        dialogueRevealTimer = 0
+        dialogueRevealDone = true
+        updateAdvance(flow)
+        announcer.say('Passage fully revealed. Advance when ready.')
+      }, currentDialogueRevealMs())
+    }
+    updateAdvance(flow)
+  }
+
+  function revealDialogueNow() {
+    clearDialogueRevealTimer()
+    dialogueRevealDone = true
+    narrativeBody.classList.add('narrative-body--revealed')
+    for (const el of [...narrativeBody.querySelectorAll<HTMLElement>('.spoken-char, .line--stagger')]) {
+      el.style.animation = 'none'
+      el.style.opacity = '1'
+      el.style.transform = 'none'
+    }
+    updateAdvance(flow)
+    announcer.say('Passage fully revealed. Advance when ready.')
+  }
+
+  function advanceOrReveal() {
+    if (!flow.canAdvance()) return
+    if (currentSceneType === 'dialogue' && !dialogueRevealDone) {
+      revealDialogueNow()
+      return
+    }
+    sfx.playEventSfx('advance')
+    flow.advanceScene()
+    updateAdvance(flow)
   }
 
   function revealBoardScene() {
@@ -784,8 +862,9 @@ export function mountApp(app: HTMLDivElement) {
   function updateAdvance(g: GameFlow) {
     const ok = g.canAdvance()
     const narrative = isNarrativeScene()
+    const revealPending = ok && currentSceneType === 'dialogue' && !dialogueRevealDone
     const hint = ok && !narrative ? nextSceneHint() : ''
-    const sig = `${ok}|${currentSceneType ?? ''}|${hint}|${g.sceneIndex}|${g.chapterIndex}`
+    const sig = `${ok}|${currentSceneType ?? ''}|${hint}|${g.sceneIndex}|${g.chapterIndex}|${revealPending}`
     if (sig === play.lastAdvanceSig) return
     const becameReady = ok && !play.advanceWasReady
     play.advanceWasReady = ok
@@ -793,6 +872,9 @@ export function mountApp(app: HTMLDivElement) {
     btnNext.disabled = !ok
     btnNext.classList.toggle('primary--ready', ok)
     btnNextHint.textContent = ok && !narrative && hint ? `→ ${hint}` : ''
+    btnNextLabel.textContent = revealPending ? 'Reveal' : 'Advance'
+    btnNext.setAttribute('aria-label', revealPending ? 'Reveal current dialogue' : 'Advance')
+    if (revealPending) btnNextHint.textContent = 'then Advance'
     /* On board scenes the Advance button lives below the board, ledger and
      * tools. When the objective is met mid-play (checkmate, puzzle solved,
      * calibration target reached), pull the now-enabled button into view so
@@ -898,10 +980,7 @@ export function mountApp(app: HTMLDivElement) {
       showChapters()
     },
     canAdvance: () => flow.canAdvance(),
-    advance: () => {
-      flow.advanceScene()
-      updateAdvance(flow)
-    },
+    advance: advanceOrReveal,
     toggleKeyboardHelp,
   })
 
@@ -985,7 +1064,7 @@ export function mountApp(app: HTMLDivElement) {
     flow.restoreStablePosition()
     updateAdvance(flow)
   })
-  btnNext.addEventListener('click', () => { sfx.playEventSfx('advance'); flow.advanceScene(); updateAdvance(flow) })
+  btnNext.addEventListener('click', advanceOrReveal)
   btnUndo.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.undo(); updateAdvance(flow) })
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
 
@@ -1008,6 +1087,7 @@ export function mountApp(app: HTMLDivElement) {
     else updateAdvance(flow)
   })
   window.addEventListener('beforeunload', () => {
+    clearDialogueRevealTimer()
     if (advanceTicker) window.clearTimeout(advanceTicker)
     closeRewardOverlay()
     flow.flushDeferredIO()

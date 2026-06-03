@@ -1,6 +1,7 @@
 import './style.css'
 import './style-alexandrine-imperial.css'
 import { mountApp } from './app/mountApp'
+import { shouldUsePerfLean } from './app/runtimeUiProfile'
 
 function applyRuntimeUiProfile() {
   const root = document.documentElement
@@ -11,9 +12,12 @@ function applyRuntimeUiProfile() {
   const nav = navigator as Navigator & { deviceMemory?: number }
   /** Treat missing Device Memory as unknown — do not assume 8GB (that forced perf-lean everywhere). */
   const mem = nav.deviceMemory
-  const memoryLean = typeof mem === 'number' && mem <= 8
-  const cores = navigator.hardwareConcurrency ?? 4
-  const lean = mqReduced.matches || memoryLean || cores <= 4
+  const lean = shouldUsePerfLean({
+    coarsePointer: mqCoarse.matches,
+    reducedMotion: mqReduced.matches,
+    deviceMemory: mem,
+    hardwareConcurrency: navigator.hardwareConcurrency,
+  })
   root.classList.toggle('perf-lean', lean)
 }
 

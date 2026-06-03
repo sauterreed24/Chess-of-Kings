@@ -9,10 +9,13 @@ import {
   labelForSpeaker,
   performanceDeltaLines,
   sceneTypeLabel,
+  spokenLineText,
   storyBeatBlock,
   tierLabel,
+  aiTraitBars,
 } from './mainUiFormatters'
 import type { MatchHistoryEntry } from '../types'
+import { AI_PROFILES } from '../chess/aiProfiles'
 
 describe('mainUiFormatters', () => {
   it('tierLabel maps ladder tiers', () => {
@@ -54,6 +57,24 @@ describe('mainUiFormatters', () => {
     expect(html).toContain('A poisoned &lt;pawn&gt; asks whether Reed can wait.')
     expect(html).not.toContain('<Pressure>')
     expect(html).not.toContain('<pawn>')
+  })
+
+  it('spokenLineText exposes full AT text while hiding animated character spans', () => {
+    const html = spokenLineText('Reed says <check>.')
+    expect(html).toContain('class="sr-only"')
+    expect(html).toContain('aria-hidden="true"')
+    expect(html).toContain('spoken-char')
+    expect(html).toContain('Reed says &lt;check&gt;.')
+    expect(html).not.toContain('<check>')
+  })
+
+  it('aiTraitBars renders escaped rival doctrine traits', () => {
+    const html = aiTraitBars(AI_PROFILES.rowan_gambit)
+    expect(html).toContain('AI Doctrine')
+    expect(html).toContain('Risk')
+    expect(html).toContain('King safety')
+    expect(html).toContain('Rowan Gambit Tabiya')
+    expect(html).not.toContain('<script')
   })
 
   it('getCaptured and capturedRow reflect starting position', () => {

@@ -14,9 +14,9 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
     index: 0,
     title: 'Prologue',
     subtitle: 'The White Screen',
-    era: "Present — Reed's apartment",
+    era: "Present — Reed's apartment, Alexandrine Reckoning 2341",
     themeClass: 'theme-prologue',
-    philosophy: 'Curiosity without theory is still a door.',
+    philosophy: 'An ordinary room can still inherit an empire.',
     scenes: [
       {
         type: 'dialogue',
@@ -24,25 +24,25 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         storyBeat: {
           label: 'Human pressure',
           title: 'A player without a method',
-          body: 'Reed is not chasing mastery yet. He is chasing the feeling that one clear decision might prove his attention can still become discipline.',
+          body: 'Reed is not chasing mastery yet. In a commonwealth that treats chess as civic literacy, he is chasing proof that his attention has not gone dull.',
           tone: 'pressure',
         },
         lines: [
           {
             speaker: 'narrator',
-            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. A chess trainer sits open on his laptop beside an untouched notebook and a cold cup of coffee. He knows how pieces move — he has known since childhood. What he does not know is how to think when a position refuses to explain itself.',
+            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. A chess trainer sits open on his laptop beside an untouched notebook, a cold cup of coffee, and the brass housing of his apartment civic terminal. He knows how pieces move; everyone in the Commonwealth knows that much. What he does not know is how to stay calm when a position stops explaining itself.',
           },
           {
             speaker: 'reed',
-            text: '"Adaptive trainer. Any style in history. Learns as you play." Sounds like marketing with a better font.',
+            text: '"Adaptive trainer. Any style in history. Stratarch-calibrated." Sounds like ministry software with a better font.',
           },
           {
             speaker: 'narrator',
-            text: 'He opens it anyway. The screen is the only light in the room, and for once the room seems to wait for him to make the first move.',
+            text: 'He opens it anyway. The screen is the only light in the room. Above it, the Alexandrine date glows in lapis numerals from the municipal mesh, ordinary as weather and just as hard to argue with.',
           },
           {
             speaker: 'reed',
-            text: 'Fine. Let it learn me.',
+            text: 'Fine. Let it see what it thinks I am.',
           },
         ],
       },
@@ -78,12 +78,45 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         ],
       },
       {
+        type: 'codex',
+        id: 'pr-codex-long-reign',
+        heading: 'The Long Reign — modern commonwealth',
+        storyBeat: {
+          label: 'World thread',
+          title: 'History did not break where Reed was taught it held',
+          body: 'The app names facts Reed has always treated as background: Alexander lived, succession stabilized, and chess became a public proof of judgment.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'Alexander III, the Long-Reigning',
+            body: 'He did not die young at Babylon. He lived into his eighties, made succession boring on purpose, and forced Macedonian, Persian, Egyptian, Levantine, and Indian offices to share a single administrative grammar.',
+          },
+          {
+            term: 'Chaturanga West',
+            body: 'Indian war-game patterns reached Alexandria centuries early. Court scholars fused them with Macedonian command drills until the board became a compact language for policy, logistics, and restraint.',
+          },
+          {
+            term: 'The Calculus of Kings',
+            body: 'A civic examination more than a game: candidates prove judgment by making lawful moves under incomplete information. Reed knows the phrase the way he knows tax forms and train maps.',
+          },
+          {
+            term: 'Stratarch Rating',
+            body: 'A public ladder of practical command, carried by schools, ministries, and archive universities. Most citizens ignore their number until a door asks for it.',
+          },
+          {
+            term: "Reed's apartment",
+            body: 'Cedar shelves, rain glass, a brass-lapis terminal, and archive notices scrolling beside rent reminders. Nothing about the room feels ancient to him. That is the point.',
+          },
+        ],
+      },
+      {
         type: 'dialogue',
         id: 'pr-trainer',
         lines: [
           {
             speaker: 'system',
-            text: 'Calibration sequence initiated. Play naturally. The trainer will emulate resistance without attempting to win — it is measuring your instincts, not your knowledge.',
+            text: 'Calibration sequence initiated. Play naturally. The trainer will offer resistance without trying to win. It is measuring instinct before knowledge.',
           },
           {
             speaker: 'reed',
@@ -91,7 +124,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'system',
-            text: 'Make at least four moves as White. Move anything. The data begins now.',
+            text: 'Make at least four moves as White. Choose honestly. The data begins now.',
           },
         ],
       },
@@ -124,7 +157,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'narrator',
-            text: 'The analysis bar fills. Four moves. Five. The screen flickers — not the window backlight, something deeper.',
+            text: 'The analysis bar fills. Four moves. Five. The screen flickers, not like a weak backlight but like a door deciding whether to be seen.',
           },
           {
             speaker: 'reed',
@@ -132,11 +165,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'narrator',
-            text: 'The board disappears. Not a crash. Not a timeout. The screen becomes the colour of old paper, and then — white. Clean, absolute, impossibly deep white, as though the device has opened into a room that has no walls.',
+            text: 'The board disappears. Not a crash. Not a timeout. The screen becomes the color of old paper, and then white: clean, absolute, impossibly deep, as though the device has opened into a room with no walls.',
           },
           {
             speaker: 'reed',
-            text: 'What is this.',
+            text: 'No. What is this?',
           },
         ],
       },
@@ -150,38 +183,38 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         id: 'pr-lab',
         storyBeat: {
           label: 'Story hinge',
-          title: 'The archive names the real game',
-          body: 'The trainer is no longer a tool. It is a door into an institution that studies history by forcing players to inhabit its decisions.',
+          title: 'The curator knows the wrong door opened',
+          body: 'The trainer is no longer a tool. It is a door into an institution that studies history by forcing players to inhabit its decisions — and Alexion seems disturbed that Reed crossed it.',
           tone: 'quiet',
         },
         lines: [
           {
             speaker: 'narrator',
-            text: 'Stone. Lamplight. Folios in tall shelves. The faint smell of wax and cedar. A man in formal academic robes stands beside a suspended wooden diagram — a chess position frozen in mid-game.',
+            text: 'Stone. Lamplight. Folios in tall shelves. The faint smell of wax and cedar. A man in formal academic robes stands beside a suspended wooden diagram: a chess position frozen in mid-game.',
           },
           {
             speaker: 'alexion',
-            text: 'You are not in the seed archives.',
+            text: 'You are not assigned to the seed archives.',
           },
           {
             speaker: 'reed',
-            text: 'Then where am I?',
+            text: 'I am not assigned anywhere. Where am I?',
           },
           {
             speaker: 'alexion',
-            text: 'The History Lab. We use chess because it is the most compressed record of how conflict, order, and time actually move. Every era of chess reveals something about the people who played it.',
+            text: 'The History Lab. We use chess because it is the most compressed record of how conflict, order, and time actually move. The Long Reign made the board civic. The Lab makes it dangerous again.',
           },
           {
             speaker: 'reed',
-            text: 'And me? I clicked "train."',
+            text: 'And I got here by clicking "train."',
           },
           {
             speaker: 'alexion',
-            text: 'The interface accepted you. That is not nothing. I am Alexion Demaratos-Serapis — curator of these simulations. You should not be here. The Lab only opens for candidates, witnesses, and errors. I have not decided which you are.',
+            text: 'The interface accepted you. That is not nothing. I am Alexion Demaratos-Serapis, curator of these simulations. You should not be here. The Lab opens for candidates, witnesses, and errors. I have not decided which you are, and the seed archive has already begun deciding without me.',
           },
           {
             speaker: 'alexion',
-            text: 'The first chamber is ancient. Ceremonial chess — played as duty, not sport. Scholarly, patient, unforgiving of sloppiness. Learn its laws, and we will speak of what comes after.',
+            text: 'The first chamber is ancient: ceremonial chess, played as duty rather than sport. Scholarly. Patient. Unforgiving of sloppiness. Learn its laws, and we will speak of what comes after.',
           },
           {
             speaker: 'reed',
@@ -189,7 +222,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'The door to the vestibule remains behind you. But you have already begun to think. Refusing now would be dishonest.',
+            text: 'The door to the vestibule remains behind you. But you have already begun to think in here. Refusing now would be dishonest.',
           },
         ],
       },
@@ -413,13 +446,13 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         storyBeat: {
           label: 'Ladder opens',
           title: 'The first opponent can still punish carelessness',
-          body: 'Amara is not a villain or a tutorial dummy. She is a mirror for Reed at the edge between knowing rules and making plans.',
+          body: 'Amara is not a villain or a difficulty knob. She is a young doctrine of symmetry, the first proof that even simple plans have teeth.',
           tone: 'quiet',
         },
         lines: [
           {
             speaker: 'alexion',
-            text: 'You have studied the principles. Now prove them. The court ladder begins here — with Amara, the newest initiate. She knows the rules. She does not yet know how to think.',
+            text: 'You have studied the principles. Now prove them. The court ladder begins here — with Amara, the newest initiate of Egyptian symmetry. She knows the rules. She does not yet know which rule to break.',
           },
           {
             speaker: 'reed',
@@ -959,11 +992,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'narrator',
-            text: 'The chamber walls change colour — less candle-wax, more forge-ember. The pieces are the same, but the air between them feels thinner, as though every exchange could ignite before anyone admits who struck the match.',
+            text: 'The chamber walls shift from candle-wax to forge-ember. The pieces are the same, but the air between them feels thinner, as though every exchange could ignite before anyone admits who struck the match.',
           },
           {
             speaker: 'alexion',
-            text: 'Welcome to the Romantic age. Here, players paid for clarity with risk. Gambits offered pawns for minutes of confusion; sacrifices bought time against the clock of the opponent’s composure.',
+            text: 'Welcome to the Romantic age. Here, players paid for clarity with risk. Gambits offered pawns for minutes of confusion. Sacrifices bought time against the opponent\'s composure.',
           },
           {
             speaker: 'reed',
@@ -971,7 +1004,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'More. A Romantic attack punishes hesitation twice: once in material, once in tempo. You will meet players who want the king exposed. Your job is not to refuse drama — it is to choose which drama you can survive.',
+            text: 'More. A Romantic attack punishes hesitation twice: once in material, once in tempo. You will meet players who want the king exposed. Your job is not to refuse drama; it is to choose which drama you can survive.',
           },
         ],
       },
@@ -1044,7 +1077,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'alexion',
-            text: 'Clean. You did not add a single superfluous check — that restraint is already Romantic discipline, not ancient caution dressed in new clothes.',
+            text: 'Clean. You did not add a single superfluous check. That restraint is Romantic discipline, not ancient caution dressed in new clothes.',
           },
           {
             speaker: 'reed',
@@ -1052,7 +1085,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'Good. The ladder here is shorter than Chapter I, but the opponents are hungrier. First: Rowan, who plays the way a duelist plays — fast, loud, proud.',
+            text: 'Good. The ladder here is shorter than Chapter I, but the opponents are hungrier. First: Rowan, who plays like a duelist with a lit room watching him.',
           },
         ],
       },
@@ -1068,7 +1101,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'rowan',
-            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy King\'s Gambit — gambits accepted, complications welcomed, reputations set lightly on fire.',
+            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy King\'s Gambit: gambits accepted, complications welcomed, reputations set lightly on fire.',
           },
           {
             speaker: 'reed',
@@ -1076,7 +1109,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'rowan',
-            text: 'Then I will drag you into it anyway. Fire spreads.',
+            text: 'Then I will drag you into it politely. Fire spreads.',
           },
         ],
       },
@@ -1086,11 +1119,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         title: 'Encounter 1 of 2 — The Gambiteer',
         opponentName: 'Rowan Vale',
         opponentNote:
-          'A Romantic duelist — sharp tactics from open games, loves piece contact after 1.e4 e5. Keep the king safe, accept complications only when you see the recapture.',
+          'A Romantic duelist — tempo-first fire from open games, poisoned captures, and King\'s Gambit pressure. Keep the king safe; if you accept a pawn, know the invoice.',
         storyBeat: {
           label: 'Match pressure',
           title: 'Do not eat the poisoned pawn',
-          body: 'Rowan wins when greed replaces calculation. Survive the first wave, and his attack starts spending more than it earns.',
+          body: 'Rowan is a living doctrine of fire. He wins when beauty makes greed sound like courage; survive the first wave and the flame begins paying rent.',
           tone: 'fire',
         },
         fen: 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR w KQkq - 0 2',
@@ -1113,15 +1146,15 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'rowan',
-            text: 'You did not flinch when I offered the fork motif on f2. Most students still reach for the poisoned pawn like it is candy.',
+            text: 'You did not flinch when I offered the fork on f2. Most students reach for the poisoned pawn like it is owed to them.',
           },
           {
             speaker: 'reed',
-            text: 'Chapter I drilled “loose pieces drop off.” Your bishop on c5 was eyeing f2 the whole time.',
+            text: 'Chapter I drilled "loose pieces drop off." Your bishop on c5 was eyeing f2 the whole time.',
           },
           {
             speaker: 'alexion',
-            text: 'One more rung. Vega does not gamble — she sacrifices with invoices. If you survive her accounting, Chapter II is yours.',
+            text: 'One more rung. Vega does not gamble. She sacrifices with invoices. If you survive her accounting, Chapter II is yours.',
           },
         ],
       },
@@ -1137,7 +1170,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'vega',
-            text: 'I am not here to entertain you. I am here to see whether you can calculate when the board is loud.',
+            text: 'I am not here to entertain you. I am here to see whether you can calculate while the board is loud.',
           },
           {
             speaker: 'reed',
@@ -1145,7 +1178,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'vega',
-            text: 'Open files, half-open diagonals, knights that remember every fork you ever missed. Bring your king to safety before you dream of attack.',
+            text: 'Open files, half-open diagonals, knights that remember every fork you missed. Bring your king to safety before you dream of attack.',
           },
         ],
       },
@@ -1155,11 +1188,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         title: 'Encounter 2 of 2 — The Flamekeeper',
         opponentName: 'Vega Sorn',
         opponentNote:
-          'Romantic pressure with better discipline than Rowan — she punishes slow development and weak squares on the kingside. Castle early or pay in tempi.',
+          'Romantic pressure audited by discipline — Italian pressure, defender overloads, and sacrifices with receipts. Castle early or pay in tempi.',
         storyBeat: {
           label: 'Match pressure',
           title: 'Bring the king home before the board opens',
-          body: 'Vega is strongest when the center breaks while your king is still negotiating shelter. Castle before ambition becomes exposure.',
+          body: 'Vega is strongest when the center breaks while your king is still negotiating shelter. Her pressure does not roar; it itemizes.',
           tone: 'fire',
         },
         fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4',
@@ -1182,7 +1215,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'alexion',
-            text: 'You have walked through fire without confusing bravery with recklessness. That distinction is the hinge the Romantic era turned on.',
+            text: 'You walked through fire without confusing bravery with recklessness. That distinction is the hinge the Romantic era turned on.',
           },
           {
             speaker: 'reed',
@@ -1190,11 +1223,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'Exactly. The next chambers will ask different questions — structure, restraint, systems. You carry both ancient patience and Romantic tempo into them.',
+            text: 'Exactly. The next chambers will ask different questions: structure, restraint, systems. You carry both ancient patience and Romantic tempo into them.',
           },
           {
             speaker: 'narrator',
-            text: 'Chapter II is sealed. The archive still holds classical lines, hypermodern shadows, Soviet steel — each waiting behind its own door. For now, the forge cools. The chronicle remembers the heat.',
+            text: 'Chapter II is sealed. The archive still holds classical lines, hypermodern shadows, Soviet steel, engine glare: each waiting behind its own door. For now, the forge cools. The chronicle remembers the heat.',
           },
         ],
       },

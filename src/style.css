@@ -351,10 +351,6 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .title-ornament::after {
   background: linear-gradient(90deg, var(--gold-dim), transparent);
 }
-.title-ornament__glyph {
-  font-size: 1.1rem; color: var(--gold); opacity: 0.75;
-}
-
 .title-tagline {
   font-family: var(--font-display);
   font-size: 0.8rem; letter-spacing: 0.14em; color: var(--ivory-dim); margin: 0 0 1rem;
@@ -524,7 +520,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
    ═══════════════════════════════ */
 .play-crawl {
   max-width: 58rem; margin: 0 auto 1.5rem;
-  padding-bottom: 1rem; border-bottom: 1px solid rgba(201,169,98,0.1);
+  padding-bottom: 0.75rem; border-bottom: 1px solid rgba(201,169,98,0.1);
 }
 .play-crawl__row {
   display: flex; flex-wrap: wrap; align-items: baseline;
@@ -578,8 +574,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   min-height: 0;
 }
 .play-atelier--solo .narrative-body {
-  flex: 0 1 auto;
-  min-height: 2.5rem;
+  flex: 1 1 auto;
+  min-height: 12rem;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
@@ -592,8 +588,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 .play-atelier--solo .narrative-actions {
   flex: 0 0 auto;
-  margin-top: 1rem;
-  padding-top: 0.9rem;
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
   border-top: 1px solid rgba(201,169,98,0.14);
   background: linear-gradient(180deg, rgba(17,15,9,0) 0%, #15120b 36%, #15120b 100%);
 }
@@ -618,7 +614,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
     linear-gradient(160deg, rgba(42,36,26,0.5) 0%, transparent 45%),
     linear-gradient(180deg, #1a1710 0%, #110f09 100%);
   border: 1px solid rgba(201,169,98,0.14);
-  padding: 1.5rem 1.75rem 1.75rem 2.1rem;
+  padding: 1.2rem 1.45rem 1.45rem 1.75rem;
   box-shadow: var(--shadow-panel);
   position: relative; overflow: hidden;
 }
@@ -1266,6 +1262,69 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   font-size: 0.92rem; color: var(--ivory-dim);
 }
 .opponent-note { margin: 0 0 0.65rem; color: var(--muted); font-size: 0.94rem; }
+
+.ai-traits {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) repeat(3, minmax(0, 0.9fr));
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  padding: 0.62rem;
+  border: 1px solid rgba(42,96,148,0.28);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(232,201,126,0.045), rgba(0,0,0,0.18));
+}
+
+.ai-traits__title {
+  display: grid;
+  gap: 0.16rem;
+  padding-right: 0.55rem;
+  border-right: 1px solid rgba(201,169,98,0.13);
+}
+
+.ai-traits__title strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+.ai-trait {
+  display: grid;
+  gap: 0.24rem;
+  padding: 0.42rem 0.48rem;
+  border: 1px solid rgba(201,169,98,0.12);
+  background: rgba(0,0,0,0.18);
+}
+
+.ai-trait__head {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 0.52rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ivory-dim);
+}
+
+.ai-trait__bar {
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.34);
+}
+
+.ai-trait__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(42,96,148,0.78), rgba(232,201,126,0.82));
+}
+
+.ai-trait p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
 
 .lesson-note {
   font-size: 0.78rem; color: var(--gold-dim); margin: 0.75rem 0 0;
@@ -2090,46 +2149,55 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   }
 
   .title-hero {
-    padding: 0.75rem 0 0;
+    padding: 0.5rem 0 0;
   }
 
   .title-hero__plate {
-    padding: 1.55rem 2rem 1.45rem;
+    padding: 1.18rem 1.85rem 1.25rem;
   }
 
   .title-ornament {
-    margin-bottom: 1rem;
+    margin-bottom: 0.56rem;
   }
 
   .kicker {
-    margin-bottom: 0.72rem;
+    margin-bottom: 0.54rem;
   }
 
   .display-title {
-    font-size: 2.72rem;
-    margin-bottom: 0.45rem;
+    font-size: 2.52rem;
+    margin-bottom: 0.32rem;
   }
 
   .title-tagline {
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.52rem;
   }
 
   .lede {
-    margin-bottom: 1rem;
-    font-size: 1rem;
+    margin-bottom: 0.78rem;
+    font-size: 0.96rem;
   }
 
   .title-stats {
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: 0.46rem;
+    margin-bottom: 0.72rem;
   }
 
   .title-stats span {
-    padding: 0.5rem 0.64rem;
+    padding: 0.42rem 0.58rem;
   }
 
   .mvp-note {
-    margin-top: 1rem;
+    margin-top: 0.72rem;
+  }
+
+  .title-settings {
+    margin-top: 0.82rem;
+    padding-top: 0.68rem;
+  }
+
+  .title-settings__heading {
+    margin-bottom: 0.45rem;
   }
 }
 
@@ -2355,7 +2423,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .play-crawl {
   position: relative;
-  padding: 1rem 1.1rem 1.15rem;
+  margin-bottom: 0.85rem;
+  padding: 0.75rem 0.95rem 0.85rem;
   border: 1px solid rgba(201,169,98,0.14);
   border-radius: 12px;
   background:
@@ -2363,6 +2432,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
     linear-gradient(180deg, rgba(18,15,10,0.72), rgba(0,0,0,0.16));
   box-shadow: 0 18px 48px rgba(0,0,0,0.28);
 }
+
+.shell--lab .play-crawl .chapter-sub { display: none; }
+.shell--lab .play-crawl .philosophy { margin-top: 0.45rem; font-size: 0.98rem; }
+.play-atelier--solo .story-beat { margin-bottom: 0.55rem; padding: 0.5rem 0.68rem 0.56rem; }
 
 .scene-progress {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
@@ -2452,6 +2525,25 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .line--stagger,
 .codex-entry {
   position: relative;
+}
+
+.spoken-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.22em);
+  animation: spoken-hammer 0.16s var(--ease-out) forwards;
+  animation-delay: calc(var(--line-delay, 0ms) + var(--char-delay, 0ms));
+}
+
+@keyframes spoken-hammer {
+  from {
+    opacity: 0;
+    transform: translateY(0.22em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .instrument-frame {
@@ -3174,9 +3266,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   }
 
   .display-title { font-size: clamp(1.6rem, 8vw, 2.4rem); }
-  .title-hero    { padding: 1rem 0; }
-  .title-hero__plate { padding: 1.25rem 0.9rem; }
-  .title-stats { grid-template-columns: 1fr; }
+  .title-hero    { padding: 0.65rem 0; }
+  .title-hero__plate { padding: 1rem 0.8rem; }
+  .title-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 0.85rem; }
 
   .play-atelier { gap: 1rem; }
   .manuscript-panel,
@@ -3204,8 +3296,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   .duel-launch__actions .ghost {
     min-height: 2.75rem;
   }
-  .duel-list { position: static; }
-
   .btn-advance-label { font-size: 0.62rem; }
 }
 
@@ -3295,7 +3385,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
    vertical room from the pinned Advance footer. Keep it for assistive tech
    (it is referenced by the board's aria-describedby) but remove it visually
    and from layout flow. */
-.coarse-pointer .narrative-kbd-hint {
+.coarse-pointer .narrative-kbd-hint,
+.play-atelier--solo .narrative-kbd-hint {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -3336,6 +3427,12 @@ html.perf-lean .sq::before,
 html.perf-lean .title-hero__plate::after {
   opacity: 0.18;
 }
+html.perf-lean .spoken-char,
+html.force-reduced-motion .spoken-char {
+  animation: none !important;
+  opacity: 1;
+  transform: none;
+}
 html.perf-lean .ambient__vignette {
   background: radial-gradient(ellipse 80% 80% at 50% 45%, transparent 0%, rgba(0,0,0,0.42) 100%);
 }
@@ -3346,6 +3443,23 @@ html.perf-lean .board-stage--victory .board-brass,
 html.perf-lean .board-stage--loss .board-brass,
 html.perf-lean .board-stage--finisher .board-brass {
   animation: none !important;
+}
+
+@media (max-width: 960px) {
+  .ai-traits {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-traits__title {
+    padding-right: 0;
+    padding-bottom: 0.52rem;
+    border-right: 0;
+    border-bottom: 1px solid rgba(201,169,98,0.13);
+  }
+
+  .duel-list {
+    position: static;
+  }
 }
 
 @media (max-width: 900px) {
@@ -3378,6 +3492,12 @@ html.perf-lean .board-stage--finisher .board-brass {
    REDUCED MOTION
    ═══════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
+  .spoken-char {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

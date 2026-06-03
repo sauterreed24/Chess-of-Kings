@@ -44,5 +44,16 @@ describe('AI profile resolver', () => {
     expect(rowan.riskAppetite).toBeGreaterThan(vega.riskAppetite)
     expect(rowan.weights.sacrificial).toBeGreaterThan(vega.weights.sacrificial)
     expect(vega.kingSafetyUrgency).toBeGreaterThan(rowan.kingSafetyUrgency)
+    expect(vega.openingDiscipline).toBeGreaterThan(rowan.openingDiscipline)
+    expect(rowan.motifBias.kingHunt).toBeGreaterThan(0.9)
+  })
+
+  it('makes Alexandrine and apotheosis profiles more disciplined than Romantic fire', () => {
+    const rowan = resolveProfileByMatchId('c2-match-rowan')
+    const strategos = resolveProfileByDuelVariant('alexion-strategos')
+    const apex = resolveProfileByDuelVariant('alexion-apex')
+    expect(strategos.openingDiscipline).toBeGreaterThan(rowan.openingDiscipline)
+    expect(apex.conversionStrictness).toBeGreaterThan(strategos.conversionStrictness)
+    expect(apex.weights.prophylactic).toBeGreaterThan(rowan.weights.prophylactic)
   })
 })

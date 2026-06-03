@@ -15,7 +15,7 @@ export function getShellMarkup(): string {
       <header class="top-bar">
         <div class="top-bar__brand">
           <span class="mark">The Calculus of Kings</span>
-          <span class="mark-sub">Alexandrine Archive · Historia Lapidea</span>
+          <span class="mark-sub">Long Reign Commonwealth · Historia Lapidea</span>
         </div>
         <nav class="top-nav" aria-label="Primary navigation">
           <button type="button" class="ghost ghost--nav" id="btn-title" aria-current="page">Title</button>
@@ -27,15 +27,29 @@ export function getShellMarkup(): string {
       <section id="screen-title" class="screen screen--title">
         <div class="title-hero">
           <div class="title-hero__plate">
-            <div class="title-ornament" aria-hidden="true"><span class="title-ornament__glyph">⚔</span></div>
-            <p class="kicker">A narrative chess odyssey</p>
+            <div class="title-ornament" aria-hidden="true">
+              <svg class="title-ornament__map" viewBox="0 0 220 34" focusable="false" style="width:min(100%,15.5rem);height:1.85rem;color:#c9a96a">
+                <path d="M4 17h46l22-12 36 25 34-22 28 12h46" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".62"/>
+                <path d="M72 5l36 25 34-22" fill="none" stroke="#2a6094" stroke-width="1" opacity=".5"/>
+                <g fill="currentColor">
+                  <circle cx="4" cy="17" r="2.5"/><circle cx="50" cy="17" r="3"/><circle cx="72" cy="5" r="3.4"/><circle cx="108" cy="30" r="3.4"/><circle cx="142" cy="8" r="3.4"/><circle cx="170" cy="20" r="3"/><circle cx="216" cy="17" r="2.5"/>
+                </g>
+                <path d="M110 11l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#e8c97e" opacity=".78"/>
+              </svg>
+            </div>
+            <p class="kicker">A civic proof from the Long Reign</p>
             <h1 class="display-title">The Calculus of Kings</h1>
-            <p class="title-tagline">An ancient royal archive running on impossible future technology.</p>
-            <p class="lede">Play story chapters, unlock rival dossiers, learn from adaptive AI, and preserve every triumph in a persistent chronicle.</p>
+            <p class="title-tagline">In Reed's modern commonwealth, chess proves who can rule.</p>
+            <p class="lede">Enter an archive-university where Alexander III's Long Reign made chaturanga the public language of judgment, law, and rival doctrine.</p>
             <div class="title-stats" aria-label="Game highlights">
-              <span><strong>Campaign</strong><small>chapter trials</small></span>
-              <span><strong>Duel Archive</strong><small>rival dossiers</small></span>
-              <span><strong>Accessible</strong><small>keyboard board</small></span>
+              <span><strong>Campaign</strong><small>doctrinal trials</small></span>
+              <span><strong>Duel Archive</strong><small>living rivals</small></span>
+              <span><strong>Stratarchia</strong><small>rated judgment</small></span>
+            </div>
+            <div class="title-stats title-world-panel" aria-label="Modern Alexandrine world markers">
+              <span><strong>Alexandrine Reckoning</strong><small>2341 A.S.</small></span>
+              <span><strong>Commonwealth Terminal</strong><small>brass civic mesh</small></span>
+              <span><strong>Archive University</strong><small>seed access pending</small></span>
             </div>
             <div class="title-actions" id="title-actions-save">
               <button type="button" class="primary" id="btn-resume">Resume expedition</button>
@@ -75,7 +89,12 @@ export function getShellMarkup(): string {
           <button type="button" class="ghost chapters-back hidden" id="btn-chapters-back">← Return to title</button>
           <h2 class="section-heading">Chronicle index</h2>
           <div id="chapter-progress-slot"></div>
-          <p class="chapters-lede">Jump to an open passage — you will enter the simulation layer.</p>
+          <p class="chapters-lede">Choose an open passage. Each chamber is a school of rule: ancient duty, Romantic fire, and the later doctrines Alexander's surviving commonwealth taught the modern world to inherit.</p>
+          <div class="title-stats chronicle-index-codex" aria-label="Long Reign thread">
+            <span><strong>Long Reign</strong><small>Alexander lives into his eighties; succession stabilizes instead of shattering.</small></span>
+            <span><strong>Civic Chess</strong><small>Chaturanga travels west early and becomes the calculus of public judgment.</small></span>
+            <span><strong>Reed's Present</strong><small>A normal apartment in a world of archive schools, stratarchic ratings, and brass public tech.</small></span>
+          </div>
           <div class="chapter-quick-actions" id="chapter-quick-actions"></div>
           <ul id="chapter-list" class="chapter-list"></ul>
         </div>
@@ -84,7 +103,7 @@ export function getShellMarkup(): string {
       <section id="screen-duel" class="screen screen--chapters hidden">
         <div class="chapters-wrap">
           <h2 class="section-heading">Archive of Rivals</h2>
-          <p class="chapters-lede">Replay defeated rivals, configure variants, and duel in the archive.</p>
+          <p class="chapters-lede">Replay defeated rivals as living doctrines. The dossier is not a difficulty menu: it is a counter-plan against a mind the archive can still summon.</p>
           <div class="duel-wrap">
             <div class="duel-list" id="duel-list"></div>
             <div class="duel-panel" id="duel-panel">
@@ -99,7 +118,7 @@ export function getShellMarkup(): string {
         <div class="lab-overlay__sheet">
           <div class="lab-overlay__bar">
             <button type="button" class="ghost lab-overlay__vestibule" id="btn-vestibule">← Chapters</button>
-            <span class="lab-overlay__label" id="lab-era-label">Archive simulation · Alexandrine era</span>
+            <span class="lab-overlay__label" id="lab-era-label">Archive simulation · Alexandrine civic layer</span>
             <button type="button" class="ghost lab-overlay__kbd" id="btn-lab-kbdhelp" aria-label="Keyboard shortcuts">?</button>
           </div>
           <section id="screen-play" class="screen--play-inner">
@@ -129,7 +148,7 @@ export function getShellMarkup(): string {
               <aside class="instrument-column" id="board-panel">
                 <div class="instrument-frame">
                   <div class="instrument-header">
-                    <span class="instrument-eyebrow">Simulation surface</span>
+                    <span class="instrument-eyebrow">Brass-lapis simulation surface</span>
                     <div class="play-state-strip" aria-label="Current simulation state">
                       <div class="status-pill-wrap">
                         <span class="status-pill" id="board-status" role="status" aria-live="polite"></span>

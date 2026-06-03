@@ -2,12 +2,14 @@ import { Chess } from 'chess.js'
 import type { PieceSkinId } from '../../types'
 import { PIECE_SKIN_LABEL } from '../../chess/skins'
 import { getBookTopLines } from '../../chess/openings'
+import { AI_PROFILES } from '../../chess/aiProfiles'
 import { escapeHtml } from '../htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from '../chronicleReplay'
 import { createEchoReplayTimer } from '../chronicleEchoTimer'
 import { deriveCalibrationLens } from '../duel/calibrationLens'
 import { formatRivalCalibrationLabel } from '../duel/rivalCalibration'
 import { getRivalProfile } from '../../data/rivals'
+import { aiTraitBars } from '../mainUiFormatters'
 import type { GameFlow } from '../gameFlow'
 import type { RewardOverlayController } from '../rewardOverlayController'
 import type { DuelRosterEntry, DuelVariant } from '../../types'
@@ -215,6 +217,11 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         .slice(0, 4)
         .map((x) => `Ply ${x.ply}: ${x.san}`)
     }
+    const variantTraitHtml = (variantId: string) => {
+      const variant = unlockedVariants.find((v) => v.id === variantId) ?? unlockedVariants[0]
+      const profile = variant ? AI_PROFILES[variant.profileId] : undefined
+      return profile ? aiTraitBars(profile) : '<p class="ledger-empty">No AI trait profile is filed for this variant.</p>'
+    }
     duelPanel.innerHTML = `
       <div class="match-card">
         <div class="match-card__top">
@@ -297,6 +304,10 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         </div>
         ${schoolBlendHtml}
         <div class="reward-card">
+          <h4>Rival Trait Profile</h4>
+          <div id="duel-ai-traits">${variantTraitHtml(unlockedVariants[0]!.id)}</div>
+        </div>
+        <div class="reward-card">
           <h4>Counter-Prep Briefing</h4>
           <ul>${prepLines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
         </div>
@@ -317,12 +328,14 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     if (diffSelect) diffSelect.value = recommendedDifficultyId
     const variantSelect = duelPanel.querySelector<HTMLSelectElement>('#duel-variant')
     const openingWatchEl = duelPanel.querySelector<HTMLUListElement>('#duel-opening-watch')
+    const traitEl = duelPanel.querySelector<HTMLDivElement>('#duel-ai-traits')
     const updateOpeningWatch = () => {
       if (!openingWatchEl || !variantSelect) return
       const lines = openingWatch(variantSelect.value)
       openingWatchEl.innerHTML = lines.length
         ? lines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')
         : '<li>No opening book lines for this variant; expect improvised play.</li>'
+      if (traitEl) traitEl.innerHTML = variantTraitHtml(variantSelect.value)
     }
     variantSelect?.addEventListener('change', updateOpeningWatch)
     duelPanel.querySelector<HTMLButtonElement>('#btn-auto-duel')?.addEventListener('click', () => {

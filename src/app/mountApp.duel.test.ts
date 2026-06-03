@@ -184,6 +184,7 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
     expect(app.querySelector('#play-chapter-label')?.textContent).toContain('Duel Archive')
     expect(narrative).toContain('No move cap')
+    expect(narrative).toContain('AI Doctrine')
     expect(narrative).not.toContain('Rain threads the window')
     expect(app.querySelector<HTMLButtonElement>('#btn-next')?.disabled).toBe(true)
     expect(app.querySelector<HTMLButtonElement>('#btn-next')?.classList.contains('hidden')).toBe(true)

@@ -1,13 +1,16 @@
 import type { Chapter, Scene } from '../../types'
 import { escapeHtml } from '../htmlEscape'
 import {
+  aiTraitBars,
   diffStars,
   labelForSpeaker,
+  spokenLineText,
   storyBeatBlock,
   teachingBlock,
   tierLabel,
 } from '../mainUiFormatters'
 import { buildChapterRail, buildLadderTrack } from '../play/chapterRail'
+import { resolveProfileByMatchId } from '../../chess/aiProfiles'
 import type { GameFlow } from '../gameFlow'
 import type { MountDomRefs, MountPlayState } from '../mountContext'
 import type { MatchScene } from '../../types'
@@ -99,7 +102,7 @@ export function renderScene(
     dom.narrativeBody.innerHTML = storyBeatBlock(scene.storyBeat) + scene.lines
       .map(
         (l, i) =>
-          `<div class="line line--stagger" style="--d:${i}"><span class="who" data-speaker="${escapeHtml(l.speaker)}">${escapeHtml(labelForSpeaker(l.speaker))}</span><p class="said">${escapeHtml(l.text)}</p></div>`,
+          `<div class="line line--stagger" style="--d:${i}; --line-delay:${i * 110 + 80}ms"><span class="who" data-speaker="${escapeHtml(l.speaker)}">${escapeHtml(labelForSpeaker(l.speaker))}</span><p class="said">${spokenLineText(l.text)}</p></div>`,
       )
       .join('')
   } else if (scene.type === 'interlude') {
@@ -134,6 +137,7 @@ export function renderScene(
     const tier = scene.ladderTier ? tierLabel(scene.ladderTier) : ''
     const tierClass = scene.ladderTier ?? ''
     const ladderTrack = buildLadderTrack(chapter, scene.id, flow.completedSceneIds)
+    const aiProfile = resolveProfileByMatchId(scene.id)
     dom.sceneTag.textContent = scene.title
   
     /* Count match number and total */
@@ -159,9 +163,15 @@ export function renderScene(
         ${ladderTrack}
         ${storyBeatBlock(scene.storyBeat)}
         <p class="opponent-note">${escapeHtml(scene.opponentNote)}</p>
+        ${aiTraitBars(aiProfile)}
         <p class="match-mandate">No move cap. Play until checkmate or a true dead draw. You command the White pieces.</p>
       </div>`
-    dom.lessonNote.textContent = 'Apply the ancient laws — develop, castle early, avoid loose pieces.'
+    dom.lessonNote.textContent =
+      scene.aiStyle === 'romantic'
+        ? 'Survive the first wave: shelter the king, finish development, then make the sacrifice prove itself.'
+        : scene.aiStyle === 'alexandrine' || scene.aiStyle === 'apotheosis'
+          ? 'Every quiet move matters here: keep structure, deny loose pieces, and convert without drift.'
+          : 'Apply the ancient laws — develop, castle early, avoid loose pieces.'
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = 'Requires victory'
   } else if (scene.type === 'calibration') {

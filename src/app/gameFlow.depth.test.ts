@@ -442,7 +442,9 @@ describe('GameFlow depth systems', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
     flow.mountBoard(root)
-    flow.jumpToScene(0, 3)
+    const calibrationIdx = PLAYABLE_CHAPTERS[0]!.scenes.findIndex((s) => s.id === 'pr-calibration')
+    expect(calibrationIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(0, calibrationIdx)
 
     flow.board?.showLegalFrom(flow.chess, 'e2')
 

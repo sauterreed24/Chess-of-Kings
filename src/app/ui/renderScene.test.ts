@@ -100,6 +100,36 @@ describe('renderScene', () => {
       revealBoardScene: () => {},
     })
     expect(dom.narrativeBody.querySelector('.story-beat')).not.toBeNull()
+    expect(dom.narrativeBody.querySelector('.spoken-char')).not.toBeNull()
+    expect(dom.narrativeBody.querySelector('.spoken-text')?.getAttribute('aria-hidden')).toBe('true')
+    expect(dom.narrativeBody.querySelector('.sr-only')?.textContent).toContain('Rain threads the window')
     expect(dom.narrativeBody.textContent).toContain('A player without a method')
+  })
+
+  it('renders AI doctrine traits for campaign match briefings', () => {
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const chapter = PLAYABLE_CHAPTERS.find((ch) => ch.id === 'ch2')!
+    const sceneIndex = chapter.scenes.findIndex((scene) => scene.id === 'c2-match-rowan')
+    const scene = chapter.scenes[sceneIndex]!
+    renderScene(chapter, scene, sceneIndex, dom, play, flow, {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    })
+
+    const traitText = dom.narrativeBody.querySelector('.ai-traits')?.textContent ?? ''
+    expect(traitText).toContain('AI Doctrine')
+    expect(traitText).toContain('Rowan Gambit Tabiya')
+    expect(traitText).toContain('Risk')
+    expect(dom.lessonNote.textContent).toContain('Survive the first wave')
   })
 })

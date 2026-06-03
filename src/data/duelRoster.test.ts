@@ -19,6 +19,16 @@ describe('DUEL_ROSTER profile wiring', () => {
     }
   })
 
+  it('keeps every visible duel AI trait in the dossier range', () => {
+    for (const rival of DUEL_ROSTER) {
+      for (const variant of rival.variants) {
+        const profile = AI_PROFILES[variant.profileId]
+        const values = [profile.riskAppetite, profile.openingDiscipline, profile.kingSafetyUrgency]
+        expect(values.every((value) => value >= 0 && value <= 1), `${rival.opponentId}/${variant.id}`).toBe(true)
+      }
+    }
+  })
+
   it('keeps visible rival variants aligned with their authored AI identities', () => {
     expect(variantProfile('edred', 'edred-guard')).toBe('scholar_guard')
     expect(variantProfile('rowan', 'rowan-gambit')).toBe('rowan_gambit')

@@ -37,8 +37,8 @@ const BOOKS: Record<string, OpeningBook> = {
   counterpart_apex: {
     1: [{ san: 'e5', weight: 5 }, { san: 'c5', weight: 5 }],
     3: [{ san: 'Nc6', weight: 6 }, { san: 'Nf6', weight: 4 }],
-    5: [{ san: 'Bc5', weight: 5 }, { san: 'd6', weight: 5 }],
-    7: [{ san: 'd6', weight: 5 }, { san: 'Be6', weight: 5 }],
+    5: [{ san: 'd6', weight: 6 }, { san: 'Bc5', weight: 4 }],
+    7: [{ san: 'Be6', weight: 6 }, { san: 'd6', weight: 4 }],
   },
   alexion_mentor: {
     1: [{ san: 'd5', weight: 5 }, { san: 'e5', weight: 5 }],
@@ -54,23 +54,23 @@ const BOOKS: Record<string, OpeningBook> = {
   alexion_apex: {
     1: [{ san: 'e5', weight: 5 }, { san: 'c5', weight: 5 }],
     3: [{ san: 'Nc6', weight: 5 }, { san: 'Nf6', weight: 5 }],
-    5: [{ san: 'Bc5', weight: 4 }, { san: 'd6', weight: 6 }],
-    7: [{ san: 'Nf6', weight: 5 }, { san: 'Be7', weight: 5 }],
+    5: [{ san: 'd6', weight: 7 }, { san: 'Bc5', weight: 3 }],
+    7: [{ san: 'Be7', weight: 6 }, { san: 'Nf6', weight: 4 }],
     9: [{ san: 'O-O', weight: 7 }, { san: 'd6', weight: 3 }],
   },
   rowan_gambit: {
-    1: [{ san: 'exf4', weight: 8 }, { san: 'e5', weight: 6 }, { san: 'Nc6', weight: 2 }],
-    3: [{ san: 'Nf6', weight: 7 }, { san: 'd5', weight: 3 }],
-    5: [{ san: 'Bc5', weight: 6 }, { san: 'Qh4+', weight: 4 }],
-    7: [{ san: 'O-O', weight: 5 }, { san: 'd6', weight: 5 }],
-    9: [{ san: 'Re8', weight: 5 }, { san: 'Bg4', weight: 5 }],
+    1: [{ san: 'exf4', weight: 10 }, { san: 'e5', weight: 5 }, { san: 'Nc6', weight: 2 }],
+    3: [{ san: 'Nf6', weight: 8 }, { san: 'd5', weight: 3 }],
+    5: [{ san: 'Qh4+', weight: 7 }, { san: 'Bc5', weight: 6 }],
+    7: [{ san: 'O-O', weight: 6 }, { san: 'd6', weight: 4 }],
+    9: [{ san: 'Bg4', weight: 6 }, { san: 'Re8', weight: 5 }],
   },
   vega_italian: {
     1: [{ san: 'Nf6', weight: 7 }, { san: 'e5', weight: 6 }, { san: 'Bc5', weight: 3 }],
-    3: [{ san: 'Bc5', weight: 6 }, { san: 'Nf6', weight: 4 }],
-    5: [{ san: 'd6', weight: 6 }, { san: 'O-O', weight: 4 }],
-    7: [{ san: 'O-O', weight: 6 }, { san: 'Be6', weight: 4 }],
-    9: [{ san: 'Re8', weight: 6 }, { san: 'h6', weight: 4 }],
+    3: [{ san: 'Bc5', weight: 7 }, { san: 'Nf6', weight: 4 }],
+    5: [{ san: 'd6', weight: 7 }, { san: 'O-O', weight: 4 }],
+    7: [{ san: 'O-O', weight: 7 }, { san: 'Be6', weight: 5 }],
+    9: [{ san: 'Re8', weight: 7 }, { san: 'h6', weight: 3 }],
   },
 }
 

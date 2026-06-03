@@ -48,5 +48,8 @@ describe('renderDuelUi', () => {
     const panelText = duelPanel.textContent ?? ''
     expect(panelText).toContain('Synthesis')
     expect(panelText).toContain('Do not mistake the mentor mask for mercy')
+    expect(panelText).toContain('Rival Trait Profile')
+    expect(panelText).toContain('AI Doctrine')
+    expect(panelText).toContain('King safety')
   })
 })

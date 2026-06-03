@@ -16,6 +16,19 @@ describe('campaign story beats', () => {
     expect(matches.length).toBeGreaterThan(0)
     expect(matches.every((scene) => scene.storyBeat)).toBe(true)
   })
+
+  it('anchors the Prologue in the Long Reign modern commonwealth', () => {
+    const prologue = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'prologue')
+    const codex = prologue?.scenes.find((scene) => scene.id === 'pr-codex-long-reign')
+    expect(codex?.type).toBe('codex')
+    if (codex?.type !== 'codex') return
+    const terms = codex.entries.map((entry) => entry.term).join(' ')
+    const body = codex.entries.map((entry) => entry.body).join(' ')
+    expect(terms).toContain('Alexander III')
+    expect(terms).toContain('Chaturanga West')
+    expect(terms).toContain('Stratarch Rating')
+    expect(body).toContain('brass-lapis terminal')
+  })
 })
 
 describe('PLAYABLE_CHAPTERS — FENs & solvable goals', () => {
