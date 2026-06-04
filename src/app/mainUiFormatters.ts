@@ -272,28 +272,28 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
     .slice(-6)
   const lines: string[] = []
   if (!prev.length) {
-    lines.push('Baseline established: future recaps will compare this performance directly.')
+    lines.push('Baseline sealed: future recaps will compare speed, grade, and pressure.')
     return lines
   }
 
   const avgPrevMoves = prev.reduce((a, h) => a + h.moves, 0) / prev.length
   const moveDelta = latest.moves - avgPrevMoves
   if (moveDelta <= -3) {
-    lines.push(`Conversion speed improved: ${Math.abs(moveDelta).toFixed(1)} fewer ply than your recent average.`)
+    lines.push(`Converted faster: ${Math.abs(moveDelta).toFixed(1)} fewer ply than your rival baseline.`)
   } else if (moveDelta >= 3) {
-    lines.push(`Longer battle than usual: ${moveDelta.toFixed(1)} extra ply — consider earlier simplification windows.`)
+    lines.push(`Fight ran long: ${moveDelta.toFixed(1)} extra ply. Seek earlier trades or a cleaner file.`)
   } else {
-    lines.push('Pacing remained consistent with your recent baseline.')
+    lines.push('Tempo held steady against this rival.')
   }
 
   const avgPrevGrade = prev.reduce((a, h) => a + gradeScore(h.styleGrade), 0) / prev.length
   const gradeDelta = gradeScore(latest.styleGrade) - avgPrevGrade
   if (gradeDelta >= 0.8) {
-    lines.push('Quality rose materially: your tactical/strategic execution is trending upward.')
+    lines.push('Quality climbed: calculation and conversion are carrying more weight.')
   } else if (gradeDelta <= -0.8) {
-    lines.push('Quality dipped versus baseline: reduce volatility and prioritize stable conversion lines.')
+    lines.push('Quality slipped: reduce volatility and stabilize before forcing play.')
   } else {
-    lines.push('Quality remained near baseline; consistency is strengthening.')
+    lines.push('Quality held: consistency is becoming a weapon.')
   }
 
   const streak = [...history]
@@ -302,9 +302,9 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
     .slice(0, 4)
   const wins = streak.filter((h) => h.outcome === 'win').length
   if (wins >= 3)
-    lines.push('Rival pressure trend: sustained dominance detected — increase duel difficulty for sharper growth.')
+    lines.push('Rival trend: you own the file. Raise difficulty for a sharper archive.')
   else if (wins === 0)
-    lines.push('Rival pressure trend: opponent still dictating terms — use counter-prep before rematch.')
+    lines.push('Rival trend: they still set the terms. Use counter-prep before rematch.')
 
   return lines.slice(0, 3)
 }

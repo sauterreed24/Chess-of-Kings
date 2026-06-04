@@ -131,6 +131,54 @@ describe('mainUiFormatters', () => {
       turningPointSan: 'Nf3',
     }
     const lines = performanceDeltaLines([], latest)
-    expect(lines.some((l) => l.includes('Baseline'))).toBe(true)
+    expect(lines.some((l) => l.includes('Baseline sealed'))).toBe(true)
+  })
+
+  it('performanceDeltaLines explains speed, quality, and rival pressure', () => {
+    const history: MatchHistoryEntry[] = [
+      {
+        id: 'old-1',
+        timestamp: 1,
+        mode: 'duel',
+        sourceId: 'rowan-gambit',
+        opponentId: 'rowan',
+        opponentLabel: 'Rowan',
+        outcome: 'win',
+        moves: 44,
+        styleGrade: 'B',
+        turningPointSan: 'Nf3',
+      },
+      {
+        id: 'old-2',
+        timestamp: 2,
+        mode: 'duel',
+        sourceId: 'rowan-gambit',
+        opponentId: 'rowan',
+        opponentLabel: 'Rowan',
+        outcome: 'win',
+        moves: 42,
+        styleGrade: 'B',
+        turningPointSan: 'O-O',
+      },
+    ]
+    const latest: MatchHistoryEntry = {
+      id: 'new',
+      timestamp: 3,
+      mode: 'duel',
+      sourceId: 'rowan-gambit',
+      opponentId: 'rowan',
+      opponentLabel: 'Rowan',
+      outcome: 'win',
+      moves: 34,
+      styleGrade: 'A',
+      turningPointSan: 'Qh5+',
+    }
+
+    const lines = performanceDeltaLines([...history, latest], latest)
+    expect(lines).toEqual([
+      'Converted faster: 9.0 fewer ply than your rival baseline.',
+      'Quality climbed: calculation and conversion are carrying more weight.',
+      'Rival trend: you own the file. Raise difficulty for a sharper archive.',
+    ])
   })
 })
