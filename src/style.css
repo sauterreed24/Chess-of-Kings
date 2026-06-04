@@ -3291,8 +3291,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   html, body { font-size: 17px; }
 
   .top-bar { padding: 0 0.75rem; }
-  .mark     { font-size: 0.58rem; letter-spacing: 0.2em; }
-  .mark-sub { display: none; }
   .top-nav  { gap: 0.3rem; }
 
   .screen { padding: 1.25rem 0.75rem 2.5rem; }
@@ -3306,6 +3304,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   .title-hero    { padding: 0.65rem 0; }
   .title-hero__plate { padding: 1rem 0.8rem; }
   .title-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 0.85rem; }
+  .chronicle-index-codex { grid-template-columns: 1fr; }
 
   .play-atelier { gap: 1rem; }
   .manuscript-panel,
