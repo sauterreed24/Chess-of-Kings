@@ -244,8 +244,8 @@ export function formatMoveLedger(sanLog: string[], sanQuality: MoveQuality[]): s
     const latest = i + 2 >= sanLog.length
     rows.push(
       `<div class="ledger-row${latest ? ' ledger-row--latest' : ''}">` +
-        `<span class="ledger-num">${n}.</span>` +
-        `<span class="ledger-w ${wQ ? `ledger-q--${wQ}` : ''}">${escapeHtml(wSan)}${wIcon}</span>` +
+        `<span class="ledger-num">${n}. </span>` +
+        `<span class="ledger-w ${wQ ? `ledger-q--${wQ}` : ''}">${escapeHtml(wSan)}${wIcon} </span>` +
         `<span class="ledger-b ${bQ ? `ledger-q--${bQ}` : ''}">${bSan ? escapeHtml(bSan) + bIcon : '…'}</span>` +
         `</div>`,
     )

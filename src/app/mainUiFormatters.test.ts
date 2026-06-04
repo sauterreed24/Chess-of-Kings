@@ -57,6 +57,12 @@ describe('mainUiFormatters', () => {
     expect(html).toContain('q-icon--brilliant')
   })
 
+  it('keeps move ledger text readable when extracted from the DOM', () => {
+    const host = document.createElement('div')
+    host.innerHTML = formatMoveLedger(['e4', 'Nh6'], [null, null])
+    expect(host.textContent).toContain('1. e4 Nh6')
+  })
+
   it('storyBeatBlock renders compact story context and escapes authored copy', () => {
     const html = storyBeatBlock({
       label: '<Pressure>',

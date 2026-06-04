@@ -1478,12 +1478,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 /* Marble light squares */
 .sq-light {
-  background: linear-gradient(32deg, rgba(255,255,255,0.3), transparent 44%), linear-gradient(145deg, #fff3d8 0%, #d5c39c 70%, #b99c62 100%);
+  background: linear-gradient(32deg, #ffffff57, transparent 43%), radial-gradient(circle at 82% 86%, #7858242e, transparent 42%), linear-gradient(145deg, #fff3d8 0%, #d5c39c 70%, #b99c62 100%);
 }
 
 /* Lapis dark squares */
 .sq-dark {
-  background: radial-gradient(circle at 72% 18%, rgba(168,200,234,0.22), transparent 34%), linear-gradient(145deg, #336c98 0%, #112d49 66%, #061323 100%);
+  background: radial-gradient(circle at 72% 18%, #a8c8ea40, transparent 34%), linear-gradient(145deg, #336c98 0%, #112d49 66%, #061323 100%);
 }
 
 /* Piece glyphs — styled as vector SVG layers with CSS properties */
@@ -2158,7 +2158,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   color: var(--muted);
 }
 
-@media (min-width: 701px) and (max-height: 820px) {
+@media (min-width: 701px) and (max-height: 920px) {
   .screen--title {
     align-items: flex-start;
     padding-top: 1rem;
