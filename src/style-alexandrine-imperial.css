@@ -29,9 +29,9 @@ html:not(.perf-lean) .top-bar {
   border: 1px solid rgba(232, 201, 126, 0.22);
   border-radius: 14px;
   background:
-    radial-gradient(circle at 12% 6%, rgba(232, 201, 126, 0.12), transparent 26%),
-    linear-gradient(118deg, transparent 0 66%, rgba(42, 96, 148, 0.11) 66.3%, transparent 66.9%),
-    linear-gradient(180deg, rgba(232, 201, 126, 0.045), rgba(0, 0, 0, 0.16)),
+    radial-gradient(circle at 12% 6%, rgba(232, 201, 126, 0.16), transparent 24%),
+    linear-gradient(118deg, transparent 0 58%, rgba(42, 96, 148, 0.14) 58.2%, transparent 58.8%),
+    linear-gradient(180deg, rgba(232, 201, 126, 0.06), rgba(0, 0, 0, 0.17)),
     rgba(0, 0, 0, 0.22);
   box-shadow: var(--shadow-panel);
 }
