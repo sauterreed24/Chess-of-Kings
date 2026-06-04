@@ -34,6 +34,9 @@ export type RenderDuelUiHost = {
 export function renderDuelUi(host: RenderDuelUiHost): void {
   const { flow, duelList, duelPanel, rewardOverlayCtl, closeRewardOverlay, openLab, updateAdvance, renderDuelLabBrief } = host
   const roster = [...flow.getDuelArchiveRoster()].sort((a, b) => Number(b.isOpen) - Number(a.isOpen))
+  const revealDuelPanel = () => {
+    if (innerWidth <= 960) duelPanel.scrollIntoView({ block: 'start' })
+  }
   duelList.innerHTML = roster.map((entry) => {
   const r = entry.rival
   const stamp = entry.isOpen ? `${entry.unlockedVariantCount}/${entry.totalVariantCount} files` : 'sealed'
@@ -103,6 +106,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             </ul>
           </div>
         </div>`
+      revealDuelPanel()
       return
     }
     const history = flow
@@ -144,6 +148,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     )
     if (!unlockedVariants.length) {
       duelPanel.innerHTML = `<p class="ledger-empty">No unlocked variants yet for ${escapeHtml(rival.opponentName)}.</p>`
+      revealDuelPanel()
       return
     }
     const skinOptions = flow.getUnlockedPieceSkins()
@@ -320,6 +325,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
           <ul id="duel-opening-watch">${openingWatch(unlockedVariants[0]!.id).map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
         </div>
       </div>`
+    revealDuelPanel()
     duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
       const val = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? 'classic-royal') as PieceSkinId
       flow.setPieceSkin(val)

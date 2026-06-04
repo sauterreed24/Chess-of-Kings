@@ -86,6 +86,29 @@ describe('mounted duel dossier', () => {
     expect(panelText).toContain('Opening Watchlist')
   })
 
+  it('scrolls the dossier into view after selecting a rival on narrow screens', () => {
+    const originalWidth = Object.getOwnPropertyDescriptor(window, 'innerWidth')
+    const originalScroll = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+    const scrollIntoView = vi.fn()
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+    Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView })
+    try {
+      const app = document.createElement('div')
+      document.body.appendChild(app)
+      mountApp(app)
+
+      app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+      app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+      app.querySelector<HTMLButtonElement>('.duel-row')?.click()
+
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start' })
+    } finally {
+      if (originalWidth) Object.defineProperty(window, 'innerWidth', originalWidth)
+      if (originalScroll) Object.defineProperty(Element.prototype, 'scrollIntoView', originalScroll)
+      else delete (Element.prototype as unknown as { scrollIntoView?: unknown }).scrollIntoView
+    }
+  })
+
   it('shows sealed Duel Archive rivals with unlock paths on a fresh save', () => {
     const app = document.createElement('div')
     document.body.appendChild(app)
