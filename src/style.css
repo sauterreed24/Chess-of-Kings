@@ -1820,11 +1820,11 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .q-icon--inaccuracy { color: #ffca28; }
 .q-icon--mistake    { color: #ffa726; }
 .q-icon--blunder    { color: #ef5350; }
-.ledger-w--brilliant  { color: #7dd6f0 !important; }
-.ledger-w--good       { color: #a8daa8 !important; }
-.ledger-w--inaccuracy { color: var(--ivory-dim); }
-.ledger-w--mistake    { color: #ffc066 !important; opacity: 0.9; }
-.ledger-w--blunder    { color: #f48080 !important; }
+.ledger-q--brilliant  { color: #7dd6f0 !important; }
+.ledger-q--good       { color: #a8daa8 !important; }
+.ledger-q--inaccuracy { color: var(--ivory-dim); }
+.ledger-q--mistake    { color: #ffc066 !important; opacity: 0.9; }
+.ledger-q--blunder    { color: #f48080 !important; }
 
 /* Board tools */
 .board-tools { display: flex; gap: 0.5rem; flex-wrap: wrap; }

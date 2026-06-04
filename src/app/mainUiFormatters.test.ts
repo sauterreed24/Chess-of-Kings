@@ -51,6 +51,12 @@ describe('mainUiFormatters', () => {
     expect(html).not.toContain('<script')
   })
 
+  it('applies move quality styling to either side of the ledger', () => {
+    const html = formatMoveLedger(['e4', 'c5'], [null, 'brilliant'])
+    expect(html).toContain('ledger-b ledger-q--brilliant')
+    expect(html).toContain('q-icon--brilliant')
+  })
+
   it('storyBeatBlock renders compact story context and escapes authored copy', () => {
     const html = storyBeatBlock({
       label: '<Pressure>',
