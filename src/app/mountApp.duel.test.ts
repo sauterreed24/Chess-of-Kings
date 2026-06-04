@@ -89,9 +89,15 @@ describe('mounted duel dossier', () => {
   it('scrolls the dossier into view after selecting a rival on narrow screens', () => {
     const originalWidth = Object.getOwnPropertyDescriptor(window, 'innerWidth')
     const originalScroll = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+    const originalRaf = Object.getOwnPropertyDescriptor(window, 'requestAnimationFrame')
     const scrollIntoView = vi.fn()
+    const requestAnimationFrame = vi.fn((cb: FrameRequestCallback) => {
+      cb(0)
+      return 0
+    })
     Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
     Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView })
+    Object.defineProperty(window, 'requestAnimationFrame', { configurable: true, value: requestAnimationFrame })
     try {
       const app = document.createElement('div')
       document.body.appendChild(app)
@@ -101,11 +107,13 @@ describe('mounted duel dossier', () => {
       app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
       app.querySelector<HTMLButtonElement>('.duel-row')?.click()
 
+      expect(requestAnimationFrame).toHaveBeenCalled()
       expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start' })
     } finally {
       if (originalWidth) Object.defineProperty(window, 'innerWidth', originalWidth)
       if (originalScroll) Object.defineProperty(Element.prototype, 'scrollIntoView', originalScroll)
       else delete (Element.prototype as unknown as { scrollIntoView?: unknown }).scrollIntoView
+      if (originalRaf) Object.defineProperty(window, 'requestAnimationFrame', originalRaf)
     }
   })
 

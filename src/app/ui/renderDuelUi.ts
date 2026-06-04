@@ -35,7 +35,7 @@ export function renderDuelUi(host: RenderDuelUiHost): void {
   const { flow, duelList, duelPanel, rewardOverlayCtl, closeRewardOverlay, openLab, updateAdvance, renderDuelLabBrief } = host
   const roster = [...flow.getDuelArchiveRoster()].sort((a, b) => Number(b.isOpen) - Number(a.isOpen))
   const revealDuelPanel = () => {
-    if (innerWidth <= 960) duelPanel.scrollIntoView({ block: 'start' })
+    if (innerWidth <= 960) requestAnimationFrame(() => duelPanel.scrollIntoView({ block: 'start' }))
   }
   duelList.innerHTML = roster.map((entry) => {
   const r = entry.rival
