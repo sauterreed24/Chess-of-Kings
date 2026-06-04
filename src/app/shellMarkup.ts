@@ -196,7 +196,7 @@ export function getShellMarkup(): string {
                   </div>
                   <p class="board-guide" id="board-guide">Select a piece to illuminate legal targets. Captures are framed in bronze; check is marked in crimson.</p>
                   <details class="mobile-tips" id="mobile-tips">
-                    <summary class="mobile-tips__summary">Tips</summary>
+                    <summary class="mobile-tips__summary">Board tips</summary>
                     <p class="mobile-tips__body" id="mobile-board-guide"></p>
                   </details>
                   <div class="board-stage" id="board-stage">
