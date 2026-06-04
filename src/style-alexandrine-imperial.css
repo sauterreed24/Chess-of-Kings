@@ -1,17 +1,5 @@
 /* Alexandrine Imperial: marble, bronze, lapis; layered on style.css */
 
-.ambient__bloom--d {
-  width: min(76vw, 660px);
-  height: min(54vh, 410px);
-  background:
-    radial-gradient(circle at 32% 42%, rgba(232, 201, 126, 0.18) 0%, transparent 56%),
-    radial-gradient(circle at 70% 55%, rgba(42, 96, 148, 0.2) 0%, transparent 62%);
-  top: 9%;
-  left: 16%;
-  animation-delay: -22s;
-  opacity: 0.46;
-}
-
 .top-bar {
   height: 58px;
   border-bottom-color: rgba(232, 201, 126, 0.18);
