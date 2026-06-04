@@ -33,13 +33,6 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
     return 'King housed. The room gets quieter; now give the rooks a file to govern.'
   }
 
-  if (san.includes('x') && !san.includes('#')) {
-    if (materialAfterCp < -50) {
-      return 'Legal tribute, bad account. The position worsened; check recaptures and counter-threats before taking.'
-    }
-    return 'Material won. Finish the proof: what can the rival take next?'
-  }
-
   if (input.quality === 'brilliant') {
     return 'Archive judgment: brilliant. You seized initiative; keep asking forcing questions.'
   }
@@ -50,6 +43,13 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
 
   if (input.quality === 'mistake') {
     return 'Archive warning: the line slipped. Spend one tempo on king safety, material, or coordination before chasing plans.'
+  }
+
+  if (san.includes('x') && !san.includes('#')) {
+    if (materialAfterCp < -50) {
+      return 'Legal tribute, bad account. The position worsened; check recaptures and counter-threats before taking.'
+    }
+    return 'Material won. Finish the proof: what can the rival take next?'
   }
 
   if (halfMoveCount <= 14 && /^Q/.test(san) && !san.includes('=') && !san.includes('#') && !san.includes('+')) {

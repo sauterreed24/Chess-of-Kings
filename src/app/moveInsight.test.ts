@@ -60,4 +60,24 @@ describe('move insight', () => {
       quality: 'blunder',
     })).toMatch(/line broke/)
   })
+
+  it('lets strong quality verdicts override capture material heuristics', () => {
+    expect(moveInsightFor({
+      move: { san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' },
+      halfMoveCount: 9,
+      materialAfterCp: -120,
+      playerColor: 'w',
+      mode: 'match',
+      quality: 'brilliant',
+    })).toMatch(/Archive judgment: brilliant/)
+
+    expect(moveInsightFor({
+      move: { san: 'Qxg7', from: 'd4', to: 'g7', piece: 'q', captured: 'p' },
+      halfMoveCount: 11,
+      materialAfterCp: 140,
+      playerColor: 'w',
+      mode: 'match',
+      quality: 'blunder',
+    })).toMatch(/line broke/)
+  })
 })
