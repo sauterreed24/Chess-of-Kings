@@ -105,7 +105,10 @@ describe('renderScene', () => {
     const lineDelays = [...dom.narrativeBody.querySelectorAll<HTMLElement>('.line')].map((line) =>
       line.style.getPropertyValue('--line-delay'),
     )
-    expect(lineDelays.slice(0, 3)).toEqual(['90ms', '1080ms', '2070ms'])
+    const lineDelayValues = lineDelays.map((delay) => Number(delay.replace('ms', '')))
+    expect(lineDelayValues[0]).toBe(90)
+    expect(lineDelayValues[1]).toBeGreaterThan(1080)
+    expect(lineDelayValues[2]).toBeGreaterThan(lineDelayValues[1]!)
     expect(dom.narrativeBody.querySelector('.speaker-seal')?.textContent).toBe('AR')
     expect(dom.narrativeBody.querySelector('.spoken-char')).not.toBeNull()
     expect(dom.narrativeBody.querySelector('.spoken-text')?.getAttribute('aria-hidden')).toBe('true')

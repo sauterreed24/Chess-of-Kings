@@ -103,12 +103,14 @@ export function renderScene(
   if (scene.type === 'dialogue') {
     dom.sceneTag.textContent = 'Dialogue'
     dom.narrativeBody.classList.remove('narrative-body--interlude')
+    let lineDelayMs = 90
     dom.narrativeBody.innerHTML = storyBeatBlock(scene.storyBeat) + scene.lines
       .map((l, i) => {
-        const lineDelayMs = i * 990 + 90
-        const durationMs = spokenLineDurationMs(l.text, l.speaker, lineDelayMs)
-        const talkMs = Math.max(420, durationMs - lineDelayMs)
-        return `<div class="line line--stagger" data-voice="${escapeHtml(speakerVoiceFor(l.speaker))}" data-spoken-duration-ms="${durationMs}" style="--d:${i}; --line-delay:${lineDelayMs}ms; --line-talk-ms:${talkMs}ms">
+        const delayMs = lineDelayMs
+        const durationMs = spokenLineDurationMs(l.text, l.speaker, delayMs)
+        const talkMs = Math.max(420, durationMs - delayMs)
+        lineDelayMs += Math.min(1600, talkMs + 170)
+        return `<div class="line line--stagger" data-voice="${escapeHtml(speakerVoiceFor(l.speaker))}" data-spoken-duration-ms="${durationMs}" style="--d:${i}; --line-delay:${delayMs}ms; --line-talk-ms:${talkMs}ms">
           <span class="speaker-seal" aria-hidden="true">${escapeHtml(speakerSigilFor(l.speaker))}</span>
           <span class="who" data-speaker="${escapeHtml(l.speaker)}">${escapeHtml(labelForSpeaker(l.speaker))}</span>
           <p class="said">${spokenLineText(l.text, speakerCadenceMs(l.speaker))}</p>
