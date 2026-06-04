@@ -202,6 +202,41 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(progress.textContent).toContain('Passage 2')
   })
 
+  it('centers the board reveal on desktop so the ledger stays in view', async () => {
+    const originalScroll = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+    const originalMatchMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia')
+    const scrollIntoView = vi.fn()
+    Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView })
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+        onchange: null,
+      })),
+    })
+
+    try {
+      const app = boot()
+      app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+      app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+      const next = app.querySelector<HTMLButtonElement>('#btn-next')!
+      for (let i = 0; i < 6; i++) next.click()
+      await new Promise((resolve) => window.requestAnimationFrame(resolve))
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', behavior: 'smooth' })
+    } finally {
+      if (originalScroll) Object.defineProperty(Element.prototype, 'scrollIntoView', originalScroll)
+      else delete (Element.prototype as unknown as { scrollIntoView?: unknown }).scrollIntoView
+      if (originalMatchMedia) Object.defineProperty(window, 'matchMedia', originalMatchMedia)
+      else delete (window as typeof window & { matchMedia?: unknown }).matchMedia
+    }
+  })
+
   it('shows storage failure banner when streak persist fails at boot', () => {
     const original = Storage.prototype.setItem
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (this: Storage, key: string, value: string) {

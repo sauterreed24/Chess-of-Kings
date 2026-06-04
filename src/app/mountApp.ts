@@ -838,7 +838,7 @@ export function mountApp(app: HTMLDivElement) {
       const target = compact ? boardPanel : boardStage
       if (!target || typeof target.scrollIntoView !== 'function') return
       try {
-        target.scrollIntoView({ block: compact ? 'start' : 'nearest', behavior: reduce ? 'auto' : 'smooth' })
+        target.scrollIntoView({ block: compact ? 'start' : 'center', behavior: reduce ? 'auto' : 'smooth' })
       } catch {
         target.scrollIntoView(true)
       }
