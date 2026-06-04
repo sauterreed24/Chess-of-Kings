@@ -16,25 +16,25 @@ export function lossRecoveryMentorLine(input: LossTipInput): string {
   const { lossStreakVsOpponent, sceneTendencies, blunderCount, mistakeCount, moveCount } = input
 
   if (blunderCount >= 4) {
-    return 'Mentor Insight: the ledger shows repeated collapses - count checks, captures, loose defenders, then move.'
+    return 'Mentor Insight: repeated collapses, same invoice. Audit checks, captures, and loose defenders before the hand moves.'
   }
   if (blunderCount >= 2 && moveCount > 22) {
-    return 'Mentor Insight: the endgame cracked late - choose whether the king, pieces, or pawns lead before each push.'
+    return 'Mentor Insight: late endgames need a leader. Name whether king, piece, or pawn carries the next move.'
   }
   if (sceneTendencies.flankPawnPushes >= 5) {
-    return 'Mentor Insight: the wings moved before the center held - claim a square or half-open file before another edge thrust.'
+    return 'Mentor Insight: the wings outran the center. Seal one central square or file before another edge thrust.'
   }
   if (sceneTendencies.earlyQueenMoves >= 2) {
-    return 'Mentor Insight: the queen went public too soon - let knights and bishops make her entrance a threat, not an invitation.'
+    return 'Mentor Insight: the queen entered before the court was ready. Let knights and bishops build her threat first.'
   }
   if (sceneTendencies.repeatedChecksWithoutGain >= 3) {
-    return 'Mentor Insight: checks became announcements, not plans - attach each one to mate, material, or a won tempo.'
+    return 'Mentor Insight: checks became noise. Give the next one only if it wins mate, material, or tempo.'
   }
   if (lossStreakVsOpponent >= 2) {
-    return 'Mentor Insight: this rival has your rhythm - begin quieter, finish development, and make them prove the attack.'
+    return 'Mentor Insight: this rival has learned your cadence. Open quieter, finish development, then ask them to overreach.'
   }
   if (mistakeCount >= 4) {
-    return 'Mentor Insight: accuracy thinned by degrees - after each reply, name the loose piece, weak square, and king question.'
+    return 'Mentor Insight: accuracy leaked by degrees. After each reply, name the loose piece, weak square, and king question.'
   }
-  return 'Mentor Insight: the turning point is in the ledger - next run, add one quiet tempo for king safety before the charge.'
+  return 'Mentor Insight: the ledger already names the hinge. In the next run, buy one quiet tempo for king safety.'
 }
