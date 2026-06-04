@@ -835,6 +835,7 @@ export function mountApp(app: HTMLDivElement) {
     window.requestAnimationFrame(() => {
       const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
       const compact = window.matchMedia?.('(max-width: 700px), (max-width: 1024px) and (max-height: 700px)').matches
+      if (!compact) playScreen.scrollTop = 0
       const target = compact ? boardPanel : boardStage
       if (!target || typeof target.scrollIntoView !== 'function') return
       try {

@@ -226,8 +226,12 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
       app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
       app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
       const next = app.querySelector<HTMLButtonElement>('#btn-next')!
-      for (let i = 0; i < 6; i++) next.click()
+      const playScreen = app.querySelector<HTMLElement>('#screen-play')!
+      for (let i = 0; i < 5; i++) next.click()
+      playScreen.scrollTop = 321
+      next.click()
       await new Promise((resolve) => window.requestAnimationFrame(resolve))
+      expect(playScreen.scrollTop).toBe(0)
       expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', behavior: 'smooth' })
     } finally {
       if (originalScroll) Object.defineProperty(Element.prototype, 'scrollIntoView', originalScroll)
