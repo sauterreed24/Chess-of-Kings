@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Chess } from 'chess.js'
 import { chooseOpeningBookMove } from './openings'
 import { rivalOpeningWeightBoost } from './rivalOpeningBias'
@@ -37,8 +37,23 @@ describe('rival opening bias', () => {
   it('encodes Rowan fire, Vega discipline, and Alexandrine steadiness', () => {
     expect(rivalOpeningWeightBoost('rowan', 1, 'exf4')).toBeGreaterThan(rivalOpeningWeightBoost('rowan', 1, 'e5'))
     expect(rivalOpeningWeightBoost('rowan', 5, 'Qh4+')).toBeGreaterThan(rivalOpeningWeightBoost('rowan', 5, 'Bc5'))
-    expect(rivalOpeningWeightBoost('vega', 1, 'e5')).toBeGreaterThan(rivalOpeningWeightBoost('vega', 1, 'd5'))
+    expect(rivalOpeningWeightBoost('vega', 1, 'Nf6')).toBeGreaterThan(rivalOpeningWeightBoost('vega', 1, 'e5'))
     expect(rivalOpeningWeightBoost('vega', 7, 'O-O')).toBeGreaterThan(rivalOpeningWeightBoost('vega', 7, 'Be7'))
     expect(rivalOpeningWeightBoost('demetrios', 1, 'd5')).toBeGreaterThan(rivalOpeningWeightBoost('demetrios', 1, 'c5'))
+  })
+
+  it('keeps signature Rowan and Vega replies sticky under live rival bias', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.7)
+    try {
+      const rowan = new Chess('rnbqkbnr/pppp1ppp/8/4p3/4PP2/5N2/PPPP2PP/RNBQKB1R b KQkq - 1 2')
+      expect(chooseOpeningBookMove(rowan, 'rowan_gambit', 1, 'rowan')).toBe('exf4')
+
+      vi.mocked(Math.random).mockReturnValue(0.5)
+      const vega = new Chess()
+      vega.move('e4')
+      expect(chooseOpeningBookMove(vega, 'vega_italian', 1, 'vega')).toBe('Nf6')
+    } finally {
+      vi.restoreAllMocks()
+    }
   })
 })

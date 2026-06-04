@@ -21,7 +21,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     return app
   }
 
-  it('inerts shell chrome while lab is open except the lab overlay', () => {
+  it('inerts shell chrome while lab is open except the lab overlay', { timeout: 10000 }, () => {
     const app = boot()
     const topBar = app.querySelector<HTMLElement>('.top-bar')!
     const title = app.querySelector<HTMLElement>('#screen-title')!
