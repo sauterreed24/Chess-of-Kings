@@ -23,7 +23,6 @@ const BLACK_BACK_RANK_MINORS = new Set<Square>(['b8', 'c8', 'f8', 'g8'])
 export function moveInsightFor(input: MoveInsightInput): string | null {
   const { move, halfMoveCount, materialAfterCp, playerColor } = input
   const san = move.san
-  if (halfMoveCount > 28) return null
 
   if (san.includes('#')) {
     return 'Mate inscribed. Replay the forcing path; every flight square closed by design.'
@@ -44,6 +43,8 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   if (input.quality === 'mistake') {
     return 'Archive warning: the line slipped. Spend one tempo on king safety, material, or coordination before chasing plans.'
   }
+
+  if (halfMoveCount > 28) return null
 
   if (san.includes('x') && !san.includes('#')) {
     if (materialAfterCp < -50) {

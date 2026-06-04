@@ -80,4 +80,31 @@ describe('move insight', () => {
       quality: 'blunder',
     })).toMatch(/line broke/)
   })
+
+  it('keeps decisive late-game verdicts while quieting ordinary late moves', () => {
+    expect(moveInsightFor({
+      move: { san: 'Qh7#', from: 'h5', to: 'h7', piece: 'q' },
+      halfMoveCount: 42,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+    })).toMatch(/Mate inscribed/)
+
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 42,
+      materialAfterCp: 240,
+      playerColor: 'w',
+      mode: 'match',
+      quality: 'brilliant',
+    })).toMatch(/Archive judgment: brilliant/)
+
+    expect(moveInsightFor({
+      move: { san: 'e4', from: 'e2', to: 'e4', piece: 'p' },
+      halfMoveCount: 42,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+    })).toBeNull()
+  })
 })
