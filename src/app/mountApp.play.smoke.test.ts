@@ -202,7 +202,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(progress.textContent).toContain('Passage 2')
   })
 
-  it('centers the board reveal on desktop so the ledger stays in view', async () => {
+  it('anchors the board reveal on desktop so the ledger stays in view', async () => {
     const originalScroll = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
     const originalMatchMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia')
     const scrollIntoView = vi.fn()
@@ -232,7 +232,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
       next.click()
       await new Promise((resolve) => window.requestAnimationFrame(resolve))
       expect(playScreen.scrollTop).toBe(0)
-      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', behavior: 'smooth' })
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'end', behavior: 'smooth' })
     } finally {
       if (originalScroll) Object.defineProperty(Element.prototype, 'scrollIntoView', originalScroll)
       else delete (Element.prototype as unknown as { scrollIntoView?: unknown }).scrollIntoView

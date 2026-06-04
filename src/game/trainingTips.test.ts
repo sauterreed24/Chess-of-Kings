@@ -12,7 +12,7 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 30,
     })
-    expect(s).toContain('repeated collapses')
+    expect(s).toContain('5 blunders')
     expect(s).toContain('loose defenders')
   })
 
@@ -24,7 +24,7 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 40,
     })
-    expect(s).toContain('wings outran the center')
+    expect(s).toContain('wing pawns ran ahead')
   })
 
   it('responds to early queen and empty-check habits', () => {
@@ -34,7 +34,7 @@ describe('lossRecoveryMentorLine', () => {
       blunderCount: 0,
       mistakeCount: 0,
       moveCount: 12,
-    })).toContain('queen entered before the court')
+    })).toContain('queen came out before the court')
 
     expect(lossRecoveryMentorLine({
       lossStreakVsOpponent: 0,
@@ -42,7 +42,7 @@ describe('lossRecoveryMentorLine', () => {
       blunderCount: 0,
       mistakeCount: 0,
       moveCount: 18,
-    })).toContain('checks became noise')
+    })).toContain('the checks became noise')
   })
 
   it('responds to a recurring rival pattern', () => {
@@ -53,7 +53,7 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 24,
     })
-    expect(s).toContain('learned your cadence')
+    expect(s).toContain('knows your rhythm')
   })
 
   it('falls back to default guidance', () => {
@@ -64,6 +64,6 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 12,
     })
-    expect(s).toContain('ledger already names the hinge')
+    expect(s).toContain('ledger names the hinge')
   })
 })

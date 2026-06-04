@@ -836,10 +836,10 @@ export function mountApp(app: HTMLDivElement) {
       const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
       const compact = window.matchMedia?.('(max-width: 700px), (max-width: 1024px) and (max-height: 700px)').matches
       if (!compact) playScreen.scrollTop = 0
-      const target = compact ? boardPanel : boardStage
+      const target = compact ? boardPanel : moveLedger
       if (!target || typeof target.scrollIntoView !== 'function') return
       try {
-        target.scrollIntoView({ block: compact ? 'start' : 'center', behavior: reduce ? 'auto' : 'smooth' })
+        target.scrollIntoView({ block: compact ? 'start' : 'end', behavior: reduce ? 'auto' : 'smooth' })
       } catch {
         target.scrollIntoView(true)
       }
