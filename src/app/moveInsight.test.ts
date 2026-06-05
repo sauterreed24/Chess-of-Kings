@@ -61,6 +61,17 @@ describe('move insight', () => {
     })).toMatch(/line broke/)
   })
 
+  it('keeps ordinary sound moves alive with a next-question prompt', () => {
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 16,
+      materialAfterCp: 20,
+      playerColor: 'w',
+      mode: 'duel',
+      quality: 'ok',
+    })).toMatch(/Improve the worst piece/)
+  })
+
   it('lets strong quality verdicts override capture material heuristics', () => {
     expect(moveInsightFor({
       move: { san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' },

@@ -37,24 +37,24 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (input.quality === 'blunder') {
-    return 'Archive warning: the line broke. Before the reply, name every check, capture, and loose defender.'
+    return 'Archive warning: the line broke. Before reply, name checks, captures, loose defenders.'
   }
 
   if (input.quality === 'mistake') {
-    return 'Archive warning: the line slipped. Spend one tempo on king safety, material, or coordination before chasing plans.'
+    return 'Archive warning: the line slipped. Buy one tempo for safety, material, or coordination.'
   }
 
   if (halfMoveCount > 28) return null
 
   if (san.includes('x') && !san.includes('#')) {
     if (materialAfterCp < -50) {
-      return 'Legal tribute, bad account. The position worsened; check recaptures and counter-threats before taking.'
+      return 'Legal tribute, bad account. The position worsened; check recaptures before taking.'
     }
     return 'Material won. Finish the proof: what can the rival take next?'
   }
 
   if (halfMoveCount <= 14 && /^Q/.test(san) && !san.includes('=') && !san.includes('#') && !san.includes('+')) {
-    return 'The queen spoke early. Public authority becomes a target; develop knights and bishops first.'
+    return 'The queen spoke early. Authority becomes a target; develop knights and bishops first.'
   }
 
   if (san.endsWith('+') && !san.includes('x') && halfMoveCount <= 18 && materialAfterCp <= 20) {
@@ -90,6 +90,10 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
 
   if (input.quality === 'inaccuracy') {
     return 'Small concession recorded. Recheck center, development, and king safety.'
+  }
+
+  if (input.quality === 'ok') {
+    return 'Position held. Improve the worst piece or ask what the rival can threaten next.'
   }
 
   return null
