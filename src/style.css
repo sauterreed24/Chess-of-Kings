@@ -1052,8 +1052,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   padding: 0.68rem 0.9rem 0.74rem 3.55rem;
   margin-bottom: 0.65rem;
   background:
-    radial-gradient(circle at 1.4rem 1rem, rgba(var(--v),0.24), transparent 38%),
-    linear-gradient(100deg, rgba(var(--v),0.14), rgba(0,0,0,0.28) 58%);
+    radial-gradient(circle at 1.4rem 1rem, rgba(var(--v),0.27), transparent 38%),
+    linear-gradient(100deg, rgba(var(--v),0.16), rgba(0,0,0,0.31) 58%);
   border-radius: 0 8px 8px 0;
   border-left: 4px solid rgba(var(--v),0.62);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 10px 24px rgba(0,0,0,0.2);
@@ -1927,7 +1927,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 .reward-progress__bar {
   width: 100%;
-  height: 7px;
   border: 1px solid rgba(201,169,98,0.22);
   background: rgba(0,0,0,0.36);
 }
@@ -2096,10 +2095,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border: 1px solid rgba(232,201,126,0.34);
   border-radius: 14px;
   background:
-    radial-gradient(ellipse at 50% -10%, #ede9de5c, transparent 38%),
-    radial-gradient(circle at 96% 6%, #2a609470, transparent 35%),
-    linear-gradient(118deg, transparent 0 61%, #e8c97e32 61.2%, transparent 61.7%),
-    linear-gradient(180deg, #2a1f12f6, #050403f2);
+    radial-gradient(ellipse at 50% -10%, #ede9de66, transparent 38%),
+    radial-gradient(circle at 96% 6%, #2a60947a, transparent 35%),
+    linear-gradient(118deg, transparent 0 61%, #e8c97e36 61.2%, transparent 61.7%),
+    linear-gradient(180deg, #2d2114fa, #050403f2);
   box-shadow:
     0 34px 96px rgba(0,0,0,0.66),
     0 0 0 1px rgba(42,96,148,0.24),
@@ -2920,10 +2919,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border-radius: 16px;
   padding: clamp(1rem, 3vw, 1.45rem);
   background:
-    radial-gradient(circle at 92% 0%, rgba(42,96,148,0.32), transparent 34%),
-    linear-gradient(135deg, rgba(232,201,126,0.18), transparent 32%),
-    linear-gradient(112deg, transparent 0 66%, rgba(237,233,222,0.13) 66.3%, transparent 66.9%),
-    linear-gradient(180deg, #25190f 0%, #090705 100%);
+    radial-gradient(circle at 92% 0%, #2a609452, transparent 34%),
+    radial-gradient(circle at 6% 12%, #e8c97e2b, transparent 28%),
+    linear-gradient(112deg, transparent 0 66%, #ede9de21 66.3%, transparent 66.9%),
+    linear-gradient(180deg, #2b2012 0%, #080604 100%);
 }
 
 .reward-hero {
@@ -2933,10 +2932,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   margin-bottom: 0.9rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(201,169,98,0.14);
-}
-
-.reward-hero .section-heading {
-  margin-bottom: 0.15rem;
 }
 
 .reward-hero__sigil {
@@ -2961,9 +2956,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .reward-card {
   border-radius: 10px;
-  background:
-    linear-gradient(180deg, rgba(232,201,126,0.045), rgba(0,0,0,0.16)),
-    rgba(0,0,0,0.22);
+  background: linear-gradient(180deg, #e8c97e13, #00000036);
 }
 
 .reward-progress__bar {
@@ -2973,7 +2966,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 
 .reward-progress__fill {
-  border-radius: inherit;
   box-shadow: 0 0 16px rgba(232,201,126,0.34);
 }
 

@@ -39,7 +39,7 @@ export function buildRewardOverlayHtml(
     .join('')
   const recap = latestResolvedForRecap
     ? `<div class="reward-card">
-          <h4>Signature Recap</h4>
+          <h4>Verdict Recap</h4>
           <ul>
             <li><strong>Style grade:</strong> ${styleGradeFromPayload(latestResolvedForRecap)}</li>
             <li><strong>Turning point:</strong> ${escapeHtml(turningPointLine(latestResolvedForRecap))}</li>
@@ -53,7 +53,7 @@ export function buildRewardOverlayHtml(
   const hist = flow.getMatchHistory()
   const deltaLines = last
     ? performanceDeltaLines(hist, last).map((line) => `<li>${escapeHtml(line)}</li>`).join('')
-    : '<li>Play one more rated simulation to unlock comparative performance deltas.</li>'
+    : '<li>Play one more rated simulation to compare risk, tempo, and finish.</li>'
   const trainingTitle = dynamicTrainingTitle(last?.timestamp ?? Date.now())
   const cards = html
     .split('</div>')
@@ -68,7 +68,7 @@ export function buildRewardOverlayHtml(
           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
           <div>
             <p class="section-heading">Archive Rewards Inscribed</p>
-            <p class="reward-hero__copy">The archive records your result, unlocks, and next focus.</p>
+            <p class="reward-hero__copy">What changed, what opened, and what must sharpen next.</p>
           </div>
         </div>
         ${recap}
@@ -78,7 +78,7 @@ export function buildRewardOverlayHtml(
           <ul>${trainingFocus}</ul>
         </div>
         <div class="reward-card reward-card--stagger" style="--stagger:6">
-          <h4>What Changed In Your Play</h4>
+          <h4>Why This Mattered</h4>
           <ul>${deltaLines}</ul>
         </div>
         <p class="chapters-lede">Rank: ${rankLabel(rp)} · ${rp} RP</p>

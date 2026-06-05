@@ -1,17 +1,31 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { PLAYABLE_CHAPTERS } from '../../data/chapters'
 import { GameFlow } from '../gameFlow'
 import { buildRatingSummaryLine, buildRewardOverlayHtml } from './showRewardBundles'
-import { vi } from 'vitest'
+
+function createFlow(): GameFlow {
+  return new GameFlow(PLAYABLE_CHAPTERS, {
+    onSceneChange: vi.fn(),
+    onChessUpdate: vi.fn(),
+    onChapterComplete: vi.fn(),
+    onCampaignFinished: vi.fn(),
+  })
+}
+
+function createRewardFlowWithoutHistory(): GameFlow {
+  return {
+    getRankPoints: () => 0,
+    getLadderRating: () => ({ rating: 828, peak: 828, rated: 0 }),
+    getLastRatingDelta: () => 0,
+    getAdaptiveTrainingPlan: () => ['Drill the next file before the archive raises resistance.'],
+    getLatestMatchHistoryEntry: () => null,
+    getMatchHistory: () => [],
+  } as unknown as GameFlow
+}
 
 describe('showRewardBundles html', () => {
   it('includes Stratarch rating line when the ladder is rated', () => {
-    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
-      onSceneChange: vi.fn(),
-      onChessUpdate: vi.fn(),
-      onChapterComplete: vi.fn(),
-      onCampaignFinished: vi.fn(),
-    })
+    const flow = createFlow()
     const f = flow as unknown as {
       mode: 'match'
       matchScene: { id: string; opponentName: string; aiDepth: number } | null
@@ -29,5 +43,14 @@ describe('showRewardBundles html', () => {
     expect(buildRatingSummaryLine(flow)).toContain('Stratarch Rating')
     const html = buildRewardOverlayHtml(flow, [], null)
     expect(html).toContain('Stratarch Rating')
+  })
+
+  it('frames the reward overlay as a verdict with clear next practice', () => {
+    const flow = createRewardFlowWithoutHistory()
+    const html = buildRewardOverlayHtml(flow, [], null)
+
+    expect(html).toContain('What changed, what opened, and what must sharpen next.')
+    expect(html).toContain('Why This Mattered')
+    expect(html).toContain('compare risk, tempo, and finish')
   })
 })
