@@ -55,7 +55,7 @@ export function getShellMarkup(): string {
               <button type="button" class="primary" id="btn-resume">Resume expedition</button>
               <button type="button" class="secondary" id="btn-new">New chronicle</button>
             </div>
-            <div class="title-actions title-actions--solo hidden" id="title-actions-fresh">
+            <div class="title-actions hidden" id="title-actions-fresh">
               <button type="button" class="primary" id="btn-enter-archive">Enter the Archive</button>
             </div>
             <p class="mvp-note" id="mvp-flag"></p>
