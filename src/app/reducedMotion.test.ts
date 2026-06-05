@@ -95,6 +95,12 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(/\.manuscript-panel\s*\{[^}]*repeating-linear-gradient\(90deg/s)
     expect(CSS).toMatch(/\.board-brass\s*\{[^}]*rgba\(42,96,148,0\.5\)/s)
   })
+
+  it('keeps the last move legible as an origin-to-destination route cue', () => {
+    expect(CSS).toMatch(/\.sq-last\s*\{[^}]*linear-gradient\(135deg,\s*rgba\(42,96,148,0\.72\)/s)
+    expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*rgba\(26,58,92,0\.72\)/s)
+    expect(CSS).toMatch(/\.sq-last-to\s*\{[^}]*radial-gradient\(circle at 54% 46%/s)
+  })
 })
 
 /** Returns the contents of every `(prefers-reduced-motion: reduce)` media block. */

@@ -1700,15 +1700,11 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 
 .sq-last {
-  background: rgba(100,130,80,0.65) !important;
+  background: linear-gradient(135deg, rgba(42,96,148,0.72), rgba(201,169,98,0.38)) !important;
   animation: last-move-fade 0.7s var(--ease-out);
 }
-.sq-light.sq-last { background: rgba(160,190,120,0.55) !important; }
-.sq-dark.sq-last  { background: rgba(40,80,55,0.85)  !important; }
-.sq-light.sq-last-from { background: rgba(128,166,112,0.48) !important; }
-.sq-dark.sq-last-from  { background: rgba(31,74,54,0.74) !important; }
-.sq-light.sq-last-to   { background: rgba(180,203,124,0.66) !important; }
-.sq-dark.sq-last-to    { background: rgba(55,95,58,0.92) !important; }
+.sq-last-from { background: linear-gradient(135deg, rgba(26,58,92,0.72), rgba(168,216,138,0.34)) !important; }
+.sq-last-to { background: radial-gradient(circle at 54% 46%, rgba(232,201,126,0.76), rgba(42,96,148,0.54) 64%) !important; }
 
 @keyframes last-move-fade {
   from { filter: brightness(1.5); }
