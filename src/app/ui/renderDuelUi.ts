@@ -34,8 +34,10 @@ export type RenderDuelUiHost = {
 export function renderDuelUi(host: RenderDuelUiHost): void {
   const { flow, duelList, duelPanel, rewardOverlayCtl, closeRewardOverlay, openLab, updateAdvance, renderDuelLabBrief } = host
   const roster = [...flow.getDuelArchiveRoster()].sort((a, b) => Number(b.isOpen) - Number(a.isOpen))
-  const revealDuelPanel = () => {
-    if (innerWidth <= 960) requestAnimationFrame(() => duelPanel.scrollIntoView({ block: 'start' }))
+  const revealDuelPanel = (shouldReveal: boolean) => {
+    if (shouldReveal && innerWidth <= 960) {
+      requestAnimationFrame(() => duelPanel.scrollIntoView({ block: 'start' }))
+    }
   }
   duelList.innerHTML = roster.map((entry) => {
   const r = entry.rival
@@ -55,11 +57,12 @@ export function renderDuelUi(host: RenderDuelUiHost): void {
 }).join('')
 
 for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]) {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', (event) => {
     const op = btn.dataset.op
     if (!op) return
     const archiveEntry = roster.find((r) => r.rival.opponentId === op)
     if (!archiveEntry) return
+    const shouldReveal = event.isTrusted || duelList.contains(document.activeElement)
     const rival = archiveEntry.rival
     for (const row of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]) {
       const active = row === btn
@@ -106,7 +109,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             </ul>
           </div>
         </div>`
-      revealDuelPanel()
+      revealDuelPanel(shouldReveal)
       return
     }
     const history = flow
@@ -148,7 +151,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     )
     if (!unlockedVariants.length) {
       duelPanel.innerHTML = `<p class="ledger-empty">No unlocked variants yet for ${escapeHtml(rival.opponentName)}.</p>`
-      revealDuelPanel()
+      revealDuelPanel(shouldReveal)
       return
     }
     const skinOptions = flow.getUnlockedPieceSkins()
@@ -325,7 +328,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
           <div id="duel-ai-traits">${variantTraitHtml(unlockedVariants[0]!.id)}</div>
         </div>
       </div>`
-    revealDuelPanel()
+    revealDuelPanel(shouldReveal)
     duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
       const val = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? 'classic-royal') as PieceSkinId
       flow.setPieceSkin(val)

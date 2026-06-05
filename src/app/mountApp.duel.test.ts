@@ -105,7 +105,13 @@ describe('mounted duel dossier', () => {
 
       app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
       app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
-      app.querySelector<HTMLButtonElement>('.duel-row')?.click()
+      expect(scrollIntoView).not.toHaveBeenCalledWith({ block: 'start' })
+      requestAnimationFrame.mockClear()
+      scrollIntoView.mockClear()
+
+      const row = app.querySelector<HTMLButtonElement>('.duel-row')!
+      row.focus()
+      row.click()
 
       expect(requestAnimationFrame).toHaveBeenCalled()
       expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start' })
