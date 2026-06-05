@@ -289,6 +289,18 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
           <div class="cal-lens__dial" aria-hidden="true">${lensTickHtml}</div>
           <p class="cal-lens__hint">${escapeHtml(lens.hint)}</p>
         </div>
+        <div class="reward-card">
+          <h4>Counter-Prep Briefing</h4>
+          <ul>${prepLines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
+        </div>
+        <div class="reward-card">
+          <h4>Opening Watchlist</h4>
+          <ul id="duel-opening-watch">${openingWatch(unlockedVariants[0]!.id).map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
+        </div>
+        <div class="reward-card">
+          <h4>Adaptive Training Missions</h4>
+          <ul>${trainingPlan.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
+        </div>
         <p class="opponent-note"><strong>Strengths:</strong> ${escapeHtml(rival.strengths)}</p>
         <p class="opponent-note"><strong>Weaknesses:</strong> ${escapeHtml(rival.weaknesses)}</p>
         <div class="reward-card">
@@ -311,18 +323,6 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         <div class="reward-card">
           <h4>Rival Trait Profile</h4>
           <div id="duel-ai-traits">${variantTraitHtml(unlockedVariants[0]!.id)}</div>
-        </div>
-        <div class="reward-card">
-          <h4>Counter-Prep Briefing</h4>
-          <ul>${prepLines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
-        </div>
-        <div class="reward-card">
-          <h4>Adaptive Training Missions</h4>
-          <ul>${trainingPlan.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
-        </div>
-        <div class="reward-card">
-          <h4>Opening Watchlist</h4>
-          <ul id="duel-opening-watch">${openingWatch(unlockedVariants[0]!.id).map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
         </div>
       </div>`
     revealDuelPanel()

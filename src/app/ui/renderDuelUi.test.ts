@@ -51,5 +51,8 @@ describe('renderDuelUi', () => {
     expect(panelText).toContain('Rival Trait Profile')
     expect(panelText).toContain('AI Doctrine')
     expect(panelText).toContain('King safety')
+    expect(panelText.indexOf('Counter-Prep Briefing')).toBeLessThan(panelText.indexOf('Duel Analytics'))
+    expect(panelText.indexOf('Opening Watchlist')).toBeLessThan(panelText.indexOf('Duel Analytics'))
+    expect(panelText.indexOf('Adaptive Training Missions')).toBeLessThan(panelText.indexOf('Duel Analytics'))
   })
 })
