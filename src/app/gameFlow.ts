@@ -1474,6 +1474,10 @@ export class GameFlow {
       const mine = this.playerColor === 'w' ? 'White' : 'Black'
       return `Wait for ${opp} to move - you command ${mine}. When it returns to you, select a piece to see legal targets (captures bronze; check crimson).`
     }
+    if (this.chess.inCheck()) {
+      const replies = this.chess.moves().length
+      return `Check: ${replies} legal replies. Move the king, block, or capture the threat.`
+    }
     const selectionGuide = this.boardSelectionGuide()
     if (selectionGuide) return selectionGuide
     if (scene.type === 'freeplay') {

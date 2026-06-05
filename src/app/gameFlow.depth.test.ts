@@ -452,6 +452,30 @@ describe('GameFlow depth systems', () => {
     root.remove()
   })
 
+  it('turns the board guide into check-defense coaching', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const freeIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.id === 'c1-freeplay')
+    expect(freeIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch1, freeIdx)
+
+    flow.chess.load('4k3/8/8/8/8/8/4q3/4K3 w - - 0 1')
+    flow.flushDeferredIO()
+
+    expect(latest?.boardGuide).toMatch(/Check: \d+ legal replies/)
+    expect(latest?.boardGuide).toContain('Move the king, block, or capture the threat.')
+  })
+
   it('flushDeferredIO flushes pending UI emit and does not throw', () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
