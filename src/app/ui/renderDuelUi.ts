@@ -477,4 +477,5 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     })
   })
   }
+  duelList.querySelector<HTMLButtonElement>('.duel-row:not(.duel-row--sealed)')?.click()
 }

@@ -108,11 +108,6 @@ export function getShellMarkup(): string {
             <div class="duel-list" id="duel-list"></div>
             <div class="duel-panel" id="duel-panel">
               <div class="match-card">
-                <svg class="duel-empty__map" viewBox="0 0 220 40" focusable="false" aria-hidden="true" style="display:block;width:min(100%,16rem);height:2.35rem;margin:0 0 1rem;color:#c9a96a">
-                  <path d="M10 20h34l26-14 38 28 38-26 28 12h36" fill="none" stroke="currentColor" stroke-width="1.15" opacity=".58"/>
-                  <path d="M70 6l38 28 38-26" fill="none" stroke="#2a6094" stroke-width="1" opacity=".52"/>
-                  <g fill="currentColor"><circle cx="10" cy="20" r="2.6"/><circle cx="44" cy="20" r="3"/><circle cx="70" cy="6" r="3.4"/><circle cx="108" cy="34" r="3.4"/><circle cx="146" cy="8" r="3.4"/><circle cx="174" cy="20" r="3"/><circle cx="210" cy="20" r="2.6"/></g>
-                </svg>
                 <div class="match-card__top">
                   <div class="match-card__header">
                     <span class="match-card__vs">Dossier vestibule</span>
@@ -120,12 +115,6 @@ export function getShellMarkup(): string {
                   </div>
                 </div>
                 <p class="opponent-note">Select a rival to inspect archive files, opening watchlists, trait pressure, and counter-prep before entering a duel.</p>
-                <div class="dossier-stat-grid" aria-label="Duel archive signals">
-                  <span><strong>Doctrine</strong><small>school blend</small></span>
-                  <span><strong>Traits</strong><small>risk/safety</small></span>
-                  <span><strong>Openings</strong><small>watchlist</small></span>
-                  <span><strong>Prep</strong><small>counter-plan</small></span>
-                </div>
               </div>
             </div>
           </div>

@@ -44,7 +44,7 @@ describe('renderDuelUi', () => {
     const alexion = [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')].find(
       (row) => row.dataset.op === 'alexion',
     )
-    alexion?.click()
+    expect(alexion?.getAttribute('aria-current')).toBe('true')
     const panelText = duelPanel.textContent ?? ''
     expect(panelText).toContain('Synthesis')
     expect(panelText).toContain('Do not mistake the mentor mask for mercy')

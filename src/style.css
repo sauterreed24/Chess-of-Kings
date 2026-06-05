@@ -3303,7 +3303,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   .top-bar { padding: 0 0.75rem; }
   .top-nav  { gap: 0.3rem; }
 
-  .screen { padding: 1.25rem 0.75rem 2.5rem; }
+  .screen { padding: 1rem 0.75rem 2rem; }
 
   .screen--play-inner {
     padding-left: max(0.75rem, env(safe-area-inset-left));
@@ -3565,8 +3565,8 @@ html.perf-lean .board-stage--finisher .board-brass {
 
   .top-bar {
     justify-content: center;
-    height: 56px;
-    min-height: 56px;
+    height: 50px;
+    min-height: 50px;
     padding-left: max(0.5rem, env(safe-area-inset-left));
     padding-right: max(0.5rem, env(safe-area-inset-right));
   }
@@ -3576,7 +3576,7 @@ html.perf-lean .board-stage--finisher .board-brass {
   }
 
   .top-nav {
-    width: min(100%, 22rem);
+    width: min(100%, 20rem);
     justify-content: center;
   }
 
@@ -3591,16 +3591,16 @@ html.perf-lean .board-stage--finisher .board-brass {
   }
 
   .lab-overlay__sheet {
-    top: 56px;
+    top: 50px;
     width: 100%;
     max-width: 100%;
-    max-height: calc(100svh - 56px);
+    max-height: calc(100svh - 50px);
     min-width: 0;
   }
 
   @supports (height: 100dvh) {
     .lab-overlay__sheet {
-      max-height: calc(100dvh - 56px);
+      max-height: calc(100dvh - 50px);
     }
   }
 
