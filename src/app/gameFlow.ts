@@ -1460,28 +1460,29 @@ export class GameFlow {
 
   private boardGuideText(scene: Scene): string {
     const defaultGuide =
-      'Select a piece to illuminate legal targets. Captures are framed in bronze; check is marked in crimson.'
+      'Select a piece. Legal targets light; captures frame in bronze, check in crimson.'
     const chessy = this.mode === 'duel' || this.sceneUsesBoard(scene)
     if (!chessy) return defaultGuide
     if (this.isSceneTerminalForCurrentMode() || this.chess.isGameOver()) {
       return 'This passage is decided on the board. Continue from the manuscript when the next control is available.'
     }
     if (this.aiThinking) {
-      return 'The opponent is choosing a move - the board will update when their reply lands.'
+      return 'Opponent calculating - the brass board resolves when the reply lands.'
     }
     if (this.chess.turn() !== this.playerColor && scene.type !== 'freeplay') {
       const opp = this.playerColor === 'w' ? 'Black' : 'White'
       const mine = this.playerColor === 'w' ? 'White' : 'Black'
-      return `Wait for ${opp} to move - you command ${mine}. When it returns to you, select a piece to see legal targets (captures bronze; check crimson).`
+      return `Wait for ${opp} - you command ${mine}. Legal targets return with your turn.`
     }
     if (this.chess.inCheck()) {
       const replies = this.chess.moves().length
-      return `Check: ${replies} legal replies. Move the king, block, or capture the threat.`
+      const word = replies === 1 ? 'reply' : 'replies'
+      return `Check: ${replies} legal ${word}. Save the king: move, block, or capture.`
     }
     const selectionGuide = this.boardSelectionGuide()
     if (selectionGuide) return selectionGuide
     if (scene.type === 'freeplay') {
-      return 'Select a piece of the side whose turn it is (see status above). Captures are framed in bronze; check is marked in crimson.'
+      return 'Select the side to move. Legal targets light; captures frame in bronze, check in crimson.'
     }
     return defaultGuide
   }

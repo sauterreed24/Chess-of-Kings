@@ -183,7 +183,7 @@ export function getShellMarkup(): string {
                     <span class="calibration-rail__label">White moves inscribed</span>
                     <div class="calibration-rail__track" id="calibration-track"></div>
                   </div>
-                  <p class="board-guide" id="board-guide">Select a piece to illuminate legal targets. Captures are framed in bronze; check is marked in crimson.</p>
+                  <p class="board-guide" id="board-guide">Select a piece. Legal targets light; captures frame in bronze, check in crimson.</p>
                   <details class="mobile-tips" id="mobile-tips">
                     <summary class="mobile-tips__summary">Board tips</summary>
                     <p class="mobile-tips__body" id="mobile-board-guide"></p>

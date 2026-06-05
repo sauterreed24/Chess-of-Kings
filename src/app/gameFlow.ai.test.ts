@@ -150,7 +150,7 @@ describe('GameFlow AI / puzzles', () => {
     onChessUpdate.mockClear()
     expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
     const payloadW = onChessUpdate.mock.calls.at(-1)?.[0]
-    expect(payloadW?.boardGuide).toMatch(/Select a piece to illuminate/)
+    expect(payloadW?.boardGuide).toMatch(/Legal targets light/)
   })
 
   it('emits freeplay-specific boardGuide on the rehearsal board', () => {
@@ -168,7 +168,7 @@ describe('GameFlow AI / puzzles', () => {
     expect(freeIdx).toBeGreaterThanOrEqual(0)
     flow.jumpToScene(ch1, freeIdx)
     const payload = onChessUpdate.mock.calls.at(-1)?.[0]
-    expect(payload?.boardGuide).toMatch(/side whose turn it is/)
+    expect(payload?.boardGuide).toMatch(/Select the side to move/)
   })
 
   it('keeps the last player move insight visible after the trainer replies', async () => {

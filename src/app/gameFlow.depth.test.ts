@@ -472,8 +472,8 @@ describe('GameFlow depth systems', () => {
     flow.chess.load('4k3/8/8/8/8/8/4q3/4K3 w - - 0 1')
     flow.flushDeferredIO()
 
-    expect(latest?.boardGuide).toMatch(/Check: \d+ legal replies/)
-    expect(latest?.boardGuide).toContain('Move the king, block, or capture the threat.')
+    expect(latest?.boardGuide).toMatch(/Check: \d+ legal repl(?:y|ies)/)
+    expect(latest?.boardGuide).toContain('Save the king: move, block, or capture.')
   })
 
   it('flushDeferredIO flushes pending UI emit and does not throw', () => {
