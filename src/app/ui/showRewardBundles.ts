@@ -28,6 +28,7 @@ export function buildRewardOverlayHtml(
 ): string {
   const rp = flow.getRankPoints()
   const next = nextRankThreshold(rp)
+  const rpToNext = Math.max(0, next.next - rp)
   const progress = Math.max(0, Math.min(100, ((rp - next.currentFloor) / (next.next - next.currentFloor)) * 100))
   const html = bundles
     .map((b) => {
@@ -68,7 +69,7 @@ export function buildRewardOverlayHtml(
           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
           <div>
             <p class="section-heading">Archive Rewards Inscribed</p>
-            <p class="reward-hero__copy">What changed, what opened, and what must sharpen next.</p>
+            <p class="reward-hero__copy">What changed, what opened, and what draws the next seal closer.</p>
           </div>
         </div>
         ${recap}
@@ -82,9 +83,10 @@ export function buildRewardOverlayHtml(
           <ul>${deltaLines}</ul>
         </div>
         <p class="chapters-lede">Rank: ${rankLabel(rp)} · ${rp} RP</p>
+        <p class="chapters-lede reward-rating">Next seal: <strong>${escapeHtml(next.nextLabel)}</strong> in ${rpToNext} RP.</p>
         ${buildRatingSummaryLine(flow)}
         <div class="reward-progress">
-          <div class="reward-progress__label">Next rank: ${next.nextLabel} at ${next.next} RP</div>
+          <div class="reward-progress__label">Next seal: ${escapeHtml(next.nextLabel)} at ${next.next} RP</div>
           <div class="reward-progress__bar"><div class="reward-progress__fill" style="width:${progress.toFixed(1)}%"></div></div>
         </div>
         <div class="echo-controls">

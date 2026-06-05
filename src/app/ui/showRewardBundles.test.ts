@@ -49,8 +49,18 @@ describe('showRewardBundles html', () => {
     const flow = createRewardFlowWithoutHistory()
     const html = buildRewardOverlayHtml(flow, [], null)
 
-    expect(html).toContain('What changed, what opened, and what must sharpen next.')
+    expect(html).toContain('What changed, what opened, and what draws the next seal closer.')
     expect(html).toContain('Why This Mattered')
     expect(html).toContain('compare risk, tempo, and finish')
+  })
+
+  it('shows the next rank seal as a concrete RP target', () => {
+    const flow = createRewardFlowWithoutHistory()
+    const html = buildRewardOverlayHtml(flow, [], null)
+
+    expect(html).toContain('Next seal:')
+    expect(html).toContain('Apprentice Analyst')
+    expect(html).toContain('in 140 RP')
+    expect(html).toContain('draws the next seal closer')
   })
 })
