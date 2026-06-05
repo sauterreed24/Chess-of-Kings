@@ -7,6 +7,14 @@
 
 .line[data-voice='alexion'] { --v: 232,201,126; }
 
+.top-bar,.lab-overlay__bar {
+  box-shadow: 0 10px 34px #0006, inset 0 -1px #e8c97e29;
+}
+
+.title-ornament__map {
+  filter: drop-shadow(0 0 18px #e8c97e52);
+}
+
 :is(.duel-panel,.instrument-frame,.reward-sheet) {
   box-shadow: var(--shadow-deep), inset 0 0 0 1px #e8c97e14;
 }

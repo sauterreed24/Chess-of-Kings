@@ -245,12 +245,12 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .ambient__grid {
   position: absolute; inset: 0;
   background-image:
-    radial-gradient(circle at 50% 50%, rgba(232,201,126,0.24) 0 1px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(232,201,126,0.28) 0 1px, transparent 2px),
     repeating-conic-gradient(from 45deg at 50% 50%, rgba(232,201,126,0.07) 0 12deg, transparent 12deg 45deg),
-    linear-gradient(rgba(201,169,98,0.025) 1px, transparent 1px),
-    linear-gradient(118deg, transparent 0 46%, rgba(201,169,98,0.12) 46.2%, transparent 46.7% 100%),
-    linear-gradient(28deg, transparent 0 57%, rgba(42,96,148,0.13) 57.2%, transparent 57.7% 100%);
-  background-size: 180px 150px, 132px 132px, 44px 44px, 240px 180px, 300px 210px;
+    linear-gradient(118deg, transparent 0 36%, rgba(232,201,126,0.18) 36.1%, transparent 36.45% 100%),
+    linear-gradient(28deg, transparent 0 58%, rgba(42,96,148,0.18) 58.1%, transparent 58.45% 100%),
+    linear-gradient(rgba(201,169,98,0.03) 1px, transparent 1px);
+  background-size: 180px 150px, 132px 132px, 260px 190px, 320px 220px, 44px 44px;
   mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 100%);
 }
 
@@ -1034,8 +1034,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   padding: 0.68rem 0.9rem 0.74rem 3.55rem;
   margin-bottom: 0.65rem;
   background:
-    radial-gradient(circle at 1.35rem 1.05rem, rgba(var(--v),0.42), transparent 36%),
-    linear-gradient(90deg, rgba(var(--v),0.24), rgba(0,0,0,0.38) 52%, rgba(42,96,148,0.08));
+    radial-gradient(circle at 1.35rem 1.05rem, rgba(var(--v),0.46), transparent 36%),
+    linear-gradient(90deg, rgba(var(--v),0.28), rgba(0,0,0,0.42) 52%, rgba(42,96,148,0.1));
   border-radius: 0 8px 8px 0;
   border-left: 4px solid rgba(var(--v),0.86);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.065), 0 12px 28px rgba(0,0,0,0.24);
@@ -1472,12 +1472,18 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 /* Marble light squares */
 .sq-light {
-  background: linear-gradient(32deg, #fffffff0, transparent 43%), radial-gradient(circle at 82% 86%, #9b6d314a, transparent 42%), linear-gradient(145deg, #fff5d8 0%, #d8c091 70%, #a77f43 100%);
+  background:
+    linear-gradient(32deg, #fffffff0, transparent 43%),
+    repeating-linear-gradient(135deg, #5a3d1910 0 1px, transparent 1px 1.1rem),
+    linear-gradient(145deg, #fff5d8 0%, #d8c091 70%, #a77f43 100%);
 }
 
 /* Lapis dark squares */
 .sq-dark {
-  background: radial-gradient(circle at 72% 18%, #c5e3ff59, transparent 34%), linear-gradient(145deg, #2d79ad 0%, #0d3154 66%, #04111f 100%);
+  background:
+    radial-gradient(circle at 72% 18%, #c5e3ff5c, transparent 34%),
+    repeating-linear-gradient(135deg, #e8c97e12 0 1px, transparent 1px 1rem),
+    linear-gradient(145deg, #2d79ad 0%, #0d3154 66%, #04111f 100%);
 }
 
 /* Piece glyphs — styled as vector SVG layers with CSS properties */
@@ -2075,9 +2081,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border: 1px solid rgba(232,201,126,0.34);
   border-radius: 14px;
   background:
-    radial-gradient(circle at 50% -8%, #ede9de8a, transparent 35%),
-    radial-gradient(circle at 94% 4%, #2a60948a, transparent 31%),
-    linear-gradient(119deg, transparent 0 17%, #e8c97e2d 17.15% 17.45%, transparent 17.7%),
+    radial-gradient(circle at 50% -8%, #ede9de99, transparent 35%),
+    radial-gradient(circle at 94% 4%, #2a60949c, transparent 31%),
+    linear-gradient(119deg, transparent 0 17%, #e8c97e42 17.15% 17.45%, transparent 17.7%),
     linear-gradient(180deg, #3a2a17fb, #070504f4);
   box-shadow:
     0 38px 110px rgba(0,0,0,0.7),
@@ -2705,9 +2711,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   padding: clamp(8px, 1.4vw, 14px);
   border-radius: 12px;
   background:
-    radial-gradient(circle at 16% 13%, rgba(232,201,126,0.6), transparent 23%),
-    linear-gradient(315deg, rgba(42,96,148,0.42), transparent 29%),
-    linear-gradient(150deg, #916a36 0%, #342312 45%, #0b0704 100%);
+    radial-gradient(circle at 16% 13%, rgba(232,201,126,0.64), transparent 23%),
+    linear-gradient(315deg, rgba(42,96,148,0.46), transparent 29%),
+    linear-gradient(150deg, #9b7139 0%, #342312 45%, #0b0704 100%);
 }
 
 .board-brass::before {
@@ -3281,7 +3287,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   .title-hero    { padding: 0.42rem 0; }
   .title-hero__plate { padding: 1rem 0.8rem; }
   .title-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.38rem; margin-bottom: 0.62rem; }
-  .chronicle-index-codex { grid-template-columns: 1fr; }
+  .chronicle-index-codex,
+  .title-world-panel { grid-template-columns: 1fr; }
 
   .play-atelier { gap: 1rem; }
   .manuscript-panel,
