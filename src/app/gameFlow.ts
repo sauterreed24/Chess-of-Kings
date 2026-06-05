@@ -928,6 +928,25 @@ export class GameFlow {
     return line ? `${line} — ${body}` : body
   }
 
+  private duelDoctrineLine(opponentId: string, variantLabel: string): string {
+    if (opponentId === 'alexion') {
+      return `${variantLabel}: Alexion audits plans like civic law; govern your structure before he breaks it.`
+    }
+    if (opponentId === 'rowan') {
+      return `${variantLabel}: Rowan turns imbalance into fire. Castle before greed; make the sacrifice pay rent.`
+    }
+    if (opponentId === 'vega') {
+      return `${variantLabel}: Vega audits romance with law. Shelter the king; answer pressure with development.`
+    }
+    if (opponentId === 'amara') {
+      return `${variantLabel}: Amara treats symmetry as jurisprudence. Open the center before the mirror hardens.`
+    }
+    if (opponentId === 'edred') {
+      return `${variantLabel}: Edred hunts flight squares. Castle, blunt the file, and count forcing moves.`
+    }
+    return `Duel calibration: ${variantLabel} is adapting to your tendencies.`
+  }
+
   private currentAiFlavor(): string | null {
     const phase = this.sanLog.length < 12 ? 'opening' : this.sanLog.length < 30 ? 'middlegame' : 'endgame'
     const memoryTag = (() => {
@@ -999,7 +1018,10 @@ export class GameFlow {
     }
     if (this.mode === 'duel' && this.duelSession) {
       return this.withRivalTalkPrefix(
-        `Duel calibration: ${this.duelSession.variant.label} is adapting to your tendencies.${memoryTag}${rivalryTag}`,
+        `${this.duelDoctrineLine(
+          this.duelSession.roster.opponentId,
+          this.duelSession.variant.label,
+        )}${memoryTag}${rivalryTag}`,
       )
     }
     return null

@@ -257,12 +257,32 @@ describe('GameFlow AI / puzzles', () => {
     ;(flow as unknown as { unlockedDuelVariantIds: string[] }).unlockedDuelVariantIds.push('amara-initiate')
     expect(flow.startDuel('amara', 'amara-initiate', 'w')).toBe(true)
     const flavor = (flow as unknown as { currentAiFlavor(): string | null }).currentAiFlavor()
-    expect(flavor).toMatch(/Duel calibration/)
+    expect(flavor).toMatch(/Amara treats symmetry as jurisprudence/)
     expect(flavor).toMatch(/ — /)
     expect(
       flavor?.includes('I have studied the board') ||
         flavor?.includes('Symmetry is the patient') ||
         flavor?.includes('Mirror me only'),
     ).toBe(true)
+  })
+
+  it('duel aiFlavor makes Rowan, Vega, and Alexion doctrines distinct in live play', () => {
+    const flavorFor = (opponentId: string, variantId: string) => {
+      const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+        onSceneChange: vi.fn(),
+        onChessUpdate: vi.fn(),
+        onChapterComplete: vi.fn(),
+        onCampaignFinished: vi.fn(),
+      })
+      flow.board = mockBoard() as unknown as BoardView
+      flow.highestUnlockedChapter = 2
+      ;(flow as unknown as { unlockedDuelVariantIds: string[] }).unlockedDuelVariantIds.push(variantId)
+      expect(flow.startDuel(opponentId, variantId, 'w')).toBe(true)
+      return (flow as unknown as { currentAiFlavor(): string | null }).currentAiFlavor() ?? ''
+    }
+
+    expect(flavorFor('alexion', 'alexion-mentor')).toMatch(/Alexion audits plans like civic law/)
+    expect(flavorFor('rowan', 'rowan-gambit')).toMatch(/Rowan turns imbalance into fire/)
+    expect(flavorFor('vega', 'vega-italian')).toMatch(/Vega audits romance with law/)
   })
 })
