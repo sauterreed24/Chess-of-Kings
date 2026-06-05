@@ -141,8 +141,7 @@ export function renderScene(
     dom.narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
       scene.teaching ? teachingBlock(scene.teaching) : ''
     }${scene.hint ? `<p class="hint-block"><span class="hint-label">Hint</span> ${escapeHtml(scene.hint)}</p>` : ''}`
-    dom.lessonNote.textContent =
-      'Meet the objective on the board. Use Take back to retry. Seal with Advance when the goal is met.'
+    dom.lessonNote.textContent = 'Solve the board objective. Take back to retry; Advance unlocks when the proof is clean.'
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = 'Requires objective met'
   } else if (scene.type === 'match') {
@@ -180,10 +179,10 @@ export function renderScene(
       </div>`
     dom.lessonNote.textContent =
       scene.aiStyle === 'romantic'
-        ? 'Survive the first wave: shelter the king, finish development, then make the sacrifice prove itself.'
+        ? 'Weather the first wave: castle, finish development, make every sacrifice prove its debt.'
         : scene.aiStyle === 'alexandrine' || scene.aiStyle === 'apotheosis'
-          ? 'Every quiet move matters here: keep structure, deny loose pieces, and convert without drift.'
-          : 'Apply the ancient laws — develop, castle early, avoid loose pieces.'
+          ? 'Quiet moves decide this: keep structure, deny loose pieces, convert without drift.'
+          : 'Use the ancient laws: develop, castle early, keep every piece defended.'
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = 'Requires victory'
   } else if (scene.type === 'calibration') {
@@ -192,7 +191,7 @@ export function renderScene(
     dom.narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
       scene.teaching ? teachingBlock(scene.teaching) : ''
     }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The trainer answers at random.</p>`
-    dom.lessonNote.textContent = 'Each of your moves is tallied on the right — the Lab is listening.'
+    dom.lessonNote.textContent = 'White moves are tallied at the right; the Lab is listening.'
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = `${scene.minMovesByPlayer} White moves`
   } else if (scene.type === 'freeplay') {
@@ -201,7 +200,7 @@ export function renderScene(
     dom.narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
       scene.teaching ? teachingBlock(scene.teaching) : ''
     }`
-    dom.lessonNote.textContent = 'Alternate sides as in a living game. Advance returns to the vestibule.'
+    dom.lessonNote.textContent = 'Use either side freely. Advance returns to the vestibule.'
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = 'Leave when ready'
   }

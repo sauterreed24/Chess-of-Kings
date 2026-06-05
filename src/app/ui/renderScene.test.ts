@@ -141,6 +141,6 @@ describe('renderScene', () => {
     expect(traitText).toContain('AI Doctrine')
     expect(traitText).toContain('Rowan Gambit Tabiya')
     expect(traitText).toContain('Risk')
-    expect(dom.lessonNote.textContent).toContain('Survive the first wave')
+    expect(dom.lessonNote.textContent).toContain('Weather the first wave')
   })
 })
