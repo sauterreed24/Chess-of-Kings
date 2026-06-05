@@ -14,8 +14,10 @@ import { dirname, resolve } from 'node:path'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const CSS_PATH = resolve(HERE, '..', 'style.css')
+const IMPERIAL_CSS_PATH = resolve(HERE, '..', 'style-alexandrine-imperial.css')
 
 const CSS = readFileSync(CSS_PATH, 'utf8')
+const IMPERIAL_CSS = readFileSync(IMPERIAL_CSS_PATH, 'utf8')
 
 describe('reduced-motion CSS guarantees', () => {
   it('declares a global hidden utility that wins against display components', () => {
@@ -69,6 +71,13 @@ describe('lab overlay CSS hit targets', () => {
     expect(cssRule('.lab-overlay__bar')).toMatch(/z-index:\s*2/)
     expect(cssRule('.screen--play-inner')).toMatch(/position:\s*relative/)
     expect(cssRule('.screen--play-inner')).toMatch(/z-index:\s*1/)
+  })
+})
+
+describe('Alexandrine Imperial state polish', () => {
+  it('keeps board calculation and check-defense cues in the visual layer', () => {
+    expect(IMPERIAL_CSS).toMatch(/\.instrument-frame:has\(\.status-pill--thinking\)\s+\.board-brass/)
+    expect(IMPERIAL_CSS).toMatch(/\.instrument-frame:has\(\.status-pill--check\)\s+\.board-guide/)
   })
 })
 
