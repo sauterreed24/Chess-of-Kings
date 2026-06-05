@@ -1,29 +1,5 @@
 /* Alexandrine Imperial: marble, bronze, lapis; layered on style.css */
 
-.top-bar {
-  height: 58px;
-  border-bottom-color: rgba(232, 201, 126, 0.18);
-  background:
-    linear-gradient(90deg, rgba(42, 96, 148, 0.16), transparent 34%, rgba(201, 169, 98, 0.1)),
-    linear-gradient(180deg, rgba(25, 20, 14, 0.97), rgba(8, 7, 5, 0.92));
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
-}
-
-html:not(.perf-lean) .top-bar {
-  backdrop-filter: blur(12px) saturate(1.08);
-}
-
-.top-bar::after {
-  height: 2px;
-  opacity: 0.72;
-  background: linear-gradient(90deg, transparent, var(--gold-dim) 12%, var(--gold-bright) 50%, var(--gold-dim) 88%, transparent);
-  box-shadow: 0 0 16px rgba(232, 201, 126, 0.28);
-}
-
-.mark { text-shadow: 0 0 24px rgba(232, 201, 126, 0.26); }
-
-.mark-sub { color: color-mix(in srgb, var(--lapis-bright) 58%, var(--gold-dim)); }
-
 .chapters-wrap {
   padding: 1.35rem 1.5rem 2rem;
   border: 1px solid rgba(232, 201, 126, 0.22);
