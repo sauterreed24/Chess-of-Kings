@@ -78,6 +78,7 @@ describe('Alexandrine Imperial state polish', () => {
   it('keeps board calculation and check-defense cues in the visual layer', () => {
     expect(IMPERIAL_CSS).toMatch(/\.instrument-frame:has\(\.status-pill--thinking\)\s+\.board-brass/)
     expect(IMPERIAL_CSS).toMatch(/\.instrument-frame:has\(\.status-pill--check\)\s+\.board-guide/)
+    expect(IMPERIAL_CSS).toMatch(/\.line\[data-voice='alexion'\]/)
   })
 })
 

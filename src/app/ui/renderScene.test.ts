@@ -143,4 +143,34 @@ describe('renderScene', () => {
     expect(traitText).toContain('Risk')
     expect(dom.lessonNote.textContent).toContain('Weather the first wave')
   })
+
+  it('marks Alexion dialogue with a distinct render voice and seal', () => {
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const chapter = PLAYABLE_CHAPTERS.find((ch) =>
+      ch.scenes.some((scene) => scene.type === 'dialogue' && scene.lines.some((line) => line.speaker === 'alexion')),
+    )!
+    const sceneIndex = chapter.scenes.findIndex(
+      (scene) => scene.type === 'dialogue' && scene.lines.some((line) => line.speaker === 'alexion'),
+    )
+    const scene = chapter.scenes[sceneIndex]!
+    renderScene(chapter, scene, sceneIndex, dom, play, flow, {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    })
+
+    const alexionLine = dom.narrativeBody.querySelector<HTMLElement>('.line[data-voice="alexion"]')
+    expect(alexionLine).not.toBeNull()
+    expect(alexionLine?.querySelector('.speaker-seal')?.textContent).toBe('A')
+    expect(alexionLine?.querySelector('.who')?.textContent).toContain('Alexion')
+  })
 })

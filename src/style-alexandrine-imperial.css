@@ -1,12 +1,11 @@
 .chapters-wrap {
-  padding: 1.35rem 1.5rem 2rem;
-  border: 1px solid #e8c97e38;
-  border-radius: 14px;
   background:
     radial-gradient(circle at 12% 6%, #e8c97e29, transparent 24%),
     radial-gradient(circle at 92% 0, #2a609426, transparent 36%),
-    #0004;
+    linear-gradient(180deg, #1c1309f5, #050403f8);
 }
+
+.line[data-voice='alexion'] { --v: 232,201,126; }
 
 :is(.duel-panel,.instrument-frame,.reward-sheet) {
   box-shadow: var(--shadow-deep), inset 0 0 0 1px #e8c97e14;
