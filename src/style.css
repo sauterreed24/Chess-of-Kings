@@ -606,9 +606,6 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 
 /* Narrative manuscript / stone tablet */
 .manuscript-panel {
-  background:
-    linear-gradient(160deg, rgba(42,36,26,0.5) 0%, transparent 45%),
-    linear-gradient(180deg, #1a1710 0%, #110f09 100%);
   border: 1px solid rgba(201,169,98,0.14);
   padding: 1.2rem 1.45rem 1.45rem 1.75rem;
   box-shadow: var(--shadow-panel);
@@ -685,9 +682,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 
 /* Instrument frame — brass instrument casing */
 .instrument-frame {
-  background: linear-gradient(180deg, #1c1912 0%, #13100a 100%);
   border: 1px solid rgba(201,169,98,0.2);
-  border-radius: 6px;
   padding: 1.1rem 1.1rem 1.3rem;
   position: relative;
 }
@@ -868,12 +863,11 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   margin-top: 0.45rem;
 }
 
-.status-pill-wrap { min-height: 2rem; display: flex; align-items: center; }
+.status-pill-wrap { display: flex; align-items: center; }
 .status-pill {
-  font-family: var(--font-mono); font-size: 0.7rem;
+  font-family: var(--font-mono);
   letter-spacing: 0.04em; color: var(--ivory-dim);
   padding: 0.38rem 0.72rem;
-  background: rgba(0,0,0,0.4); border-radius: 3px;
   border: 1px solid rgba(201,169,98,0.12);
   transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
 }
@@ -992,7 +986,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .scene-tag {
   font-family: var(--font-display); font-size: 0.55rem;
   letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--gold); margin: 0 0 1rem;
+  margin: 0 0 1rem;
   padding-bottom: 0.6rem; border-bottom: 1px solid rgba(201,169,98,0.1);
 }
 
@@ -2551,6 +2545,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .spoken-char {
   display: inline-block;
+  max-width: 0;
+  overflow: hidden;
   opacity: 0;
   transform: translateY(0.2em) scale(0.92);
   animation: spoken-hammer 0.18s var(--ease-out) forwards;
@@ -2565,13 +2561,18 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   }
   58% {
     opacity: 1;
+    max-width: 1.15em;
     transform: translateY(-0.03em) scale(1.06);
   }
   to {
     opacity: 1;
+    max-width: 1.15em;
     transform: none;
   }
 }
+
+.narrative-body--revealed .spoken-char { max-width: none; }
+.narrative-body--revealed .line--stagger { animation: none; opacity: 1; transform: none; }
 
 .instrument-frame {
   border-radius: 14px;
@@ -3455,6 +3456,7 @@ html.perf-lean .title-hero__plate::after {
 html.perf-lean .spoken-char,
 html.force-reduced-motion .spoken-char {
   animation: none !important;
+  max-width: none;
   opacity: 1;
   transform: none;
 }
@@ -3519,10 +3521,10 @@ html.perf-lean .board-stage--finisher .board-brass {
 @media (prefers-reduced-motion: reduce) {
   .spoken-char {
     animation: none !important;
+    max-width: none;
     opacity: 1;
     transform: none;
   }
-
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

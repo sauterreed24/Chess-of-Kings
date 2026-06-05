@@ -63,6 +63,14 @@ describe('reduced-motion CSS guarantees', () => {
     /* The universal block is the strongest guarantee. */
     expect(allBlocks.some((b) => /\*\s*,\s*\*::before\s*,\s*\*::after/.test(b))).toBe(true)
   })
+
+  it('lets instant dialogue bypass the animated character width clamp', () => {
+    const allBlocks = collectReducedMotionBlocks(CSS).join('\n')
+    expect(CSS).toMatch(/\.narrative-body--revealed\s+\.spoken-char\s*\{\s*max-width:\s*none;\s*\}/)
+    expect(CSS).toMatch(/\.narrative-body--revealed\s+\.line--stagger\s*\{[^}]*animation:\s*none/s)
+    expect(CSS).toMatch(/html\.perf-lean\s+\.spoken-char,\s*\nhtml\.force-reduced-motion\s+\.spoken-char\s*\{[^}]*max-width:\s*none/s)
+    expect(allBlocks).toMatch(/\.spoken-char\s*\{[^}]*max-width:\s*none/s)
+  })
 })
 
 describe('lab overlay CSS hit targets', () => {
