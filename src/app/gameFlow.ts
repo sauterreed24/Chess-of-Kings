@@ -822,6 +822,7 @@ export class GameFlow {
     const matchOutcome = this.computeMatchOutcome()
     const fen = this.chess.fen()
     const ledgerFp = ledgerContentFingerprint(this.sanLog, this.sanQuality)
+    const evalScore = chessy ? materialAndPst(this.chess, 'w') : 0
     this.handlers.onChessUpdate({
       chess: this.chess,
       fen,
@@ -835,7 +836,7 @@ export class GameFlow {
       aiThinking: this.aiThinking,
       coachTip: this.lastCoachTip,
       matchOutcome,
-      evalScore: chessy ? materialAndPst(this.chess, 'w') : 0,
+      evalScore,
       mentorInsight: this.computeMentorInsight(),
       aiPersona: this.currentAiPersona(),
       aiFlavor: this.currentAiFlavor(),
@@ -1458,6 +1459,24 @@ export class GameFlow {
     return `${t} to move.`
   }
 
+  private openingAimGuide(): string {
+    if ((this.mode !== 'match' && this.mode !== 'duel') || this.sanLog.length >= 10) return ''
+    const key =
+      this.mode === 'duel'
+        ? this.duelSession?.roster.opponentId
+        : this.matchScene?.id
+    if (key?.includes('rowan')) {
+      return " Aim: castle; bleed Rowan's fire"
+    }
+    if (key?.includes('vega')) {
+      return ' Aim: castle; use development vs Vega pressure'
+    }
+    if (key?.includes('alexion') || key?.includes('boss') || key?.includes('counterpart')) {
+      return ' Aim: accountable: no loose pieces'
+    }
+    return ''
+  }
+
   private boardGuideText(scene: Scene): string {
     const defaultGuide =
       'Select a piece. Legal targets light; captures frame in bronze, check in crimson.'
@@ -1484,7 +1503,7 @@ export class GameFlow {
     if (scene.type === 'freeplay') {
       return 'Select the side to move. Legal targets light; captures frame in bronze, check in crimson.'
     }
-    return defaultGuide
+    return `${defaultGuide}${this.openingAimGuide()}`
   }
 
   private boardSelectionGuide(): string | null {

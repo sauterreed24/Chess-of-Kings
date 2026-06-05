@@ -153,6 +153,36 @@ describe('GameFlow AI / puzzles', () => {
     expect(payloadW?.boardGuide).toMatch(/Legal targets light/)
   })
 
+  it('adds rival-specific live aims to the default board guide', () => {
+    const guideFor = (opponentId: string, variantId: string) => {
+      const onChessUpdate = vi.fn()
+      const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+        onSceneChange: vi.fn(),
+        onChessUpdate,
+        onChapterComplete: vi.fn(),
+        onCampaignFinished: vi.fn(),
+      })
+      flow.board = mockBoard() as unknown as BoardView
+      flow.highestUnlockedChapter = 2
+      ;(flow as unknown as { unlockedDuelVariantIds: string[] }).unlockedDuelVariantIds.push(variantId)
+      expect(flow.startDuel(opponentId, variantId, 'w')).toBe(true)
+      return onChessUpdate.mock.calls.at(-1)?.[0]?.boardGuide ?? ''
+    }
+
+    const rowanGuide = guideFor('rowan', 'rowan-gambit')
+    expect(rowanGuide).toMatch(/Legal targets light/)
+    expect(rowanGuide).toMatch(/Rowan/)
+    expect(rowanGuide).toMatch(/castle/)
+
+    const vegaGuide = guideFor('vega', 'vega-italian')
+    expect(vegaGuide).toMatch(/Vega pressure/)
+    expect(vegaGuide).toMatch(/development/)
+
+    const alexionGuide = guideFor('alexion', 'alexion-mentor')
+    expect(alexionGuide).toMatch(/accountable/)
+    expect(alexionGuide).toMatch(/no loose pieces/)
+  })
+
   it('emits freeplay-specific boardGuide on the rehearsal board', () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
