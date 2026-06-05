@@ -272,7 +272,7 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
     .slice(-6)
   const lines: string[] = []
   if (!prev.length) {
-    lines.push('Baseline sealed: future recaps will compare speed, grade, and pressure.')
+    lines.push('Baseline sealed: future recaps compare speed, grade, and pressure.')
     return lines
   }
 
@@ -289,7 +289,7 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
   const avgPrevGrade = prev.reduce((a, h) => a + gradeScore(h.styleGrade), 0) / prev.length
   const gradeDelta = gradeScore(latest.styleGrade) - avgPrevGrade
   if (gradeDelta >= 0.8) {
-    lines.push('Quality climbed: calculation and conversion are carrying more weight.')
+    lines.push('Quality rose: calculation and conversion are carrying more weight.')
   } else if (gradeDelta <= -0.8) {
     lines.push('Quality slipped: reduce volatility and stabilize before forcing play.')
   } else {

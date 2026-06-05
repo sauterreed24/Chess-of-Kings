@@ -64,6 +64,6 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 12,
     })
-    expect(s).toContain('ledger names the hinge')
+    expect(s).toContain('ledger found the hinge')
   })
 })

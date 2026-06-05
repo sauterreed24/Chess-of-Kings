@@ -177,7 +177,7 @@ describe('mainUiFormatters', () => {
     const lines = performanceDeltaLines([...history, latest], latest)
     expect(lines).toEqual([
       'Converted faster: 9.0 fewer ply than your rival baseline.',
-      'Quality climbed: calculation and conversion are carrying more weight.',
+      'Quality rose: calculation and conversion are carrying more weight.',
       'Rival trend: you own the file. Raise difficulty for a sharper archive.',
     ])
   })

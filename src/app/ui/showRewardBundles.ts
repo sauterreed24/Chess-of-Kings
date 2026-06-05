@@ -68,7 +68,7 @@ export function buildRewardOverlayHtml(
           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
           <div>
             <p class="section-heading">Archive Rewards Inscribed</p>
-            <p class="reward-hero__copy">The court records your result, unlocks, and next training focus.</p>
+            <p class="reward-hero__copy">The archive records your result, unlocks, and next focus.</p>
           </div>
         </div>
         ${recap}

@@ -30,11 +30,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'narrator',
-            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. A chess trainer sits open on his laptop beside an untouched notebook, a cold cup of coffee, and the brass housing of his apartment civic terminal. He knows how pieces move; everyone in the Commonwealth knows that much. What he does not know is how to stay calm when a position stops explaining itself.',
+            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. A chess trainer glows beside an untouched notebook, cold coffee, and the brass housing of his apartment civic terminal. He knows how pieces move; everyone in the Commonwealth knows that. What he does not know is how to stay calm when a position stops explaining itself.',
           },
           {
             speaker: 'reed',
-            text: '"Adaptive trainer. Any style in history. Stratarch-calibrated." Sounds like ministry software with a better font.',
+            text: '"Adaptive trainer. Any style in history. Stratarch-calibrated." Ministry software with a better font.',
           },
           {
             speaker: 'narrator',
@@ -42,7 +42,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'reed',
-            text: 'Fine. Let it see what it thinks I am.',
+            text: 'Fine. Let it tell me what I am.',
           },
         ],
       },
@@ -84,7 +84,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         storyBeat: {
           label: 'World thread',
           title: 'History did not break where Reed was taught it held',
-          body: 'The app names facts Reed has always treated as background: Alexander lived, succession stabilized, and chess became a public proof of judgment.',
+          body: 'The codex names facts Reed has always treated as background: Alexander lived, succession stabilized, and chess became public proof of judgment.',
           tone: 'quiet',
         },
         entries: [
@@ -135,7 +135,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         storyBeat: {
           label: 'Archive pressure',
           title: 'The trainer watches habits, not moves',
-          body: 'Every pawn push and repeated piece move becomes evidence. The Lab is building a portrait before Reed knows there is a Lab.',
+          body: "Every pawn push and repeated move becomes evidence. The Lab is sketching Reed before he knows there is a Lab.",
           tone: 'pressure',
         },
         lesson:
@@ -194,7 +194,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'You are not assigned to the seed archives.',
+            text: 'You are not cleared for the seed archives.',
           },
           {
             speaker: 'reed',
@@ -202,7 +202,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'The History Lab. We use chess because it is the most compressed record of how conflict, order, and time actually move. The Long Reign made the board civic. The Lab makes it dangerous again.',
+            text: 'The History Lab. We use chess because no other record compresses conflict, order, and time so cleanly. The Long Reign made the board civic. The Lab makes it dangerous again.',
           },
           {
             speaker: 'reed',
@@ -210,7 +210,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'The interface accepted you. That is not nothing. I am Alexion Demaratos-Serapis, curator of these simulations. You should not be here. The Lab opens for candidates, witnesses, and errors. I have not decided which you are, and the seed archive has already begun deciding without me.',
+            text: 'The interface accepted you. That matters. I am Alexion Demaratos-Serapis, curator of these simulations. You should not be here. The Lab opens for candidates, witnesses, and errors. I have not decided which you are, and the seed archive has already begun deciding without me.',
           },
           {
             speaker: 'alexion',
@@ -222,7 +222,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'The door to the vestibule remains behind you. But you have already begun to think in here. Refusing now would be dishonest.',
+            text: 'The vestibule door remains behind you. But you have already begun to think in here. Refusing now would be dishonest.',
           },
         ],
       },
@@ -1085,7 +1085,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'Good. The ladder here is shorter than Chapter I, but the opponents are hungrier. First: Rowan, who plays like a duelist with a lit room watching him.',
+            text: 'Good. This ladder is shorter than Chapter I, but hungrier. First: Rowan, who plays like a duelist under chandeliers.',
           },
         ],
       },
@@ -1101,7 +1101,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'rowan',
-            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy King\'s Gambit: gambits accepted, complications welcomed, reputations set lightly on fire.',
+            text: 'Alexion sends students to me when they stop hanging knights and start hunting kings. I will give you a messy King\'s Gambit: pawn taken, complications welcomed, reputations set lightly on fire.',
           },
           {
             speaker: 'reed',
