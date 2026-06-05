@@ -136,8 +136,8 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Shadows */
-  --shadow-deep:  0 24px 80px rgba(0, 0, 0, 0.65);
-  --shadow-panel: 0 12px 44px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-deep:  0 30px 90px rgba(0, 0, 0, 0.72);
+  --shadow-panel: 0 18px 55px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
   /* Semantic surfaces (map legacy names; use in new rules) */
   --surface-page:    var(--ink);
@@ -195,8 +195,8 @@ html, body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(ellipse 96% 70% at 50% -10%, rgba(96,72,42,0.34), transparent 64%),
-    radial-gradient(ellipse 82% 65% at 100% 30%, rgba(42,96,148,0.24), transparent 62%),
+    radial-gradient(ellipse 96% 70% at 50% -10%, rgba(232,201,126,0.22), transparent 64%),
+    radial-gradient(ellipse 82% 65% at 100% 30%, rgba(42,96,148,0.27), transparent 62%),
     linear-gradient(180deg, #171106 0%, #080706 58%, #050403 100%);
   color: var(--ivory);
   font-family: var(--font-body);
@@ -248,10 +248,10 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 .ambient__bloom--d {
   width: min(78vw, 980px); height: min(48vh, 420px);
-  top: 7%; right: 6%; border-radius: 0; filter: blur(0); opacity: 0.2;
+  top: 7%; right: 6%; border-radius: 0; filter: blur(0); opacity: 0.24;
   background:
-    linear-gradient(115deg, transparent 0 28%, rgba(232,201,126,0.14) 28.2% 28.45%, transparent 28.7% 100%),
-    linear-gradient(154deg, transparent 0 54%, rgba(42,96,148,0.14) 54.2% 54.45%, transparent 54.7% 100%);
+    linear-gradient(115deg, transparent 0 28%, rgba(232,201,126,0.16) 28.2% 28.45%, transparent 28.7% 100%),
+    linear-gradient(154deg, transparent 0 54%, rgba(42,96,148,0.16) 54.2% 54.45%, transparent 54.7% 100%);
 }
 @keyframes bloom-drift {
   from { transform: translate(0,0) scale(1); }
@@ -262,12 +262,12 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .ambient__grid {
   position: absolute; inset: 0;
   background-image:
-    radial-gradient(circle at 50% 50%, rgba(232,201,126,0.18) 0 1px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(232,201,126,0.23) 0 1px, transparent 2px),
     linear-gradient(rgba(201,169,98,0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(201,169,98,0.025) 1px, transparent 1px),
-    linear-gradient(118deg, transparent 0 46%, rgba(201,169,98,0.08) 46.2%, transparent 46.7% 100%),
-    linear-gradient(28deg, transparent 0 57%, rgba(42,96,148,0.09) 57.2%, transparent 57.7% 100%);
-  background-size: 220px 180px, 44px 44px, 44px 44px, 240px 180px, 300px 210px;
+    linear-gradient(118deg, transparent 0 46%, rgba(201,169,98,0.1) 46.2%, transparent 46.7% 100%),
+    linear-gradient(28deg, transparent 0 57%, rgba(42,96,148,0.11) 57.2%, transparent 57.7% 100%);
+  background-size: 180px 150px, 44px 44px, 44px 44px, 240px 180px, 300px 210px;
   mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 100%);
 }
 
@@ -1052,11 +1052,11 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   padding: 0.68rem 0.9rem 0.74rem 3.55rem;
   margin-bottom: 0.65rem;
   background:
-    radial-gradient(circle at 1.4rem 1rem, rgba(var(--v),0.27), transparent 38%),
-    linear-gradient(100deg, rgba(var(--v),0.16), rgba(0,0,0,0.31) 58%);
+    radial-gradient(circle at 1.4rem 1rem, rgba(var(--v),0.32), transparent 38%),
+    linear-gradient(100deg, rgba(var(--v),0.19), rgba(0,0,0,0.34) 58%);
   border-radius: 0 8px 8px 0;
-  border-left: 4px solid rgba(var(--v),0.62);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 10px 24px rgba(0,0,0,0.2);
+  border-left: 4px solid rgba(var(--v),0.68);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.065), 0 12px 28px rgba(0,0,0,0.24);
 }
 .speaker-seal {
   position: absolute;
@@ -1068,10 +1068,10 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   height: 1.8rem;
   border: 1px solid rgba(var(--v),0.56);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--v),0.22), rgba(0,0,0,0.36));
+  background: radial-gradient(circle, rgba(var(--v),0.28), rgba(0,0,0,0.38));
   color: rgb(var(--v));
   font-size: 0.52rem;
-  text-shadow: 0 0 16px rgba(var(--v),0.4);
+  text-shadow: 0 0 18px rgba(var(--v),0.46);
 }
 .narrative-body--dialogue .line::after {
   content: '';
@@ -1490,12 +1490,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 /* Marble light squares */
 .sq-light {
-  background: linear-gradient(32deg, #ffffffe0, transparent 43%), radial-gradient(circle at 82% 86%, #8a602b3d, transparent 42%), linear-gradient(145deg, #fff1cf 0%, #d8c091 70%, #b18b4d 100%);
+  background: linear-gradient(32deg, #fffffff0, transparent 43%), radial-gradient(circle at 82% 86%, #9b6d314a, transparent 42%), linear-gradient(145deg, #fff5d8 0%, #d8c091 70%, #a77f43 100%);
 }
 
 /* Lapis dark squares */
 .sq-dark {
-  background: radial-gradient(circle at 72% 18%, #b9d8ff4f, transparent 34%), linear-gradient(145deg, #2b6f9f 0%, #0d3154 66%, #04111f 100%);
+  background: radial-gradient(circle at 72% 18%, #c5e3ff59, transparent 34%), linear-gradient(145deg, #2d79ad 0%, #0d3154 66%, #04111f 100%);
 }
 
 /* Piece glyphs — styled as vector SVG layers with CSS properties */
@@ -1510,8 +1510,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   transition: opacity 0.06s, transform 0.16s var(--ease-out);
 }
 .piece svg {
-  width: 82%;
-  height: 82%;
+  width: 84%;
+  height: 84%;
   display: block;
 }
 .piece--w {
@@ -1583,12 +1583,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .chess-grid[data-skin='alexandrine-ornate'] .piece--w {
   --piece-fill: #fdf5e2; /* Cream/ivory body */
   --piece-stroke: #b38f36; /* Ornate bronze/gold details */
-  filter: drop-shadow(0 3px 6px rgba(179,143,54,0.4)) drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 4px 8px rgba(179,143,54,0.46)) drop-shadow(0 1px 2px rgba(0,0,0,0.36));
 }
 .chess-grid[data-skin='alexandrine-ornate'] .piece--b {
   --piece-fill: #12213a; /* Deep sapphire blue body */
   --piece-stroke: #dcae43; /* Bright gold details */
-  filter: drop-shadow(0 3px 6px rgba(220,174,67,0.35)) drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 4px 8px rgba(220,174,67,0.42)) drop-shadow(0 1px 2px rgba(0,0,0,0.56));
 }
 
 .chess-grid[data-skin='obsidian-neon'] .piece--w {
@@ -2095,10 +2095,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border: 1px solid rgba(232,201,126,0.34);
   border-radius: 14px;
   background:
-    radial-gradient(ellipse at 50% -10%, #ede9de66, transparent 38%),
-    radial-gradient(circle at 96% 6%, #2a60947a, transparent 35%),
-    linear-gradient(118deg, transparent 0 61%, #e8c97e36 61.2%, transparent 61.7%),
-    linear-gradient(180deg, #2d2114fa, #050403f2);
+    radial-gradient(ellipse at 50% -10%, #ede9de73, transparent 38%),
+    radial-gradient(circle at 96% 6%, #2a609485, transparent 35%),
+    linear-gradient(118deg, transparent 0 61%, #e8c97e3d 61.2%, transparent 61.7%),
+    linear-gradient(180deg, #322515fa, #050403f2);
   box-shadow:
     0 34px 96px rgba(0,0,0,0.66),
     0 0 0 1px rgba(42,96,148,0.24),
@@ -2123,8 +2123,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   height: 52%;
   z-index: -1;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(232,201,126,0.24), transparent 64%),
-    linear-gradient(90deg, transparent, rgba(42,96,148,0.16), transparent);
+    radial-gradient(ellipse at 50% 0%, rgba(232,201,126,0.3), transparent 64%),
+    linear-gradient(90deg, transparent, rgba(42,96,148,0.2), transparent);
 }
 
 .lede {
@@ -2148,8 +2148,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border: 1px solid rgba(201,169,98,0.34);
   border-radius: 8px;
   background:
-    radial-gradient(circle at 86% 0%, rgba(42,96,148,0.24), transparent 38%),
-    linear-gradient(180deg, rgba(237,233,222,0.09), transparent),
+    radial-gradient(circle at 86% 0%, rgba(42,96,148,0.3), transparent 38%),
+    linear-gradient(180deg, rgba(237,233,222,0.11), transparent),
     rgba(0,0,0,0.32);
 }
 
@@ -2245,10 +2245,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, #e8c97e21, transparent 34%),
-    linear-gradient(118deg, transparent 0 64%, #e8c97e24 64.2%, transparent 64.7%),
-    radial-gradient(circle at 100% 0%, #2a609433, transparent 44%);
-  opacity: 0.72;
+    radial-gradient(circle at 94% 0%, #2a60943d, transparent 42%),
+    linear-gradient(90deg, #e8c97e26, transparent 34%),
+    linear-gradient(118deg, transparent 0 64%, #e8c97e2c 64.2%, transparent 64.7%);
+  opacity: 0.78;
 }
 
 .chapter-btn__main {
@@ -2334,12 +2334,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border-radius: 12px;
   padding: 0.7rem;
   background:
-    radial-gradient(circle at 10% 0%, #e8c97e24, transparent 34%),
-    radial-gradient(circle at 96% 8%, #2a609430, transparent 36%),
-    linear-gradient(118deg, transparent 0 56%, #e8c97e21 56.2%, transparent 56.7%),
-    linear-gradient(180deg, #ede9de0e, #00000021),
+    radial-gradient(circle at 10% 0%, #e8c97e2c, transparent 34%),
+    radial-gradient(circle at 96% 8%, #2a60943a, transparent 36%),
+    linear-gradient(118deg, transparent 0 56%, #e8c97e28 56.2%, transparent 56.7%),
+    linear-gradient(180deg, #ede9de12, #00000024),
     rgba(0,0,0,0.18);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 20px 46px rgba(0,0,0,0.32);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 22px 52px rgba(0,0,0,0.36);
 }
 
 .dossier-quote {
@@ -2459,9 +2459,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border: 1px solid rgba(201,169,98,0.14);
   border-radius: 12px;
   background:
-    linear-gradient(90deg, rgba(232,201,126,0.08), transparent 38%),
-    linear-gradient(180deg, rgba(18,15,10,0.72), rgba(0,0,0,0.16));
-  box-shadow: 0 18px 48px rgba(0,0,0,0.28);
+    linear-gradient(90deg, rgba(232,201,126,0.1), transparent 38%),
+    linear-gradient(180deg, rgba(18,15,10,0.76), rgba(0,0,0,0.18));
+  box-shadow: 0 20px 54px rgba(0,0,0,0.32);
 }
 
 .shell--lab .play-crawl .chapter-sub { display: none; }
@@ -2535,10 +2535,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .manuscript-panel {
   border-radius: 12px;
   background:
-    radial-gradient(circle at 14% 0%, rgba(232,201,126,0.18), transparent 30%),
-    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.24), transparent 40%),
-    linear-gradient(105deg, rgba(237,233,222,0.07), transparent 28%),
-    linear-gradient(180deg, #241b10 0%, #0b0906 100%);
+    radial-gradient(circle at 14% 0%, rgba(232,201,126,0.22), transparent 30%),
+    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.28), transparent 40%),
+    linear-gradient(105deg, rgba(237,233,222,0.09), transparent 28%),
+    linear-gradient(180deg, #281d10 0%, #0b0906 100%);
 }
 
 .manuscript-panel::after {
@@ -2548,7 +2548,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   pointer-events: none;
   border: 1px solid rgba(201,169,98,0.07);
   border-radius: 9px;
-  background: linear-gradient(118deg, transparent 84%, rgba(232,201,126,0.045) 84.2%, transparent 84.7%);
+  background: linear-gradient(118deg, transparent 84%, rgba(232,201,126,0.06) 84.2%, transparent 84.7%);
 }
 
 .scene-tag {
@@ -2587,9 +2587,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .instrument-frame {
   border-radius: 14px;
   background:
-    radial-gradient(circle at 16% 0%, rgba(232,201,126,0.22), transparent 30%),
-    radial-gradient(circle at 95% 5%, rgba(42,96,148,0.28), transparent 38%),
-    linear-gradient(180deg, #251c11 0%, #0b0906 100%);
+    radial-gradient(circle at 16% 0%, rgba(232,201,126,0.26), transparent 30%),
+    radial-gradient(circle at 95% 5%, rgba(42,96,148,0.34), transparent 38%),
+    linear-gradient(180deg, #2a1f12 0%, #0b0906 100%);
   box-shadow:
     var(--shadow-panel),
     inset 0 0 0 1px rgba(232, 201, 126, 0.1),
@@ -2715,7 +2715,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .board-stage {
   margin-top: 0.45rem;
-  filter: drop-shadow(0 26px 52px rgba(0,0,0,0.56)) drop-shadow(0 0 26px rgba(42,96,148,0.12));
+  filter: drop-shadow(0 30px 60px rgba(0,0,0,0.6)) drop-shadow(0 0 30px rgba(42,96,148,0.16));
 }
 
 .screen-play--board-scene .board-stage {
@@ -2730,9 +2730,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   padding: clamp(8px, 1.4vw, 14px);
   border-radius: 12px;
   background:
-    radial-gradient(circle at 17% 13%, rgba(232,201,126,0.58), transparent 24%),
-    linear-gradient(315deg, rgba(42,96,148,0.34), transparent 28%),
-    linear-gradient(150deg, #76572f 0%, #342415 44%, #0f0b07 100%);
+    radial-gradient(circle at 17% 13%, rgba(232,201,126,0.64), transparent 24%),
+    linear-gradient(315deg, rgba(42,96,148,0.4), transparent 28%),
+    linear-gradient(150deg, #815f32 0%, #382716 44%, #0f0b07 100%);
 }
 
 .board-brass::before {
@@ -2745,12 +2745,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 
 .board-wrap {
-  border: 1px solid rgba(201, 169, 98, 0.36);
+  border: 1px solid rgba(232, 201, 126, 0.42);
   border-radius: 4px;
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.45),
-    0 18px 48px rgba(0, 0, 0, 0.55),
-    0 0 42px rgba(42, 96, 148, 0.14);
+    0 20px 54px rgba(0, 0, 0, 0.58),
+    0 0 48px rgba(42, 96, 148, 0.18);
 }
 
 .chess-grid {
@@ -2767,9 +2767,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(135deg, rgba(255,255,255,0.1), transparent 42%),
-    radial-gradient(circle at 76% 82%, rgba(0,0,0,0.18), transparent 50%);
-  opacity: 0.44;
+    linear-gradient(135deg, rgba(255,255,255,0.13), transparent 42%),
+    radial-gradient(circle at 76% 82%, rgba(0,0,0,0.2), transparent 50%);
+  opacity: 0.5;
 }
 
 .sq:hover:not(.sq-selected) {
@@ -2806,16 +2806,16 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   width: 24%;
   max-width: 18px;
   background:
-    radial-gradient(circle, rgba(255,246,220,0.95) 0%, rgba(232,201,126,0.78) 42%, rgba(201,169,98,0.2) 72%);
+    radial-gradient(circle, rgba(255,246,220,1) 0%, rgba(232,201,126,0.84) 42%, rgba(201,169,98,0.24) 72%);
   box-shadow:
     0 0 0 2px rgba(8,7,5,0.34),
-    0 0 16px rgba(232,201,126,0.38);
+    0 0 18px rgba(232,201,126,0.46);
 }
 
 .sq-legal-capture {
   box-shadow:
     inset 0 0 0 3px rgba(232,201,126,0.96),
-    inset 0 0 26px rgba(140,44,30,0.22);
+    inset 0 0 30px rgba(140,44,30,0.28);
 }
 
 .sq-guard {
@@ -2911,7 +2911,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .reward-overlay {
   background:
-    radial-gradient(circle at 50% 22%, rgba(232,201,126,0.16), transparent 42%),
+    radial-gradient(circle at 50% 22%, rgba(232,201,126,0.2), transparent 42%),
     rgba(4,3,1,0.78);
 }
 
@@ -2919,10 +2919,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border-radius: 16px;
   padding: clamp(1rem, 3vw, 1.45rem);
   background:
-    radial-gradient(circle at 92% 0%, #2a609452, transparent 34%),
-    radial-gradient(circle at 6% 12%, #e8c97e2b, transparent 28%),
-    linear-gradient(112deg, transparent 0 66%, #ede9de21 66.3%, transparent 66.9%),
-    linear-gradient(180deg, #2b2012 0%, #080604 100%);
+    radial-gradient(circle at 92% 0%, #2a60945c, transparent 34%),
+    radial-gradient(circle at 6% 12%, #e8c97e34, transparent 28%),
+    linear-gradient(112deg, transparent 0 66%, #ede9de28 66.3%, transparent 66.9%),
+    linear-gradient(180deg, #302414 0%, #080604 100%);
 }
 
 .reward-hero {
@@ -2944,8 +2944,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border-radius: 50%;
   color: var(--gold-bright);
   background:
-    radial-gradient(circle, rgba(232,201,126,0.22), rgba(0,0,0,0.24));
-  box-shadow: 0 0 30px rgba(232,201,126,0.2);
+    radial-gradient(circle, rgba(232,201,126,0.28), rgba(0,0,0,0.26));
+  box-shadow: 0 0 36px rgba(232,201,126,0.26);
 }
 
 .reward-hero__copy {
