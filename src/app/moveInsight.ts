@@ -48,40 +48,40 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
 
   if (san.includes('x') && !san.includes('#')) {
     if (materialAfterCp < -50) {
-      return 'Legal tribute, bad account. The position worsened; check recaptures before taking.'
+      return 'Legal capture, bad account. Position worsened; check recaptures before taking.'
     }
     return 'Material won. Finish the proof: what can the rival take next?'
   }
 
   if (halfMoveCount <= 14 && /^Q/.test(san) && !san.includes('=') && !san.includes('#') && !san.includes('+')) {
-    return 'The queen spoke early. Authority becomes a target; develop knights and bishops first.'
+    return 'Queen too early. Authority becomes a target; develop knights and bishops first.'
   }
 
   if (san.endsWith('+') && !san.includes('x') && halfMoveCount <= 18 && materialAfterCp <= 20) {
-    return 'A check without profit only teaches the king where to run. Give checks with a concrete follow-up.'
+    return 'Checks without profit show the king an exit. Give checks with a concrete follow-up.'
   }
 
   if (halfMoveCount <= 12 && /^[ah]/.test(san) && san[1] !== 'x') {
-    return 'Wing pawn drift recorded. Let the edge wait until center and development are under seal.'
+    return 'Edge pawn early. Let the wing wait until center and development are ready.'
   }
 
   if (move.piece === 'p' && CENTER_SQUARES.has(move.to)) {
-    return 'Center claimed. Make it durable with a knight or bishop behind it.'
+    return 'Center claimed. Back it with a knight or bishop.'
   }
 
   if (
     (move.piece === 'n' || move.piece === 'b') &&
     (playerColor === 'w' ? WHITE_BACK_RANK_MINORS : BLACK_BACK_RANK_MINORS).has(move.from)
   ) {
-    return 'A minor piece joins the record. Finish development before asking it to serve twice.'
+    return 'Minor piece developed. Finish the rest before moving it twice.'
   }
 
   if (input.mode === 'calibration' && halfMoveCount <= 8) {
-    return 'Calibration signal recorded. Tie the next move to center, development, or king safety.'
+    return 'Calibration logged. Tie the next move to center, development, or king safety.'
   }
 
   if (input.mode === 'freeplay' && halfMoveCount <= 10) {
-    return 'Position updated. Ask what it attacks, guards, and leaves behind.'
+    return 'Position updated. Name what it attacks, guards, and leaves loose.'
   }
 
   if (input.quality === 'good') {

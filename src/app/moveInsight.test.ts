@@ -17,15 +17,15 @@ describe('move insight', () => {
   })
 
   it('coaches minor-piece development', () => {
-    expect(insight({ san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' })).toMatch(/minor piece/i)
+    expect(insight({ san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' })).toMatch(/Minor piece developed/)
   })
 
   it('warns on early queen moves', () => {
-    expect(insight({ san: 'Qh5', from: 'd1', to: 'h5', piece: 'q' }, 3)).toMatch(/queen spoke early/)
+    expect(insight({ san: 'Qh5', from: 'd1', to: 'h5', piece: 'q' }, 3)).toMatch(/Queen too early/)
   })
 
   it('warns on opening wing pawn drift', () => {
-    expect(insight({ san: 'a4', from: 'a2', to: 'a4', piece: 'p' }, 3)).toMatch(/Wing pawn/)
+    expect(insight({ san: 'a4', from: 'a2', to: 'a4', piece: 'p' }, 3)).toMatch(/Edge pawn early/)
   })
 
   it('coaches castling as king safety', () => {
@@ -34,7 +34,7 @@ describe('move insight', () => {
 
   it('distinguishes sound and unsafe captures', () => {
     expect(insight({ san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' }, 9, 120)).toMatch(/Material won/)
-    expect(insight({ san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' }, 9, -120)).toMatch(/position worsened/)
+    expect(insight({ san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' }, 9, -120)).toMatch(/Position worsened/)
   })
 
   it('warns on speculative checks', () => {
