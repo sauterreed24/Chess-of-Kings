@@ -49,7 +49,7 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'match',
       quality: 'brilliant',
-    })).toMatch(/Archive judgment: brilliant/)
+    })).toMatch(/Brilliant\. Initiative/)
 
     expect(moveInsightFor({
       move: { san: 'Kh2', from: 'g1', to: 'h2', piece: 'k' },
@@ -80,7 +80,7 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'match',
       quality: 'brilliant',
-    })).toMatch(/Archive judgment: brilliant/)
+    })).toMatch(/Brilliant\. Initiative/)
 
     expect(moveInsightFor({
       move: { san: 'Qxg7', from: 'd4', to: 'g7', piece: 'q', captured: 'p' },
@@ -99,7 +99,7 @@ describe('move insight', () => {
       materialAfterCp: 0,
       playerColor: 'w',
       mode: 'match',
-    })).toMatch(/Mate inscribed/)
+    })).toMatch(/Mate sealed/)
 
     expect(moveInsightFor({
       move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
@@ -108,7 +108,7 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'match',
       quality: 'brilliant',
-    })).toMatch(/Archive judgment: brilliant/)
+    })).toMatch(/Brilliant\. Initiative/)
 
     expect(moveInsightFor({
       move: { san: 'e4', from: 'e2', to: 'e4', piece: 'p' },

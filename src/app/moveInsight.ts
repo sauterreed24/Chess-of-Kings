@@ -25,23 +25,23 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   const san = move.san
 
   if (san.includes('#')) {
-    return 'Mate inscribed. Replay the forcing path; every flight square closed by design.'
+    return 'Mate sealed. Replay the forcing path; every flight square was closed.'
   }
 
   if (san === 'O-O' || san === 'O-O-O') {
-    return 'King housed. The room gets quieter; now give the rooks a file to govern.'
+    return 'King housed. The room gets quieter; put a rook on a file.'
   }
 
   if (input.quality === 'brilliant') {
-    return 'Archive judgment: brilliant. You seized initiative; keep asking forcing questions.'
+    return 'Brilliant. Initiative is yours; keep asking forcing questions.'
   }
 
   if (input.quality === 'blunder') {
-    return 'Archive warning: the line broke. Before reply, name checks, captures, loose defenders.'
+    return 'The line broke. Before moving, name checks, captures, loose defenders.'
   }
 
   if (input.quality === 'mistake') {
-    return 'Archive warning: the line slipped. Buy one tempo for safety, material, or coordination.'
+    return 'The line slipped. Spend one tempo on safety, material, or coordination.'
   }
 
   if (halfMoveCount > 28) return null
@@ -85,15 +85,15 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (input.quality === 'good') {
-    return 'Archive judgment: sound. Convert the gain into development, safety, or a cleaner file.'
+    return 'Sound. Convert the gain into development, safety, or a cleaner file.'
   }
 
   if (input.quality === 'inaccuracy') {
-    return 'Small concession recorded. Recheck center, development, and king safety.'
+    return 'Small concession. Recheck center, development, and king safety.'
   }
 
   if (input.quality === 'ok') {
-    return 'Position held. Improve the worst piece or ask what the rival can threaten next.'
+    return "Held. Improve the worst piece or name the rival's next threat."
   }
 
   return null

@@ -1042,8 +1042,8 @@ export class GameFlow {
     }
     if (motifs?.pin) return 'Tactical seal: pin geometry. One piece now answers for the king behind it.'
     if (motifs?.kingHunt) return 'King hunt initiated. The rival king is being driven, not merely checked.'
-    if (quality === 'brilliant') return 'Archive verdict: initiative granted. Keep asking forcing questions.'
-    if (quality === 'mistake' || quality === 'blunder') return 'Archive warning: a liability appeared. Count checks, captures, and loose pieces.'
+    if (quality === 'brilliant') return 'Brilliant: initiative granted. Keep asking forcing questions.'
+    if (quality === 'mistake' || quality === 'blunder') return 'Liability appeared. Count checks, captures, loose pieces.'
     return null
   }
 

@@ -68,8 +68,8 @@ export function buildRewardOverlayHtml(
         <div class="reward-hero">
           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
           <div>
-            <p class="section-heading">Archive Rewards Inscribed</p>
-            <p class="reward-hero__copy">What changed, what opened, and what draws the next seal closer.</p>
+            <p class="section-heading">Rewards Inscribed</p>
+            <p class="reward-hero__copy">What opened, why it mattered, and which seal is now closer.</p>
           </div>
         </div>
         ${recap}
@@ -91,7 +91,7 @@ export function buildRewardOverlayHtml(
         </div>
         <div class="echo-controls">
           ${canQuickRematch ? '<button type="button" class="ghost" id="btn-reward-rematch">Quick Rematch</button>' : ''}
-          <button type="button" class="primary" id="btn-reward-close">Continue</button>
+          <button type="button" class="primary" id="btn-reward-close">Advance</button>
         </div>
       </div>`
 }
