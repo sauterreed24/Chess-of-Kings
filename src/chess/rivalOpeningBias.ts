@@ -33,16 +33,16 @@ export const RIVAL_OPENING_SAN_BIAS: Record<string, Record<number, Record<string
     7: { Nf6: 3, Be7: 4, d6: 3 },
   },
   rowan: {
-    1: { e5: 2, c5: 3, exf4: 9 },
-    3: { Nf6: 6, Nc6: 1, d5: 3 },
-    5: { 'Qh4+': 9, g6: 3, Bc5: 2 },
-    7: { Bg7: 5, Bc5: 2, 'O-O': 3 },
+    1: { e5: 1, c5: 2, exf4: 9 },
+    3: { Nf6: 7, Nc6: 1, d5: 2 },
+    5: { 'Qh4+': 9, g6: 2, Bc5: 1 },
+    7: { Bg7: 6, Bc5: 1, 'O-O': 2 },
   },
   vega: {
-    1: { e5: 4, d5: 1, Nf6: 8 },
-    3: { Nc6: 5, Nf6: 4, Bc5: 6 },
-    5: { Bc5: 6, Nf6: 2, Be7: 2, d6: 7 },
-    7: { Bc5: 4, Be7: 2, 'O-O': 8 },
+    1: { e5: 3, d5: 1, Nf6: 8 },
+    3: { Nc6: 4, Nf6: 4, Bc5: 7 },
+    5: { Bc5: 7, Nf6: 2, Be7: 2, d6: 7 },
+    7: { Bc5: 3, Be7: 2, 'O-O': 8 },
   },
 }
 
