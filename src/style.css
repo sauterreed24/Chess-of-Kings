@@ -2519,7 +2519,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
     radial-gradient(circle at 100% 0%, rgba(42,96,148,0.32), transparent 40%),
     repeating-linear-gradient(90deg, rgba(232,201,126,0.026) 0 1px, transparent 1px 2.4rem),
     repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 1.55rem),
-    linear-gradient(180deg, #2e2112 0%, #0a0704 100%);
+    linear-gradient(180deg, #302414 0%, #050403 100%);
 }
 
 .manuscript-panel::after {
@@ -2577,7 +2577,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   background:
     radial-gradient(circle at 18% 0%, rgba(232,201,126,0.42), transparent 27%),
     radial-gradient(circle at 92% 8%, rgba(42,96,148,0.42), transparent 34%),
-    linear-gradient(180deg, #302313 0%, #090604 100%);
+    linear-gradient(180deg, #3a2a17 0%, #050403 100%);
 }
 
 .screen-play--board-scene .instrument-frame {
@@ -2716,7 +2716,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   background:
     radial-gradient(circle at 16% 13%, rgba(232,201,126,0.68), transparent 23%),
     linear-gradient(315deg, rgba(42,96,148,0.5), transparent 29%),
-    linear-gradient(150deg, #9b7139 0%, #342312 45%, #0b0704 100%);
+    repeating-linear-gradient(90deg, #fff1 0 1px, #0000 1px 2rem),
+    linear-gradient(150deg, #9b7139 0%, #3a2a17 45%, #050403 100%);
 }
 
 .board-brass::before {
@@ -2906,7 +2907,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
     radial-gradient(circle at 92% 0%, #2a60945c, transparent 34%),
     radial-gradient(circle at 6% 12%, #e8c97e34, transparent 28%),
     linear-gradient(112deg, transparent 0 66%, #ede9de28 66.3%, transparent 66.9%),
-    linear-gradient(180deg, #302414 0%, #080604 100%);
+    linear-gradient(180deg, #3a2a17 0%, #050403 100%);
 }
 
 .reward-hero {

@@ -2,7 +2,7 @@
   background:
     radial-gradient(circle at 12% 6%, #e8c97e29, transparent 24%),
     radial-gradient(circle at 92% 0, #2a609426, transparent 36%),
-    linear-gradient(180deg, #1c1309f5, #050403f8);
+    linear-gradient(180deg, #1c1309, #050403);
 }
 
 .line[data-voice='alexion'] { --v: 232,201,126; }
