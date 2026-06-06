@@ -14,6 +14,7 @@ describe('lossRecoveryMentorLine', () => {
     })
     expect(s).toContain('5 blunders')
     expect(s).toContain('loose defenders')
+    expect(s).toContain('touch a piece')
   })
 
   it('responds to flank-heavy games', () => {
@@ -24,7 +25,7 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 40,
     })
-    expect(s).toContain('wing pawns ran ahead')
+    expect(s).toContain('wings outran the center')
   })
 
   it('responds to early queen and empty-check habits', () => {
@@ -34,7 +35,7 @@ describe('lossRecoveryMentorLine', () => {
       blunderCount: 0,
       mistakeCount: 0,
       moveCount: 12,
-    })).toContain('queen came out before the court')
+    })).toContain('queen arrived before the court')
 
     expect(lossRecoveryMentorLine({
       lossStreakVsOpponent: 0,
@@ -42,7 +43,7 @@ describe('lossRecoveryMentorLine', () => {
       blunderCount: 0,
       mistakeCount: 0,
       moveCount: 18,
-    })).toContain('the checks became noise')
+    })).toContain('checks became noise')
   })
 
   it('responds to a recurring rival pattern', () => {
@@ -53,7 +54,7 @@ describe('lossRecoveryMentorLine', () => {
       mistakeCount: 0,
       moveCount: 24,
     })
-    expect(s).toContain('knows your rhythm')
+    expect(s).toContain('has your rhythm')
   })
 
   it('falls back to default guidance', () => {
