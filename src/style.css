@@ -936,10 +936,11 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   border-radius: 4px;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 15%, rgba(232,201,126,0.16), transparent 43%),
-    linear-gradient(120deg, transparent 0 42%, rgba(232,201,126,0.16) 42.3%, transparent 42.8% 100%),
-    linear-gradient(28deg, transparent 0 62%, rgba(42,96,148,0.13) 62.2%, transparent 62.7% 100%);
-  opacity: 0.62;
+    radial-gradient(circle at 20% 15%, rgba(232,201,126,0.16), #0000 43%),
+    repeating-conic-gradient(from 45deg, #e8c97e21 0 8deg, #0000 8deg 45deg),
+    linear-gradient(120deg, #0000 0 42%, rgba(232,201,126,0.16) 42.3%, #0000 42.8% 100%),
+    linear-gradient(28deg, #0000 0 62%, #2a609421 62.2%, #0000 62.7% 100%);
+  opacity: 0.5;
 }
 .board-brass__corner {
   position: absolute; width: 14px; height: 14px;
@@ -1048,6 +1049,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   background: radial-gradient(circle, rgba(var(--v),0.32), rgba(0,0,0,0.38));
   color: rgb(var(--v));
   font-size: 0.52rem;
+  box-shadow: 0 0 0 3px #0004, inset 0 0 9px rgba(var(--v),.2);
   text-shadow: 0 0 18px rgba(var(--v),0.46);
 }
 .narrative-body--dialogue .line::after {
@@ -2749,8 +2751,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(135deg, rgba(255,255,255,0.13), transparent 42%),
-    radial-gradient(circle at 76% 82%, rgba(0,0,0,0.2), transparent 50%);
+    linear-gradient(135deg, #fff2, #0000 42%),
+    radial-gradient(circle at 76% 82%, #0003, #0000 50%);
   opacity: 0.5;
 }
 

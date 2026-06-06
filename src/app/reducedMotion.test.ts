@@ -96,6 +96,12 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(/\.board-brass\s*\{[^}]*rgba\(42,96,148,0\.5\)/s)
   })
 
+  it('keeps the board and spoken-dialogue surfaces graphically engraved', () => {
+    expect(CSS).toMatch(/\.board-brass::after\s*\{[^}]*repeating-conic-gradient\(from 45deg/s)
+    expect(CSS).toMatch(/\.sq::before\s*\{[^}]*linear-gradient\(135deg, #fff2/s)
+    expect(CSS).toMatch(/\.speaker-seal\s*\{[^}]*inset 0 0 9px rgba\(var\(--v\),\.2\)/s)
+  })
+
   it('keeps the last move legible as an origin-to-destination route cue', () => {
     expect(CSS).toMatch(/\.sq-last\s*\{[^}]*linear-gradient\(135deg,\s*rgba\(42,96,148,0\.72\)/s)
     expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*rgba\(26,58,92,0\.72\)/s)
