@@ -713,9 +713,9 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .play-chip {
   min-width: 0;
   padding: 0.28rem 0.48rem;
-  border: 1px solid rgba(201,169,98,0.14);
+  border: 1px solid #c9a9622e;
   border-radius: 999px;
-  background: rgba(0,0,0,0.28);
+  background: #06182f66;
   color: var(--ivory-dim);
   font-family: var(--font-mono);
   font-size: 0.54rem;
@@ -727,13 +727,13 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 .play-chip--white {
   color: var(--ivory);
-  border-color: rgba(240,234,220,0.24);
-  background: rgba(240,234,220,0.06);
+  border-color: #fff1cc4d;
+  background: #fff1cc17;
 }
 .play-chip--black {
   color: #b9d7ff;
-  border-color: rgba(42,96,148,0.38);
-  background: rgba(26,58,92,0.24);
+  border-color: #2a609466;
+  background: #06182f82;
 }
 .play-chip--thinking {
   color: var(--gold-bright);
@@ -2046,8 +2046,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 }
 .status-pill {
   font-size: 0.76rem;
-  border-color: rgba(201,169,98,0.2);
-  background: linear-gradient(180deg, rgba(8,8,6,0.7), rgba(0,0,0,0.46));
+  border-color: #c9a9624d;
+  background: linear-gradient(180deg,#0d3154cc,#070504d9);
 }
 /* ─── Premium archive polish pass ─── */
 .top-bar {
