@@ -299,7 +299,6 @@ export function mountApp(app: HTMLDivElement) {
       flowRef = flow
       currentSceneType = scene.type
       renderScene(chapter, scene, sceneIndex)
-      updateAdvance(flow)
       labEraLabel.textContent = `${chapter.title} · ${chapter.era}`
     },
     onChessUpdate(p) {
@@ -869,14 +868,14 @@ export function mountApp(app: HTMLDivElement) {
     const narrative = isNarrativeScene()
     const revealPending = ok && currentSceneType === 'dialogue' && !dialogueRevealDone
     const hint = ok && !narrative ? nextSceneHint() : ''
-    const sig = `${ok}|${currentSceneType ?? ''}|${hint}|${g.sceneIndex}|${g.chapterIndex}|${revealPending}`
+    const sig = `${ok}|${currentSceneType ?? ''}|${hint}|${revealPending}`
     if (sig === play.lastAdvanceSig) return
     const becameReady = ok && !play.advanceWasReady
     play.advanceWasReady = ok
     play.lastAdvanceSig = sig
     btnNext.disabled = !ok
     btnNext.classList.toggle('primary--ready', ok)
-    btnNextHint.textContent = ok && !narrative && hint ? `→ ${hint}` : ''
+    if (ok || narrative) btnNextHint.textContent = ok && !narrative && hint ? `→ ${hint}` : ''
     btnNextLabel.textContent = revealPending ? 'Reveal' : 'Advance'
     btnNext.setAttribute('aria-label', revealPending ? 'Reveal current dialogue' : 'Advance')
     if (revealPending) btnNextHint.textContent = 'then Advance'

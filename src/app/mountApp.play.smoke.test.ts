@@ -178,6 +178,23 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(mobile.textContent).toBe(guide.textContent)
   })
 
+  it('keeps the blocked Advance hint visible on board objectives', () => {
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+
+    const next = app.querySelector<HTMLButtonElement>('#btn-next')!
+    const tag = app.querySelector<HTMLElement>('#scene-tag')!
+    for (let i = 0; i < 8 && !tag.textContent?.startsWith('Calibration'); i += 1) {
+      expect(next.disabled).toBe(false)
+      next.click()
+    }
+
+    expect(tag.textContent).toContain('Calibration')
+    expect(next.disabled).toBe(true)
+    expect(app.querySelector('#btn-next-hint')?.textContent).toContain('4 White moves')
+  })
+
   it('reveals active dialogue before advancing to the next passage', async () => {
     const app = boot()
     app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
