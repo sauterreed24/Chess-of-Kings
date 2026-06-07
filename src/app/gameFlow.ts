@@ -373,7 +373,7 @@ export class GameFlow {
       this.sanLog = recovery.sanLog
       this.sanQuality = recovery.sanQuality
       this.sceneTendencies = { ...snap.sceneTendencies }
-      this.lastCoachTip = 'Session restored after dev-server restart.'
+      this.lastCoachTip = 'Restored'
       this.sessionRecoveredNotice = true
       return true
     }
@@ -389,7 +389,7 @@ export class GameFlow {
     this.calibrationMoves = snap.calibrationMoves
     this.scriptedMoveIndex = snap.scriptedMoveIndex
     this.sceneTendencies = { ...snap.sceneTendencies }
-    this.lastCoachTip = 'Session restored after dev-server restart.'
+    this.lastCoachTip = 'Restored'
     this.sessionRecoveredNotice = true
     return true
   }
@@ -870,7 +870,7 @@ export class GameFlow {
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
     if (this.mode === 'calibration') this.calibrationMoves = 0
     if (this.mode === 'match' || this.mode === 'duel') this.scriptedMoveIndex = 0
-    this.lastCoachTip = 'Stable position restored. Build again with safer structure.'
+    this.lastCoachTip = 'Stable position restored; rebuild safely.'
     const pickMode: BoardPickMode =
       this.mode === 'duel' ? 'solo' : sc.type === 'freeplay' ? 'free' : this.sceneUsesBoard(sc) ? 'solo' : 'off'
     this.board?.draw(this.chess, null, { mode: pickMode, soloColor: this.playerColor })
@@ -1689,6 +1689,7 @@ export class GameFlow {
     this.history.push(this.chess.fen())
     this.lastAiMoveKey = `${result.from}${result.to}${result.promotion ?? ''}`
     this.board?.draw(this.chess, result, drawPick)
+    this.lastTacticalPulse = `${this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'Trainer'} reply: ${result.san}`
     return result
   }
 

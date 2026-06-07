@@ -225,9 +225,10 @@ describe('GameFlow AI / puzzles', () => {
     const afterReply = onChessUpdate.mock.calls.at(-1)?.[0]
     expect(flow.chess.turn()).toBe('w')
     expect(afterReply?.coachTip).toBe(playerInsight)
+    expect(afterReply?.tacticalPulse).toMatch(/Trainer reply:/)
   })
 
-  it('threads active rival doctrine into visible move coaching', () => {
+  it('threads active rival doctrine into visible move coaching and replies', async () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),
@@ -246,6 +247,12 @@ describe('GameFlow AI / puzzles', () => {
     const tip = onChessUpdate.mock.calls.at(-1)?.[0]?.coachTip
     expect(tip).toMatch(/Rowan fire/)
     expect(tip).toMatch(/Developed/)
+
+    await vi.advanceTimersByTimeAsync(500)
+    const afterReply = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(flow.chess.turn()).toBe('w')
+    expect(afterReply?.tacticalPulse).toMatch(/Rowan Vale reply:/)
+    expect(afterReply?.coachTip).toBe(tip)
   })
 
   it('warns the player when a move leaves a piece to be won (real-world coaching)', () => {
