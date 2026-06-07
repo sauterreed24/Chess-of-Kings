@@ -14,51 +14,64 @@ export interface MoveInsightInput {
   playerColor: Color
   mode: MoveInsightMode
   quality?: MoveInsightQuality
+  opponentKey?: string | null
 }
 
 const CENTER_SQUARES = new Set<Square>(['d4', 'e4', 'd5', 'e5'])
 const WHITE_BACK_RANK_MINORS = new Set<Square>(['b1', 'c1', 'f1', 'g1'])
 const BLACK_BACK_RANK_MINORS = new Set<Square>(['b8', 'c8', 'f8', 'g8'])
 
+function doctrineLabel(key: string | null | undefined): string | null {
+  const k = key?.toLowerCase() ?? ''
+  if (k.includes('rowan')) return 'Rowan fire'
+  if (k.includes('vega')) return 'Vega pressure'
+  if (k.includes('alexion') || k.includes('counterpart') || k.includes('apotheosis')) {
+    return 'Alexion law'
+  }
+  return null
+}
+
 export function moveInsightFor(input: MoveInsightInput): string | null {
   const { move, halfMoveCount, materialAfterCp, playerColor } = input
   const san = move.san
+  const doctrine = doctrineLabel(input.opponentKey)
 
   if (san.includes('#')) {
-    return 'Mate sealed. Replay the forcing path; every flight square was closed.'
+    return 'Mate sealed. Replay the path; every flight square closed.'
   }
 
   if (san === 'O-O' || san === 'O-O-O') {
-    return 'King housed. The room gets quieter; put a rook on a file.'
+    if (doctrine) return `King housed vs ${doctrine}. Make the attack pay.`
+    return 'King housed. Put a rook on a file.'
   }
 
   if (input.quality === 'brilliant') {
-    return 'Brilliant. Initiative is yours; keep asking forcing questions.'
+    return 'Brilliant. Keep asking forcing questions.'
   }
 
   if (input.quality === 'blunder') {
-    return 'The line broke. Before moving, name checks, captures, loose defenders.'
+    return 'The line broke. Name checks, captures, loose defenders.'
   }
 
   if (input.quality === 'mistake') {
-    return 'The line slipped. Spend one tempo on safety, material, or coordination.'
+    return 'The line slipped. Spend one tempo on safety or coordination.'
   }
 
   if (halfMoveCount > 28) return null
 
   if (san.includes('x') && !san.includes('#')) {
     if (materialAfterCp < -50) {
-      return 'Legal capture, bad account. Position worsened; check recaptures before taking.'
+      return 'Legal capture, bad account. Position worsened; check recaptures.'
     }
-    return 'Material won. Finish the proof: what can the rival take next?'
+    return 'Material won. Ask what the rival can take next.'
   }
 
   if (halfMoveCount <= 14 && /^Q/.test(san) && !san.includes('=') && !san.includes('#') && !san.includes('+')) {
-    return 'Queen too early. Authority becomes a target; develop knights and bishops first.'
+    return 'Queen too early. Authority becomes a target; develop minors first.'
   }
 
   if (san.endsWith('+') && !san.includes('x') && halfMoveCount <= 18 && materialAfterCp <= 20) {
-    return 'Checks without profit show the king an exit. Give checks with a concrete follow-up.'
+    return 'Checks without profit show exits. Give checks with a concrete follow-up.'
   }
 
   if (halfMoveCount <= 12 && /^[ah]/.test(san) && san[1] !== 'x') {
@@ -66,6 +79,7 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (move.piece === 'p' && CENTER_SQUARES.has(move.to)) {
+    if (doctrine) return `Center claimed vs ${doctrine}. Back it with a knight or bishop.`
     return 'Center claimed. Back it with a knight or bishop.'
   }
 
@@ -73,6 +87,7 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
     (move.piece === 'n' || move.piece === 'b') &&
     (playerColor === 'w' ? WHITE_BACK_RANK_MINORS : BLACK_BACK_RANK_MINORS).has(move.from)
   ) {
+    if (doctrine) return `Developed vs ${doctrine}. Finish the rest before moving twice.`
     return 'Minor piece developed. Finish the rest before moving it twice.'
   }
 
@@ -93,7 +108,8 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (input.quality === 'ok') {
-    return "Held. Improve the worst piece or name the rival's next threat."
+    if (doctrine) return `Held vs ${doctrine}. Improve worst piece or name next threat.`
+    return 'Held. Improve worst piece or name the next threat.'
   }
 
   return null

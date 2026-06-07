@@ -32,6 +32,35 @@ describe('move insight', () => {
     expect(insight({ san: 'O-O', from: 'e1', to: 'g1', piece: 'k' }, 9)).toMatch(/King housed/)
   })
 
+  it('threads active rival doctrine into compact move feedback', () => {
+    expect(moveInsightFor({
+      move: { san: 'e4', from: 'e2', to: 'e4', piece: 'p' },
+      halfMoveCount: 1,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'duel',
+      opponentKey: 'rowan-gambit',
+    })).toMatch(/Rowan fire/)
+
+    expect(moveInsightFor({
+      move: { san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' },
+      halfMoveCount: 3,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'duel',
+      opponentKey: 'vega-italian',
+    })).toMatch(/Vega pressure/)
+
+    expect(moveInsightFor({
+      move: { san: 'O-O', from: 'e1', to: 'g1', piece: 'k' },
+      halfMoveCount: 9,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'duel',
+      opponentKey: 'alexion-mentor',
+    })).toMatch(/Alexion law/)
+  })
+
   it('distinguishes sound and unsafe captures', () => {
     expect(insight({ san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' }, 9, 120)).toMatch(/Material won/)
     expect(insight({ san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' }, 9, -120)).toMatch(/Position worsened/)
@@ -49,7 +78,7 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'match',
       quality: 'brilliant',
-    })).toMatch(/Brilliant\. Initiative/)
+    })).toMatch(/Brilliant\. Keep/)
 
     expect(moveInsightFor({
       move: { san: 'Kh2', from: 'g1', to: 'h2', piece: 'k' },
@@ -69,7 +98,7 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'duel',
       quality: 'ok',
-    })).toMatch(/Improve the worst piece/)
+    })).toMatch(/Improve worst piece/)
   })
 
   it('lets strong quality verdicts override capture material heuristics', () => {
@@ -80,7 +109,7 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'match',
       quality: 'brilliant',
-    })).toMatch(/Brilliant\. Initiative/)
+    })).toMatch(/Brilliant\. Keep/)
 
     expect(moveInsightFor({
       move: { san: 'Qxg7', from: 'd4', to: 'g7', piece: 'q', captured: 'p' },
@@ -108,7 +137,7 @@ describe('move insight', () => {
       playerColor: 'w',
       mode: 'match',
       quality: 'brilliant',
-    })).toMatch(/Brilliant\. Initiative/)
+    })).toMatch(/Brilliant\. Keep/)
 
     expect(moveInsightFor({
       move: { san: 'e4', from: 'e2', to: 'e4', piece: 'p' },

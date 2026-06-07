@@ -1,18 +1,14 @@
 .chapters-wrap {
   background:
-    radial-gradient(circle at 12% 6%, #e8c97e29, transparent 24%),
-    radial-gradient(circle at 92% 0, #2a609426, transparent 36%),
-    linear-gradient(180deg, #1c1309, #050403);
+    radial-gradient(circle at 12% 6%, #e8c97e30, transparent 24%),
+    radial-gradient(circle at 92% 0, #2a609432, transparent 36%),
+    linear-gradient(180deg, #201307, #050403);
 }
 
 .line[data-voice='alexion'] { --v: 232,201,126; }
 
 .top-bar,.lab-overlay__bar {
   box-shadow: 0 10px 34px #0006, inset 0 -1px #e8c97e29;
-}
-
-.title-ornament__map {
-  filter: drop-shadow(0 0 18px #e8c97e52);
 }
 
 :is(.duel-panel,.instrument-frame,.reward-sheet) {

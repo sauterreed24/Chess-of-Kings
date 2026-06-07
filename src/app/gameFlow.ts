@@ -1548,6 +1548,12 @@ export class GameFlow {
       playerColor: mover,
       mode: this.mode as MoveInsightMode,
       quality,
+      opponentKey:
+        this.mode === 'duel'
+          ? `${this.duelSession?.roster.opponentId ?? ''} ${this.duelSession?.variant.id ?? ''}`
+          : this.mode === 'match'
+            ? this.matchScene?.id
+            : null,
     })
   }
 

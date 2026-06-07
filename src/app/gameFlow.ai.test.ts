@@ -227,6 +227,27 @@ describe('GameFlow AI / puzzles', () => {
     expect(afterReply?.coachTip).toBe(playerInsight)
   })
 
+  it('threads active rival doctrine into visible move coaching', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 2
+    ;(flow as unknown as { unlockedDuelVariantIds: string[] }).unlockedDuelVariantIds.push('rowan-gambit')
+    expect(flow.startDuel('rowan', 'rowan-gambit', 'w')).toBe(true)
+    onChessUpdate.mockClear()
+
+    flow.tryPlayerMove('g1', 'f3')
+
+    const tip = onChessUpdate.mock.calls.at(-1)?.[0]?.coachTip
+    expect(tip).toMatch(/Rowan fire/)
+    expect(tip).toMatch(/Developed/)
+  })
+
   it('warns the player when a move leaves a piece to be won (real-world coaching)', () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {

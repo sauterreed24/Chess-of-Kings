@@ -178,9 +178,9 @@ html, body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(ellipse 96% 70% at 50% -10%, rgba(232,201,126,0.22), transparent 64%),
-    radial-gradient(ellipse 82% 65% at 100% 30%, rgba(42,96,148,0.27), transparent 62%),
-    linear-gradient(180deg, #171106 0%, #080706 58%, #050403 100%);
+    radial-gradient(ellipse 96% 70% at 50% -10%, rgba(232,201,126,0.24), transparent 64%),
+    radial-gradient(ellipse 82% 65% at 100% 30%, rgba(42,96,148,0.3), transparent 62%),
+    linear-gradient(180deg, #1a1106 0%, #080706 58%, #040302 100%);
   color: var(--ivory);
   font-family: var(--font-body);
   font-size: 20px;
@@ -1029,10 +1029,11 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   padding: 0.68rem 0.9rem 0.74rem 3.55rem;
   margin-bottom: 0.65rem;
   background:
-    radial-gradient(circle at 1.35rem 1.05rem, rgba(var(--v),0.5), transparent 36%),
-    linear-gradient(118deg, rgba(var(--v),0.26), rgba(0,0,0,0.48) 48%, rgba(42,96,148,0.16)),
+    radial-gradient(circle at 1.35rem 1.05rem, rgba(var(--v),0.58), transparent 37%),
+    linear-gradient(118deg, rgba(var(--v),0.3), rgba(0,0,0,0.5) 48%, rgba(42,96,148,0.18)),
     repeating-linear-gradient(180deg, rgba(237,233,222,0.025) 0 1px, transparent 1px 1.42rem);
   border-radius: 0 8px 8px 0;
+  border: 1px solid rgba(var(--v),0.18);
   border-left: 4px solid rgba(var(--v),0.86);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.065), 0 12px 28px rgba(0,0,0,0.24);
 }
@@ -1350,7 +1351,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   padding: 0.5rem 0.75rem;
   font-size: 0.82rem; font-style: italic; line-height: 1.45;
   color: var(--ivory-dim);
-  background: rgba(201,169,98,0.05);
+  background: linear-gradient(90deg, rgba(42,96,148,0.16), rgba(201,169,98,0.07));
   border-left: 2px solid rgba(201,169,98,0.35);
   border-radius: 0 3px 3px 0;
   animation: coach-slide 0.35s var(--ease-out) both;
@@ -2074,10 +2075,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border: 1px solid rgba(232,201,126,0.34);
   border-radius: 14px;
   background:
-    radial-gradient(circle at 50% -8%, #ede9de99, transparent 35%),
-    radial-gradient(circle at 94% 4%, #2a60949c, transparent 31%),
-    linear-gradient(119deg, transparent 0 17%, #e8c97e42 17.15% 17.45%, transparent 17.7%),
-    linear-gradient(180deg, #3a2a17fb, #070504f4);
+    radial-gradient(circle at 50% -8%, #ede9deb0, transparent 34%),
+    radial-gradient(circle at 92% 2%, #2a6094a8, transparent 30%),
+    linear-gradient(119deg, transparent 0 17%, #e8c97e4a 17.15% 17.45%, transparent 17.7%),
+    linear-gradient(180deg, #463119fb, #070504f4);
   box-shadow:
     0 38px 110px rgba(0,0,0,0.7),
     0 0 0 1px rgba(42,96,148,0.34),
@@ -2515,11 +2516,11 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 .manuscript-panel {
   border-radius: 12px;
   background:
-    radial-gradient(circle at 12% 0%, rgba(232,201,126,0.34), transparent 24%),
-    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.32), transparent 40%),
-    repeating-linear-gradient(90deg, rgba(232,201,126,0.026) 0 1px, transparent 1px 2.4rem),
+    radial-gradient(circle at 12% 0%, rgba(232,201,126,0.4), transparent 25%),
+    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.36), transparent 40%),
+    repeating-linear-gradient(90deg, rgba(232,201,126,0.032) 0 1px, transparent 1px 2.15rem),
     repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 1.55rem),
-    linear-gradient(180deg, #302414 0%, #050403 100%);
+    linear-gradient(180deg, #342716 0%, #050403 100%);
 }
 
 .manuscript-panel::after {
