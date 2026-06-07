@@ -424,16 +424,13 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .chapters-wrap { width: min(100%, 68rem); margin: 0 auto; }
 .duel-wrap {
   display: grid;
-  grid-template-columns: minmax(220px, 300px) 1fr;
+  grid-template-columns: minmax(240px, 340px) 1fr;
   gap: 1rem;
 }
 .duel-list {
   display: grid;
   gap: 0.5rem;
   align-content: start;
-}
-.duel-panel {
-  min-height: 18rem;
 }
 .duel-select {
   width: 100%;
@@ -2268,7 +2265,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .duel-row {
   grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 4.45rem;
+  min-height: 4.2rem;
 }
 
 .duel-row--sealed {
