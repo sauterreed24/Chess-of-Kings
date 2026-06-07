@@ -421,7 +421,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 /* ═══════════════════════════════
    CHAPTERS
    ═══════════════════════════════ */
-.chapters-wrap { margin: 0 auto; }
+.chapters-wrap { width: min(100%, 68rem); margin: 0 auto; }
 .duel-wrap {
   display: grid;
   grid-template-columns: minmax(220px, 300px) 1fr;
@@ -465,8 +465,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   transform: translateY(-1px);
   box-shadow: 0 10px 18px rgba(0,0,0,0.32);
 }
-.chapter-list { list-style: none; padding: 0; margin: 0; }
-.chapter-row { margin-bottom: 0.52rem; }
+.chapter-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 0.6rem; }
 .chapters-back { margin-bottom: 1.25rem; }
 
 .chapter-btn {
@@ -3363,17 +3362,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   box-shadow: 0 0 20px rgba(232,201,126,0.16), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
-.chapters-wrap,
-.title-hero {
-  width: min(100%, 68rem);
-}
-
 .screen--chapters .section-heading {
   margin-bottom: 0.5rem;
-}
-
-.screen--chapters .chapters-lede {
-  max-width: 62ch;
 }
 
 .reward-card ul li {
