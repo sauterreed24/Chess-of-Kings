@@ -150,7 +150,7 @@ export function getShellMarkup(): string {
                     <span class="btn-advance-label">Advance</span>
                     <span class="btn-advance-hint" id="btn-next-hint"></span>
                   </button>
-                  <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances when focus is not on the board. The board uses one square in the tab order at a time (starts at e4); arrow keys move, Home and End jump to the near corners; Enter or Space activates the focused square.</p>
+                  <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances off the board. On the board, one square is tabbable; arrows move, Home/End jump corners, Enter or Space activates.</p>
                 </div>
               </article>
               <aside class="instrument-column" id="board-panel">

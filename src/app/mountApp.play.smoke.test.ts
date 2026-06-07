@@ -193,6 +193,10 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(tag.textContent).toContain('Calibration')
     expect(next.disabled).toBe(true)
     expect(app.querySelector('#btn-next-hint')?.textContent).toContain('4 White moves')
+
+    app.querySelector<HTMLButtonElement>('[data-square="e2"]')?.click()
+    app.querySelector<HTMLButtonElement>('[data-square="e4"]')?.click()
+    expect(app.querySelector('#btn-next-hint')?.textContent).toContain('3 White moves')
   })
 
   it('reveals active dialogue before advancing to the next passage', async () => {
