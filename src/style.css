@@ -1018,11 +1018,11 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 /* Speaker identity colors — Hellenistic cast */
 .line .who { color: rgb(var(--v)); }
 
-.said { margin: 0; font-size: 1.08rem; color: var(--marble); line-height: 1.58; }
+.said { margin: 0; font-size: 1.08rem; color: var(--marble); line-height: 1.52; }
 
 .narrative-body--dialogue .line {
   position: relative;
-  padding: 0.68rem 0.9rem 0.74rem 3.55rem;
+  padding: 0.64rem 0.82rem 0.68rem 3.18rem;
   margin-bottom: 0.65rem;
   background:
     radial-gradient(circle at 1.35rem 1.05rem, rgba(var(--v),0.58), transparent 37%),
@@ -1035,12 +1035,12 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 .speaker-seal {
   position: absolute;
-  left: 0.75rem;
-  top: 0.66rem;
+  left: 0.68rem;
+  top: 0.62rem;
   display: grid;
   place-items: center;
-  width: 1.8rem;
-  height: 1.8rem;
+  width: 1.58rem;
+  height: 1.58rem;
   border: 1px solid rgba(var(--v),0.56);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(var(--v),0.32), rgba(0,0,0,0.38));
@@ -2536,10 +2536,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .spoken-char {
   display: inline-block;
-  max-width: 0;
-  overflow: hidden;
   opacity: 0;
-  transform: translateY(0.2em) scale(0.92);
+  transform: translateY(0.18em) scale(0.94);
   animation: spoken-hammer 0.18s var(--ease-out) forwards;
   animation-delay: calc(var(--line-delay, 0ms) + var(--char-delay, 0ms));
   text-shadow: 0 0 0.7em rgba(var(--v),0.22);
@@ -2548,21 +2546,19 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 @keyframes spoken-hammer {
   from {
     opacity: 0;
-    transform: translateY(0.2em) scale(0.92);
+    transform: translateY(0.18em) scale(0.94);
   }
   58% {
     opacity: 1;
-    max-width: 1.15em;
-    transform: translateY(-0.03em) scale(1.06);
+    transform: translateY(-0.03em) scale(1.05);
   }
   to {
     opacity: 1;
-    max-width: 1.15em;
     transform: none;
   }
 }
 
-.narrative-body--revealed .spoken-char { max-width: none; }
+.narrative-body--revealed .spoken-char { animation: none; opacity: 1; transform: none; }
 .narrative-body--revealed .line--stagger { animation: none; opacity: 1; transform: none; }
 
 .instrument-frame {
@@ -3439,7 +3435,6 @@ html.perf-lean .title-hero__plate::after {
 html.perf-lean .spoken-char,
 html.force-reduced-motion .spoken-char {
   animation: none !important;
-  max-width: none;
   opacity: 1;
   transform: none;
 }
@@ -3504,7 +3499,6 @@ html.perf-lean .board-stage--finisher .board-brass {
 @media (prefers-reduced-motion: reduce) {
   .spoken-char {
     animation: none !important;
-    max-width: none;
     opacity: 1;
     transform: none;
   }
