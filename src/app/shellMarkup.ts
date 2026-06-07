@@ -150,7 +150,7 @@ export function getShellMarkup(): string {
                     <span class="btn-advance-label">Advance</span>
                     <span class="btn-advance-hint" id="btn-next-hint"></span>
                   </button>
-                  <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances off the board. On the board, one square is tabbable; arrows move, Home/End jump corners, Enter or Space activates.</p>
+                  <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances off-board; arrows move board focus, Home/End jump corners, Enter or Space selects.</p>
                 </div>
               </article>
               <aside class="instrument-column" id="board-panel">

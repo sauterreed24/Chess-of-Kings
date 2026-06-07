@@ -32,6 +32,8 @@ export function applyChessUi(
   const isGameOver = p.chess.isGameOver()
   const sideToMove = p.chess.turn() === 'w' ? 'White' : 'Black'
   const fullMove = Math.max(1, Math.floor(p.sanLog.length / 2) + 1)
+  const calibration = p.calibration
+  const calibrationComplete = !!calibration && calibration.current >= calibration.target
 
   dom.turnPulseEl.textContent = p.matchOutcome
     ? p.matchOutcome === 'win'
@@ -41,13 +43,15 @@ export function applyChessUi(
         : 'Draw recorded'
     : p.aiThinking
       ? 'AI calculating'
+      : calibrationComplete
+        ? 'Sealed'
       : `${sideToMove} turn`
-  dom.turnPulseEl.classList.toggle('play-chip--white', !p.aiThinking && !p.matchOutcome && p.chess.turn() === 'w')
-  dom.turnPulseEl.classList.toggle('play-chip--black', !p.aiThinking && !p.matchOutcome && p.chess.turn() === 'b')
+  dom.turnPulseEl.classList.toggle('play-chip--white', !p.aiThinking && !p.matchOutcome && !calibrationComplete && p.chess.turn() === 'w')
+  dom.turnPulseEl.classList.toggle('play-chip--black', !p.aiThinking && !p.matchOutcome && !calibrationComplete && p.chess.turn() === 'b')
   dom.turnPulseEl.classList.toggle('play-chip--thinking', p.aiThinking)
-  dom.turnPulseEl.classList.toggle('play-chip--done', Boolean(p.matchOutcome))
-  dom.moveCounterEl.textContent = p.calibration
-    ? `${Math.min(p.calibration.current, p.calibration.target)}/${p.calibration.target} White moves`
+  dom.turnPulseEl.classList.toggle('play-chip--done', Boolean(p.matchOutcome) || calibrationComplete)
+  dom.moveCounterEl.textContent = calibration
+    ? `${Math.min(calibration.current, calibration.target)}/${calibration.target} White moves`
     : `Move ${fullMove} · ${p.sanLog.length} ply`
 
   /* Status pill */
@@ -76,7 +80,7 @@ export function applyChessUi(
     dom.boardStatus.classList.add('status-pill--draw')
     dom.boardStatus.classList.remove('status-pill--win', 'status-pill--loss')
   } else {
-    dom.boardStatus.textContent = p.status
+    dom.boardStatus.textContent = calibrationComplete ? 'Proof sealed.' : p.status
     dom.boardStatus.classList.toggle('status-pill--check', p.inCheck)
     dom.boardStatus.classList.remove('status-pill--thinking', 'status-pill--win', 'status-pill--loss', 'status-pill--draw')
   }
@@ -88,7 +92,7 @@ export function applyChessUi(
   )
   dom.boardStage.classList.toggle('board-stage--loss', p.matchOutcome === 'loss')
   dom.boardStage.classList.toggle('board-stage--finisher', p.matchOutcome === 'win')
-  const gameActive = !p.matchOutcome && !isGameOver
+  const gameActive = !p.matchOutcome && !isGameOver && !calibrationComplete
   dom.boardStage.classList.toggle('board-stage--white-turn', gameActive && p.chess.turn() === 'w')
   dom.boardStage.classList.toggle('board-stage--black-turn', gameActive && p.chess.turn() === 'b')
   const bossProfile = Boolean(p.aiPersona && BOSS_PROFILE_RE.test(p.aiPersona))
@@ -143,12 +147,12 @@ export function applyChessUi(
     dom.moveLedger.scrollTop = dom.moveLedger.scrollHeight
   }
 
-  if (p.calibration) {
-    const calKey = `${p.calibration.current}\t${p.calibration.target}`
+  if (calibration) {
+    const calKey = `${calibration.current}\t${calibration.target}`
     if (calKey !== play.lastCalKey) {
       play.lastCalKey = calKey
-      const rawTarget = Math.floor(Number(p.calibration.target))
-      const rawCurrent = Math.floor(Number(p.calibration.current))
+      const rawTarget = Math.floor(Number(calibration.target))
+      const rawCurrent = Math.floor(Number(calibration.current))
       const target = Number.isFinite(rawTarget) ? Math.max(0, Math.min(120, rawTarget)) : 0
       const current = Number.isFinite(rawCurrent) ? Math.max(0, Math.min(target, rawCurrent)) : 0
       if (dom.btnNext.disabled) dom.btnNextHint.textContent = `${target - current} White moves`
