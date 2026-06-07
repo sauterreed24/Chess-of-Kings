@@ -466,16 +466,16 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   box-shadow: 0 10px 18px rgba(0,0,0,0.32);
 }
 .chapter-list { list-style: none; padding: 0; margin: 0; }
-.chapter-row { margin-bottom: 0.65rem; }
+.chapter-row { margin-bottom: 0.52rem; }
 .chapters-back { margin-bottom: 1.25rem; }
 
 .chapter-btn {
   width: 100%; text-align: left;
   display: grid; grid-template-columns: 1fr auto;
   align-items: center; gap: 0.5rem 1rem;
-  padding: 1.15rem 1.35rem;
-  background: linear-gradient(135deg, rgba(32,25,14,0.92) 0%, rgba(8,7,5,0.98) 100%);
-  border: 1px solid rgba(201,169,98,0.18);
+  padding: 1rem 1.25rem;
+  background: linear-gradient(100deg, rgba(38,29,16,0.94), rgba(8,7,5,0.98) 62%, rgba(10,24,38,0.96));
+  border: 1px solid rgba(201,169,98,0.22);
   color: var(--ivory); font-family: var(--font-body);
   text-transform: none; letter-spacing: normal; font-size: 1rem;
   border-radius: 3px;
@@ -494,8 +494,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .chapter-btn:hover:not(:disabled) .chapter-btn__arrow { opacity: 1; transform: translateX(3px); }
 
 .chapter-locked {
-  padding: 1.1rem 1.35rem;
-  background: rgba(14,12,8,0.7);
+  padding: 0.98rem 1.25rem;
+  background: linear-gradient(100deg, rgba(24,19,12,0.72), rgba(6,5,4,0.82) 62%, rgba(7,19,30,0.74));
   border: 1px dashed rgba(201,169,98,0.16);
   border-radius: 3px; color: var(--muted); display: grid; gap: 0.2rem;
 }
@@ -2224,12 +2224,12 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 92% 4%, #2a60944a, transparent 38%),
-    linear-gradient(90deg, #e8c97e92 0 0.36rem, #1a3a5c5c 0.36rem 0.5rem, transparent 0.5rem),
-    linear-gradient(90deg, #e8c97e2c, transparent 34%),
-    linear-gradient(118deg, transparent 0 64%, #e8c97e38 64.2%, transparent 64.65%),
-    repeating-linear-gradient(90deg, #ede9de0a 0 1px, transparent 1px 1.45rem);
-  opacity: 0.82;
+    radial-gradient(circle at 6% 50%, #e8c97e3f, transparent 19%),
+    radial-gradient(circle at 96% 50%, #2a609454, transparent 36%),
+    linear-gradient(90deg, #e8c97e9a 0 0.34rem, #1a3a5c66 0.34rem 0.52rem, transparent 0.52rem),
+    repeating-linear-gradient(90deg, #ede9de0a 0 1px, transparent 1px 1.35rem),
+    linear-gradient(180deg, #ede9de12, transparent 48%);
+  opacity: 0.76;
 }
 
 .chapter-btn__main {
@@ -2315,9 +2315,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border-radius: 12px;
   padding: 0.7rem;
   background:
-    radial-gradient(circle at 10% 0%, #e8c97e2c, transparent 34%),
-    radial-gradient(circle at 96% 8%, #2a60943a, transparent 36%),
-    linear-gradient(118deg, transparent 0 56%, #e8c97e28 56.2%, transparent 56.7%),
+    radial-gradient(circle at 8% 0%, #e8c97e34, transparent 32%),
+    radial-gradient(circle at 98% 12%, #2a60944a, transparent 38%),
+    repeating-linear-gradient(90deg, #ede9de08 0 1px, transparent 1px 2.35rem),
     linear-gradient(180deg, #ede9de12, #00000024),
     rgba(0,0,0,0.18);
 }
