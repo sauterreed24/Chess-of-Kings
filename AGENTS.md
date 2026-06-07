@@ -24,6 +24,7 @@
 5. No clear villain: each civilization needs defensible survival logic, strengths, flaws, and tragedy-of-the-commons pressure.
 6. Minimal gore: show formation breaks, banners falling, routs, dust, armor damage, and battlefield aftermath without graphic violence.
 7. Replayability through systems: civilization doctrines, progression trees, map seeds, resource pressure, terrain, commander traits, and unit specialization should change decisions every run.
+8. Authentic ancient/early-classical feel: do not add magic, supernatural powers, sci-fi weapons, modern firearms, aircraft, tanks, explosives beyond plausible period siege/fire tools, or any “ability” that cannot be explained through real training, morale, terrain knowledge, equipment, logistics, engineering, deception, discipline, or leadership.
 
 ## Implementation style
 
@@ -39,3 +40,4 @@
 - For game-balance changes, ask whether the rule creates meaningful counters or merely adds stats.
 - For UI changes, verify touch, keyboard, and reduced-motion behavior.
 - For new content, check that lore avoids one-dimensional villain framing and keeps the Proteus drought conflict morally complex.
+- For Proteus 218 content, reject any unit, mechanic, animation, or UI language that reads like magic, superpowers, sci-fi, fantasy, or impossible technology. Rename “special abilities” as orders, formations, drills, tactics, works, protocols, vows, or commands when that better preserves authenticity.
