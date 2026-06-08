@@ -31,6 +31,8 @@ describe('mainUiFormatters', () => {
   it('labelForSpeaker uses map and title-cases unknown ids', () => {
     expect(labelForSpeaker('reed')).toBe('Reed')
     expect(labelForSpeaker('rowan')).toBe('Rowan Vale')
+    expect(labelForSpeaker('system')).toBe('Archive lens')
+    expect(speakerSigilFor('system')).toBe('ARC')
     expect(speakerSigilFor('vega')).toBe('VE')
     expect(speakerVoiceFor('rowan')).toBe('fire')
     expect(speakerCadenceMs('alexion')).toBeGreaterThan(speakerCadenceMs('system'))

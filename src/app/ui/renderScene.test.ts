@@ -173,4 +173,30 @@ describe('renderScene', () => {
     expect(alexionLine?.querySelector('.speaker-seal')?.textContent).toBe('A')
     expect(alexionLine?.querySelector('.who')?.textContent).toContain('Alexion')
   })
+
+  it('renders calibration as an archive lens instead of a generic trainer', () => {
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const chapter = PLAYABLE_CHAPTERS[0]!
+    const sceneIndex = chapter.scenes.findIndex((scene) => scene.type === 'calibration')
+    const scene = chapter.scenes[sceneIndex]!
+    renderScene(chapter, scene, sceneIndex, dom, play, flow, {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    })
+
+    expect(dom.sceneTag.textContent).toContain('archive lens')
+    expect(dom.narrativeBody.textContent).toContain('The Archive replies')
+    expect(dom.narrativeBody.textContent).toContain('The Archive answers')
+    expect(dom.narrativeBody.textContent).not.toContain('adaptive trainer')
+  })
 })

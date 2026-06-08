@@ -19,7 +19,7 @@ const SPEAKER_META: Record<string, SpeakerMeta> = {
   narrator: { label: 'Archive', sigil: 'AR', voice: 'archive', cadenceMs: 8 },
   reed: { label: 'Reed', sigil: 'R', voice: 'reed', cadenceMs: 8 },
   alexion: { label: 'Alexion Demaratos-Serapis', sigil: 'A', voice: 'alexion', cadenceMs: 9 },
-  system: { label: 'Adaptive trainer', sigil: 'SYS', voice: 'system', cadenceMs: 7 },
+  system: { label: 'Archive lens', sigil: 'ARC', voice: 'system', cadenceMs: 7 },
   scholar: { label: 'Composite Scholar', sigil: 'SC', voice: 'scholar', cadenceMs: 9 },
   amara: { label: 'Amara', sigil: 'AM', voice: 'scholar', cadenceMs: 9 },
   lukas: { label: 'Lukas', sigil: 'LU', voice: 'scholar', cadenceMs: 8 },

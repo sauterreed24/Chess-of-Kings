@@ -30,11 +30,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'narrator',
-            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. A chess trainer glows beside an untouched notebook, cold coffee, and the brass housing of his apartment civic terminal. He knows how pieces move; everyone in the Commonwealth knows that. What he does not know is how to stay calm when a position stops explaining itself.',
+            text: 'Rain threads the window. Reed, twenty-eight, cannot sleep. An archive lens glows beside an untouched notebook, cold coffee, and the brass housing of his apartment civic terminal. He knows how pieces move; everyone in the Commonwealth knows that. What he does not know is how to stay calm when a position stops explaining itself.',
           },
           {
             speaker: 'reed',
-            text: '"Adaptive trainer. Any style in history. Stratarch-calibrated." Ministry software with a better font.',
+            text: '"Archive lens. Any style in history. Stratarch-calibrated." Ministry software with a better font.',
           },
           {
             speaker: 'narrator',
@@ -116,7 +116,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'system',
-            text: 'Calibration sequence initiated. Play naturally. The trainer will offer resistance without trying to win. It is measuring instinct before knowledge.',
+            text: 'Calibration sequence initiated. Play naturally. The Archive will offer resistance without trying to win. It is measuring instinct before knowledge.',
           },
           {
             speaker: 'reed',
@@ -131,20 +131,20 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       {
         type: 'calibration',
         id: 'pr-calibration',
-        title: 'Calibration — adaptive trainer',
+        title: 'Calibration — archive lens',
         storyBeat: {
           label: 'Archive pressure',
-          title: 'The trainer watches habits, not moves',
+          title: 'The Archive watches habits, not moves',
           body: "Every pawn push and repeated move becomes evidence. The Lab is sketching Reed before he knows there is a Lab.",
           tone: 'pressure',
         },
         lesson:
-          'Make at least four moves as White. The trainer replies with unpredictable moves — just enough resistance to reveal how you think. Develop pieces, control the center, keep your king safe.',
+          'Make at least four moves as White. The Archive replies with unpredictable moves — just enough resistance to reveal how you think. Develop pieces, control the center, keep your king safe.',
         minMovesByPlayer: 4,
         teaching: {
           threat: 'There is no single threat yet — you are learning tempo and instinct.',
           goalPlain:
-            'Complete four moves as White — only on White’s turn (read the status line). When Black is on move, wait for the trainer’s reply; your pieces are idle until then. Development and king safety still matter; the Lab is watching every choice.',
+            'Complete four moves as White — only on White’s turn (read the status line). When Black is on move, wait for the Archive’s reply; your pieces are idle until then. Development and king safety still matter; the Lab is watching every choice.',
           whyItWorks:
             'Even random replies punish wasted time. Pieces that trip over each other early lose initiative for the whole game.',
           concept:
@@ -184,7 +184,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         storyBeat: {
           label: 'Story hinge',
           title: 'The curator knows the wrong door opened',
-          body: 'The trainer is no longer a tool. It is a door into an institution that studies history by forcing players to inhabit its decisions — and Alexion seems disturbed that Reed crossed it.',
+          body: 'The Archive is no longer a tool. It is a door into an institution that studies history by forcing players to inhabit its decisions — and Alexion seems disturbed that Reed crossed it.',
           tone: 'quiet',
         },
         lines: [

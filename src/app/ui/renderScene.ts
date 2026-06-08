@@ -190,7 +190,7 @@ export function renderScene(
     dom.narrativeBody.classList.remove('narrative-body--interlude')
     dom.narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
       scene.teaching ? teachingBlock(scene.teaching) : ''
-    }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The trainer answers at random.</p>`
+    }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The Archive answers at random.</p>`
     dom.lessonNote.textContent = 'White moves are tallied at the right; the Lab is listening.'
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = `${scene.minMovesByPlayer} White moves`
