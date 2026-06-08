@@ -225,7 +225,7 @@ describe('GameFlow AI / puzzles', () => {
     const afterReply = onChessUpdate.mock.calls.at(-1)?.[0]
     expect(flow.chess.turn()).toBe('w')
     expect(afterReply?.coachTip).toBe(playerInsight)
-    expect(afterReply?.tacticalPulse).toMatch(/Trainer reply:/)
+    expect(afterReply?.tacticalPulse).toMatch(/Archive reply:/)
   })
 
   it('threads active rival doctrine into visible move coaching and replies', async () => {

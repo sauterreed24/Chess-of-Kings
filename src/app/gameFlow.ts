@@ -1689,7 +1689,7 @@ export class GameFlow {
     this.history.push(this.chess.fen())
     this.lastAiMoveKey = `${result.from}${result.to}${result.promotion ?? ''}`
     this.board?.draw(this.chess, result, drawPick)
-    this.lastTacticalPulse = `${this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'Trainer'} reply: ${result.san}`
+    this.lastTacticalPulse = `${this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'Archive'} reply: ${result.san}`
     return result
   }
 
