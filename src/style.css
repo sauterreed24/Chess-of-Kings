@@ -534,7 +534,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   grid-template-columns: minmax(0,1fr) minmax(300px,400px);
   gap: 1.75rem; max-width: 1200px; margin: 0 auto; align-items: start;
 }
-.play-atelier--solo { grid-template-columns: 1fr; max-width: 42rem; }
+.play-atelier--solo { grid-template-columns: 1fr; max-width: 60rem; }
 
 /* ── Universal bounded-narrative play area ──────────────────────────────
    The play area is a vertical column. No-board scenes (dialogue / interlude

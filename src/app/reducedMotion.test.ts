@@ -101,6 +101,7 @@ describe('Alexandrine Imperial state polish', () => {
   })
 
   it('keeps the static museum-surface polish on repeated play surfaces', () => {
+    expect(cssRule('.play-atelier--solo')).toMatch(/max-width:\s*60rem/)
     expect(CSS).toMatch(/\.chapter-btn::before,\s*\n\.chapter-locked::before\s*\{[^}]*radial-gradient\(circle at 6% 50%, #e8c97e3f/s)
     expect(CSS).toMatch(/\.chapter-btn::before,\s*\n\.chapter-locked::before\s*\{[^}]*#1a3a5c66/s)
     expect(CSS).toMatch(/\.narrative-body--dialogue\s+\.line\s*\{[^}]*repeating-linear-gradient/s)
