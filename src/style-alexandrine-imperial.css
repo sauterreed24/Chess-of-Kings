@@ -13,20 +13,20 @@
 .line[data-voice='rival'] { --v: 174,205,238; }
 
 .top-bar,.lab-overlay__bar {
-  box-shadow: 0 10px 34px #0008, inset 0 -1px #e8c97e38;
+  box-shadow: 0 12px 38px #0009, inset 0 -1px #e8c97e48;
 }
 
 .duel-panel,.instrument-frame,.manuscript-panel,.reward-sheet {
-  box-shadow: var(--shadow-deep), inset 0 0 0 1px #e8c97e18, inset 0 0 32px #2a609414;
+  box-shadow: var(--shadow-deep), inset 0 0 0 1px #e8c97e22, inset 0 0 46px #2a60941c;
 }
 
 .chapters-wrap,.duel-panel,.instrument-frame,.manuscript-panel,.reward-sheet {
-  outline: 1px solid #159;
+  outline: 1px solid #a86;
   outline-offset: -7px;
 }
 
 .instrument-frame:has(.status-pill--thinking) .board-brass {
-  box-shadow: var(--shadow-deep), 0 0 0 2px #2a60945f, 0 0 36px #e8c97e29;
+  box-shadow: var(--shadow-deep), 0 0 0 2px #2a609466, 0 0 42px #e8c97e31;
 }
 
 .instrument-frame:has(.status-pill--check) .board-guide {

@@ -96,7 +96,8 @@ describe('Alexandrine Imperial state polish', () => {
   it('keeps the Chronicle and play surfaces framed as museum-grade imperial shells', () => {
     expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*border-radius:\s*14px/s)
     expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*box-shadow:\s*var\(--shadow-panel\),\s*inset 0 0 0 1px #2a609422/s)
-    expect(IMPERIAL_CSS).toMatch(/\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*#2a609414/s)
+    expect(IMPERIAL_CSS).toMatch(/\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*#2a60941c/s)
+    expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap,\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*outline:\s*1px solid #a86/s)
   })
 
   it('keeps the static museum-surface polish on repeated play surfaces', () => {

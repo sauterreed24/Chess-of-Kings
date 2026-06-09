@@ -99,9 +99,9 @@ describe('recordToday', () => {
   it('a clock that goes backward leaves prior state untouched', () => {
     const store = memoryStore(JSON.stringify({ count: 3, lastDayKey: '2026-04-28' }))
     const r = recordToday(new Date(2026, 3, 25), store)
-    expect(r.state.count).toBe(1)
-    expect(r.isFreshDay).toBe(true)
-    expect(r.wasReset).toBe(true)
+    expect(r.state).toEqual({ count: 3, lastDayKey: '2026-04-28' })
+    expect(r.isFreshDay).toBe(false)
+    expect(r.wasReset).toBe(false)
     expect(r.persistOk).toBe(true)
   })
 

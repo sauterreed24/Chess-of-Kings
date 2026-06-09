@@ -108,9 +108,12 @@ export function recordToday(
   }
 
   const delta = dayDelta(prev.lastDayKey, today)
+  if (delta < 0) {
+    return { state: prev, isFreshDay: false, wasReset: false, persistOk: true }
+  }
   let next: StreakState
   let wasReset = false
-  if (!prev.lastDayKey || delta < 0 || delta > 1) {
+  if (!prev.lastDayKey || delta > 1) {
     next = { count: 1, lastDayKey: today }
     wasReset = prev.count > 1
   } else {
