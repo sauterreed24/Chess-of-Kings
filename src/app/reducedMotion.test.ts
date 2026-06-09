@@ -89,6 +89,13 @@ describe('Alexandrine Imperial state polish', () => {
     expect(IMPERIAL_CSS).toMatch(/\.instrument-frame:has\(\.status-pill--thinking\)\s+\.board-brass/)
     expect(IMPERIAL_CSS).toMatch(/\.instrument-frame:has\(\.status-pill--check\)\s+\.board-guide/)
     expect(IMPERIAL_CSS).toMatch(/\.line\[data-voice='alexion'\]/)
+    expect(IMPERIAL_CSS).toMatch(/\.line\[data-voice='rival'\]/)
+  })
+
+  it('keeps the Chronicle and play surfaces framed as museum-grade imperial shells', () => {
+    expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*border-radius:\s*14px/s)
+    expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*box-shadow:\s*var\(--shadow-panel\),\s*inset 0 0 0 1px #2a609422/s)
+    expect(IMPERIAL_CSS).toMatch(/\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*#2a609414/s)
   })
 
   it('keeps the static museum-surface polish on repeated play surfaces', () => {

@@ -38,6 +38,61 @@ describe('move insight', () => {
       halfMoveCount: 1,
       materialAfterCp: 0,
       playerColor: 'w',
+      mode: 'match',
+      opponentKey: 'c1-match-amara',
+    })).toMatch(/Amara symmetry/)
+
+    expect(moveInsightFor({
+      move: { san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' },
+      halfMoveCount: 3,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+      opponentKey: 'c1-match-lukas',
+    })).toMatch(/Lukas theory/)
+
+    expect(moveInsightFor({
+      move: { san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' },
+      halfMoveCount: 3,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+      opponentKey: 'c1-match-edred',
+    })).toMatch(/Edred threats/)
+
+    expect(moveInsightFor({
+      move: { san: 'O-O', from: 'e1', to: 'g1', piece: 'k' },
+      halfMoveCount: 9,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+      opponentKey: 'c1-match-marius',
+    })).toMatch(/Marius structure/)
+
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 16,
+      materialAfterCp: 20,
+      playerColor: 'w',
+      mode: 'match',
+      quality: 'ok',
+      opponentKey: 'c1-match-demetrios',
+    })).toMatch(/Demetrios office/)
+
+    expect(moveInsightFor({
+      move: { san: 'e4', from: 'e2', to: 'e4', piece: 'p' },
+      halfMoveCount: 1,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+      opponentKey: 'c1-boss',
+    })).toMatch(/Court synthesis/)
+
+    expect(moveInsightFor({
+      move: { san: 'e4', from: 'e2', to: 'e4', piece: 'p' },
+      halfMoveCount: 1,
+      materialAfterCp: 0,
+      playerColor: 'w',
       mode: 'duel',
       opponentKey: 'rowan-gambit',
     })).toMatch(/Rowan fire/)

@@ -23,11 +23,15 @@ const BLACK_BACK_RANK_MINORS = new Set<Square>(['b8', 'c8', 'f8', 'g8'])
 
 function doctrineLabel(key: string | null | undefined): string | null {
   const k = key?.toLowerCase() ?? ''
+  if (k.includes('amara')) return 'Amara symmetry'
+  if (k.includes('lukas')) return 'Lukas theory'
+  if (k.includes('edred')) return 'Edred threats'
+  if (k.includes('marius')) return 'Marius structure'
+  if (k.includes('demetrios')) return 'Demetrios office'
   if (k.includes('rowan')) return 'Rowan fire'
   if (k.includes('vega')) return 'Vega pressure'
-  if (k.includes('alexion') || k.includes('counterpart') || k.includes('apotheosis')) {
-    return 'Alexion law'
-  }
+  if (k.includes('alexion')) return 'Alexion law'
+  if (k.includes('counterpart') || k.includes('apotheosis') || k.includes('boss')) return 'Court synthesis'
   return null
 }
 
