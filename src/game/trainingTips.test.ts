@@ -13,8 +13,20 @@ describe('lossRecoveryMentorLine', () => {
       moveCount: 30,
     })
     expect(s).toContain('5 blunders')
-    expect(s).toContain('loose defenders')
-    expect(s).toContain('touch a piece')
+    expect(s).toContain('Before moving')
+    expect(s).toContain('loose defender')
+  })
+
+  it('turns late blunders into a single endgame proof', () => {
+    const s = lossRecoveryMentorLine({
+      lossStreakVsOpponent: 0,
+      sceneTendencies: baseTendencies,
+      blunderCount: 2,
+      mistakeCount: 0,
+      moveCount: 30,
+    })
+    expect(s).toContain('endgame frayed after 30 ply')
+    expect(s).toContain('Choose one proof')
   })
 
   it('responds to flank-heavy games', () => {
@@ -55,6 +67,19 @@ describe('lossRecoveryMentorLine', () => {
       moveCount: 24,
     })
     expect(s).toContain('has your rhythm')
+    expect(s).toContain('overreach')
+  })
+
+  it('keeps mistake-heavy losses concrete', () => {
+    const s = lossRecoveryMentorLine({
+      lossStreakVsOpponent: 0,
+      sceneTendencies: baseTendencies,
+      blunderCount: 0,
+      mistakeCount: 4,
+      moveCount: 28,
+    })
+    expect(s).toContain('4 mistakes')
+    expect(s).toContain('loose piece')
   })
 
   it('falls back to default guidance', () => {
