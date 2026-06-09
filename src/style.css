@@ -1025,8 +1025,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   padding: 0.64rem 0.82rem 0.68rem 3.18rem;
   margin-bottom: 0.65rem;
   background:
-    radial-gradient(circle at 1.35rem 1.05rem, rgba(var(--v),0.58), transparent 37%),
-    linear-gradient(118deg, rgba(var(--v),0.3), rgba(0,0,0,0.5) 48%, rgba(42,96,148,0.18)),
+    radial-gradient(circle at 1.35rem 1.05rem, rgba(var(--v),0.66), transparent 39%),
+    linear-gradient(118deg, rgba(var(--v),0.32), rgba(0,0,0,0.58) 48%, rgba(42,96,148,0.2)),
     repeating-linear-gradient(180deg, rgba(237,233,222,0.025) 0 1px, transparent 1px 1.42rem);
   border-radius: 0 8px 8px 0;
   border: 1px solid rgba(var(--v),0.18);
@@ -1043,7 +1043,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   height: 1.58rem;
   border: 1px solid rgba(var(--v),0.56);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--v),0.32), rgba(0,0,0,0.38));
+  background: radial-gradient(circle, rgba(var(--v),0.38), #0006 66%);
   color: rgb(var(--v));
   font-size: 0.52rem;
   box-shadow: 0 0 0 3px #0004, inset 0 0 9px rgba(var(--v),.2);
@@ -1467,9 +1467,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 /* Marble light squares */
 .sq-light {
   background:
-    linear-gradient(32deg, #fffffff0, transparent 43%),
-    repeating-linear-gradient(135deg, #5a3d1910 0 1px, transparent 1px 1.1rem),
-    linear-gradient(145deg, #fff5d8 0%, #d8c091 70%, #a77f43 100%);
+    radial-gradient(circle at 18% 12%, #fff9, transparent 34%),
+    repeating-linear-gradient(135deg, #6b4a2412 0 1px, transparent 1px 1rem),
+    linear-gradient(145deg, #fff7df 0%, #d6bd86 64%, #8f6535 100%);
 }
 
 /* Lapis dark squares */
@@ -1477,7 +1477,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   background:
     radial-gradient(circle at 72% 18%, #c5e3ff5c, transparent 34%),
     repeating-linear-gradient(135deg, #e8c97e12 0 1px, transparent 1px 1rem),
-    linear-gradient(145deg, #2d79ad 0%, #0d3154 66%, #04111f 100%);
+    linear-gradient(145deg, #357eb4 0%, #0d3154 62%, #030b15 100%);
 }
 
 /* Piece glyphs — styled as vector SVG layers with CSS properties */
@@ -2703,10 +2703,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   padding: clamp(8px, 1.4vw, 14px);
   border-radius: 12px;
   background:
-    radial-gradient(circle at 16% 13%, rgba(232,201,126,0.68), transparent 23%),
-    linear-gradient(315deg, rgba(42,96,148,0.5), transparent 29%),
+    radial-gradient(circle at 16% 13%, rgba(232,201,126,0.72), transparent 23%),
+    radial-gradient(circle at 92% 86%, rgba(42,96,148,0.5), transparent 29%),
     repeating-linear-gradient(90deg, #fff1 0 1px, #0000 1px 2rem),
-    linear-gradient(150deg, #9b7139 0%, #3a2a17 45%, #050403 100%);
+    linear-gradient(150deg, #a87a3d 0%, #3a2a17 45%, #050403 100%);
 }
 
 .board-brass::before {
@@ -2742,8 +2742,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   pointer-events: none;
   background:
     linear-gradient(135deg, #fff2, #0000 42%),
-    radial-gradient(circle at 76% 82%, #0003, #0000 50%);
-  opacity: 0.62;
+    radial-gradient(circle at 76% 82%, #0004, #0000 50%);
+  opacity: 0.7;
 }
 
 .sq:hover:not(.sq-selected) {
@@ -2893,8 +2893,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
   border-radius: 16px;
   padding: clamp(1rem, 3vw, 1.45rem);
   background:
-    radial-gradient(circle at 92% 0%, #2a60945c, transparent 34%),
-    radial-gradient(circle at 6% 12%, #e8c97e34, transparent 28%),
+    radial-gradient(circle at 92% 0%, #2a60946b, transparent 34%),
+    radial-gradient(circle at 6% 12%, #e8c97e40, transparent 28%),
     linear-gradient(112deg, transparent 0 66%, #ede9de28 66.3%, transparent 66.9%),
     linear-gradient(180deg, #3a2a17 0%, #050403 100%);
 }
@@ -2930,7 +2930,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none !importan
 
 .reward-card {
   border-radius: 10px;
-  background: linear-gradient(180deg, #e8c97e13, #00000036);
+  background: linear-gradient(180deg, #e8c97e18, #0000003d);
 }
 
 .reward-progress__bar {

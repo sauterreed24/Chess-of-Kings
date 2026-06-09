@@ -105,6 +105,13 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(/\.speaker-seal\s*\{[^}]*inset 0 0 9px rgba\(var\(--v\),\.2\)/s)
   })
 
+  it('keeps marble, lapis, and reward surfaces jewel-inlaid', () => {
+    expect(CSS).toMatch(/\.sq-light\s*\{[^}]*radial-gradient\(circle at 18% 12%, #fff9/s)
+    expect(CSS).toMatch(/\.sq-dark\s*\{[^}]*linear-gradient\(145deg, #357eb4/s)
+    expect(CSS).toMatch(/\.board-brass\s*\{[^}]*radial-gradient\(circle at 92% 86%, rgba\(42,96,148,0\.5\)/s)
+    expect(CSS).toMatch(/\.reward-sheet\s*\{[^}]*#2a60946b/s)
+  })
+
   it('keeps the last move legible as an origin-to-destination route cue', () => {
     expect(CSS).toMatch(/\.sq-last\s*\{[^}]*linear-gradient\(135deg,\s*rgba\(42,96,148,0\.72\)/s)
     expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*rgba\(26,58,92,0\.72\)/s)
