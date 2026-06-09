@@ -223,6 +223,26 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(progress.textContent).toContain('Passage 2')
   })
 
+  it('lets dialogue finish naturally without announcing an explicit reveal', () => {
+    vi.useFakeTimers()
+    try {
+      const app = boot()
+      app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+      app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+
+      const label = app.querySelector<HTMLSpanElement>('.btn-advance-label')!
+      expect(label.textContent).toBe('Reveal')
+
+      vi.advanceTimersByTime(7000)
+
+      expect(label.textContent).toBe('Advance')
+      expect(app.querySelector('.narrative-body--revealed')).not.toBeNull()
+      expect(app.querySelector('#live-announcer')?.textContent).not.toContain('Passage fully revealed')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('anchors the board reveal on desktop so the ledger stays in view', async () => {
     const originalScroll = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
     const originalMatchMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia')

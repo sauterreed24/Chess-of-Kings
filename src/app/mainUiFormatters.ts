@@ -148,7 +148,7 @@ export function spokenLineText(text: string, charStepMs = 6): string {
           return `<span class="spoken-char" style="--char-delay:${delay}ms">${escapeHtml(char)}</span>`
         })
         .join('')
-      return `<span class="spoken-word" style="display:inline-block">${chars}</span>`
+      return `<span class="spoken-word">${chars}</span>`
     })
     .join('')
   return `<span class="spoken-line"><span class="sr-only">${escapeHtml(text)}</span><span class="spoken-text" aria-hidden="true">${visible}</span></span>`

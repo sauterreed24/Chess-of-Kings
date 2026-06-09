@@ -67,6 +67,7 @@ describe('reduced-motion CSS guarantees', () => {
   it('keeps spoken dialogue stable and instant when motion is bypassed', () => {
     const allBlocks = collectReducedMotionBlocks(CSS).join('\n')
     expect(cssRule('.spoken-char')).not.toMatch(/max-width|overflow/)
+    expect(cssRule('.spoken-word')).toMatch(/display:\s*inline-block/)
     expect(CSS).toMatch(/\.narrative-body--revealed\s+\.spoken-char\s*\{[^}]*animation:\s*none/s)
     expect(CSS).toMatch(/\.narrative-body--revealed\s+\.spoken-char\s*\{[^}]*opacity:\s*1/s)
     expect(CSS).toMatch(/\.narrative-body--revealed\s+\.line--stagger\s*\{[^}]*animation:\s*none/s)

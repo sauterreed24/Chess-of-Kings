@@ -800,13 +800,13 @@ export function mountApp(app: HTMLDivElement) {
     if (!dialogueRevealDone) {
       dialogueRevealTimer = window.setTimeout(() => {
         dialogueRevealTimer = 0
-        revealDialogueNow()
+        revealDialogueNow(false)
       }, currentDialogueRevealMs())
     }
     updateAdvance(flow)
   }
 
-  function revealDialogueNow() {
+  function revealDialogueNow(announce = true) {
     clearDialogueRevealTimer()
     dialogueRevealDone = true
     narrativeBody.classList.add('narrative-body--revealed')
@@ -816,7 +816,7 @@ export function mountApp(app: HTMLDivElement) {
       el.style.transform = 'none'
     }
     updateAdvance(flow)
-    announcer.say('Passage fully revealed. Advance when ready.')
+    if (announce) announcer.say('Passage fully revealed. Advance when ready.')
   }
 
   function advanceOrReveal() {
