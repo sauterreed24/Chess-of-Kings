@@ -95,9 +95,9 @@ describe('Alexandrine Imperial state polish', () => {
 
   it('keeps the Chronicle and play surfaces framed as museum-grade imperial shells', () => {
     expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*border-radius:\s*14px/s)
-    expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*box-shadow:\s*var\(--shadow-panel\),\s*inset 0 0 0 1px #2a609422/s)
-    expect(IMPERIAL_CSS).toMatch(/\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*#2a60941c/s)
-    expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap,\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*outline:\s*1px solid #a86/s)
+    expect(IMPERIAL_CSS).toMatch(/\.title-hero__plate,\.chapters-wrap,\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*border-color:\s*#e8c97e36/s)
+    expect(IMPERIAL_CSS).toMatch(/\.title-hero__plate,\.chapters-wrap,\.duel-panel,\.instrument-frame,\.manuscript-panel,\.reward-sheet\s*\{[^}]*box-shadow:\s*var\(--shadow-deep\)/s)
+    expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*linear-gradient\(140deg, #3a2a17/s)
   })
 
   it('keeps the static museum-surface polish on repeated play surfaces', () => {
@@ -111,7 +111,8 @@ describe('Alexandrine Imperial state polish', () => {
   it('keeps the board and spoken-dialogue surfaces graphically engraved', () => {
     expect(CSS).toMatch(/\.board-brass::after\s*\{[^}]*repeating-conic-gradient\(from 45deg/s)
     expect(CSS).toMatch(/\.sq::before\s*\{[^}]*linear-gradient\(135deg, #fff2/s)
-    expect(CSS).toMatch(/\.speaker-seal\s*\{[^}]*inset 0 0 9px rgba\(var\(--v\),\.2\)/s)
+    expect(CSS).toMatch(/\.speaker-seal\s*\{[^}]*0 0 22px rgba\(var\(--v\),\.3\)/s)
+    expect(CSS).toMatch(/\.spoken-char\s*\{[^}]*text-shadow:\s*0 0 \.85em rgba\(var\(--v\),\.28\)/s)
   })
 
   it('keeps command buttons readable as inlaid Alexandrine controls', () => {
@@ -121,8 +122,8 @@ describe('Alexandrine Imperial state polish', () => {
   })
 
   it('keeps marble, lapis, and reward surfaces jewel-inlaid', () => {
-    expect(CSS).toMatch(/\.sq-light\s*\{[^}]*radial-gradient\(circle at 18% 12%, #fff9/s)
-    expect(CSS).toMatch(/\.sq-dark\s*\{[^}]*linear-gradient\(145deg, #357eb4/s)
+    expect(CSS).toMatch(/\.sq-light\s*\{[^}]*radial-gradient\(circle at 18% 12%, #fffffff0/s)
+    expect(CSS).toMatch(/\.sq-dark\s*\{[^}]*linear-gradient\(145deg, #3b87bf/s)
     expect(CSS).toMatch(/\.board-brass\s*\{[^}]*radial-gradient\(circle at 92% 86%, rgba\(42,96,148,0\.58\)/s)
     expect(CSS).toMatch(/\.reward-sheet\s*\{[^}]*#2a60947a/s)
   })

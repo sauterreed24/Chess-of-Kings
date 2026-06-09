@@ -32,10 +32,10 @@ describe('mounted duel dossier', () => {
     const moveGuard = app.querySelector<HTMLButtonElement>('#btn-move-guard')!
     expect(sound.textContent).toBe('Sound: Off')
     expect(sound.getAttribute('aria-pressed')).toBe('false')
-    expect(sound.getAttribute('aria-label')).toBe('Sound effects are off')
+    expect(sound.getAttribute('aria-label')).toBe('Sound off')
     expect(moveGuard.textContent).toBe('Move Guard: On')
     expect(moveGuard.getAttribute('aria-pressed')).toBe('true')
-    expect(moveGuard.getAttribute('aria-label')).toBe('Move Guard is on')
+    expect(moveGuard.getAttribute('aria-label')).toBe('Move Guard on')
 
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new DOMException('blocked', 'QuotaExceededError')
@@ -43,11 +43,11 @@ describe('mounted duel dossier', () => {
     expect(() => sound.click()).not.toThrow()
     expect(sound.textContent).toBe('Sound: On')
     expect(sound.getAttribute('aria-pressed')).toBe('true')
-    expect(sound.getAttribute('aria-label')).toBe('Sound effects are on')
+    expect(sound.getAttribute('aria-label')).toBe('Sound on')
     expect(() => moveGuard.click()).not.toThrow()
     expect(moveGuard.textContent).toBe('Move Guard: Off')
     expect(moveGuard.getAttribute('aria-pressed')).toBe('false')
-    expect(moveGuard.getAttribute('aria-label')).toBe('Move Guard is off')
+    expect(moveGuard.getAttribute('aria-label')).toBe('Move Guard off')
   })
 
   it('keeps duel launch controls in the first dossier section without duplicate ids', () => {

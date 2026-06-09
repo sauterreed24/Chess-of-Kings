@@ -245,12 +245,12 @@ export function mountApp(app: HTMLDivElement) {
     const guardLabel = moveGuardEnabled ? 'On' : 'Off'
     btnSfx.textContent = `Sound: ${sfxLabel}`
     btnSfx.setAttribute('aria-pressed', sfx.enabled ? 'true' : 'false')
-    btnSfx.setAttribute('aria-label', sfx.enabled ? 'Sound effects are on' : 'Sound effects are off')
+    btnSfx.setAttribute('aria-label', sfx.enabled ? 'Sound on' : 'Sound off')
     btnMoveGuard.textContent = `Move Guard: ${guardLabel}`
     btnMoveGuard.setAttribute('aria-pressed', moveGuardEnabled ? 'true' : 'false')
     btnMoveGuard.setAttribute(
       'aria-label',
-      moveGuardEnabled ? 'Move Guard is on' : 'Move Guard is off',
+      moveGuardEnabled ? 'Move Guard on' : 'Move Guard off',
     )
     btnTitleSfx.textContent = `Sound: ${sfxLabel}`
     btnTitleSfx.setAttribute('aria-pressed', sfx.enabled ? 'true' : 'false')
@@ -383,7 +383,7 @@ export function mountApp(app: HTMLDivElement) {
           : persistNote
     const dailyBlock = daily
       ? `<button type="button" class="ghost daily-ribbon__cta" id="btn-daily-calculus"
-            aria-label="Play today's Daily Calculus puzzle: ${escapeHtml(daily.title)}">
+            aria-label="Play Daily Calculus: ${escapeHtml(daily.title)}">
             <span class="daily-ribbon__label">${RIBBON_LABELS.dailyCalculus}</span>
             <span class="daily-ribbon__title">${escapeHtml(daily.title)}</span>
             <span class="daily-ribbon__chapter">${escapeHtml(daily.chapterTitle)} · ${escapeHtml(daily.dayKey)}</span>
@@ -878,7 +878,7 @@ export function mountApp(app: HTMLDivElement) {
     if (ok || narrative) btnNextHint.textContent = ok && !narrative && hint ? `→ ${hint}` : ''
     const blockedProof = !ok && !narrative
     btnNextLabel.textContent = revealPending ? 'Reveal' : blockedProof ? 'Prove' : 'Advance'
-    btnNext.setAttribute('aria-label', revealPending ? 'Reveal current dialogue' : blockedProof ? 'Complete objective before advancing' : 'Advance')
+    btnNext.setAttribute('aria-label', revealPending ? 'Reveal dialogue' : blockedProof ? 'Finish proof' : 'Advance')
     if (revealPending) btnNextHint.textContent = 'then Advance'
     /* On board scenes the Advance button lives below the board, ledger and
      * tools. When the objective is met mid-play (checkmate, puzzle solved,

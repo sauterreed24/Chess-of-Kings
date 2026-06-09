@@ -75,6 +75,7 @@ export function createScreenController(opts: ScreenControllerOptions): ScreenCon
       setSectionVisibility(screens.title, active === 'title')
       setSectionVisibility(screens.chapters, active === 'chapters')
       setSectionVisibility(screens.duel, active === 'duel')
+      document.body.scrollTop = document.documentElement.scrollTop = 0
     },
 
     setLabOpen(open: boolean) {

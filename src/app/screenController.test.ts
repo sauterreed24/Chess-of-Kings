@@ -60,6 +60,20 @@ describe('createScreenController', () => {
     expect(duel.classList.contains('hidden')).toBe(true)
   })
 
+  it('resets document scroll when changing top-level screens', () => {
+    const ctl = createScreenController({
+      shell,
+      screens: { title, chapters, duel },
+      topBar,
+      labOverlay: lab,
+    })
+    document.documentElement.scrollTop = 280
+    document.body.scrollTop = 140
+    ctl.setTopLevelScreen('chapters')
+    expect(document.documentElement.scrollTop).toBe(0)
+    expect(document.body.scrollTop).toBe(0)
+  })
+
   it('inerts shell siblings while lab is open except lab and modal exempt nodes', () => {
     const ctl = createScreenController({
       shell,
