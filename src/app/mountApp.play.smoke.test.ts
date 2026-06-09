@@ -192,6 +192,8 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
 
     expect(tag.textContent).toContain('Calibration')
     expect(next.disabled).toBe(true)
+    expect(app.querySelector('.btn-advance-label')?.textContent).toBe('Prove')
+    expect(next.getAttribute('aria-label')).toBe('Complete objective before advancing')
     expect(app.querySelector('#btn-next-hint')?.textContent).toContain('4 White moves')
 
     app.querySelector<HTMLButtonElement>('[data-square="e2"]')?.click()

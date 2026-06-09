@@ -876,8 +876,9 @@ export function mountApp(app: HTMLDivElement) {
     btnNext.disabled = !ok
     btnNext.classList.toggle('primary--ready', ok)
     if (ok || narrative) btnNextHint.textContent = ok && !narrative && hint ? `→ ${hint}` : ''
-    btnNextLabel.textContent = revealPending ? 'Reveal' : 'Advance'
-    btnNext.setAttribute('aria-label', revealPending ? 'Reveal current dialogue' : 'Advance')
+    const blockedProof = !ok && !narrative
+    btnNextLabel.textContent = revealPending ? 'Reveal' : blockedProof ? 'Prove' : 'Advance'
+    btnNext.setAttribute('aria-label', revealPending ? 'Reveal current dialogue' : blockedProof ? 'Complete objective before advancing' : 'Advance')
     if (revealPending) btnNextHint.textContent = 'then Advance'
     /* On board scenes the Advance button lives below the board, ledger and
      * tools. When the objective is met mid-play (checkmate, puzzle solved,
