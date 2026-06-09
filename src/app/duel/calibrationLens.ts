@@ -35,11 +35,11 @@ export interface CalibrationView {
 const LEVEL_ORDER: CalibrationLevel[] = ['Forgiving', 'Measured', 'Equilibrium', 'Sharpened', 'Relentless']
 
 const LEVEL_HINTS: Record<CalibrationLevel, string> = {
-  Forgiving: 'Anti-tilt active: longer think time, slightly higher blunder rate.',
-  Measured: 'Mild softening — the rival is reading your tendencies.',
-  Equilibrium: 'Default profile for this rival, no adjustment applied.',
-  Sharpened: 'Momentum hardening — the rival is tightening their lines.',
-  Relentless: 'Ceiling profile. Intended for Mastery Trials.',
+  Forgiving: 'Anti-tilt active: slower replies, looser tactics.',
+  Measured: 'Measured pressure: the rival is reading your tendencies.',
+  Equilibrium: 'Rival doctrine unshifted.',
+  Sharpened: 'Sharpened pressure: the rival tightens their lines.',
+  Relentless: 'Ceiling band for Mastery Trials.',
 }
 
 export function deriveCalibrationLens(

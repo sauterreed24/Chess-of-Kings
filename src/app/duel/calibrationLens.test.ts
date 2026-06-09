@@ -96,6 +96,21 @@ describe('deriveCalibrationLens', () => {
     const v = deriveCalibrationLens(history, mem)
     expect(['Forgiving', 'Measured', 'Equilibrium']).toContain(v.level)
   })
+
+  it('phrases calibration hints as archive pressure, not debug math', () => {
+    const hints = [
+      deriveCalibrationLens([], undefined),
+      deriveCalibrationLens([entry({ outcome: 'loss' }), entry({ outcome: 'loss' })], undefined),
+      deriveCalibrationLens([entry({ outcome: 'win' }), entry({ outcome: 'win' }), entry({ outcome: 'win' })], undefined),
+      deriveCalibrationLens([], undefined, 'relentless'),
+    ].map((v) => v.hint).join(' ')
+
+    expect(hints).toContain('Rival doctrine unshifted')
+    expect(hints).toContain('Measured pressure')
+    expect(hints).toContain('Sharpened pressure')
+    expect(hints).toContain('Ceiling band')
+    expect(hints).not.toMatch(/blunder rate|Default profile|adjustment applied|Momentum hardening|Ceiling profile/)
+  })
 })
 
 describe('antiTiltRelief', () => {

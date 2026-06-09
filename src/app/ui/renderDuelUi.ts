@@ -138,7 +138,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
           ? 'Early queen drift detected — develop minors before queen sorties.'
           : tendencies.repeatedChecksWithoutGain >= 3
             ? 'Check-spam tendency detected — pair checks with material/position gains.'
-            : 'Balanced profile — keep applying tempo-aware development.'
+            : 'Balanced pressure: keep applying tempo-aware development.'
     const recommendedDifficultyId = flow.recommendDuelDifficulty(rival.opponentId)
     const recommendedDifficulty =
       recommendedDifficultyId === 'relentless'
