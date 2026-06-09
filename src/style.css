@@ -231,10 +231,10 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 .ambient__bloom--d {
   width: min(78vw, 980px); height: min(48vh, 420px);
-  top: 7%; right: 6%; border-radius: 0; filter: blur(0); opacity: 0.24;
+  top: 7%; right: 6%; border-radius: 0; filter: none; opacity: 0.3;
   background:
-    linear-gradient(115deg, transparent 0 28%, rgba(232,201,126,0.16) 28.2% 28.45%, transparent 28.7% 100%),
-    linear-gradient(154deg, transparent 0 54%, rgba(42,96,148,0.16) 54.2% 54.45%, transparent 54.7% 100%);
+    linear-gradient(115deg, transparent 0 28%, rgba(232,201,126,0.2) 28.2% 28.45%, transparent 28.7% 100%),
+    linear-gradient(154deg, transparent 0 54%, rgba(42,96,148,0.2) 54.2% 54.45%, transparent 54.7% 100%);
 }
 @keyframes bloom-drift {
   from { transform: translate(0,0) scale(1); }
@@ -2059,7 +2059,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   isolation: isolate;
   padding: clamp(1.5rem, 5vw, 3rem);
   border: 1px solid rgba(232,201,126,0.34);
-  border-radius: 14px;
+  border-radius: 10px;
   background:
     radial-gradient(circle at 50% -8%, #ede9deb0, transparent 34%),
     radial-gradient(circle at 92% 2%, #2a6094a8, transparent 30%),
@@ -2078,7 +2078,6 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   position: absolute;
   inset: 10px;
   border: 1px solid rgba(232,201,126,0.18);
-  border-radius: 10px;
   pointer-events: none;
 }
 
@@ -2112,7 +2111,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   display: grid;
   padding: 0.64rem 0.72rem;
   border: 1px solid rgba(201,169,98,0.34);
-  border-radius: 8px;
+  border-radius: 7px;
   background:
     radial-gradient(circle at 86% 0%, rgba(42,96,148,0.3), transparent 38%),
     linear-gradient(180deg, rgba(237,233,222,0.11), transparent),
@@ -2299,11 +2298,11 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 
 .duel-panel {
   border: 1px solid rgba(201,169,98,0.18);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 0.7rem;
   background:
-    radial-gradient(circle at 8% 0%, #e8c97e34, transparent 32%),
-    radial-gradient(circle at 98% 12%, #2a60944a, transparent 38%),
+    radial-gradient(circle at 8% 0%, #e8c97e40, transparent 32%),
+    radial-gradient(circle at 98% 12%, #2a60945e, transparent 38%),
     repeating-linear-gradient(90deg, #ede9de08 0 1px, transparent 1px 2.35rem),
     linear-gradient(180deg, #ede9de12, #00000024),
     rgba(0,0,0,0.18);
@@ -2424,7 +2423,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   margin-bottom: 0.85rem;
   padding: 0.75rem 0.95rem 0.85rem;
   border: 1px solid rgba(201,169,98,0.14);
-  border-radius: 12px;
+  border-radius: 10px;
   background:
     linear-gradient(90deg, rgba(232,201,126,0.1), transparent 38%),
     linear-gradient(180deg, rgba(18,15,10,0.76), rgba(0,0,0,0.18));
@@ -2500,13 +2499,13 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 
 .manuscript-panel {
-  border-radius: 12px;
+  border-radius: 10px;
   background:
-    radial-gradient(circle at 12% 0%, rgba(232,201,126,0.4), transparent 25%),
-    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.36), transparent 40%),
+    radial-gradient(circle at 12% 0%, rgba(232,201,126,0.46), transparent 25%),
+    radial-gradient(circle at 100% 0%, rgba(42,96,148,0.44), transparent 40%),
     repeating-linear-gradient(90deg, rgba(232,201,126,0.032) 0 1px, transparent 1px 2.15rem),
     repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 1.55rem),
-    linear-gradient(180deg, #342716 0%, #050403 100%);
+    linear-gradient(180deg, #3a2a17 0%, #050403 100%);
 }
 
 .manuscript-panel::after {
@@ -2693,12 +2692,12 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 
 .board-brass {
   padding: clamp(8px, 1.4vw, 14px);
-  border-radius: 12px;
+  border-radius: 10px;
   background:
-    radial-gradient(circle at 16% 13%, rgba(232,201,126,0.72), transparent 23%),
-    radial-gradient(circle at 92% 86%, rgba(42,96,148,0.5), transparent 29%),
+    radial-gradient(circle at 16% 13%, rgba(232,201,126,0.8), transparent 23%),
+    radial-gradient(circle at 92% 86%, rgba(42,96,148,0.58), transparent 29%),
     repeating-linear-gradient(90deg, #fff1 0 1px, #0000 1px 2rem),
-    linear-gradient(150deg, #a87a3d 0%, #3a2a17 45%, #050403 100%);
+    linear-gradient(150deg, #b38244 0%, #3a2a17 45%, #050403 100%);
 }
 
 .board-brass::before {
@@ -2870,13 +2869,13 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 
 .reward-sheet {
-  border-radius: 16px;
+  border-radius: 12px;
   padding: clamp(1rem, 3vw, 1.45rem);
   background:
-    radial-gradient(circle at 92% 0%, #2a60946b, transparent 34%),
-    radial-gradient(circle at 6% 12%, #e8c97e40, transparent 28%),
+    radial-gradient(circle at 92% 0%, #2a60947a, transparent 34%),
+    radial-gradient(circle at 6% 12%, #e8c97e4c, transparent 28%),
     linear-gradient(112deg, transparent 0 66%, #ede9de28 66.3%, transparent 66.9%),
-    linear-gradient(180deg, #3a2a17 0%, #050403 100%);
+    linear-gradient(180deg, #3d2c18 0%, #050403 100%);
 }
 
 .reward-hero {

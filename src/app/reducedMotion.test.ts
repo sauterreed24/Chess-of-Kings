@@ -104,7 +104,7 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(/\.chapter-btn::before,\s*\n\.chapter-locked::before\s*\{[^}]*#1a3a5c66/s)
     expect(CSS).toMatch(/\.narrative-body--dialogue\s+\.line\s*\{[^}]*repeating-linear-gradient/s)
     expect(CSS).toMatch(/\.manuscript-panel\s*\{[^}]*repeating-linear-gradient\(90deg/s)
-    expect(CSS).toMatch(/\.board-brass\s*\{[^}]*rgba\(42,96,148,0\.5\)/s)
+    expect(CSS).toMatch(/\.board-brass\s*\{[^}]*rgba\(42,96,148,0\.58\)/s)
   })
 
   it('keeps the board and spoken-dialogue surfaces graphically engraved', () => {
@@ -122,8 +122,8 @@ describe('Alexandrine Imperial state polish', () => {
   it('keeps marble, lapis, and reward surfaces jewel-inlaid', () => {
     expect(CSS).toMatch(/\.sq-light\s*\{[^}]*radial-gradient\(circle at 18% 12%, #fff9/s)
     expect(CSS).toMatch(/\.sq-dark\s*\{[^}]*linear-gradient\(145deg, #357eb4/s)
-    expect(CSS).toMatch(/\.board-brass\s*\{[^}]*radial-gradient\(circle at 92% 86%, rgba\(42,96,148,0\.5\)/s)
-    expect(CSS).toMatch(/\.reward-sheet\s*\{[^}]*#2a60946b/s)
+    expect(CSS).toMatch(/\.board-brass\s*\{[^}]*radial-gradient\(circle at 92% 86%, rgba\(42,96,148,0\.58\)/s)
+    expect(CSS).toMatch(/\.reward-sheet\s*\{[^}]*#2a60947a/s)
   })
 
   it('keeps the last move legible as an origin-to-destination route cue', () => {

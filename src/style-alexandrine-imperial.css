@@ -20,6 +20,11 @@
   box-shadow: var(--shadow-deep), inset 0 0 0 1px #e8c97e18, inset 0 0 32px #2a609414;
 }
 
+.chapters-wrap,.duel-panel,.instrument-frame,.manuscript-panel,.reward-sheet {
+  outline: 1px solid #159;
+  outline-offset: -7px;
+}
+
 .instrument-frame:has(.status-pill--thinking) .board-brass {
   box-shadow: var(--shadow-deep), 0 0 0 2px #2a60945f, 0 0 36px #e8c97e29;
 }
