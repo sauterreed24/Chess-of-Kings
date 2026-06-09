@@ -107,7 +107,6 @@
   --muted:  #8a8275;
   --accent: #d4c4a0;
   --brass:  #6b5c36;
-
   /* Typography */
   --font-display:     'Cinzel', serif;
   --font-display-dec: 'Cinzel Decorative', serif;
@@ -228,13 +227,6 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   width: 45vw; height: 45vh;
   background: radial-gradient(circle, rgba(58,104,88,0.07) 0%, transparent 70%);
   top: 35%; left: 32%; animation-delay: -18s;
-}
-.ambient__bloom--d {
-  width: min(78vw, 980px); height: min(48vh, 420px);
-  top: 7%; right: 6%; border-radius: 0; filter: none; opacity: 0.3;
-  background:
-    linear-gradient(115deg, transparent 0 28%, rgba(232,201,126,0.2) 28.2% 28.45%, transparent 28.7% 100%),
-    linear-gradient(154deg, transparent 0 54%, rgba(42,96,148,0.2) 54.2% 54.45%, transparent 54.7% 100%);
 }
 @keyframes bloom-drift {
   from { transform: translate(0,0) scale(1); }
@@ -2396,9 +2388,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   gap: 0.45rem;
 }
 
-.duel-launch__actions .primary,
-.duel-launch__actions .secondary,
-.duel-launch__actions .ghost {
+.duel-launch__actions :is(.primary,.secondary,.ghost) {
   width: 100%;
   min-height: 2.55rem;
   padding-inline: 0.6rem;
@@ -2923,8 +2913,32 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 
 /* ═══════════════════════════════
-   SR-ONLY (visually hidden, AT-readable)
+   LONG REIGN ATLAS INLAYS
    ═══════════════════════════════ */
+/* Long Reign atlas inlays: one lightweight procedural layer shared by the
+   major game surfaces so the app reads as a commonwealth artifact, not a
+   collection of separate panels. */
+:is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet) {
+  position: relative;
+}
+
+:is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.24;
+  background:
+    linear-gradient(116deg, #0000 21%, #e8c97e38 0 21.3%, #0000 0),
+    repeating-conic-gradient(from 45deg, #e8c97e0e 0 9deg, #0000 0 45deg);
+}
+
+html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::before {
+  opacity: 0.08;
+}
+
+/* SR-ONLY (visually hidden, AT-readable) */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -3279,13 +3293,10 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   .duel-launch {
     padding: 0.62rem;
   }
-  .duel-launch__grid,
-  .duel-launch__actions {
+  :is(.duel-launch__grid,.duel-launch__actions) {
     grid-template-columns: 1fr;
   }
-  .duel-launch__actions .primary,
-  .duel-launch__actions .secondary,
-  .duel-launch__actions .ghost {
+  .duel-launch__actions :is(.primary,.secondary,.ghost) {
     min-height: 2.75rem;
   }
   .btn-advance-label { font-size: 0.62rem; }
@@ -3384,24 +3395,16 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 
 /* Lean profile for lower-power hardware and memory-limited devices. */
-html.perf-lean .ambient__bloom,
-html.perf-lean .ambient__grain,
-html.perf-lean .ambient__grid {
+html.perf-lean :is(.ambient__bloom,.ambient__grain,.ambient__grid) {
   display: none;
 }
 
-html.perf-lean .top-bar,
-html.perf-lean .reward-overlay,
-html.perf-lean .lab-overlay__scrim {
+html.perf-lean :is(.top-bar,.reward-overlay,.lab-overlay__scrim) {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
-html.perf-lean .board-stage,
-html.perf-lean .title-hero__plate,
-html.perf-lean .instrument-frame,
-html.perf-lean .manuscript-panel,
-html.perf-lean .reward-sheet {
+html.perf-lean :is(.board-stage,.title-hero__plate,.instrument-frame,.manuscript-panel,.reward-sheet) {
   filter: none;
   box-shadow: 0 10px 24px rgba(0,0,0,0.35);
 }
@@ -3421,11 +3424,7 @@ html.perf-lean .ambient__vignette {
   background: radial-gradient(ellipse 80% 80% at 50% 45%, transparent 0%, rgba(0,0,0,0.42) 100%);
 }
 
-html.perf-lean .status-pill--thinking,
-html.perf-lean .primary--ready,
-html.perf-lean .board-stage--victory .board-brass,
-html.perf-lean .board-stage--loss .board-brass,
-html.perf-lean .board-stage--finisher .board-brass {
+html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory .board-brass,.board-stage--loss .board-brass,.board-stage--finisher .board-brass) {
   animation: none !important;
 }
 

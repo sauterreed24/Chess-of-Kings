@@ -134,6 +134,14 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*rgba\(26,58,92,0\.72\)/s)
     expect(CSS).toMatch(/\.sq-last-to\s*\{[^}]*radial-gradient\(circle at 54% 46%/s)
   })
+
+  it('keeps the shared Long Reign atlas inlay lightweight and perf-aware', () => {
+    expect(CSS).toMatch(/:is\(\.chapters-wrap,\.duel-panel,\.manuscript-panel,\.reward-sheet\)::before/)
+    expect(CSS).toMatch(/repeating-conic-gradient\(from 45deg/)
+    expect(CSS).toMatch(/linear-gradient\(116deg, #0000 21%, #e8c97e38/)
+    expect(CSS).toMatch(/:is\(\.chapters-wrap,\.duel-panel,\.manuscript-panel,\.reward-sheet\)::before\s*\{[^}]*opacity:\s*0\.24/s)
+    expect(CSS).toMatch(/html\.perf-lean\s+:is\(\.chapters-wrap,\.duel-panel,\.manuscript-panel,\.reward-sheet\)::before\s*\{[^}]*opacity:\s*0\.08/s)
+  })
 })
 
 /** Returns the contents of every `(prefers-reduced-motion: reduce)` media block. */
