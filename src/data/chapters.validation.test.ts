@@ -29,6 +29,23 @@ describe('campaign story beats', () => {
     expect(terms).toContain('Stratarch Rating')
     expect(body).toContain('brass-lapis terminal')
   })
+
+  it('keeps Reed and the Archive natural in the opening calibration beats', () => {
+    const prologue = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'prologue')
+    const apartment = prologue?.scenes.find((scene) => scene.id === 'pr-apartment')
+    const trainer = prologue?.scenes.find((scene) => scene.id === 'pr-trainer')
+    expect(apartment?.type).toBe('dialogue')
+    expect(trainer?.type).toBe('dialogue')
+    if (apartment?.type !== 'dialogue' || trainer?.type !== 'dialogue') return
+
+    const reedAside = apartment.lines.find((line) => line.speaker === 'reed')?.text ?? ''
+    const systemLines = trainer.lines.filter((line) => line.speaker === 'system').map((line) => line.text).join(' ')
+    expect(reedAside).toContain('Any school in history')
+    expect(reedAside).not.toMatch(/^"/)
+    expect(systemLines).toContain('no examiner is watching')
+    expect(systemLines).toContain('The record begins now')
+    expect(systemLines).not.toContain('Calibration sequence initiated')
+  })
 })
 
 describe('PLAYABLE_CHAPTERS — FENs & solvable goals', () => {

@@ -34,7 +34,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'reed',
-            text: '"Archive lens. Any style in history. Stratarch-calibrated." Ministry software with a better font.',
+            text: 'Archive lens. Any school in history, stratarch-calibrated. Ministry software with better manners.',
           },
           {
             speaker: 'narrator',
@@ -116,15 +116,15 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'system',
-            text: 'Calibration sequence initiated. Play naturally. The Archive will offer resistance without trying to win. It is measuring instinct before knowledge.',
+            text: 'Calibration opened. Play as you do when no examiner is watching. The Archive will resist just enough to measure instinct before knowledge.',
           },
           {
             speaker: 'reed',
-            text: 'Naturally. Sure.',
+            text: 'Badly, then. Honestly.',
           },
           {
             speaker: 'system',
-            text: 'Make at least four moves as White. Choose honestly. The data begins now.',
+            text: 'Four White moves. Choose honestly. The record begins now.',
           },
         ],
       },
