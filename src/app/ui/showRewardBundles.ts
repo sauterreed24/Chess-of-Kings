@@ -54,7 +54,7 @@ export function buildRewardOverlayHtml(
   const hist = flow.getMatchHistory()
   const deltaLines = last
     ? performanceDeltaLines(hist, last).map((line) => `<li>${escapeHtml(line)}</li>`).join('')
-    : '<li>Play one more rated simulation to compare risk, tempo, and finish.</li>'
+    : '<li>Play one more rated simulation to reveal your risk, tempo, and finish pattern.</li>'
   const trainingTitle = dynamicTrainingTitle(last?.timestamp ?? Date.now())
   const cards = html
     .split('</div>')
@@ -69,7 +69,7 @@ export function buildRewardOverlayHtml(
           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
           <div>
             <p class="section-heading">Rewards Inscribed</p>
-            <p class="reward-hero__copy">What opened, why it mattered, and which seal is now closer.</p>
+            <p class="reward-hero__copy">New files, the hinge of the match, and the next seal.</p>
           </div>
         </div>
         ${recap}
@@ -79,7 +79,7 @@ export function buildRewardOverlayHtml(
           <ul>${trainingFocus}</ul>
         </div>
         <div class="reward-card reward-card--stagger" style="--stagger:6">
-          <h4>Why This Mattered</h4>
+          <h4>Why It Mattered</h4>
           <ul>${deltaLines}</ul>
         </div>
         <p class="chapters-lede">Rank: ${rankLabel(rp)} · ${rp} RP</p>

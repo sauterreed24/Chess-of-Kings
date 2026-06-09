@@ -262,7 +262,7 @@ export function gradeScore(g: MatchHistoryEntry['styleGrade']): number {
 }
 
 export function dynamicTrainingTitle(seed: number): string {
-  const variants = ['Next Training Focus', 'Adaptive Next Steps', 'Refinement Focus']
+  const variants = ['Next Rematch Focus', 'Adaptive Drill', 'Refinement File']
   return variants[Math.abs(seed) % variants.length]!
 }
 
@@ -272,7 +272,7 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
     .slice(-6)
   const lines: string[] = []
   if (!prev.length) {
-    lines.push('Baseline sealed: future recaps compare speed, grade, and pressure.')
+    lines.push('Baseline filed: next recaps compare speed, grade, and pressure.')
     return lines
   }
 
@@ -302,7 +302,7 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
     .slice(0, 4)
   const wins = streak.filter((h) => h.outcome === 'win').length
   if (wins >= 3)
-    lines.push('Rival trend: you own the file. Raise pressure for a sharper archive.')
+    lines.push('Rival trend: the file is yours. Raise pressure for a sharper archive.')
   else if (wins === 0)
     lines.push('Rival trend: they still set the terms. Use counter-prep before rematch.')
 

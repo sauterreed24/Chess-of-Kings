@@ -8,6 +8,7 @@ import {
   gradeScore,
   labelForSpeaker,
   performanceDeltaLines,
+  dynamicTrainingTitle,
   sceneTypeLabel,
   speakerCadenceMs,
   speakerSigilFor,
@@ -134,7 +135,15 @@ describe('mainUiFormatters', () => {
       turningPointSan: 'Nf3',
     }
     const lines = performanceDeltaLines([], latest)
-    expect(lines.some((l) => l.includes('Baseline sealed'))).toBe(true)
+    expect(lines.some((l) => l.includes('Baseline filed'))).toBe(true)
+  })
+
+  it('dynamicTrainingTitle keeps reward drills playable', () => {
+    expect([0, 1, 2].map(dynamicTrainingTitle)).toEqual([
+      'Next Rematch Focus',
+      'Adaptive Drill',
+      'Refinement File',
+    ])
   })
 
   it('performanceDeltaLines explains speed, quality, and rival pressure', () => {
@@ -181,7 +190,7 @@ describe('mainUiFormatters', () => {
     expect(lines).toEqual([
       'Converted faster: 9.0 fewer ply than your rival baseline.',
       'Quality rose: calculation and conversion are carrying more weight.',
-      'Rival trend: you own the file. Raise pressure for a sharper archive.',
+      'Rival trend: the file is yours. Raise pressure for a sharper archive.',
     ])
   })
 })
