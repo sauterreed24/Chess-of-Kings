@@ -302,7 +302,7 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
     .slice(0, 4)
   const wins = streak.filter((h) => h.outcome === 'win').length
   if (wins >= 3)
-    lines.push('Rival trend: you own the file. Raise difficulty for a sharper archive.')
+    lines.push('Rival trend: you own the file. Raise pressure for a sharper archive.')
   else if (wins === 0)
     lines.push('Rival trend: they still set the terms. Use counter-prep before rematch.')
 

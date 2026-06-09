@@ -237,7 +237,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <span class="match-card__vs">Dossier</span>
             <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
           </div>
-          <span class="duel-row__stamp">Difficulty hint: ${recommendedDifficulty}</span>
+          <span class="duel-row__stamp">Pressure band: ${recommendedDifficulty}</span>
         </div>
         <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
         ${primaryVariant ? `<p class="opponent-note">${escapeHtml(primaryVariant.bio)}</p>` : ''}
@@ -255,11 +255,11 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
               </select>
             </div>
             <div class="duel-launch__field">
-              <label class="teach-label" for="duel-difficulty">Difficulty Profile</label>
+              <label class="teach-label" for="duel-difficulty">Pressure Band</label>
               <select id="duel-difficulty" class="duel-select">
-                <option value="novice">Novice (forgiving)</option>
-                <option value="balanced" selected>Balanced (default)</option>
-                <option value="relentless">Relentless (boss-like)</option>
+                <option value="novice">Forgiving band</option>
+                <option value="balanced" selected>Balanced band</option>
+                <option value="relentless">Relentless band</option>
               </select>
             </div>
             <div class="duel-launch__field">
@@ -272,11 +272,11 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <button type="button" class="ghost" id="btn-preview-skin">Preview Skin</button>
             <button type="button" class="primary" id="btn-start-duel">Start Duel</button>
             <button type="button" class="secondary" id="btn-mastery-trial"
-              aria-label="Begin a Mastery Trial against ${escapeHtml(rival.opponentName)} at ceiling difficulty">
+              aria-label="Begin a Mastery Trial against ${escapeHtml(rival.opponentName)} at the ceiling band">
               Mastery Trial
             </button>
           </div>
-          <p class="mastery-trial-hint opponent-note">Mastery Trial locks Relentless difficulty for one match and the highest-tier skin unlock path.</p>
+          <p class="mastery-trial-hint opponent-note">Mastery Trial locks the Relentless band for one match and the highest-tier skin unlock path.</p>
         </div>
         <div class="dossier-stat-grid" aria-label="Duel history">
           <span><strong>${wins}</strong><small>Wins</small></span>
@@ -313,7 +313,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <li><strong>Average length:</strong> ${avgMoves} ply</li>
             <li><strong>Common style grade:</strong> ${dominantGrade}</li>
             <li><strong>Weakness map:</strong> ${escapeHtml(weaknessMap)}</li>
-            <li><strong>Recommended next difficulty:</strong> ${recommendedDifficulty}</li>
+            <li><strong>Recommended pressure band:</strong> ${recommendedDifficulty}</li>
             ${rivalMem ? `<li><strong>Rival memory:</strong> ${rivalMem.games} logged games · adaptation intensity ${(Math.min(100, (rivalMem.punishedFlankPushes + rivalMem.punishedEarlyQueen + rivalMem.punishedCheckSpam) * 3)).toFixed(0)}%</li>` : ''}
             ${rivalMem?.games ? `<li><strong>Archive calibration:</strong> ${rivalMem.calibrationRating} (${formatRivalCalibrationLabel(rivalMem.calibrationRating)})</li>` : ''}
           </ul>

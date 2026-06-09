@@ -180,7 +180,7 @@ describe('mainUiFormatters', () => {
     expect(lines).toEqual([
       'Converted faster: 9.0 fewer ply than your rival baseline.',
       'Quality rose: calculation and conversion are carrying more weight.',
-      'Rival trend: you own the file. Raise difficulty for a sharper archive.',
+      'Rival trend: you own the file. Raise pressure for a sharper archive.',
     ])
   })
 })
