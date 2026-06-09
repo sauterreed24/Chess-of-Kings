@@ -112,6 +112,12 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(/\.speaker-seal\s*\{[^}]*inset 0 0 9px rgba\(var\(--v\),\.2\)/s)
   })
 
+  it('keeps command buttons readable as inlaid Alexandrine controls', () => {
+    expect(cssRule('.ghost')).toMatch(/linear-gradient\(#ede9de0a,#0004\)/)
+    expect(cssRule('.ghost')).toMatch(/color:\s*#ccb/)
+    expect(cssRule('button:disabled')).toMatch(/opacity:\s*0\.46/)
+  })
+
   it('keeps marble, lapis, and reward surfaces jewel-inlaid', () => {
     expect(CSS).toMatch(/\.sq-light\s*\{[^}]*radial-gradient\(circle at 18% 12%, #fff9/s)
     expect(CSS).toMatch(/\.sq-dark\s*\{[^}]*linear-gradient\(145deg, #357eb4/s)
