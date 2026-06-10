@@ -39,6 +39,23 @@ dated, and only when durable.
 - Legacy engine kept at `src/chess/legacyAi.ts` strictly as a benchmark
   baseline (tree-shaken; only tests import it).
 
+## Deferred (reviewed, consciously not done)
+
+- Per-node `moves[]`/`scores[]` allocations in search: preallocated
+  per-ply stacks would cut GC pressure and raise NPS further; deferred
+  because current throughput already meets budgets and the refactor
+  touches the hottest proven-correct loops.
+- Conversion mode is a boolean cliff at ≥500cp/endgame; a continuous
+  drop-cap/temperature curve over advantage would be smoother. Cross-root
+  repetition awareness already covers the worst symptom (shuffle draws).
+- Persona-internal opening-book override duplicates the controller-level
+  book gate; kept because the deterministic inner pick is a documented
+  test contract (ai.opening-bias.test.ts) and the outer gate normally
+  resolves first.
+- Within-game TT path-dependence (repetition-tainted parent scores) is
+  standard engine practice; cross-GAME pollution is prevented by
+  `resetAiGameContext()` on scene/duel start (both surfaces).
+
 ## Lessons
 
 - chess.js `moves({ verbose: true })` computes SAN per move (internal

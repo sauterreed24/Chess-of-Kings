@@ -11,7 +11,13 @@
 
 import { Chess } from 'chess.js'
 import type { Move } from 'chess.js'
-import { findBestMove, findBestMoveWithProfile, recentHistoryFens } from './ai'
+import {
+  clearEngineCaches,
+  findBestMove,
+  findBestMoveWithProfile,
+  noteSearchNodes,
+  recentHistoryFens,
+} from './ai'
 import type { ProfileMoveOptions } from './ai'
 import type { AIStyle } from './evaluate'
 import type { AiProfile } from '../types'
@@ -48,6 +54,7 @@ function ensureWorker(): Worker | null {
         entry.resolve(null)
         return
       }
+      noteSearchNodes(msg.nodes)
       try {
         const chess = new Chess(entry.fen)
         const move = chess.move(msg.san)
@@ -87,13 +94,40 @@ export function preferredAiSearchSurface(): AiSearchSurface {
   return getAiSearchSurface()
 }
 
-function postToWorker(req: WorkerSearchRequest): Promise<Move | null> {
+type SearchRequest = Exclude<WorkerSearchRequest, { kind: 'reset' }>
+
+function postToWorker(req: SearchRequest, timeoutMs: number): Promise<Move | null> {
   const w = ensureWorker()
   if (!w) return Promise.resolve(null)
   return new Promise((resolve) => {
-    pending.set(req.id, { resolve, fen: req.fen })
+    /* Watchdog: a worker killed by the platform (OOM, backgrounding) may
+       never reply and onerror is not guaranteed — without this the awaited
+       turn never settles and the board locks on "thinking" forever. */
+    const watchdog = setTimeout(() => {
+      if (pending.delete(req.id)) {
+        resolve(null)
+        terminateAiSearchWorker() /* presumed wedged; rebuilt next request */
+      }
+    }, timeoutMs)
+    pending.set(req.id, {
+      resolve: (move) => {
+        clearTimeout(watchdog)
+        resolve(move)
+      },
+      fen: req.fen,
+    })
     w.postMessage(req)
   })
+}
+
+/**
+ * Reset persistent engine caches on BOTH surfaces when a new game starts,
+ * so path-dependent draw scores (repetition/fifty-move) from one game can
+ * never steer search in the next.
+ */
+export function resetAiGameContext(): void {
+  clearEngineCaches()
+  if (worker) worker.postMessage({ id: ++seq, kind: 'reset' } satisfies WorkerSearchRequest)
 }
 
 /** Match a worker move against the live position's legal list. */
@@ -116,21 +150,26 @@ export async function findBestMoveAsync(
   timeLimitMs = 2000,
   surface: AiSearchSurface = getAiSearchSurface(),
 ): Promise<Move | null> {
+  const recentFens = recentHistoryFens(chess)
   if (surface === 'worker' && ensureWorker() !== null) {
     const fen = chess.fen()
-    const moved = await postToWorker({
-      id: ++seq,
-      kind: 'best',
-      fen,
-      maxDepth,
-      style,
-      timeLimitMs,
-    })
+    const moved = await postToWorker(
+      {
+        id: ++seq,
+        kind: 'best',
+        fen,
+        maxDepth,
+        style,
+        timeLimitMs,
+        recentFens,
+      },
+      timeLimitMs + 4000,
+    )
     const live = resolveOnLiveBoard(chess, fen, moved)
     if (live) return live
     if (chess.fen() !== fen) return null /* position changed: drop, do not fall back */
   }
-  return findBestMove(chess, maxDepth, style, timeLimitMs)
+  return findBestMove(chess, maxDepth, style, timeLimitMs, recentFens)
 }
 
 /** Persona-flavored async search (duels and matches). */
@@ -141,20 +180,32 @@ export async function findBestMoveWithProfileAsync(
   surface: AiSearchSurface = getAiSearchSurface(),
 ): Promise<Move | null> {
   /* The worker rebuilds the position from a bare FEN, so the live game's
-     recent positions ride along for cross-root repetition awareness. */
+     recent positions and the persona's own last move (anti-reversal bias)
+     ride along in the options. */
+  const history = chess.history({ verbose: true })
+  const priorOwn = history.at(-2) ?? null
   const enriched: ProfileMoveOptions = {
     ...(opts ?? {}),
-    recentFens: opts?.recentFens ?? recentHistoryFens(chess),
+    recentFens: opts?.recentFens ?? history.slice(-17).map((m) => m.before),
+    ownLast:
+      opts?.ownLast !== undefined
+        ? opts.ownLast
+        : priorOwn
+          ? { from: priorOwn.from, to: priorOwn.to, piece: priorOwn.piece }
+          : null,
   }
   if (surface === 'worker' && ensureWorker() !== null) {
     const fen = chess.fen()
-    const moved = await postToWorker({
-      id: ++seq,
-      kind: 'profile',
-      fen,
-      profile,
-      opts: enriched,
-    })
+    const moved = await postToWorker(
+      {
+        id: ++seq,
+        kind: 'profile',
+        fen,
+        profile,
+        opts: enriched,
+      },
+      Math.min(4000, Math.max(300, profile.thinkTimeMs)) * 2 + 5000,
+    )
     const live = resolveOnLiveBoard(chess, fen, moved)
     if (live) return live
     if (chess.fen() !== fen) return null /* position changed: drop, do not fall back */

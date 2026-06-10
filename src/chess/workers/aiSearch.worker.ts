@@ -3,7 +3,7 @@
    the main thread can reject stale or corrupted responses. */
 
 import { Chess } from 'chess.js'
-import { findBestMove, findBestMoveWithProfile, getLastSearchNodes } from '../ai'
+import { clearEngineCaches, findBestMove, findBestMoveWithProfile, getLastSearchNodes } from '../ai'
 import type { ProfileMoveOptions } from '../ai'
 import type { AIStyle } from '../evaluate'
 import type { AiProfile } from '../../types'
@@ -16,6 +16,7 @@ export type WorkerSearchRequest =
       maxDepth: number
       style: AIStyle
       timeLimitMs: number
+      recentFens?: string[]
     }
   | {
       id: number
@@ -23,6 +24,10 @@ export type WorkerSearchRequest =
       fen: string
       profile: AiProfile
       opts: ProfileMoveOptions | null
+    }
+  | {
+      id: number
+      kind: 'reset'
     }
 
 export type WorkerSearchResponse = {
@@ -38,12 +43,16 @@ export type WorkerSearchResponse = {
 
 self.onmessage = (event: MessageEvent<WorkerSearchRequest>) => {
   const req = event.data
+  if (req.kind === 'reset') {
+    clearEngineCaches() /* new game: drop path-dependent draw scores */
+    return
+  }
   try {
     const chess = new Chess(req.fen)
     const move =
       req.kind === 'profile'
         ? findBestMoveWithProfile(chess, req.profile, req.opts ?? undefined)
-        : findBestMove(chess, req.maxDepth, req.style, req.timeLimitMs)
+        : findBestMove(chess, req.maxDepth, req.style, req.timeLimitMs, req.recentFens)
     const payload: WorkerSearchResponse = {
       id: req.id,
       fen: req.fen,

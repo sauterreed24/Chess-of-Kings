@@ -1,13 +1,10 @@
 import { Chess } from 'chess.js'
 import type { Move } from 'chess.js'
 import { findRandomMove, type ProfileMoveOptions } from '../../chess/ai'
-import {
-  findBestMoveAsync,
-  findBestMoveWithProfileAsync,
-  getAiSearchSurface,
-} from '../../chess/aiAsync'
+import { findBestMoveWithProfileAsync } from '../../chess/aiAsync'
 import type { AIStyle } from '../../chess/evaluate'
 import {
+  AI_PROFILES,
   adaptProfileToPhase,
   detectGamePhase,
   resolveProfileByDuelVariant,
@@ -270,15 +267,20 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     const p = host.puzzleScene
     const depth = p.opponentAiDepth ?? 2
     const style: AIStyle = p.opponentAiStyle ?? 'development'
+    /* Puzzle defenders are calibrated game content: route them through a
+       tier-matched persona (bounded human-like softness) rather than the
+       full-strength engine, which would refuse the baits puzzle solutions
+       rely on. opponentAiDepth 1/2/3+ maps to the existing court tiers. */
+    const baseProfile =
+      depth <= 1
+        ? AI_PROFILES.novice_court!
+        : depth === 2
+          ? AI_PROFILES.apprentice_court!
+          : AI_PROFILES.scholar_guard!
+    const profile = { ...baseProfile, style, thinkTimeMs: Math.min(baseProfile.thinkTimeMs, 700) }
     let played = false
     try {
-      const best = await findBestMoveAsync(
-        host.chess,
-        depth,
-        style,
-        Math.max(400, 800),
-        getAiSearchSurface(),
-      )
+      const best = await findBestMoveWithProfileAsync(host.chess, profile)
       if (turnIsStale(host)) return
       if (best) {
         host.commitEngineMove(host.chess.move(best), soloPick)

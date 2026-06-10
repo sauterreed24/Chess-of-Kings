@@ -122,7 +122,8 @@ const ROOK_DIRS = [16, -16, 1, -1]
 
 /* ─── Zobrist keys (two independent 32-bit halves; deterministic) ────── */
 
-function mulberry32(seed: number): () => number {
+/** Deterministic 32-bit PRNG (also reused by engine tests). */
+export function mulberry32(seed: number): () => number {
   let a = seed >>> 0
   return () => {
     a = (a + 0x6d2b79f5) | 0
@@ -298,6 +299,19 @@ CASTLE_MASK[squareFromName('e1')] = 15 & ~(CASTLE_WK | CASTLE_WQ)
 CASTLE_MASK[squareFromName('a8')] = 15 & ~CASTLE_BQ
 CASTLE_MASK[squareFromName('h8')] = 15 & ~CASTLE_BK
 CASTLE_MASK[squareFromName('e8')] = 15 & ~(CASTLE_BK | CASTLE_BQ)
+
+/* Rook relocation for castling, indexed by the king's destination square.
+   Shared by make() and unmake() so the two can never desynchronize. */
+const CASTLE_ROOK_FROM = new Int32Array(128).fill(NO_SQUARE)
+const CASTLE_ROOK_TO = new Int32Array(128).fill(NO_SQUARE)
+CASTLE_ROOK_FROM[0x06] = 0x07
+CASTLE_ROOK_TO[0x06] = 0x05
+CASTLE_ROOK_FROM[0x02] = 0x00
+CASTLE_ROOK_TO[0x02] = 0x03
+CASTLE_ROOK_FROM[0x76] = 0x77
+CASTLE_ROOK_TO[0x76] = 0x75
+CASTLE_ROOK_FROM[0x72] = 0x70
+CASTLE_ROOK_TO[0x72] = 0x73
 
 const MAX_GAME_PLY = 1024
 const UNDO_STRIDE = 16
@@ -741,21 +755,8 @@ export class Position {
 
     /* Castle: move the rook too. */
     if (move & FLAG_CASTLE) {
-      let rookFrom: number
-      let rookTo: number
-      if (to === 0x06) {
-        rookFrom = 0x07
-        rookTo = 0x05
-      } else if (to === 0x02) {
-        rookFrom = 0x00
-        rookTo = 0x03
-      } else if (to === 0x76) {
-        rookFrom = 0x77
-        rookTo = 0x75
-      } else {
-        rookFrom = 0x70
-        rookTo = 0x73
-      }
+      const rookFrom = CASTLE_ROOK_FROM[to]!
+      const rookTo = CASTLE_ROOK_TO[to]!
       const rookCode = makePiece(ROOK, us)
       board[rookFrom] = EMPTY
       board[rookTo] = rookCode
@@ -869,23 +870,8 @@ export class Position {
       const capSq = to - (us === WHITE ? 16 : -16)
       board[capSq] = makePiece(PAWN, us ^ 1)
     } else if (move & FLAG_CASTLE) {
-      let rookFrom: number
-      let rookTo: number
-      if (to === 0x06) {
-        rookFrom = 0x07
-        rookTo = 0x05
-      } else if (to === 0x02) {
-        rookFrom = 0x00
-        rookTo = 0x03
-      } else if (to === 0x76) {
-        rookFrom = 0x77
-        rookTo = 0x75
-      } else {
-        rookFrom = 0x70
-        rookTo = 0x73
-      }
-      board[rookFrom] = makePiece(ROOK, us)
-      board[rookTo] = EMPTY
+      board[CASTLE_ROOK_FROM[to]!] = makePiece(ROOK, us)
+      board[CASTLE_ROOK_TO[to]!] = EMPTY
     }
   }
 

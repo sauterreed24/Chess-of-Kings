@@ -19,11 +19,12 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 import type { Chess, Move } from 'chess.js'
-import { searchFen, MATE_BOUND } from './engine'
+import { searchFen, MATE_BOUND, clearTranspositionTable } from './engine'
 import type { EngineRootMove, EngineSearchResult } from './engine'
 import { styleBias, PIECE_VALUES } from './evaluate'
 import type { AIStyle } from './evaluate'
 import type { AiProfile } from '../types'
+import { detectGamePhase } from './aiProfiles'
 import { openingSanBias } from './openings'
 
 export type ProfileMoveOptions = {
@@ -32,6 +33,10 @@ export type ProfileMoveOptions = {
   /** Recent game FENs (oldest first, excluding current) for cross-root
       repetition awareness; computed from the live board when absent. */
   recentFens?: string[]
+  /** The persona's own previous move (anti-reversal bias). Computed from
+      the live board's history when absent; pass it explicitly when the
+      Chess instance was rebuilt from a bare FEN (worker requests). */
+  ownLast?: { from: string; to: string; piece: string } | null
 }
 
 /**
@@ -52,7 +57,19 @@ export function getLastSearchNodes(): number {
   return lastNodes
 }
 
-function moveKey(move: { from: string; to: string; promotion?: string }): string {
+/** Record nodes searched elsewhere (worker responses) so telemetry stays honest. */
+export function noteSearchNodes(nodes: number): void {
+  lastNodes = nodes
+}
+
+/** Clear persistent engine caches. Call when a new game starts so
+    path-dependent draw scores cannot leak between games. */
+export function clearEngineCaches(): void {
+  clearTranspositionTable()
+}
+
+/** Canonical move identity used for avoid/repeat comparisons everywhere. */
+export function moveKey(move: { from: string; to: string; promotion?: string }): string {
   return `${move.from}${move.to}${move.promotion ?? ''}`
 }
 
@@ -71,6 +88,7 @@ export function findBestMove(
   maxDepth: number,
   _style: AIStyle,
   timeLimitMs = 2000,
+  recentFens?: string[],
 ): Move | null {
   const legal = chess.moves({ verbose: true })
   if (legal.length === 0) return null
@@ -78,7 +96,7 @@ export function findBestMove(
   const result = searchFen(chess.fen(), {
     maxDepth: Math.max(2, Math.min(63, maxDepth * 2)),
     maxTimeMs: Math.max(30, timeLimitMs),
-    historyFens: recentHistoryFens(chess),
+    historyFens: recentFens ?? recentHistoryFens(chess),
   })
   lastNodes = result.nodes
   if (!result.move) return null
@@ -141,16 +159,6 @@ function sampleBoltzmann(candidates: Candidate[], temperature: number): Move {
   return candidates[candidates.length - 1]!.move
 }
 
-function isEndgame(chess: Chess): boolean {
-  let nonKing = 0
-  for (const row of chess.board()) {
-    for (const piece of row) {
-      if (piece && piece.type !== 'k') nonKing++
-    }
-  }
-  return nonKing <= 8
-}
-
 /**
  * Persona-flavored move selection. Always returns a legal move (validated
  * against chess.js) or null when the position is terminal.
@@ -168,7 +176,20 @@ export function findBestMoveWithProfile(
   const avoid = opts?.avoidMoveKey ?? null
   const depth = personaDepth(profile)
   const budgetMs = Math.max(30, Math.min(4000, profile.thinkTimeMs))
-  const historyFens = opts?.recentFens ?? recentHistoryFens(chess)
+  /* One shared deadline bounds every search this call may stack
+     (apex fall-through, miss episode, conversion re-search). */
+  const deadline = performance.now() + budgetMs
+  const remainingMs = (): number => Math.max(30, deadline - performance.now())
+
+  /* One verbose-history pass serves both repetition awareness and the
+     anti-reversal bias; worker calls supply both through opts instead. */
+  const history = opts?.recentFens !== undefined ? null : chess.history({ verbose: true })
+  const historyFens = opts?.recentFens ?? history!.slice(-17).map((m) => m.before)
+  const lastOwnMove =
+    opts?.ownLast !== undefined ? opts.ownLast : (history ?? chess.history({ verbose: true })).at(-2) ?? null
+  const ownLast = lastOwnMove
+    ? { from: lastOwnMove.from, to: lastOwnMove.to, piece: lastOwnMove.piece }
+    : null
 
   /* Apex-tier personas simply play the engine's best move. */
   if (profile.conversionStrictness >= 0.95) {
@@ -184,33 +205,33 @@ export function findBestMoveWithProfile(
   const spectrumDepth = missed ? Math.max(1, depth - 2) : depth
   let result: EngineSearchResult = searchFen(fen, {
     maxDepth: spectrumDepth,
-    maxTimeMs: missed ? Math.max(30, budgetMs / 2) : budgetMs,
+    maxTimeMs: missed ? Math.max(30, remainingMs() / 2) : remainingMs(),
     spectrum: true,
     historyFens,
   })
   lastNodes = result.nodes
-  if (result.rootMoves.length === 0 || result.depth === 0) {
-    /* Budget too tight to finish depth 1 (effectively unreachable). */
-    result = searchFen(fen, { maxDepth: 1, maxTimeMs: 250, spectrum: true, historyFens })
-    lastNodes += result.nodes
-    if (result.rootMoves.length === 0) return legal[0]!
-  }
+  /* search() guarantees depth >= 1 with scored root moves. */
+  if (result.rootMoves.length === 0) return legal[0]!
 
   /* Conversion mode: clearly winning positions are played with intent —
      deeper calculation, a tight band, and no oversights. Keeps won
      endgames marching to mate instead of shuffling toward the fifty-move
      rule, at every difficulty tier. */
-  const endgame = isEndgame(chess)
+  const endgame = detectGamePhase(chess) === 'endgame'
   const topScore = result.rootMoves[0]?.score ?? 0
   const converting = topScore >= 500 && endgame
   if (converting && result.depth < 6) {
-    const deeper = searchFen(fen, { maxDepth: 6, maxTimeMs: budgetMs, spectrum: true, historyFens })
+    const deeper = searchFen(fen, {
+      maxDepth: 6,
+      maxTimeMs: remainingMs(),
+      spectrum: true,
+      historyFens,
+    })
     lastNodes += deeper.nodes
     if (deeper.rootMoves.length > 0 && deeper.depth > result.depth) result = deeper
   }
 
   /* Pair engine scores with oracle moves. */
-  const ownLast = chess.history({ verbose: true }).at(-2) ?? null
   let candidates: Candidate[] = []
   for (const root of result.rootMoves as EngineRootMove[]) {
     const move = oracleMove(legal, root.uci)

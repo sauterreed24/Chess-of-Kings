@@ -146,6 +146,25 @@ let hardDeadline = Infinity
 let nodeBudget = Infinity
 let aborted = false
 
+/** Selection-order in place: pull the highest-scored remaining move to
+    index i and return it. Shared by negamax and qsearch so move ordering
+    can never drift between them. */
+function pickNext(moves: number[], scores: number[], i: number): number {
+  let bestIdx = i
+  for (let j = i + 1; j < moves.length; j++) {
+    if (scores[j]! > scores[bestIdx]!) bestIdx = j
+  }
+  if (bestIdx !== i) {
+    const tm = moves[i]!
+    moves[i] = moves[bestIdx]!
+    moves[bestIdx] = tm
+    const ts = scores[i]!
+    scores[i] = scores[bestIdx]!
+    scores[bestIdx] = ts
+  }
+  return moves[i]!
+}
+
 function timeUp(): boolean {
   if (aborted) return true
   if ((nodes & 1023) === 0) {
@@ -177,19 +196,7 @@ function qsearch(pos: Position, alpha: number, beta: number, ply: number): numbe
   /* Selection-order by MVV-LVA. */
   const scores = moves.map((m) => ORDER_VALUE[moveCaptured(m)]! * 32 + ORDER_VALUE[movePromotion(m)]! * 32)
   for (let i = 0; i < moves.length; i++) {
-    let bestIdx = i
-    for (let j = i + 1; j < moves.length; j++) {
-      if (scores[j]! > scores[bestIdx]!) bestIdx = j
-    }
-    if (bestIdx !== i) {
-      const tm = moves[i]!
-      moves[i] = moves[bestIdx]!
-      moves[bestIdx] = tm
-      const ts = scores[i]!
-      scores[i] = scores[bestIdx]!
-      scores[bestIdx] = ts
-    }
-    const move = moves[i]!
+    const move = pickNext(moves, scores, i)
 
     /* Per-move delta pruning: even winning this capture cannot lift alpha. */
     if (
@@ -290,20 +297,7 @@ function negamax(
   const origAlpha = alpha
 
   for (let i = 0; i < moves.length; i++) {
-    /* Selection sort: pull the highest-scored remaining move forward. */
-    let bestIdx = i
-    for (let j = i + 1; j < moves.length; j++) {
-      if (scores[j]! > scores[bestIdx]!) bestIdx = j
-    }
-    if (bestIdx !== i) {
-      const tm = moves[i]!
-      moves[i] = moves[bestIdx]!
-      moves[bestIdx] = tm
-      const ts = scores[i]!
-      scores[i] = scores[bestIdx]!
-      scores[bestIdx] = ts
-    }
-    const move = moves[i]!
+    const move = pickNext(moves, scores, i)
     const quiet = moveCaptured(move) === 0 && movePromotion(move) === 0
 
     if (!pos.make(move)) {
@@ -488,14 +482,10 @@ export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome 
 
     if (failed || iterBestIdx < 0) break
 
-    /* Commit the completed iteration. */
+    /* Commit the completed iteration. In best mode non-PV scores are
+       fail-low bounds — valid for ordering, exposed only in spectrum mode. */
     for (let i = 0; i < root.length; i++) {
-      if (spectrum) {
-        root[i]!.score = iterScores[i]!
-      } else {
-        /* In best-mode only the PV move's score is exact; keep relative order. */
-        root[i]!.score = iterScores[i]!
-      }
+      root[i]!.score = iterScores[i]!
     }
     bestIdx = iterBestIdx
     lastScore = iterBestScore
@@ -510,6 +500,24 @@ export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome 
 
     /* Forced mate established at depth ≥ 2: deeper search cannot help. */
     if (Math.abs(lastScore) > MATE_BOUND && depth >= 2) break
+  }
+
+  /* Guarantee: callers always receive depth-1 scores even if the hard
+     deadline fired immediately. One deadline-free qsearch per root move is
+     cheap and removes the "unscored spectrum" failure mode entirely. */
+  if (completedDepth === 0) {
+    aborted = false
+    hardDeadline = Infinity
+    nodeBudget = Infinity
+    for (let i = 0; i < root.length; i++) {
+      pos.make(root[i]!.move)
+      root[i]!.score = -qsearch(pos, -INF, INF, 1)
+      pos.unmake()
+    }
+    root.sort((a, b) => b.score - a.score)
+    bestIdx = 0
+    lastScore = root[0]!.score
+    completedDepth = 1
   }
 
   const bestEntry = root[bestIdx]!

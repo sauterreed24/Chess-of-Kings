@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Chess } from 'chess.js'
-import { Position } from './position'
+import { Position, mulberry32 } from './position'
 import { legalMovesFen } from './index'
 
 /* chess.js is the project's legality oracle (src/ARCHITECTURE.md invariant 5).
@@ -17,13 +17,8 @@ function chessJsMoveSet(chess: Chess): string[] {
 }
 
 function seededRng(seed: number): () => number {
-  let a = seed >>> 0
-  return () => {
-    a = (a + 0x6d2b79f5) | 0
-    let t = Math.imul(a ^ (a >>> 15), 1 | a)
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
+  const next = mulberry32(seed)
+  return () => next() / 4294967296
 }
 
 const START_FENS = [

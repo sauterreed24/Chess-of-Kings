@@ -1,7 +1,8 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
 import type { Move, Square, PieceSymbol } from 'chess.js'
-import { materialAdvantage, PIECE_VALUES } from '../chess/ai'
+import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
+import { resetAiGameContext } from '../chess/aiAsync'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
 import type { BoardPickMode, BoardSelectionState } from '../chess/boardView'
@@ -653,6 +654,7 @@ export class GameFlow {
     if (!session) return false
 
     this.cancelAiTimer()
+    resetAiGameContext()
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
@@ -728,6 +730,7 @@ export class GameFlow {
 
   refreshScene() {
     this.cancelAiTimer()
+    resetAiGameContext()
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
@@ -1696,7 +1699,7 @@ export class GameFlow {
     this.sanLog.push(result.san)
     this.sanQuality.push(null)
     this.history.push(this.chess.fen())
-    this.lastAiMoveKey = `${result.from}${result.to}${result.promotion ?? ''}`
+    this.lastAiMoveKey = moveKey(result)
     this.board?.draw(this.chess, result, drawPick)
     this.lastTacticalPulse = `${this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'Archive'} reply: ${result.san}`
     return result
@@ -1785,7 +1788,19 @@ export class GameFlow {
       isSceneTerminal: () => this.isSceneTerminalForCurrentMode(),
       computeMatchOutcome: () => this.computeMatchOutcome(),
       puzzleSolved: () => this.puzzleSolved(),
-      commitEngineMove: (result, drawPick) => this.commitEnginePliesOrThrow(result, drawPick),
+      commitEngineMove: (result, drawPick) => {
+        if (epoch !== this.aiTurnEpoch) {
+          /* Stale turn: the board was already mutated (chess.move() is
+             evaluated before this call) — roll that back, then refuse. */
+          try {
+            this.chess.undo()
+          } catch {
+            /* nothing to undo */
+          }
+          throw new Error('stale AI turn')
+        }
+        return this.commitEnginePliesOrThrow(result, drawPick)
+      },
       setBoardInteraction: (on) => this.board?.setInteraction(on),
       emitChess: () => this.emitChess(),
       persist: () => this.persist(),
@@ -1807,12 +1822,16 @@ export class GameFlow {
        cannot slip a move in while the engine is still deciding. */
     this.aiThinking = true
     const epoch = this.aiTurnEpoch
+    const pliesBefore = this.chess.history().length
     void runAiTurn(this.buildAiHost())
       .catch(() => {})
       .finally(() => {
         if (epoch !== this.aiTurnEpoch) return /* scene changed mid-turn */
         this.aiThinking = false
-        if (this.chess.turn() !== this.playerColor) this.scheduleAiMove()
+        /* Re-schedule only when this turn actually advanced the game —
+           a no-op turn must not retry forever on inconsistent state. */
+        const progressed = this.chess.history().length > pliesBefore
+        if (progressed && this.chess.turn() !== this.playerColor) this.scheduleAiMove()
       })
   }
 
