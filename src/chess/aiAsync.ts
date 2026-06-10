@@ -11,7 +11,7 @@
 
 import { Chess } from 'chess.js'
 import type { Move } from 'chess.js'
-import { findBestMove, findBestMoveWithProfile } from './ai'
+import { findBestMove, findBestMoveWithProfile, recentHistoryFens } from './ai'
 import type { ProfileMoveOptions } from './ai'
 import type { AIStyle } from './evaluate'
 import type { AiProfile } from '../types'
@@ -31,7 +31,13 @@ const pending = new Map<
 function ensureWorker(): Worker | null {
   if (typeof Worker === 'undefined') return null
   if (!worker) {
-    worker = new Worker(new URL('./workers/aiSearch.worker.ts', import.meta.url), { type: 'module' })
+    try {
+      worker = new Worker(new URL('./workers/aiSearch.worker.ts', import.meta.url), {
+        type: 'module',
+      })
+    } catch {
+      return null /* CSP or platform refusal: degrade to main-thread search */
+    }
     worker.onmessage = (event: MessageEvent<WorkerSearchResponse>) => {
       const msg = event.data
       const entry = pending.get(msg.id)
@@ -134,6 +140,12 @@ export async function findBestMoveWithProfileAsync(
   opts: ProfileMoveOptions | null = null,
   surface: AiSearchSurface = getAiSearchSurface(),
 ): Promise<Move | null> {
+  /* The worker rebuilds the position from a bare FEN, so the live game's
+     recent positions ride along for cross-root repetition awareness. */
+  const enriched: ProfileMoveOptions = {
+    ...(opts ?? {}),
+    recentFens: opts?.recentFens ?? recentHistoryFens(chess),
+  }
   if (surface === 'worker' && ensureWorker() !== null) {
     const fen = chess.fen()
     const moved = await postToWorker({
@@ -141,13 +153,13 @@ export async function findBestMoveWithProfileAsync(
       kind: 'profile',
       fen,
       profile,
-      opts,
+      opts: enriched,
     })
     const live = resolveOnLiveBoard(chess, fen, moved)
     if (live) return live
     if (chess.fen() !== fen) return null /* position changed: drop, do not fall back */
   }
-  return findBestMoveWithProfile(chess, profile, opts ?? undefined)
+  return findBestMoveWithProfile(chess, profile, enriched)
 }
 
 export function terminateAiSearchWorker(): void {

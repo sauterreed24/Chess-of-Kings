@@ -148,6 +148,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
         if (mv) host.commitEngineMove(host.chess.move(mv), soloPick)
       }
     } catch {
+      if (turnIsStale(host)) return
       try {
         const rm = findRandomMove(host.chess, host.lastAiMoveKey)
         if (rm) {
@@ -234,6 +235,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
           lastSan = result.san
         }
       } catch {
+        if (turnIsStale(host)) return
         try {
           const rm = findRandomMove(host.chess, host.lastAiMoveKey)
           if (rm) {
@@ -286,6 +288,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
       /* fall through */
     }
     if (!played) {
+      if (turnIsStale(host)) return
       try {
         const rm = findRandomMove(host.chess)
         if (rm) {

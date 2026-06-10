@@ -113,13 +113,44 @@ describe('Crown Engine v2 search', () => {
     expect(result.rootMoves[0]!.score).toBeGreaterThan(result.rootMoves[1]!.score + 300)
   })
 
-  it('sees deep tactics fast: depth 7+ on a middlegame within 500ms', () => {
+  it('sees deep tactics fast: depth 6+ on a middlegame within 500ms', () => {
     const result = searchFen(
       'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3',
       { maxDepth: 63, maxTimeMs: 500, freshTable: true },
     )
     expect(result.depth).toBeGreaterThanOrEqual(6)
     expect(result.nodes).toBeGreaterThan(20_000)
+  })
+
+  it('detects repetitions across the root via historyFens', () => {
+    /* White is up a queen. The move Qf6-e5 recreates a position already
+       seen once in the game history, so with history supplied the engine
+       must score it as a draw (0) instead of the winning material edge. */
+    const fen = '7k/8/5Q2/8/8/8/8/6K1 w - - 8 40'
+    const repeatedChild = '7k/8/8/4Q3/8/8/8/6K1 b - - 6 38'
+    const historyFens = [
+      '7k/8/8/8/8/5Q2/8/6K1 w - - 5 38',
+      repeatedChild,
+      '7k/8/8/8/8/8/4Q3/6K1 w - - 7 39',
+      '7k/8/8/8/8/8/4Q3/6K1 b - - 7 39',
+    ]
+    const withHistory = searchFen(fen, {
+      maxDepth: 4,
+      maxTimeMs: 3000,
+      spectrum: true,
+      freshTable: true,
+      historyFens,
+    })
+    const withoutHistory = searchFen(fen, {
+      maxDepth: 4,
+      maxTimeMs: 3000,
+      spectrum: true,
+      freshTable: true,
+    })
+    const scoreOf = (result: typeof withHistory): number =>
+      result.rootMoves.find((m) => m.uci === 'f6e5')!.score
+    expect(scoreOf(withHistory)).toBe(0)
+    expect(scoreOf(withoutHistory)).toBeGreaterThan(300)
   })
 
   it('never claims a mate score bound is an ordinary eval', () => {

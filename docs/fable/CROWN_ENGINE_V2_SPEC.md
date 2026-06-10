@@ -120,8 +120,9 @@ For profile `ρ` (existing `AiProfile` schema):
      moves at a seen forced mate (`v ≤ −MATE_BOUND`) are excluded while
      alternatives exist; a seen winning mate is always played.
   3. *Oversight episodes*: with probability `0.45·blunderRate` (never in
-     conversion mode), sample from the tail `(v₁−3Δ−150, v₁−Δ)` — drops
-     real material (a piece, an exchange), never a queen, never into mate.
+     conversion mode), sample from the tail `(v₁−min(850, 3Δ+150), v₁−Δ)`
+     — drops real material (a piece, an exchange), capped below queen
+     value even for externally tuned blunder rates, never into mate.
   4. *Flavor*: style/risk/castling/anti-shuffle biases, each bounded so
      total ≤ ±40 cp, applied **inside the band only** — personality can
      never out-vote tactics.

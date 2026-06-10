@@ -508,7 +508,7 @@ export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome 
     root.sort((a, b) => b.score - a.score)
     bestIdx = 0
 
-    /* Mate found and confirmed at two consecutive depths: stop early. */
+    /* Forced mate established at depth ≥ 2: deeper search cannot help. */
     if (Math.abs(lastScore) > MATE_BOUND && depth >= 2) break
   }
 
@@ -517,11 +517,12 @@ export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome 
   return {
     move: bestEntry.move,
     uci: moveToUci(bestEntry.move),
-    score: lastScore,
+    /* `| 0` collapses negamax's negative zero into +0. */
+    score: lastScore | 0,
     depth: completedDepth,
     nodes,
     timeMs,
     pv: completedDepth > 0 ? extractPv(pos, bestEntry.move, completedDepth) : [moveToUci(bestEntry.move)],
-    rootMoves: root.map((r) => ({ move: r.move, uci: moveToUci(r.move), score: r.score })),
+    rootMoves: root.map((r) => ({ move: r.move, uci: moveToUci(r.move), score: r.score | 0 })),
   }
 }

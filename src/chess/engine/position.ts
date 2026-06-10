@@ -890,6 +890,23 @@ export class Position {
   }
 
   /**
+   * Seed pre-root position hashes (oldest first) so in-search repetition
+   * detection can see the game history that led to this position. Must be
+   * called immediately after setFromFen(); the root hash shifts to index n.
+   */
+  seedHistory(hashes: Array<{ lo: number; hi: number }>): void {
+    const n = Math.min(hashes.length, 100)
+    const start = hashes.length - n
+    for (let i = 0; i < n; i++) {
+      this.pathLo[i] = hashes[start + i]!.lo
+      this.pathHi[i] = hashes[start + i]!.hi
+    }
+    this.ply = n
+    this.pathLo[n] = this.hashLo
+    this.pathHi[n] = this.hashHi
+  }
+
+  /**
    * True when the current position repeats an earlier position on the
    * make/unmake path (two-fold is enough to score a draw inside search).
    */

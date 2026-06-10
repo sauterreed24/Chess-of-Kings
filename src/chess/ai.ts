@@ -29,6 +29,20 @@ import { openingSanBias } from './openings'
 export type ProfileMoveOptions = {
   avoidMoveKey?: string | null
   openingBook?: { profileId: string; plyIndex: number } | null
+  /** Recent game FENs (oldest first, excluding current) for cross-root
+      repetition awareness; computed from the live board when absent. */
+  recentFens?: string[]
+}
+
+/**
+ * Positions preceding the current one (oldest first), bounded, for the
+ * engine's cross-root repetition detection. Empty when the Chess instance
+ * was constructed from a bare FEN (e.g. inside the worker) — callers that
+ * have the live game should pass `recentFens` through ProfileMoveOptions.
+ */
+export function recentHistoryFens(chess: Chess, maxPlies = 17): string[] {
+  const history = chess.history({ verbose: true })
+  return history.slice(-maxPlies).map((m) => m.before)
 }
 
 let lastNodes = 0
@@ -64,6 +78,7 @@ export function findBestMove(
   const result = searchFen(chess.fen(), {
     maxDepth: Math.max(2, Math.min(63, maxDepth * 2)),
     maxTimeMs: Math.max(30, timeLimitMs),
+    historyFens: recentHistoryFens(chess),
   })
   lastNodes = result.nodes
   if (!result.move) return null
@@ -153,10 +168,11 @@ export function findBestMoveWithProfile(
   const avoid = opts?.avoidMoveKey ?? null
   const depth = personaDepth(profile)
   const budgetMs = Math.max(30, Math.min(4000, profile.thinkTimeMs))
+  const historyFens = opts?.recentFens ?? recentHistoryFens(chess)
 
   /* Apex-tier personas simply play the engine's best move. */
   if (profile.conversionStrictness >= 0.95) {
-    const result = searchFen(fen, { maxDepth: depth, maxTimeMs: budgetMs })
+    const result = searchFen(fen, { maxDepth: depth, maxTimeMs: budgetMs, historyFens })
     lastNodes = result.nodes
     const best = result.move ? oracleMove(legal, result.move.uci) : null
     if (best && moveKey(best) !== avoid) return best
@@ -170,11 +186,12 @@ export function findBestMoveWithProfile(
     maxDepth: spectrumDepth,
     maxTimeMs: missed ? Math.max(30, budgetMs / 2) : budgetMs,
     spectrum: true,
+    historyFens,
   })
   lastNodes = result.nodes
   if (result.rootMoves.length === 0 || result.depth === 0) {
     /* Budget too tight to finish depth 1 (effectively unreachable). */
-    result = searchFen(fen, { maxDepth: 1, maxTimeMs: 250, spectrum: true })
+    result = searchFen(fen, { maxDepth: 1, maxTimeMs: 250, spectrum: true, historyFens })
     lastNodes += result.nodes
     if (result.rootMoves.length === 0) return legal[0]!
   }
@@ -187,7 +204,7 @@ export function findBestMoveWithProfile(
   const topScore = result.rootMoves[0]?.score ?? 0
   const converting = topScore >= 500 && endgame
   if (converting && result.depth < 6) {
-    const deeper = searchFen(fen, { maxDepth: 6, maxTimeMs: budgetMs, spectrum: true })
+    const deeper = searchFen(fen, { maxDepth: 6, maxTimeMs: budgetMs, spectrum: true, historyFens })
     lastNodes += deeper.nodes
     if (deeper.rootMoves.length > 0 && deeper.depth > result.depth) result = deeper
   }
@@ -237,10 +254,11 @@ export function findBestMoveWithProfile(
   if (bestScore >= MATE_BOUND) return band[0]!.move
 
   /* Oversight: weak personas occasionally misjudge a consequence and
-     drop real material — bounded (never a whole queen, never into mate),
-     so low tiers stay beatable and instructive rather than random. */
+     drop real material — bounded (a piece or so, capped below queen
+     value even for externally tuned blunder rates, never into mate), so
+     low tiers stay beatable and instructive rather than random. */
   if (!converting && Math.random() < profile.blunderRate * 0.45) {
-    const widened = maxDrop * 3 + 150
+    const widened = Math.min(850, maxDrop * 3 + 150)
     const tail = candidates.filter(
       (c) => c.score < bestScore - maxDrop && c.score >= bestScore - widened && c.score > -MATE_BOUND,
     )

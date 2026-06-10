@@ -46,6 +46,12 @@ export interface EngineSearchOptions {
   spectrum?: boolean
   /** Clear the transposition table first (reproducible test runs). */
   freshTable?: boolean
+  /**
+   * Recent game positions (FEN, oldest first, excluding the current one)
+   * so the search can detect repetitions across the root — without this a
+   * winning engine may walk into a game-level threefold it cannot see.
+   */
+  historyFens?: string[]
 }
 
 const PROMO_NAMES = ['', '', 'n', 'b', 'r', 'q'] as const
@@ -71,6 +77,19 @@ function toEngineMove(move: number): EngineMove {
 export function searchFen(fen: string, options: EngineSearchOptions = {}): EngineSearchResult {
   const pos = new Position()
   pos.setFromFen(fen)
+  if (options.historyFens && options.historyFens.length > 0) {
+    const scratch = new Position()
+    const hashes: Array<{ lo: number; hi: number }> = []
+    for (const historyFen of options.historyFens) {
+      try {
+        scratch.setFromFen(historyFen)
+        hashes.push({ lo: scratch.hashLo, hi: scratch.hashHi })
+      } catch {
+        /* skip malformed history entries */
+      }
+    }
+    pos.seedHistory(hashes)
+  }
   if (options.freshTable) clearTranspositionTable()
   const limits: SearchLimits = {
     maxDepth: options.maxDepth,
