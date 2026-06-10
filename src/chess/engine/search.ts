@@ -72,6 +72,8 @@ const ttData = new Int32Array(TT_SIZE)
 let ttGeneration = 0
 
 function ttStore(pos: Position, depth: number, score: number, flag: number, move: number, ply: number): void {
+  /* Depth field is 7 bits; stacked check extensions could exceed it. */
+  if (depth > 127) depth = 127
   const idx = pos.hashLo & TT_MASK
   const existing = ttData[idx]!
   if (existing !== 0) {
