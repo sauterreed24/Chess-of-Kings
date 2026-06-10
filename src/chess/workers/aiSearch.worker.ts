@@ -1,17 +1,33 @@
-import { Chess } from 'chess.js'
-import { findBestMove, getLastSearchNodes } from '../ai'
-import type { AIStyle } from '../evaluate'
+/* Off-thread search host. Accepts plain-data requests, runs Crown Engine
+   v2 (full-strength or persona-flavored), and echoes the request FEN so
+   the main thread can reject stale or corrupted responses. */
 
-export type WorkerSearchRequest = {
-  id: number
-  fen: string
-  maxDepth: number
-  style: AIStyle
-  timeLimitMs: number
-}
+import { Chess } from 'chess.js'
+import { findBestMove, findBestMoveWithProfile, getLastSearchNodes } from '../ai'
+import type { ProfileMoveOptions } from '../ai'
+import type { AIStyle } from '../evaluate'
+import type { AiProfile } from '../../types'
+
+export type WorkerSearchRequest =
+  | {
+      id: number
+      kind: 'best'
+      fen: string
+      maxDepth: number
+      style: AIStyle
+      timeLimitMs: number
+    }
+  | {
+      id: number
+      kind: 'profile'
+      fen: string
+      profile: AiProfile
+      opts: ProfileMoveOptions | null
+    }
 
 export type WorkerSearchResponse = {
   id: number
+  fen: string
   nodes: number
   san: string | null
   from?: string
@@ -21,14 +37,17 @@ export type WorkerSearchResponse = {
 }
 
 self.onmessage = (event: MessageEvent<WorkerSearchRequest>) => {
-  const { id, fen, maxDepth, style, timeLimitMs } = event.data
+  const req = event.data
   try {
-    const chess = new Chess(fen)
-    const move = findBestMove(chess, maxDepth, style, timeLimitMs)
-    const nodes = getLastSearchNodes()
+    const chess = new Chess(req.fen)
+    const move =
+      req.kind === 'profile'
+        ? findBestMoveWithProfile(chess, req.profile, req.opts ?? undefined)
+        : findBestMove(chess, req.maxDepth, req.style, req.timeLimitMs)
     const payload: WorkerSearchResponse = {
-      id,
-      nodes,
+      id: req.id,
+      fen: req.fen,
+      nodes: getLastSearchNodes(),
       san: move?.san ?? null,
       from: move?.from,
       to: move?.to,
@@ -37,6 +56,12 @@ self.onmessage = (event: MessageEvent<WorkerSearchRequest>) => {
     self.postMessage(payload)
   } catch (err) {
     const message = err instanceof Error ? err.message : 'worker search failed'
-    self.postMessage({ id, nodes: 0, san: null, error: message } satisfies WorkerSearchResponse)
+    self.postMessage({
+      id: req.id,
+      fen: req.fen,
+      nodes: 0,
+      san: null,
+      error: message,
+    } satisfies WorkerSearchResponse)
   }
 }

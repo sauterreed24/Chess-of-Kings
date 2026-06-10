@@ -1,11 +1,11 @@
 import { Chess } from 'chess.js'
 import type { Move } from 'chess.js'
+import { findRandomMove, type ProfileMoveOptions } from '../../chess/ai'
 import {
-  findBestMoveWithProfile,
-  findRandomMove,
-  type ProfileMoveOptions,
-} from '../../chess/ai'
-import { findBestMoveAsync, getAiSearchSurface } from '../../chess/aiAsync'
+  findBestMoveAsync,
+  findBestMoveWithProfileAsync,
+  getAiSearchSurface,
+} from '../../chess/aiAsync'
 import type { AIStyle } from '../../chess/evaluate'
 import {
   adaptProfileToPhase,
@@ -68,6 +68,12 @@ export type AiTurnHost = {
   ): AiProfile
   profileMoveOpts(profile?: { id: string }): ProfileMoveOptions
   openingBookPlyIndex(): number
+  /** False once the scene/turn this host was built for has been superseded. */
+  isTurnCurrent?: () => boolean
+}
+
+function turnIsStale(host: AiTurnHost): boolean {
+  return host.isTurnCurrent !== undefined && !host.isTurnCurrent()
 }
 
 export function shouldScheduleAi(opts: {
@@ -133,7 +139,12 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     }
     try {
       if (!openingPlayed) {
-        const mv = findBestMoveWithProfile(host.chess, profile, host.profileMoveOpts(profile))
+        const mv = await findBestMoveWithProfileAsync(
+          host.chess,
+          profile,
+          host.profileMoveOpts(profile),
+        )
+        if (turnIsStale(host)) return
         if (mv) host.commitEngineMove(host.chess.move(mv), soloPick)
       }
     } catch {
@@ -208,7 +219,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
 
     if (!lastSan) {
       try {
-        const best = findBestMoveWithProfile(
+        const best = await findBestMoveWithProfileAsync(
           host.chess,
           {
             ...profile,
@@ -217,6 +228,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
           },
           host.profileMoveOpts(profile),
         )
+        if (turnIsStale(host)) return
         if (best) {
           const result = host.commitEngineMove(host.chess.move(best), soloPick)
           lastSan = result.san
@@ -265,6 +277,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
         Math.max(400, 800),
         getAiSearchSurface(),
       )
+      if (turnIsStale(host)) return
       if (best) {
         host.commitEngineMove(host.chess.move(best), soloPick)
         played = true

@@ -7,8 +7,9 @@
 The Calculus of Kings is a Vite + TypeScript narrative chess RPG that runs as
 a static, install-as-PWA single-page app. There is **no React, no router,
 no state library** — the UI is plain DOM + a single `style.css`. The
-"engine" is `chess.js` for legality, with a custom alpha-beta search and
-evaluation in `src/chess/`.
+"engine" is `chess.js` for legality, with **Crown Engine v2** — an
+in-house 0x88 search core in `src/chess/engine/` — doing the thinking
+(see `docs/fable/CROWN_ENGINE_V2_SPEC.md`).
 
 The codebase is intentionally small and read-top-down: everything below
 fits inside ~17,000 lines of TypeScript and one CSS file (`mountApp.ts` delegates
@@ -68,13 +69,26 @@ src/
 │       └── rankLabels.ts    RP -> rank label + next-rank threshold, pure.
 │
 ├── chess/                   Engine, board view, opening book, AI profiles.
-│   ├── ai.ts                Alpha-beta search with transposition table,
-│   │                        move ordering, profile-driven blunder + risk.
-│   ├── evaluate.ts          Material + phase PST + style-bias evaluation.
+│   ├── engine/              Crown Engine v2 — in-house 0x88 search core:
+│   │   ├── position.ts      Board, make/unmake, incremental Zobrist + PST.
+│   │   ├── evaluate.ts      Tapered eval (pawns, files, shield, mobility).
+│   │   ├── search.ts        ID + PVS + TT + quiescence + time manager;
+│   │   │                    "spectrum" root mode scores every root move.
+│   │   ├── perft.ts         Reference-count correctness harness.
+│   │   └── index.ts         FEN-in / coordinates-out facade (the only
+│   │                        module the app imports from engine/).
+│   ├── ai.ts                Persona layer: Boltzmann sampling over exact
+│   │                        root scores, bounded miss/oversight episodes,
+│   │                        conversion mode, book/style bias. Public API:
+│   │                        findBestMove / findBestMoveWithProfile.
+│   ├── legacyAi.ts          The old chess.js-walking search — benchmark
+│   │                        baseline only, never bundled.
+│   ├── evaluate.ts          Material + phase PST eval (UI eval readout).
 │   ├── bench/               searchBench harness (nodes/ms on fixed FENs).
-│   ├── aiAsync.ts           Async findBestMove (main default; optional Worker).
-│   ├── workers/             aiSearch.worker — off-thread alpha-beta + node count.
-│   ├── bitboard.ts          Compact board + attack masks used by evaluation/search.
+│   ├── aiAsync.ts           Async search host — Worker by default, with
+│   │                        FEN-echo stale guards; sync main fallback.
+│   ├── workers/             aiSearch.worker — off-thread best/persona search.
+│   ├── bitboard.ts          BigInt attack masks for UI-side insights.
 │   ├── aiProfiles.ts        Phase adaptation + resolveProfileBy* helpers.
 │   ├── motifs.ts            Tactical motif detector (fork / pin / skewer / …).
 │   ├── openings.ts          Tiny opening book + getBookTopLines for dossiers.
@@ -199,7 +213,10 @@ suite and production build.
 4. **No regressions on the perf budget** — RAF batching, debounced
    saves, deferred IO, and the memoization guards in `applyChessUi`
    stay or get faster.
-5. **`chess.js` is the legality oracle.** The custom search reasons
-   about scores; legality is never reimplemented.
+5. **`chess.js` is the legality oracle.** Crown Engine v2 generates moves
+   internally for speed, but its generator is proven equivalent to
+   chess.js by perft + cross-validation tests, and every AI move is
+   validated against `chess.moves({ verbose: true })` before it touches
+   game state. The oracle adjudicates all terminal states.
 6. **Hellenistic / Alexandrine voice and brass-and-lapis art direction
    are part of the product.** Elevate; don't modernize away.

@@ -196,6 +196,7 @@ export class GameFlow {
   private calibrationMoves = 0
   private scriptedMoveIndex = 0
   private aiThinking = false
+  private aiTurnEpoch = 0
   private aiTimer = 0
   private lastCoachTip: string | null = null
   private sanQuality: MoveQuality[] = []
@@ -720,6 +721,9 @@ export class GameFlow {
       this.aiTimer = 0
     }
     this.aiThinking = false
+    /* Invalidate any AI turn already in flight (async worker searches):
+       its host checks this epoch before committing a move. */
+    this.aiTurnEpoch++
   }
 
   refreshScene() {
@@ -1761,6 +1765,7 @@ export class GameFlow {
   }
 
   private buildAiHost(): AiTurnHost {
+    const epoch = this.aiTurnEpoch
     return {
       chess: this.chess,
       mode: this.mode,
@@ -1791,14 +1796,24 @@ export class GameFlow {
       tuneProfileForDuel: (base, diff, oid) => this.tuneProfileForDuel(base, diff, oid),
       profileMoveOpts: (profile) => this.profileMoveOpts(profile),
       openingBookPlyIndex: () => this.openingBookPlyIndex(),
+      isTurnCurrent: () => epoch === this.aiTurnEpoch,
     }
   }
 
   private executeAiTurn() {
-    this.aiThinking = false
     this.aiTimer = 0
     this.lastTacticalPulse = null
+    /* aiThinking stays true for the whole async turn so a fast player
+       cannot slip a move in while the engine is still deciding. */
+    this.aiThinking = true
+    const epoch = this.aiTurnEpoch
     void runAiTurn(this.buildAiHost())
+      .catch(() => {})
+      .finally(() => {
+        if (epoch !== this.aiTurnEpoch) return /* scene changed mid-turn */
+        this.aiThinking = false
+        if (this.chess.turn() !== this.playerColor) this.scheduleAiMove()
+      })
   }
 
   private scheduleAiMove() {
