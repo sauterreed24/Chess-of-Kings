@@ -446,10 +446,35 @@ describe('GameFlow depth systems', () => {
     expect(calibrationIdx).toBeGreaterThanOrEqual(0)
     flow.jumpToScene(0, calibrationIdx)
 
+    expect(latest?.boardGuide).toContain('Archive proof: 4 White move(s)')
+    expect(latest?.boardGuide).toContain('guard king')
+
     flow.board?.showLegalFrom(flow.chess, 'e2')
 
     expect(latest?.boardGuide).toMatch(/e2 pawn selected: 2 legal targets; no captures/)
     root.remove()
+  })
+
+  it('surfaces puzzle objectives near the board before a piece is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const puzzleIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.type === 'puzzle')
+    expect(puzzleIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch1, puzzleIdx)
+
+    expect(latest?.boardGuide).toContain('Goal:')
+    expect(latest?.boardGuide).toContain('Advance')
   })
 
   it('turns the board guide into check-defense coaching', () => {
@@ -473,7 +498,7 @@ describe('GameFlow depth systems', () => {
     flow.flushDeferredIO()
 
     expect(latest?.boardGuide).toMatch(/Check: \d+ legal repl(?:y|ies)/)
-    expect(latest?.boardGuide).toContain('Save the king: move, block, or capture.')
+    expect(latest?.boardGuide).toContain('Save king: move, block, capture.')
   })
 
   it('flushDeferredIO flushes pending UI emit and does not throw', () => {

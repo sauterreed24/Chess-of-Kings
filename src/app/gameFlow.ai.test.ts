@@ -145,12 +145,12 @@ describe('GameFlow AI / puzzles', () => {
     onChessUpdate.mockClear()
     expect(flow.startDuel('alexion', 'alexion-mentor', 'b')).toBe(true)
     /* `startDuel` emits once before AI thinking, then again with `aiThinking` — assert the first snapshot. */
-    const waitGuide = onChessUpdate.mock.calls.map((c) => c[0]).find((p) => /Wait for White/.test(p.boardGuide))
+    const waitGuide = onChessUpdate.mock.calls.map((c) => c[0]).find((p) => /White to move/.test(p.boardGuide))
     expect(waitGuide).toBeDefined()
     onChessUpdate.mockClear()
     expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
     const payloadW = onChessUpdate.mock.calls.at(-1)?.[0]
-    expect(payloadW?.boardGuide).toMatch(/Legal targets light/)
+    expect(payloadW?.boardGuide).toMatch(/Targets glow/)
   })
 
   it('adds rival-specific live aims to the default board guide', () => {
@@ -170,7 +170,7 @@ describe('GameFlow AI / puzzles', () => {
     }
 
     const rowanGuide = guideFor('rowan', 'rowan-gambit')
-    expect(rowanGuide).toMatch(/Legal targets light/)
+    expect(rowanGuide).toMatch(/Targets glow/)
     expect(rowanGuide).toMatch(/Rowan/)
     expect(rowanGuide).toMatch(/castle/)
 
@@ -198,7 +198,7 @@ describe('GameFlow AI / puzzles', () => {
     expect(freeIdx).toBeGreaterThanOrEqual(0)
     flow.jumpToScene(ch1, freeIdx)
     const payload = onChessUpdate.mock.calls.at(-1)?.[0]
-    expect(payload?.boardGuide).toMatch(/Select the side to move/)
+    expect(payload?.boardGuide).toMatch(/Select side/)
   })
 
   it('keeps the last player move insight visible after the trainer replies', async () => {

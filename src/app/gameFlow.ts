@@ -1479,29 +1479,34 @@ export class GameFlow {
 
   private boardGuideText(scene: Scene): string {
     const defaultGuide =
-      'Select a piece. Legal targets light; captures frame in bronze, check in crimson.'
+      'Select piece. Targets glow; captures bronze, check crimson.'
     const chessy = this.mode === 'duel' || this.sceneUsesBoard(scene)
     if (!chessy) return defaultGuide
     if (this.isSceneTerminalForCurrentMode() || this.chess.isGameOver()) {
-      return 'This passage is decided on the board. Continue from the manuscript when the next control is available.'
+      return 'Proof sealed. Continue when Advance appears.'
     }
     if (this.aiThinking) {
-      return 'Opponent calculating - the brass board resolves when the reply lands.'
+      return 'Opponent calculating - board resolves after reply.'
     }
     if (this.chess.turn() !== this.playerColor && scene.type !== 'freeplay') {
       const opp = this.playerColor === 'w' ? 'Black' : 'White'
       const mine = this.playerColor === 'w' ? 'White' : 'Black'
-      return `Wait for ${opp} - you command ${mine}. Legal targets return with your turn.`
+      return `${opp} to move - command ${mine}. Targets return.`
     }
     if (this.chess.inCheck()) {
       const replies = this.chess.moves().length
       const word = replies === 1 ? 'reply' : 'replies'
-      return `Check: ${replies} legal ${word}. Save the king: move, block, or capture.`
+      return `Check: ${replies} legal ${word}. Save king: move, block, capture.`
     }
     const selectionGuide = this.boardSelectionGuide()
     if (selectionGuide) return selectionGuide
+    if (scene.type === 'calibration' && this.calibrationScene) {
+      const remaining = Math.max(0, this.calibrationScene.minMovesByPlayer - this.calibrationMoves)
+      return `Archive proof: ${remaining} White move(s). Develop center; guard king.`
+    }
+    if (scene.type === 'puzzle') return 'Goal: solve proof. Advance when sealed.'
     if (scene.type === 'freeplay') {
-      return 'Select the side to move. Legal targets light; captures frame in bronze, check in crimson.'
+      return 'Select side. Targets glow; captures bronze, check crimson.'
     }
     return `${defaultGuide}${this.openingAimGuide()}`
   }
