@@ -1,13 +1,10 @@
 import { Chess } from 'chess.js'
 import type { Move } from 'chess.js'
-import {
-  findBestMoveWithProfile,
-  findRandomMove,
-  type ProfileMoveOptions,
-} from '../../chess/ai'
-import { findBestMoveAsync, getAiSearchSurface } from '../../chess/aiAsync'
+import { findRandomMove, type ProfileMoveOptions } from '../../chess/ai'
+import { findBestMoveWithProfileAsync } from '../../chess/aiAsync'
 import type { AIStyle } from '../../chess/evaluate'
 import {
+  AI_PROFILES,
   adaptProfileToPhase,
   detectGamePhase,
   resolveProfileByDuelVariant,
@@ -68,6 +65,12 @@ export type AiTurnHost = {
   ): AiProfile
   profileMoveOpts(profile?: { id: string }): ProfileMoveOptions
   openingBookPlyIndex(): number
+  /** False once the scene/turn this host was built for has been superseded. */
+  isTurnCurrent?: () => boolean
+}
+
+function turnIsStale(host: AiTurnHost): boolean {
+  return host.isTurnCurrent !== undefined && !host.isTurnCurrent()
 }
 
 export function shouldScheduleAi(opts: {
@@ -133,10 +136,16 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     }
     try {
       if (!openingPlayed) {
-        const mv = findBestMoveWithProfile(host.chess, profile, host.profileMoveOpts(profile))
+        const mv = await findBestMoveWithProfileAsync(
+          host.chess,
+          profile,
+          host.profileMoveOpts(profile),
+        )
+        if (turnIsStale(host)) return
         if (mv) host.commitEngineMove(host.chess.move(mv), soloPick)
       }
     } catch {
+      if (turnIsStale(host)) return
       try {
         const rm = findRandomMove(host.chess, host.lastAiMoveKey)
         if (rm) {
@@ -208,7 +217,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
 
     if (!lastSan) {
       try {
-        const best = findBestMoveWithProfile(
+        const best = await findBestMoveWithProfileAsync(
           host.chess,
           {
             ...profile,
@@ -217,11 +226,13 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
           },
           host.profileMoveOpts(profile),
         )
+        if (turnIsStale(host)) return
         if (best) {
           const result = host.commitEngineMove(host.chess.move(best), soloPick)
           lastSan = result.san
         }
       } catch {
+        if (turnIsStale(host)) return
         try {
           const rm = findRandomMove(host.chess, host.lastAiMoveKey)
           if (rm) {
@@ -256,15 +267,21 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     const p = host.puzzleScene
     const depth = p.opponentAiDepth ?? 2
     const style: AIStyle = p.opponentAiStyle ?? 'development'
+    /* Puzzle defenders are calibrated game content: route them through a
+       tier-matched persona (bounded human-like softness) rather than the
+       full-strength engine, which would refuse the baits puzzle solutions
+       rely on. opponentAiDepth 1/2/3+ maps to the existing court tiers. */
+    const baseProfile =
+      depth <= 1
+        ? AI_PROFILES.novice_court!
+        : depth === 2
+          ? AI_PROFILES.apprentice_court!
+          : AI_PROFILES.scholar_guard!
+    const profile = { ...baseProfile, style, thinkTimeMs: Math.min(baseProfile.thinkTimeMs, 700) }
     let played = false
     try {
-      const best = await findBestMoveAsync(
-        host.chess,
-        depth,
-        style,
-        Math.max(400, 800),
-        getAiSearchSurface(),
-      )
+      const best = await findBestMoveWithProfileAsync(host.chess, profile)
+      if (turnIsStale(host)) return
       if (best) {
         host.commitEngineMove(host.chess.move(best), soloPick)
         played = true
@@ -273,6 +290,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
       /* fall through */
     }
     if (!played) {
+      if (turnIsStale(host)) return
       try {
         const rm = findRandomMove(host.chess)
         if (rm) {
