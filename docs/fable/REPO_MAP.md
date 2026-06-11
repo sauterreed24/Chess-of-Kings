@@ -79,5 +79,9 @@ persona layer parameters (depth, temperature, drop cap, oversight rate).
 - `executeAiTurn` cleared `aiThinking` before the async turn ran (player could move mid-AI-turn) — **fixed** (flag held through turn, epoch guard).
 - Worker responses lacked a position-match guard — **fixed** (FEN echo + live-board re-validation).
 - No perft, no mate-in-N tests, no strength measurement — **added**.
-- Known remaining (documented, not in scope): `jumpToScene` stale-snapshot
-  ordering (AUDIT-2026-04 #1), no player Elo persistence, GameFlow size.
+- `jumpToScene` stale-snapshot ordering (AUDIT-2026-04 #1) — **already fixed
+  upstream**; covered by the "jumpToScene persists the destination scene
+  state" regression test in `gameFlow.ai.test.ts` (the audit doc predates
+  the fix).
+- Known remaining (documented, not in scope): no player Elo persistence,
+  GameFlow size.

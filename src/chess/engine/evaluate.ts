@@ -48,7 +48,28 @@ const ROOK_DIRS = [16, -16, 1, -1]
 const pawnFileCount = new Int32Array(16) /* [color * 8 + file] */
 const pawnRankBits = new Int32Array(16) /* bitmask of ranks per [color * 8 + file] */
 
+/* Evaluation cache. Static evaluation is position-pure (no path
+   dependence), so memoizing full evaluations by Zobrist hash is always
+   sound — only lazy-exited (window-dependent) results are never stored. */
+const EVAL_TABLE_MASK = (1 << 16) - 1
+const evalKeyLo = new Int32Array(EVAL_TABLE_MASK + 1)
+const evalKeyHi = new Int32Array(EVAL_TABLE_MASK + 1)
+const evalValue = new Int32Array(EVAL_TABLE_MASK + 1)
+const evalValid = new Uint8Array(EVAL_TABLE_MASK + 1)
+
+/** Cleared alongside the transposition table so `freshTable` searches are
+    bit-for-bit reproducible (a warm cache upgrades lazy exits to full
+    evaluations, which legitimately perturbs node counts). */
+export function clearEvalCache(): void {
+  evalValid.fill(0)
+}
+
 export function evaluate(pos: Position, alpha = -32000, beta = 32000): number {
+  const idx = pos.hashLo & EVAL_TABLE_MASK
+  if (evalValid[idx] === 1 && evalKeyLo[idx] === pos.hashLo && evalKeyHi[idx] === pos.hashHi) {
+    return evalValue[idx]!
+  }
+
   const phase = Math.min(PHASE_MAX, pos.phase)
   const taperedBase = ((pos.mg * phase + pos.eg * (PHASE_MAX - phase)) / PHASE_MAX) | 0
   const sign = pos.sideToMove === WHITE ? 1 : -1
@@ -163,7 +184,12 @@ export function evaluate(pos: Position, alpha = -32000, beta = 32000): number {
   if ((bishops & 15) >= 2) whiteExtras += BISHOP_PAIR_BONUS
   if (bishops >> 4 >= 2) whiteExtras -= BISHOP_PAIR_BONUS
 
-  return base + sign * whiteExtras
+  const full = base + sign * whiteExtras
+  evalKeyLo[idx] = pos.hashLo
+  evalKeyHi[idx] = pos.hashHi
+  evalValue[idx] = full
+  evalValid[idx] = 1
+  return full
 }
 
 function sliderMobility(

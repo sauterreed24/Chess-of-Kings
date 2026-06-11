@@ -315,6 +315,9 @@ CASTLE_ROOK_TO[0x72] = 0x73
 
 const MAX_GAME_PLY = 1024
 const UNDO_STRIDE = 16
+/** No position has more than 256 pseudo-legal moves. */
+export const MAX_MOVES = 256
+const LEGAL_SCRATCH = new Int32Array(MAX_MOVES)
 
 /* ─── Position ───────────────────────────────────────────────────────── */
 
@@ -526,15 +529,19 @@ export class Position {
 
   /* ── Move generation (pseudo-legal; legality settled by make()) ── */
 
-  /** Appends pseudo-legal moves to `out`, returns the new length. */
-  generateMoves(out: number[], capturesOnly = false): number {
+  /**
+   * Writes pseudo-legal moves into `out` starting at `base` and returns
+   * the count. Callers own the buffer (the search uses preallocated
+   * per-ply stacks so no allocation happens inside the tree).
+   */
+  generateMoves(out: Int32Array, base: number, capturesOnly = false): number {
     const board = this.board
     const us = this.sideToMove
     const them = us ^ 1
     const pawnDir = us === WHITE ? 16 : -16
     const promoRank = us === WHITE ? 7 : 0
     const doubleRank = us === WHITE ? 1 : 6
-    let n = out.length
+    let n = base
 
     for (let from = 0; from < 128; from++) {
       if ((from & 0x88) !== 0) {
@@ -548,8 +555,8 @@ export class Position {
       if (type === PAWN) {
         const oneUp = from + pawnDir
         /* Captures (including promotions and en passant). */
-        for (const side of [pawnDir - 1, pawnDir + 1]) {
-          const to = from + side
+        for (let side = 0; side < 2; side++) {
+          const to = from + (side === 0 ? pawnDir - 1 : pawnDir + 1)
           if ((to & 0x88) !== 0) continue
           const target = board[to]!
           if (target !== EMPTY && colorOf(target) === them) {
@@ -653,16 +660,16 @@ export class Position {
         }
       }
     }
-    return n
+    return n - base
   }
 
   /** Fully legal move list (filters pseudo-legal through make/unmake). */
   legalMoves(): number[] {
-    const pseudo: number[] = []
-    this.generateMoves(pseudo)
+    const count = this.generateMoves(LEGAL_SCRATCH, 0)
     const legal: number[] = []
-    for (const m of pseudo) {
-      if (this.make(m)) legal.push(m)
+    for (let i = 0; i < count; i++) {
+      const move = LEGAL_SCRATCH[i]!
+      if (this.make(move)) legal.push(move)
       this.unmake()
     }
     return legal

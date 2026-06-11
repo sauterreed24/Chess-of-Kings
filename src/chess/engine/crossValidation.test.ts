@@ -55,8 +55,10 @@ describe('Crown Engine v2 vs chess.js oracle', () => {
       const fenBefore = pos.toFen()
       const walk = (depth: number): void => {
         if (depth === 0) return
-        const moves: number[] = []
-        pos.generateMoves(moves)
+        /* Pseudo-legal on purpose: illegal makes still exercise unmake. */
+        const buffer = new Int32Array(256)
+        const count = pos.generateMoves(buffer, 0)
+        const moves = Array.from(buffer.subarray(0, count))
         for (const move of moves) {
           if (rng() < 0.55) continue
           const legal = pos.make(move)
