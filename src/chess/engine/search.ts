@@ -13,7 +13,7 @@
    The search is fully deterministic: no randomness, stable ordering.
    ────────────────────────────────────────────────────────────────────────── */
 
-import { evaluate } from './evaluate'
+import { clearEvalCache, evaluate } from './evaluate'
 import {
   moveCaptured,
   movePiece,
@@ -110,6 +110,7 @@ export function clearTranspositionTable(): void {
   ttMoveArr.fill(0)
   ttData.fill(0)
   ttGeneration = 0
+  clearEvalCache()
 }
 
 /* ─── Ordering state ─────────────────────────────────────────────────── */
@@ -146,23 +147,30 @@ let hardDeadline = Infinity
 let nodeBudget = Infinity
 let aborted = false
 
-/** Selection-order in place: pull the highest-scored remaining move to
-    index i and return it. Shared by negamax and qsearch so move ordering
-    can never drift between them. */
-function pickNext(moves: number[], scores: number[], i: number): number {
-  let bestIdx = i
-  for (let j = i + 1; j < moves.length; j++) {
-    if (scores[j]! > scores[bestIdx]!) bestIdx = j
+/* Preallocated per-ply move/score stacks: the search tree allocates
+   nothing per node, which keeps GC pauses out of the time budget. Ply p
+   owns the slice [p << 8, (p << 8) + MAX_MOVES). */
+const moveStack = new Int32Array(MAX_SEARCH_PLY << 8)
+const scoreStack = new Int32Array(MAX_SEARCH_PLY << 8)
+
+/** Selection-order in place on the shared stacks: pull the highest-scored
+    remaining move to slot `base + i` and return it. Shared by negamax and
+    qsearch so move ordering can never drift between them. */
+function pickNext(base: number, count: number, i: number): number {
+  let best = base + i
+  for (let j = base + i + 1; j < base + count; j++) {
+    if (scoreStack[j]! > scoreStack[best]!) best = j
   }
-  if (bestIdx !== i) {
-    const tm = moves[i]!
-    moves[i] = moves[bestIdx]!
-    moves[bestIdx] = tm
-    const ts = scores[i]!
-    scores[i] = scores[bestIdx]!
-    scores[bestIdx] = ts
+  if (best !== base + i) {
+    const slot = base + i
+    const tm = moveStack[slot]!
+    moveStack[slot] = moveStack[best]!
+    moveStack[best] = tm
+    const ts = scoreStack[slot]!
+    scoreStack[slot] = scoreStack[best]!
+    scoreStack[best] = ts
   }
-  return moves[i]!
+  return moveStack[base + i]!
 }
 
 function timeUp(): boolean {
@@ -190,13 +198,16 @@ function qsearch(pos: Position, alpha: number, beta: number, ply: number): numbe
   if (stand > alpha) alpha = stand
   if (stand + QUEEN_DELTA < alpha || ply >= MAX_SEARCH_PLY - 1) return alpha
 
-  const moves: number[] = []
-  pos.generateMoves(moves, true)
+  const base = ply << 8
+  const count = pos.generateMoves(moveStack, base, true)
 
   /* Selection-order by MVV-LVA. */
-  const scores = moves.map((m) => ORDER_VALUE[moveCaptured(m)]! * 32 + ORDER_VALUE[movePromotion(m)]! * 32)
-  for (let i = 0; i < moves.length; i++) {
-    const move = pickNext(moves, scores, i)
+  for (let i = 0; i < count; i++) {
+    const m = moveStack[base + i]!
+    scoreStack[base + i] = ORDER_VALUE[moveCaptured(m)]! * 32 + ORDER_VALUE[movePromotion(m)]! * 32
+  }
+  for (let i = 0; i < count; i++) {
+    const move = pickNext(base, count, i)
 
     /* Per-move delta pruning: even winning this capture cannot lift alpha. */
     if (
@@ -286,18 +297,20 @@ function negamax(
   const futile =
     depth <= 2 && !inCheck && Math.abs(alpha) < MATE_BOUND && staticEval + 130 * depth <= alpha
 
-  const moves: number[] = []
-  pos.generateMoves(moves)
+  const base = ply << 8
+  const count = pos.generateMoves(moveStack, base)
   const side = pos.sideToMove
-  const scores = moves.map((m) => scoreMove(m, ttMove, side, ply))
+  for (let i = 0; i < count; i++) {
+    scoreStack[base + i] = scoreMove(moveStack[base + i]!, ttMove, side, ply)
+  }
 
   let best = -INF
   let bestMove = 0
   let legal = 0
   const origAlpha = alpha
 
-  for (let i = 0; i < moves.length; i++) {
-    const move = pickNext(moves, scores, i)
+  for (let i = 0; i < count; i++) {
+    const move = pickNext(base, count, i)
     const quiet = moveCaptured(move) === 0 && movePromotion(move) === 0
 
     if (!pos.make(move)) {

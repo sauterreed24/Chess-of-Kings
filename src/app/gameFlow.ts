@@ -3,6 +3,7 @@ import type { Move, Square, PieceSymbol } from 'chess.js'
 import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
+import { searchFen } from '../chess/engine'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
 import type { BoardPickMode, BoardSelectionState } from '../chess/boardView'
@@ -829,7 +830,7 @@ export class GameFlow {
     const matchOutcome = this.computeMatchOutcome()
     const fen = this.chess.fen()
     const ledgerFp = ledgerContentFingerprint(this.sanLog, this.sanQuality)
-    const evalScore = chessy ? materialAndPst(this.chess, 'w') : 0
+    const evalScore = chessy ? this.evalScoreForUi(fen) : 0
     this.handlers.onChessUpdate({
       chess: this.chess,
       fen,
@@ -852,6 +853,31 @@ export class GameFlow {
       canRestoreStable: this.history.length > 1 && !this.aiThinking,
       boardGuide: this.boardGuideText(sc),
     })
+  }
+
+  /**
+   * Eval readout for the UI bar: a tiny tactically-aware engine search
+   * instead of bare material counting, so the bar no longer reads "+0.0"
+   * while a queen hangs. Memoized per position (emits happen on every
+   * selection change), bounded to a few milliseconds, mate scores clamped
+   * to the bar's display range. White-positive, in centipawns.
+   */
+  private evalUiFen = ''
+  private evalUiScore = 0
+
+  private evalScoreForUi(fen: string): number {
+    if (fen === this.evalUiFen) return this.evalUiScore
+    let score: number
+    try {
+      const result = searchFen(fen, { maxDepth: 3, maxTimeMs: 12, maxNodes: 9000 })
+      const whitePov = this.chess.turn() === 'w' ? result.score : -result.score
+      score = Math.max(-1200, Math.min(1200, whitePov))
+    } catch {
+      score = materialAndPst(this.chess, 'w')
+    }
+    this.evalUiFen = fen
+    this.evalUiScore = score
+    return score
   }
 
   dismissSessionRecoveredNotice() {

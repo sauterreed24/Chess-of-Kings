@@ -41,10 +41,12 @@ dated, and only when durable.
 
 ## Deferred (reviewed, consciously not done)
 
-- Per-node `moves[]`/`scores[]` allocations in search: preallocated
-  per-ply stacks would cut GC pressure and raise NPS further; deferred
-  because current throughput already meets budgets and the refactor
-  touches the hottest proven-correct loops.
+- ~~Per-node `moves[]`/`scores[]` allocations in search~~ — done 2026-06-11:
+  preallocated per-ply stacks (+4–6% NPS in Node, removes GC variance) and
+  a Zobrist-keyed evaluation cache (~2× NPS; cleared with the TT so
+  `freshTable` runs stay bit-reproducible). Honest note: the alloc
+  refactor alone was modest in Node (generational GC); the eval cache was
+  the real win.
 - Conversion mode is a boolean cliff at ≥500cp/endgame; a continuous
   drop-cap/temperature curve over advantage would be smoother. Cross-root
   repetition awareness already covers the worst symptom (shuffle draws).
