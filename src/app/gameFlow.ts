@@ -4,6 +4,7 @@ import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
 import { searchFen } from '../chess/engine'
+import { gradeMoveByEval } from './moveGrading'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
 import type { BoardPickMode, BoardSelectionState } from '../chess/boardView'
@@ -118,6 +119,9 @@ export type ChessUiPayload = {
   matchOutcome: MatchOutcome
   /** Centipawns from White's perspective — for the eval bar. */
   evalScore: number
+  /** White-positive eval after each ply; recap ignores it when its length drifts from `sanLog`. */
+  evalTrace: number[]
+  playerColor: 'w' | 'b'
   mentorInsight: string | null
   aiPersona: string | null
   aiFlavor: string | null
@@ -202,6 +206,9 @@ export class GameFlow {
   private aiTimer = 0
   private lastCoachTip: string | null = null
   private sanQuality: MoveQuality[] = []
+  /** White-positive engine eval after each ply (session-only; consumers
+      must ignore it whenever its length drifts from `sanLog`). */
+  private evalTrace: number[] = []
   private pendingRewards: RewardBundle[] = []
   private duelUnlockedOpponentIds: string[] = []
   private unlockedDuelVariantIds: string[] = ['alexion-mentor']
@@ -375,6 +382,7 @@ export class GameFlow {
       this.history = recovery.history
       this.sanLog = recovery.sanLog
       this.sanQuality = recovery.sanQuality
+      this.evalTrace = [] /* session-only; recap falls back gracefully */
       this.sceneTendencies = { ...snap.sceneTendencies }
       this.lastCoachTip = 'Restored'
       this.sessionRecoveredNotice = true
@@ -389,6 +397,7 @@ export class GameFlow {
     this.history = recovery.history
     this.sanLog = recovery.sanLog
     this.sanQuality = recovery.sanQuality
+      this.evalTrace = [] /* session-only; recap falls back gracefully */
     this.calibrationMoves = snap.calibrationMoves
     this.scriptedMoveIndex = snap.scriptedMoveIndex
     this.sceneTendencies = { ...snap.sceneTendencies }
@@ -669,6 +678,7 @@ export class GameFlow {
     this.history = [this.chess.fen()]
     this.sanLog = []
     this.sanQuality = []
+    this.evalTrace = []
     this.lastAiMoveKey = null
     this.lastCoachTip = null
     this.board?.setOrientation(this.playerColor)
@@ -754,6 +764,7 @@ export class GameFlow {
     this.history = []
     this.sanLog = []
     this.sanQuality = []
+    this.evalTrace = []
     this.lastAiMoveKey = null
 
     if (sc.type === 'puzzle') {
@@ -845,6 +856,8 @@ export class GameFlow {
       coachTip: this.lastCoachTip,
       matchOutcome,
       evalScore,
+      evalTrace: [...this.evalTrace],
+      playerColor: this.playerColor,
       mentorInsight: this.computeMentorInsight(),
       aiPersona: this.currentAiPersona(),
       aiFlavor: this.currentAiFlavor(),
@@ -896,6 +909,7 @@ export class GameFlow {
     this.history = [stableFen]
     this.sanLog = []
     this.sanQuality = []
+    this.evalTrace = []
     this.lastAiMoveKey = null
     this.lastTacticalPulse = null
     this.lastResolvedOutcomeKey = null
@@ -1615,11 +1629,10 @@ export class GameFlow {
     const match = moves.find((m) => m.to === to && (!promotion || m.promotion === promotion))
     if (!match) return
 
-    /* Snapshot eval before the move (from player's perspective) */
-    const evalBefore =
-      this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'duel'
-        ? materialAndPst(this.chess, this.playerColor)
-        : 0
+    /* Engine eval before the move (White-positive, memoized — normally a
+       cache hit from the last UI emit). */
+    const gradedMode = this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'duel'
+    const whiteEvalBefore = gradedMode ? this.evalScoreForUi(this.chess.fen()) : 0
 
     const last = this.chess.move({ from, to, promotion: promotion ?? match.promotion })
     if (!last) {
@@ -1649,18 +1662,21 @@ export class GameFlow {
       this.calibrationMoves++
     }
 
-    /* Move quality — compare eval before and after the player's move */
+    /* Engine-truthful move quality: both probes see the opponent's best
+       reply, so captures into recaptures grade as losses and sound
+       sacrifices stop grading as blunders. The "after" probe doubles as
+       the eval-bar value on the next emit. */
+    const whiteEvalAfter = this.evalScoreForUi(this.chess.fen())
+    this.evalTrace.push(whiteEvalAfter)
+    const threat = findHangingPiece(this.chess, piece.color)
     let playerQuality: MoveQuality = null
-    if (this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'duel') {
-      const evalAfter = materialAndPst(this.chess, this.playerColor)
-      const delta = evalAfter - evalBefore
-      let quality: MoveQuality
-      if (delta >= 200) quality = 'brilliant'
-      else if (delta >= 30) quality = 'good'
-      else if (delta >= -50) quality = 'ok'
-      else if (delta >= -100) quality = 'inaccuracy'
-      else if (delta >= -200) quality = 'mistake'
-      else quality = 'blunder'
+    if (gradedMode) {
+      const sign = this.playerColor === 'w' ? 1 : -1
+      const quality = gradeMoveByEval({
+        povBefore: sign * whiteEvalBefore,
+        povAfter: sign * whiteEvalAfter,
+        offeredGain: threat?.oppGain ?? 0,
+      })
       this.sanQuality.push(quality)
       playerQuality = quality
     } else {
@@ -1675,8 +1691,7 @@ export class GameFlow {
     /* Highest-priority real-world lesson: did this move leave material to be
      * won on the reply? Skip puzzles, where curated sacrifices are the point. */
     if (this.mode === 'match' || this.mode === 'duel' || sc.type === 'freeplay') {
-      const threat = findHangingPiece(this.chess, piece.color)
-      if (threat) this.lastCoachTip = hangingCoachTip(threat)
+      if (threat && playerQuality !== 'brilliant') this.lastCoachTip = hangingCoachTip(threat)
     }
 
     if (this.mode === 'puzzle' && this.puzzleScene && this.puzzleSolved()) {
@@ -1725,6 +1740,7 @@ export class GameFlow {
     this.sanLog.push(result.san)
     this.sanQuality.push(null)
     this.history.push(this.chess.fen())
+    this.evalTrace.push(this.evalScoreForUi(this.chess.fen()))
     this.lastAiMoveKey = moveKey(result)
     this.board?.draw(this.chess, result, drawPick)
     this.lastTacticalPulse = `${this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'Archive'} reply: ${result.san}`
@@ -1934,6 +1950,7 @@ export class GameFlow {
     this.scriptedMoveIndex = 0
     this.sanLog = []
     this.sanQuality = []
+    this.evalTrace = []
     this.lastAiMoveKey = null
     this.history = [this.chess.fen()]
     this.board?.draw(this.chess, null, {
@@ -1985,11 +2002,13 @@ export class GameFlow {
     this.history.pop()
     if (this.sanLog.length > 0) this.sanLog.pop()
     if (this.sanQuality.length > 0) this.sanQuality.pop()
+    if (this.evalTrace.length > 0) this.evalTrace.pop()
 
     if (twoStepUndo) {
       this.history.pop()
       if (this.sanLog.length > 0) this.sanLog.pop()
       if (this.sanQuality.length > 0) this.sanQuality.pop()
+    if (this.evalTrace.length > 0) this.evalTrace.pop()
     }
 
     if (this.mode === 'calibration') {
@@ -2110,6 +2129,7 @@ export class GameFlow {
     this.history = []
     this.sanLog = []
     this.sanQuality = []
+    this.evalTrace = []
     this.lastAiMoveKey = null
     this.persist()
     this.refreshScene()
