@@ -138,9 +138,9 @@ describe('renderScene', () => {
     })
 
     const traitText = dom.narrativeBody.querySelector('.ai-traits')?.textContent ?? ''
-    expect(traitText).toContain('AI Doctrine')
+    expect(traitText).toContain('Court Dossier')
     expect(traitText).toContain('Rowan Gambit Tabiya')
-    expect(traitText).toContain('Risk')
+    expect(traitText).toContain('Audacity')
     expect(dom.lessonNote.textContent).toContain('Weather the first wave')
   })
 

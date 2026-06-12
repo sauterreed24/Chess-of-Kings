@@ -42,7 +42,7 @@ export function applyChessUi(
         ? 'Defeat recorded'
         : 'Draw recorded'
     : p.aiThinking
-      ? 'AI calculating'
+      ? 'Rival pondering'
       : calibrationComplete
         ? 'Sealed'
       : `${sideToMove} turn`
@@ -103,10 +103,10 @@ export function applyChessUi(
   )
 
   if (p.aiPersona && !p.aiThinking) {
-    dom.aiPersonaEl.textContent = `Opponent intelligence profile: ${p.aiPersona}`
+    dom.aiPersonaEl.textContent = `Court dossier — ${p.aiPersona}`
     dom.aiPersonaEl.classList.remove('hidden')
   } else if (p.aiThinking && p.aiPersona) {
-    dom.aiPersonaEl.textContent = `Thinking as: ${p.aiPersona}`
+    dom.aiPersonaEl.textContent = `${p.aiPersona} is reading the board…`
     dom.aiPersonaEl.classList.remove('hidden')
   } else {
     dom.aiPersonaEl.classList.add('hidden')

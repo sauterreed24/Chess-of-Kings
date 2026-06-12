@@ -134,6 +134,13 @@ export type ChessUiPayload = {
   boardGuide: string
 }
 
+/** Conversion persona, spoken as the court would file it. */
+function conversionSchoolNoun(persona: string): string {
+  if (persona === 'technical') return 'ledger school'
+  if (persona === 'tactical') return 'sword school'
+  return 'open school'
+}
+
 export type FlowHandlers = {
   onSceneChange: (chapter: Chapter, scene: Scene, sceneIndex: number) => void
   onChessUpdate: (payload: ChessUiPayload) => void
@@ -950,13 +957,13 @@ export class GameFlow {
         this.duelSession.difficulty,
         this.duelSession.roster.opponentId,
       )
-      return `${this.duelSession.variant.label} · ${tuned.conversionPersona}`
+      return `${this.duelSession.variant.label} · ${conversionSchoolNoun(tuned.conversionPersona)}`
     }
     if (this.mode === 'match' && this.matchScene) {
       const base = resolveProfileByMatchId(this.matchScene.id)
       const phase = detectGamePhase(this.chess)
       const tuned = this.tuneProfileForMatch(adaptProfileToPhase(base, phase, this.tendencies), this.matchScene)
-      return `${this.matchScene.opponentName} · ${base.label} · ${tuned.conversionPersona}`
+      return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}`
     }
     if (this.mode === 'puzzle' && this.puzzleScene) {
       return 'Puzzle Counterplay Engine'
