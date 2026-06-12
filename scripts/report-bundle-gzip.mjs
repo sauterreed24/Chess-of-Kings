@@ -2,11 +2,11 @@ import fs from 'node:fs'
 import path from 'node:path'
 import zlib from 'node:zlib'
 
-/** Documented release budgets (see README / CHANGELOG). JS: 96 KiB since
- *  Crown Engine v2 (in-house 0x88 search core, ~4.8 KiB gzip net after the
- *  legacy chess.js-walking search left the app bundle). CSS measured
- *  ~16 KiB gzip on v0.2.14+ builds. */
-const JS_GZIP_MAX = 98304 // 96 KiB
+/** Documented release budgets (see README / CHANGELOG). JS: 98 KiB — 96 KiB
+ *  since Crown Engine v2 (in-house 0x88 search core), +2 KiB for the
+ *  retention wave (rival voice, reply cadence, run-it-back, story hooks).
+ *  CSS measured ~16 KiB gzip on v0.2.14+ builds. */
+const JS_GZIP_MAX = 100352 // 98 KiB
 const CSS_GZIP_MAX = 17600 // ~17.2 KiB — base Hellenistic sheet + Alexandrine Imperial polish layer
 
 const dir = path.join(process.cwd(), 'dist', 'assets')

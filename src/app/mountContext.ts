@@ -63,6 +63,7 @@ export type MountDomRefs = {
   recoveryControls: HTMLDivElement
   btnRecoveryRestore: HTMLButtonElement
   btnUndo: HTMLButtonElement
+  btnRunBack: HTMLButtonElement
   moveLedger: HTMLDivElement
   calibrationRail: HTMLDivElement
   calibrationTrack: HTMLDivElement

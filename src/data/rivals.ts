@@ -385,6 +385,32 @@ export function inferRivalIdFromSceneId(sceneId: string): string | null {
  *   The `seed` parameter (typically the match id timestamp) chooses
  *   which line within the bucket.
  */
+/**
+ * A rival's spoken reaction after a finished game. `playerOutcome` is from
+ * the PLAYER's perspective. Pure: identical inputs pick the same line.
+ *  - player won and is on a streak -> the rival sounds rattled
+ *  - player won                    -> the rival concedes the punishment
+ *  - draw                          -> the draw bucket
+ *  - player lost                   -> the rival gets audacious
+ */
+export function postGameTalkLine(
+  profile: RivalProfile,
+  playerOutcome: 'win' | 'loss' | 'draw',
+  playerWinStreakVsRival: number,
+  seed: number,
+): string {
+  const bucket =
+    playerOutcome === 'draw'
+      ? profile.talk.draw
+      : playerOutcome === 'win'
+        ? playerWinStreakVsRival >= 2
+          ? profile.talk.rattled
+          : profile.talk.punished
+        : profile.talk.audacious
+  if (!bucket.length) return profile.talk.opening[0] ?? ''
+  return bucket[Math.abs(seed) % bucket.length]!
+}
+
 export function selectTalkLine(
   profile: RivalProfile,
   recentWins: number,

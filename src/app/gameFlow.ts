@@ -67,7 +67,7 @@ import {
 } from '../game/rating'
 import type { LadderRating } from '../types'
 import { lossRecoveryMentorLine } from '../game/trainingTips'
-import { getRivalProfile, inferRivalIdFromSceneId, selectTalkLine } from '../data/rivals'
+import { getRivalProfile, inferRivalIdFromSceneId, postGameTalkLine, selectTalkLine } from '../data/rivals'
 import {
   DEFAULT_RIVAL_CALIBRATION,
   updateRivalCalibrationRating,
@@ -128,6 +128,8 @@ export type ChessUiPayload = {
   tacticalPulse: string | null
   sessionRecovered: boolean
   canRestoreStable: boolean
+  /** Show the one-tap rematch affordance (finished duel/match, not won). */
+  canRetry: boolean
   /** Short hint tied to turn / mode — shown as `aria-describedby` for the board. */
   boardGuide: string
 }
@@ -205,6 +207,9 @@ export class GameFlow {
   private aiTurnEpoch = 0
   private aiTimer = 0
   private lastCoachTip: string | null = null
+  /** The rival's spoken reaction to the finished game (shown on the
+      board ticker and the verdict recap). */
+  private lastRivalRemark: string | null = null
   private sanQuality: MoveQuality[] = []
   /** White-positive engine eval after each ply (session-only; consumers
       must ignore it whenever its length drifts from `sanLog`). */
@@ -665,6 +670,7 @@ export class GameFlow {
 
     this.cancelAiTimer()
     resetAiGameContext()
+    this.lastRivalRemark = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
@@ -742,6 +748,7 @@ export class GameFlow {
   refreshScene() {
     this.cancelAiTimer()
     resetAiGameContext()
+    this.lastRivalRemark = null
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
@@ -864,6 +871,9 @@ export class GameFlow {
       tacticalPulse: this.lastTacticalPulse,
       sessionRecovered: this.sessionRecoveredNotice,
       canRestoreStable: this.history.length > 1 && !this.aiThinking,
+      canRetry:
+        (this.mode === 'duel' || this.mode === 'match') &&
+        (matchOutcome === 'loss' || matchOutcome === 'draw'),
       boardGuide: this.boardGuideText(sc),
     })
   }
@@ -1355,7 +1365,55 @@ export class GameFlow {
     this.ladder = applyRatingResult(this.ladder, this.currentOpponentRating(), outcome)
     this.lastRatingDelta = this.ladder.rating - prevRating
 
+    /* Let the rival react in their own voice — they should feel like a
+       player who remembers you, not an engine with a label. */
+    const rivalId =
+      this.mode === 'duel' ? opponentId : inferRivalIdFromSceneId(sourceId) ?? ''
+    const rivalProfile = getRivalProfile(rivalId)
+    if (rivalProfile) {
+      let winStreakVsRival = 0
+      for (let i = this.matchHistory.length - 1; i >= 0; i--) {
+        const entry = this.matchHistory[i]!
+        if (entry.opponentId !== opponentId) continue
+        if (entry.outcome !== 'win') break
+        winStreakVsRival++
+        if (winStreakVsRival >= 4) break
+      }
+      const remark = postGameTalkLine(
+        rivalProfile,
+        outcome,
+        winStreakVsRival,
+        this.matchHistory.length,
+      )
+      if (remark) {
+        this.lastRivalRemark = `${opponentLabel}: “${remark}”`
+        this.lastTacticalPulse = this.lastRivalRemark
+      }
+    }
+
     this.persist()
+  }
+
+  /** Rival's post-game line for the verdict recap (null when none). */
+  getLastRivalRemark(): string | null {
+    return this.lastRivalRemark
+  }
+
+  /**
+   * One-tap "run it back" after a finished board: duels restart the same
+   * pairing; campaign scenes reload from their opening position. A loss
+   * should invite the next attempt, not a menu crawl.
+   */
+  retryCurrentBattle(): boolean {
+    if (!this.computeMatchOutcome()) return false
+    if (this.mode === 'duel') return this.rematchLastDuel()
+    if (this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'calibration') {
+      this.snapshots.clearPendingSnapshot()
+      this.lastRivalRemark = null
+      this.refreshScene()
+      return true
+    }
+    return false
   }
 
   /**

@@ -212,6 +212,7 @@ export function getShellMarkup(): string {
                   </div>
                   <div class="board-tools">
                     <button type="button" class="ghost ghost--tool" id="btn-undo" disabled>Take back</button>
+                    <button type="button" class="ghost ghost--tool" id="btn-run-back" hidden>Run it back</button>
                     <button type="button" class="ghost ghost--tool" id="btn-reset" disabled>Reset</button>
                   </div>
                   <p class="lesson-note" id="lesson-note"></p>

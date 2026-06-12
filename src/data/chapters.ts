@@ -102,7 +102,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             term: 'Stratarch Rating',
-            body: 'A public ladder of practical command, carried by schools, ministries, and archive universities. Most citizens ignore their number until a door asks for it.',
+            body: 'A public ladder of practical command, carried by schools, ministries, and archive universities. Most citizens ignore their number until a door asks for it — a posting, a tribunal seat, a marriage contract\'s fine print. Reed\'s number is about to start mattering.',
           },
           {
             term: "Reed's apartment",
@@ -564,7 +564,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           tone: 'pressure',
         },
         playerColor: 'w',
-        aiDepth: 3,
+        aiDepth: 2,
         aiStyle: 'development',
         scriptedBlackSans: ['e5', 'Nf6', 'Nc6', 'Bc5', 'O-O', 'd6', 'a6', 'Ba7', 'Be6'],
         ladderTier: 'apprentice',
@@ -676,7 +676,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'The court is watching your progress. Word reaches the senior scholars.',
+            text: 'Down the colonnade, two senior scholars stop mid-argument to watch your ledger update. One closes his notebook without finishing the line. The court has begun keeping a second set of notes — about you.',
           },
         ],
       },
@@ -937,7 +937,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'narrator',
-            text: 'Chapter I is sealed. The door to the next age stands open — romantic gambits first, then classical precision, hypermodern paradox, the Soviet machine. Each is built on what you learned here. The archive waits.',
+            text: 'Chapter I is sealed. The door to the next age stands open — romantic gambits first, then classical precision, hypermodern paradox, the Soviet machine. Each is built on what you learned here. And understand what you have done tonight: a record that stood for thirty years has been struck from the ledger, and the people who keep that ledger are now reading your file. The archive is no longer waiting. It is watching.',
           },
         ],
       },
@@ -1227,7 +1227,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'narrator',
-            text: 'Chapter II is sealed. The archive still holds classical lines, hypermodern shadows, Soviet steel, engine glare: each waiting behind its own door. For now, the forge cools. The chronicle remembers the heat.',
+            text: 'Chapter II is sealed. The archive still holds classical lines, hypermodern shadows, Soviet steel, engine glare: each behind its own door. But tonight the locks answer to someone above the curator — Alexion requested the classical chamber for you, and for the first time since the breach, the Lab said: not yet. The forge cools. The chronicle remembers the heat. Somewhere upstairs, a committee is deciding what you are.',
           },
         ],
       },
