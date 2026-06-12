@@ -11,6 +11,8 @@ import {
   resolveProfileByMatchId,
 } from '../../chess/aiProfiles'
 import { chooseOpeningBookMove } from '../../chess/openings'
+import { replyPresentationDelayMs } from './replyCadence'
+import type { CadenceMove } from './replyCadence'
 import { inferRivalIdFromSceneId } from '../../data/rivals'
 import type { BoardPickMode } from '../../chess/boardView'
 import { devWarn } from '../devLog'
@@ -73,6 +75,36 @@ function turnIsStale(host: AiTurnHost): boolean {
   return host.isTurnCurrent !== undefined && !host.isTurnCurrent()
 }
 
+/* Reply cadence is presentation only — disabled under vitest so the
+   deterministic suite never waits on theatrical pauses. */
+const CADENCE_LIVE = import.meta.env.MODE !== 'test'
+
+/**
+ * Let the rival visibly "ponder" before the move lands. The engine's own
+ * search time (since `startedMs`) counts toward the pause, so fast
+ * searches gain presence without slow ones dragging.
+ */
+async function cadencePause(
+  host: AiTurnHost,
+  move: CadenceMove,
+  thinkTimeMs: number,
+  startedMs: number,
+): Promise<void> {
+  if (!CADENCE_LIVE) return
+  const lastReply = host.chess.history({ verbose: true }).at(-1) ?? null
+  const target = replyPresentationDelayMs({
+    move,
+    lastReply: lastReply
+      ? { san: lastReply.san, captured: lastReply.captured, to: lastReply.to }
+      : null,
+    plyCount: host.sanLog.length,
+    thinkTimeMs,
+    rng: Math.random,
+  })
+  const remaining = target - (performance.now() - startedMs)
+  if (remaining > 15) await new Promise((resolve) => setTimeout(resolve, remaining))
+}
+
 export function shouldScheduleAi(opts: {
   mode: GameMode
   scene: Scene
@@ -127,6 +159,8 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
       )
       if (bookSan) {
         try {
+          await cadencePause(host, { san: bookSan, to: '' }, profile.thinkTimeMs, performance.now())
+          if (turnIsStale(host)) return
           host.commitEngineMove(host.chess.move(bookSan), soloPick)
           openingPlayed = true
         } catch {
@@ -136,13 +170,23 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     }
     try {
       if (!openingPlayed) {
+        const searchStarted = performance.now()
         const mv = await findBestMoveWithProfileAsync(
           host.chess,
           profile,
           host.profileMoveOpts(profile),
         )
         if (turnIsStale(host)) return
-        if (mv) host.commitEngineMove(host.chess.move(mv), soloPick)
+        if (mv) {
+          await cadencePause(
+            host,
+            { san: mv.san, captured: mv.captured, to: mv.to },
+            profile.thinkTimeMs,
+            searchStarted,
+          )
+          if (turnIsStale(host)) return
+          host.commitEngineMove(host.chess.move(mv), soloPick)
+        }
       }
     } catch {
       if (turnIsStale(host)) return
@@ -190,6 +234,8 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     if (shouldUseScript && script) {
       const san = script[host.getScriptedMoveIndex()]!
       try {
+        await cadencePause(host, { san, to: '' }, profile.thinkTimeMs, performance.now())
+        if (turnIsStale(host)) return
         const result = host.commitEngineMove(host.chess.move(san), soloPick)
         lastSan = result.san
         host.incrementScriptedMoveIndex()
@@ -207,6 +253,8 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
       )
       if (bookSan) {
         try {
+          await cadencePause(host, { san: bookSan, to: '' }, profile.thinkTimeMs, performance.now())
+          if (turnIsStale(host)) return
           const result = host.commitEngineMove(host.chess.move(bookSan), soloPick)
           lastSan = result.san
         } catch {
@@ -217,6 +265,7 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
 
     if (!lastSan) {
       try {
+        const searchStarted = performance.now()
         const best = await findBestMoveWithProfileAsync(
           host.chess,
           {
@@ -228,6 +277,13 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
         )
         if (turnIsStale(host)) return
         if (best) {
+          await cadencePause(
+            host,
+            { san: best.san, captured: best.captured, to: best.to },
+            profile.thinkTimeMs,
+            searchStarted,
+          )
+          if (turnIsStale(host)) return
           const result = host.commitEngineMove(host.chess.move(best), soloPick)
           lastSan = result.san
         }
@@ -280,9 +336,17 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     const profile = { ...baseProfile, style, thinkTimeMs: Math.min(baseProfile.thinkTimeMs, 700) }
     let played = false
     try {
+      const searchStarted = performance.now()
       const best = await findBestMoveWithProfileAsync(host.chess, profile)
       if (turnIsStale(host)) return
       if (best) {
+        await cadencePause(
+          host,
+          { san: best.san, captured: best.captured, to: best.to },
+          profile.thinkTimeMs,
+          searchStarted,
+        )
+        if (turnIsStale(host)) return
         host.commitEngineMove(host.chess.move(best), soloPick)
         played = true
       }

@@ -99,3 +99,19 @@ describe('inferRivalIdFromSceneId', () => {
     expect(inferRivalIdFromSceneId('c0-dialogue-only')).toBeNull()
   })
 })
+
+describe('postGameTalkLine', () => {
+  it('reacts in outcome-appropriate voice and stays pure', async () => {
+    const { getRivalProfile, postGameTalkLine } = await import('./rivals')
+    const amara = getRivalProfile('amara')!
+    const punished = postGameTalkLine(amara, 'win', 0, 7)
+    const rattled = postGameTalkLine(amara, 'win', 3, 7)
+    const audacious = postGameTalkLine(amara, 'loss', 0, 7)
+    const draw = postGameTalkLine(amara, 'draw', 0, 7)
+    expect(amara.talk.punished).toContain(punished)
+    expect(amara.talk.rattled).toContain(rattled)
+    expect(amara.talk.audacious).toContain(audacious)
+    expect(amara.talk.draw).toContain(draw)
+    expect(postGameTalkLine(amara, 'win', 0, 7)).toBe(punished)
+  })
+})

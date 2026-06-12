@@ -77,6 +77,7 @@ export function mountApp(app: HTMLDivElement) {
   const btnNextLabel = app.querySelector<HTMLSpanElement>('.btn-advance-label')!
   const btnNextHint = app.querySelector<HTMLSpanElement>('#btn-next-hint')!
   const btnUndo = app.querySelector<HTMLButtonElement>('#btn-undo')!
+  const btnRunBack = app.querySelector<HTMLButtonElement>('#btn-run-back')!
   const btnReset = app.querySelector<HTMLButtonElement>('#btn-reset')!
   const narrativeBody = app.querySelector<HTMLDivElement>('#narrative-body')!
   const sceneTag = app.querySelector<HTMLParagraphElement>('#scene-tag')!
@@ -198,6 +199,7 @@ export function mountApp(app: HTMLDivElement) {
     recoveryControls,
     btnRecoveryRestore,
     btnUndo,
+    btnRunBack,
     moveLedger,
     calibrationRail,
     calibrationTrack,
@@ -1071,6 +1073,10 @@ export function mountApp(app: HTMLDivElement) {
   })
   btnNext.addEventListener('click', advanceOrReveal)
   btnUndo.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.undo(); updateAdvance(flow) })
+  btnRunBack.addEventListener('click', () => {
+    sfx.playEventSfx('advance')
+    if (flow.retryCurrentBattle()) updateAdvance(flow)
+  })
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
 
   let advanceTicker = 0

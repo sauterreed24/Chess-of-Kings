@@ -45,6 +45,7 @@ export function buildRewardOverlayHtml(
             <li><strong>Style grade:</strong> ${styleGradeFromPayload(latestResolvedForRecap)}</li>
             <li><strong>Turning point:</strong> ${escapeHtml(turningPointLine(latestResolvedForRecap))}</li>
             <li><strong>Result:</strong> ${escapeHtml(latestResolvedForRecap.status)}</li>
+            ${flow.getLastRivalRemark() ? `<li><strong>Rival:</strong> ${escapeHtml(flow.getLastRivalRemark()!)}</li>` : ''}
           </ul>
         </div>`
     : ''
