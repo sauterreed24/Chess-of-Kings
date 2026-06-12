@@ -164,10 +164,32 @@ function traitBand(value: number): string {
   return 'low'
 }
 
+/* Archive grading vocabulary: one scale for every virtue, so a glance
+   reads like a clerk's marginal note rather than a stat sheet. */
+function traitGrade(value: number): string {
+  if (value >= 0.78) return 'fervent'
+  if (value >= 0.52) return 'tempered'
+  return 'faint'
+}
+
+/** How the rival closes a won position, in the court's own idiom. */
+const CONVERSION_SCHOOL: Record<string, string> = {
+  technical: 'Finishes by the ledger',
+  tactical: 'Finishes by the sword',
+  universal: 'Finishes by any road',
+}
+
+/**
+ * Court dossier — the archive's filed assessment of a rival's habits.
+ * Four virtues, graded the way a Hellenistic war-academy would grade an
+ * officer: Audacity (appetite for risk), Canon (fidelity to the studied
+ * line — the kanon, the measuring rod), Vigil (the watch kept over the
+ * crown), Foresight (how deep their reading runs).
+ */
 export function aiTraitBars(profile: AiProfile): string {
   const rows = [
     {
-      label: 'Risk',
+      label: 'Audacity',
       value: profile.riskAppetite,
       note:
         profile.riskAppetite >= 0.74
@@ -177,17 +199,17 @@ export function aiTraitBars(profile: AiProfile): string {
             : 'prefers structure',
     },
     {
-      label: 'Discipline',
+      label: 'Canon',
       value: profile.openingDiscipline,
       note:
         profile.openingDiscipline >= 0.78
-          ? 'keeps repertoire shape'
+          ? 'keeps the studied line'
           : profile.openingDiscipline >= 0.55
-            ? 'mostly stays on-book'
+            ? 'mostly honors the book'
             : 'will improvise early',
     },
     {
-      label: 'King safety',
+      label: 'Vigil',
       value: profile.kingSafetyUrgency,
       note:
         profile.kingSafetyUrgency >= 0.82
@@ -196,6 +218,16 @@ export function aiTraitBars(profile: AiProfile): string {
             ? 'safety with pressure'
             : 'invites fire',
     },
+    {
+      label: 'Foresight',
+      value: profile.tacticalAlertness,
+      note:
+        profile.tacticalAlertness >= 0.78
+          ? 'reads three intentions deep'
+          : profile.tacticalAlertness >= 0.5
+            ? 'sees the named threats'
+            : 'watches the loudest piece',
+    },
   ]
   const rowsHtml = rows
     .map((row) => {
@@ -203,18 +235,19 @@ export function aiTraitBars(profile: AiProfile): string {
       return `<div class="ai-trait ai-trait--${traitBand(row.value)}">
         <div class="ai-trait__head">
           <span>${escapeHtml(row.label)}</span>
-          <strong>${pct}%</strong>
+          <strong>${escapeHtml(traitGrade(row.value))}</strong>
         </div>
         <div class="ai-trait__bar" aria-hidden="true"><span style="width:${pct}%"></span></div>
         <p>${escapeHtml(row.note)}</p>
       </div>`
     })
     .join('')
-  return `<div class="ai-traits" aria-label="${escapeHtml(profile.label)} AI trait profile">
+  const school = CONVERSION_SCHOOL[profile.conversionPersona] ?? 'Finishes by any road'
+  return `<div class="ai-traits" aria-label="${escapeHtml(profile.label)} court dossier">
     <div class="ai-traits__title">
-      <span class="teach-label">AI Doctrine</span>
+      <span class="teach-label">Court Dossier</span>
       <strong>${escapeHtml(profile.label)}</strong>
-      <small>${escapeHtml(profile.conversionPersona)} conversion</small>
+      <small>${escapeHtml(school)}</small>
     </div>
     ${rowsHtml}
   </div>`

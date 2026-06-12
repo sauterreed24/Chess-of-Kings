@@ -97,9 +97,9 @@ describe('mainUiFormatters', () => {
 
   it('aiTraitBars renders escaped rival doctrine traits', () => {
     const html = aiTraitBars(AI_PROFILES.rowan_gambit)
-    expect(html).toContain('AI Doctrine')
-    expect(html).toContain('Risk')
-    expect(html).toContain('King safety')
+    expect(html).toContain('Court Dossier')
+    expect(html).toContain('Audacity')
+    expect(html).toContain('Vigil')
     expect(html).toContain('Rowan Gambit Tabiya')
     expect(html).not.toContain('<script')
   })
