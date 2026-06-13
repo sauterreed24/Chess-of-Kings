@@ -304,6 +304,15 @@ export function loadSave(): SaveData | null {
               (x.replaySans === undefined || (Array.isArray(x.replaySans) && x.replaySans.every((s) => typeof s === 'string'))) &&
               (x.replayStartFen === undefined || typeof x.replayStartFen === 'string')
             )
+          }).map((entry) => {
+            /* `accuracy` arrived after launch: absent on old saves, and a
+               hostile/corrupt value must clamp or vanish, never crash. */
+            const raw = (entry as { accuracy?: unknown }).accuracy
+            if (typeof raw === 'number' && Number.isFinite(raw)) {
+              return { ...entry, accuracy: Math.max(0, Math.min(100, Math.round(raw))) }
+            }
+            const { accuracy: _dropped, ...rest } = entry as MatchHistoryEntry & { accuracy?: unknown }
+            return rest as MatchHistoryEntry
           }).slice(-120))
         : [],
       rivalMemory: (() => {

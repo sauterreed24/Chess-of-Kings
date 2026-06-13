@@ -260,6 +260,9 @@ export interface MatchHistoryEntry {
   turningPointSan: string
   replaySans?: string[]
   replayStartFen?: string
+  /** Engine-graded precision 0–100 for the player's moves (absent on
+      short games and on entries written before this field existed). */
+  accuracy?: number
 }
 
 export type SavedMoveQuality =

@@ -2,6 +2,11 @@ import { Chess } from 'chess.js'
 import type { PieceSkinId } from '../../types'
 import { PIECE_SKIN_LABEL } from '../../chess/skins'
 import { getBookTopLines } from '../../chess/openings'
+import {
+  DUEL_DIFFICULTY_RATING_OFFSET,
+  duelOddsLabel,
+  opponentRatingFromProfile,
+} from '../../game/rating'
 import { AI_PROFILES } from '../../chess/aiProfiles'
 import { escapeHtml } from '../htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from '../chronicleReplay'
@@ -228,7 +233,18 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     const variantTraitHtml = (variantId: string) => {
       const variant = unlockedVariants.find((v) => v.id === variantId) ?? unlockedVariants[0]
       const profile = variant ? AI_PROFILES[variant.profileId] : undefined
-      return profile ? aiTraitBars(profile) : '<p class="ledger-empty">No AI trait profile is filed for this variant.</p>'
+      if (!profile) return '<p class="ledger-empty">No dossier is filed for this variant.</p>'
+      /* The ledger prices the pairing: player ladder vs the rival's filed
+         strength at the recommended pressure band. Skill stacking, visible. */
+      const band = (
+        recommendedDifficultyId === 'novice' || recommendedDifficultyId === 'relentless'
+          ? recommendedDifficultyId
+          : 'balanced'
+      ) as 'novice' | 'balanced' | 'relentless'
+      const rivalRating = opponentRatingFromProfile(profile, DUEL_DIFFICULTY_RATING_OFFSET[band])
+      const odds = duelOddsLabel(flow.getLadderRating().rating, rivalRating)
+      return `${aiTraitBars(profile)}
+        <p class="opponent-note duel-odds">The ledger gives you <strong>${escapeHtml(odds)}</strong> against this doctrine.</p>`
     }
     duelPanel.innerHTML = `
       <div class="match-card">

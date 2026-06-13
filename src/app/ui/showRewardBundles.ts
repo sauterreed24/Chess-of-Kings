@@ -9,7 +9,7 @@ import {
 } from '../mainUiFormatters'
 import { styleGradeFromPayload, turningPointLine } from '../recap/styleGrade'
 import { rankLabel, nextRankThreshold } from '../recap/rankLabels'
-import { ratingDeltaLabel } from '../../game/rating'
+import { accuracyTrend, ratingDeltaLabel } from '../../game/rating'
 import type { Announcer } from '../a11y/announcer'
 import type { SfxController } from '../audio/sfx'
 
@@ -18,7 +18,16 @@ export function buildRatingSummaryLine(flow: GameFlow): string {
   if (ladder.rated <= 0) return ''
   const delta = flow.getLastRatingDelta()
   const peak = ladder.peak > ladder.rating ? ` · peak ${ladder.peak}` : ''
-  return `<p class="chapters-lede reward-rating">Stratarch Rating: <strong>${ladder.rating}</strong> <span class="reward-rating__delta reward-rating__delta--${delta >= 0 ? 'up' : 'down'}">${escapeHtml(ratingDeltaLabel(delta))}</span>${peak}</p>`
+  const history = flow.getMatchHistory()
+  const lastAccuracy = history.at(-1)?.accuracy
+  const precision =
+    typeof lastAccuracy === 'number' ? ` · Precision ${Math.round(lastAccuracy)}%` : ''
+  const trend = accuracyTrend(history)
+  const form =
+    trend.label === 'unproven'
+      ? ''
+      : ` · Form ${trend.label}${trend.delta ? ` ${escapeHtml(ratingDeltaLabel(trend.delta))}` : ''}`
+  return `<p class="chapters-lede reward-rating">Stratarch Rating: <strong>${ladder.rating}</strong> <span class="reward-rating__delta reward-rating__delta--${delta >= 0 ? 'up' : 'down'}">${escapeHtml(ratingDeltaLabel(delta))}</span>${peak}${precision}${form}</p>`
 }
 
 export function buildRewardOverlayHtml(

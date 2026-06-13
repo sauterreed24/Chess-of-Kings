@@ -165,7 +165,7 @@ board calls `GameFlow.onMove`, the flow updates state and emits a
 | Want to add… | Touch these files |
 | --- | --- |
 | A new chapter | `data/chapters.ts` (push to `PLAYABLE_CHAPTERS`) and `data/chapters.validation.test.ts` (assertions). |
-| A new rival | `data/duelRoster.ts` (entry + variants), maybe `data/rewards.ts` (unlock), and a profile id wired through `chess/aiProfiles.ts`. |
+| A new rival | `data/duelRoster.ts` (entry + variants), maybe `data/rewards.ts` (unlock), and a profile id wired through `chess/aiProfiles.ts`. Ladder pricing, the Court Dossier card, duel odds, and precision grading all derive from the `AiProfile` fields automatically — no rating work needed. |
 | A new AI profile / school | `chess/aiProfiles.ts` (data + composition), `chess/evaluate.ts` (style bias if needed). |
 | A new piece skin | `types.ts` (`PieceSkinId` union), `chess/skins.ts` (`glyphForSkin`), `app/storage.ts` (`normalizeSkin`). |
 | A new scene type | `types.ts` (`Scene` union), `app/gameFlow.ts` (handlers), `app/ui/renderScene.ts` branch. |
