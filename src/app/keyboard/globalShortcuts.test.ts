@@ -131,6 +131,20 @@ describe('handleGlobalKey', () => {
     expect(deps.advance).not.toHaveBeenCalled()
   })
 
+  it('defers Enter to a focused control (skip-ahead, nav) instead of advancing', () => {
+    const btn = document.createElement('button')
+    btn.id = 'btn-skip-ahead'
+    document.body.appendChild(btn)
+    btn.focus()
+    const deps = makeDeps({ isLabActive: () => true, canAdvance: () => true })
+    const e = makeKey('Enter')
+    /* Not consumed: the button receives its own native activation. */
+    expect(handleGlobalKey(e, deps)).toBe(false)
+    expect(e.defaultPrevented).toBe(false)
+    expect(deps.advance).not.toHaveBeenCalled()
+    btn.remove()
+  })
+
   it('Enter is ignored when focus is inside the promotion panel', () => {
     const panel = document.createElement('div')
     panel.className = 'promo-panel'

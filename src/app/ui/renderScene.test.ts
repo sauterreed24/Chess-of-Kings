@@ -55,6 +55,7 @@ function minimalDom(): MountDomRefs {
     btnReset: q('#btn-reset'),
     btnNext: q('#btn-next'),
     btnNextHint: q('#btn-next-hint'),
+    btnSkipAhead: document.createElement('button'),
     boardStatus: q('#board-status'),
     turnPulseEl: q('#turn-pulse'),
     moveCounterEl: q('#move-counter'),
@@ -115,6 +116,40 @@ describe('renderScene', () => {
     expect(dom.narrativeBody.querySelector<HTMLElement>('.spoken-char')?.style.getPropertyValue('--char-delay')).toContain('ms')
     expect(dom.narrativeBody.querySelector('.sr-only')?.textContent).toContain('Rain threads the window')
     expect(dom.narrativeBody.textContent).toContain('A player without a method')
+    /* Onboarding accelerator: the opening prologue prose offers a one-tap
+       jump to the first board (the calibration). */
+    expect(dom.btnSkipAhead.classList.contains('hidden')).toBe(false)
+    expect(dom.btnSkipAhead.dataset.target).toBe('4')
+  })
+
+  it('hides the skip-ahead affordance on board scenes and outside the prologue', () => {
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const render = (chapter: (typeof PLAYABLE_CHAPTERS)[number], idx: number) =>
+      renderScene(chapter, chapter.scenes[idx]!, idx, dom, play, flow, {
+        setBoardVisible: () => {},
+        updateAdvance: () => {},
+        syncNarrativeFade: () => {},
+        revealBoardScene: () => {},
+      })
+    /* Prologue calibration (a board scene) — no skip. */
+    const prologue = PLAYABLE_CHAPTERS[0]!
+    const calibIdx = prologue.scenes.findIndex((s) => s.type === 'calibration')
+    render(prologue, calibIdx)
+    expect(dom.btnSkipAhead.classList.contains('hidden')).toBe(true)
+    /* A later chapter's prose — story stays intact, no skip offered. */
+    flow.highestUnlockedChapter = 1
+    flow.jumpToChapter(1)
+    expect(flow.chapterIndex).toBe(1)
+    render(PLAYABLE_CHAPTERS[1]!, 0)
+    expect(dom.btnSkipAhead.classList.contains('hidden')).toBe(true)
   })
 
   it('renders AI doctrine traits for campaign match briefings', () => {

@@ -76,6 +76,7 @@ export function mountApp(app: HTMLDivElement) {
   const btnNext = app.querySelector<HTMLButtonElement>('#btn-next')!
   const btnNextLabel = app.querySelector<HTMLSpanElement>('.btn-advance-label')!
   const btnNextHint = app.querySelector<HTMLSpanElement>('#btn-next-hint')!
+  const btnSkipAhead = app.querySelector<HTMLButtonElement>('#btn-skip-ahead')!
   const btnUndo = app.querySelector<HTMLButtonElement>('#btn-undo')!
   const btnRunBack = app.querySelector<HTMLButtonElement>('#btn-run-back')!
   const btnReset = app.querySelector<HTMLButtonElement>('#btn-reset')!
@@ -188,6 +189,7 @@ export function mountApp(app: HTMLDivElement) {
     btnReset,
     btnNext,
     btnNextHint,
+    btnSkipAhead,
     boardStatus,
     turnPulseEl,
     moveCounterEl,
@@ -1072,6 +1074,12 @@ export function mountApp(app: HTMLDivElement) {
     updateAdvance(flow)
   })
   btnNext.addEventListener('click', advanceOrReveal)
+  btnSkipAhead.addEventListener('click', () => {
+    const target = Number(btnSkipAhead.dataset.target)
+    if (!Number.isInteger(target)) return
+    sfx.playEventSfx('advance')
+    flow.jumpToScene(flow.chapterIndex, target)
+  })
   btnUndo.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.undo(); updateAdvance(flow) })
   btnRunBack.addEventListener('click', () => {
     sfx.playEventSfx('advance')
