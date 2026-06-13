@@ -50,6 +50,17 @@ function isFocusInBoardOrPromotion(): boolean {
 }
 
 /**
+ * A focused native control (button, link, select) handles its own
+ * Enter/Space activation — the global "advance the scene" shortcut must
+ * defer to it, or affordances like Skip-ahead and the top nav would be
+ * keyboard-dead (Enter would silently advance instead of activating them).
+ */
+function isFocusOnInteractiveControl(): boolean {
+  const ae = document.activeElement
+  return ae instanceof HTMLElement && ae.matches('button, a[href], select')
+}
+
+/**
  * Pure handler: returns true when the event was consumed (default
  * prevented + handled). Exported for unit tests.
  */
@@ -82,6 +93,7 @@ export function handleGlobalKey(e: KeyboardEvent, deps: GlobalShortcutDeps): boo
 
   if ((e.key === 'Enter' || e.key === ' ') && deps.isLabActive()) {
     if (isFocusInBoardOrPromotion()) return false
+    if (isFocusOnInteractiveControl()) return false
     e.preventDefault()
     if (deps.canAdvance()) {
       deps.advance()

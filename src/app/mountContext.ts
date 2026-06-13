@@ -52,6 +52,7 @@ export type MountDomRefs = {
   btnReset: HTMLButtonElement
   btnNext: HTMLButtonElement
   btnNextHint: HTMLSpanElement
+  btnSkipAhead: HTMLButtonElement
   boardStatus: HTMLSpanElement
   turnPulseEl: HTMLSpanElement
   moveCounterEl: HTMLSpanElement

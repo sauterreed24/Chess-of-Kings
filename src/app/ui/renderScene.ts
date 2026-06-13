@@ -14,6 +14,7 @@ import {
   tierLabel,
 } from '../mainUiFormatters'
 import { buildChapterRail, buildLadderTrack } from '../play/chapterRail'
+import { prosePeekSkipIndex } from '../play/skipAhead'
 import { resolveProfileByMatchId } from '../../chess/aiProfiles'
 import type { GameFlow } from '../gameFlow'
 import type { MountDomRefs, MountPlayState } from '../mountContext'
@@ -62,6 +63,19 @@ export function renderScene(
   const showBoard = flow.sceneUsesBoard(scene)
   dom.playScreen.classList.toggle('screen-play--board-scene', showBoard)
   play.pendingBoardReveal = showBoard
+  /* Onboarding accelerator: in the opening prologue only, let a reader who
+     knows the rules collapse a run of pure prose and reach the first board
+     in one tap. Never offered past the prologue (the story stays intact),
+     and never skips a puzzle/calibration/match (prosePeekSkipIndex lands
+     ON the board, not past it). */
+  const skipTarget = flow.chapterIndex === 0 ? prosePeekSkipIndex(chapter.scenes, sceneIndex) : null
+  if (skipTarget !== null) {
+    dom.btnSkipAhead.dataset.target = String(skipTarget)
+    dom.btnSkipAhead.classList.remove('hidden')
+  } else {
+    delete dom.btnSkipAhead.dataset.target
+    dom.btnSkipAhead.classList.add('hidden')
+  }
   dom.app.querySelector('#play-atelier')?.classList.toggle('play-atelier--solo', !showBoard)
   callbacks.setBoardVisible(showBoard)
   dom.narrativeBody.classList.toggle('narrative-body--dialogue', scene.type === 'dialogue')

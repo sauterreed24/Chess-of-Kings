@@ -149,6 +149,7 @@ export function getShellMarkup(): string {
                     <span class="btn-advance-label">Advance</span>
                     <span class="btn-advance-hint" id="btn-next-hint"></span>
                   </button>
+                  <button type="button" class="ghost ghost--tool ghost--skip hidden" id="btn-skip-ahead">I know the rules — straight to the board →</button>
                   <p class="narrative-kbd-hint" id="narrative-kbd-hint">Enter or Space advances off-board; arrows move board focus, Home/End jump corners, Enter or Space selects.</p>
                 </div>
               </article>
