@@ -278,3 +278,52 @@ describe('storage v3 migration and defaults', () => {
     spy.mockRestore()
   })
 })
+
+describe('matchHistory precision (accuracy) forward-compat', () => {
+  beforeEach(() => {
+    clearSave()
+    localStorage.clear()
+  })
+
+  const entry = (extra: Record<string, unknown>) => ({
+    id: 'e1',
+    timestamp: 1,
+    mode: 'duel',
+    sourceId: 'alexion-mentor',
+    opponentId: 'alexion',
+    opponentLabel: 'Alexion',
+    outcome: 'win',
+    moves: 30,
+    styleGrade: 'B',
+    turningPointSan: 'e4',
+    ...extra,
+  })
+
+  it('loads pre-precision entries without the field and keeps them', () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({ chapterIndex: 0, sceneIndex: 0, matchHistory: [entry({})] }),
+    )
+    const s = loadSave()
+    expect(s?.matchHistory).toHaveLength(1)
+    expect('accuracy' in (s!.matchHistory[0]! as object)).toBe(false)
+  })
+
+  it('clamps out-of-range precision and drops corrupt values, never crashing', () => {
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        chapterIndex: 0,
+        sceneIndex: 0,
+        matchHistory: [
+          entry({ id: 'a', accuracy: 350.7 }),
+          entry({ id: 'b', accuracy: -12 }),
+          entry({ id: 'c', accuracy: 'ninety' }),
+          entry({ id: 'd', accuracy: 76.4 }),
+        ],
+      }),
+    )
+    const s = loadSave()
+    expect(s?.matchHistory.map((m) => m.accuracy)).toEqual([100, 0, undefined, 76])
+  })
+})

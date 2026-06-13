@@ -60,7 +60,9 @@ import {
 } from '../chess/aiProfiles'
 import { detectTacticalMotifs } from '../chess/motifs'
 import {
+  accuracyFromQualities,
   applyRatingResult,
+  DUEL_DIFFICULTY_RATING_OFFSET,
   BASE_RATING,
   defaultLadderRating,
   opponentRatingFromProfile,
@@ -1319,6 +1321,7 @@ export class GameFlow {
 
     const turningPointSan = this.turningPointFromLog()
     const replay = this.replaySliceFromLog(turningPointSan)
+    const accuracy = accuracyFromQualities(this.sanQuality)
     this.matchHistory.push({
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       timestamp: Date.now(),
@@ -1333,6 +1336,7 @@ export class GameFlow {
       turningPointSan,
       replaySans: replay.sans,
       replayStartFen: replay.startFen,
+      accuracy: accuracy ?? undefined,
     })
     if (this.matchHistory.length > 120) {
       this.matchHistory.splice(0, this.matchHistory.length - 120)
@@ -1369,7 +1373,7 @@ export class GameFlow {
     }
 
     const prevRating = this.ladder.rating
-    this.ladder = applyRatingResult(this.ladder, this.currentOpponentRating(), outcome)
+    this.ladder = applyRatingResult(this.ladder, this.currentOpponentRating(), outcome, accuracy)
     this.lastRatingDelta = this.ladder.rating - prevRating
 
     /* Let the rival react in their own voice — they should feel like a
@@ -1431,13 +1435,10 @@ export class GameFlow {
   private currentOpponentRating(): number {
     if (this.mode === 'duel' && this.duelSession) {
       const base = resolveProfileByDuelVariant(this.duelSession.variant.id)
-      const offset =
-        this.duelSession.difficulty === 'relentless'
-          ? 170
-          : this.duelSession.difficulty === 'novice'
-            ? -130
-            : 0
-      return opponentRatingFromProfile(base, offset)
+      return opponentRatingFromProfile(
+        base,
+        DUEL_DIFFICULTY_RATING_OFFSET[this.duelSession.difficulty],
+      )
     }
     if (this.mode === 'match' && this.matchScene) {
       const base = resolveProfileByMatchId(this.matchScene.id)
