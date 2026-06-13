@@ -55,6 +55,7 @@ export function buildRewardOverlayHtml(
             <li><strong>Turning point:</strong> ${escapeHtml(turningPointLine(latestResolvedForRecap))}</li>
             <li><strong>Result:</strong> ${escapeHtml(latestResolvedForRecap.status)}</li>
             ${flow.getLastRivalRemark() ? `<li><strong>Rival:</strong> ${escapeHtml(flow.getLastRivalRemark()!)}</li>` : ''}
+            ${flow.getCostliestMomentLine() ? `<li><strong>Study this:</strong> ${escapeHtml(flow.getCostliestMomentLine()!)}</li>` : ''}
           </ul>
         </div>`
     : ''

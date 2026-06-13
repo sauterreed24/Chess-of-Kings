@@ -5,6 +5,7 @@ import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
+import { findCostliestMoment, plyMoveLabel } from './recap/costliestMoment'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
 import type { BoardPickMode, BoardSelectionState } from '../chess/boardView'
@@ -219,6 +220,8 @@ export class GameFlow {
   /** The rival's spoken reaction to the finished game (shown on the
       board ticker and the verdict recap). */
   private lastRivalRemark: string | null = null
+  /** The just-finished game's costliest-move lesson (session-only). */
+  private lastCostliestLine: string | null = null
   private sanQuality: MoveQuality[] = []
   /** White-positive engine eval after each ply (session-only; consumers
       must ignore it whenever its length drifts from `sanLog`). */
@@ -680,6 +683,7 @@ export class GameFlow {
     this.cancelAiTimer()
     resetAiGameContext()
     this.lastRivalRemark = null
+    this.lastCostliestLine = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
@@ -758,6 +762,7 @@ export class GameFlow {
     this.cancelAiTimer()
     resetAiGameContext()
     this.lastRivalRemark = null
+    this.lastCostliestLine = null
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
@@ -1402,12 +1407,49 @@ export class GameFlow {
       }
     }
 
+    this.lastCostliestLine = this.buildCostliestMomentLine()
+
     this.persist()
   }
 
   /** Rival's post-game line for the verdict recap (null when none). */
   getLastRivalRemark(): string | null {
     return this.lastRivalRemark
+  }
+
+  /**
+   * The just-finished game's costliest move, named with the engine's
+   * preferred alternative — the single most actionable lesson, computed
+   * from the per-ply eval trace captured during play. Session-only.
+   */
+  getCostliestMomentLine(): string | null {
+    return this.lastCostliestLine
+  }
+
+  private buildCostliestMomentLine(): string | null {
+    const moment = findCostliestMoment(this.sanLog, this.evalTrace, this.playerColor)
+    if (!moment) return null
+    const fenBefore = this.history[moment.ply]
+    let preferred: string | null = null
+    if (fenBefore) {
+      try {
+        const result = searchFen(fenBefore, { maxDepth: 6, maxTimeMs: 60, freshTable: true })
+        if (result.move) {
+          const probe = new Chess(fenBefore)
+          const played = probe.move({
+            from: result.move.from,
+            to: result.move.to,
+            promotion: result.move.promotion,
+          })
+          if (played && played.san !== moment.san) preferred = played.san
+        }
+      } catch {
+        preferred = null
+      }
+    }
+    const pawns = (moment.dropCp / 100).toFixed(1)
+    const head = `${plyMoveLabel(moment.ply)} ${moment.san} cost about ${pawns} pawns`
+    return preferred ? `${head} — the archive preferred ${preferred}.` : `${head}.`
   }
 
   /**
@@ -1421,6 +1463,7 @@ export class GameFlow {
     if (this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'calibration') {
       this.snapshots.clearPendingSnapshot()
       this.lastRivalRemark = null
+    this.lastCostliestLine = null
       this.refreshScene()
       return true
     }
