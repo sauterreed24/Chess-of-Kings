@@ -140,6 +140,7 @@ export function applyChessUi(
 
   dom.btnUndo.disabled = !p.canUndo
   dom.btnRunBack.hidden = !p.canRetry
+  dom.btnHint.hidden = !p.canHint
   const ledgerKey = `${p.sanLog.length}|${p.ledgerFp}`
   if (ledgerKey !== play.lastLedgerKey) {
     play.lastLedgerKey = ledgerKey

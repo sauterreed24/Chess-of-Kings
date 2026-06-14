@@ -53,6 +53,7 @@ function minimalDom(): MountDomRefs {
     lessonNote: q('#lesson-note'),
     coachTipEl: q('#coach-tip'),
     btnReset: q('#btn-reset'),
+    btnHint: document.createElement('button'),
     btnNext: q('#btn-next'),
     btnNextHint: q('#btn-next-hint'),
     btnSkipAhead: document.createElement('button'),

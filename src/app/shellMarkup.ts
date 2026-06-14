@@ -212,6 +212,7 @@ export function getShellMarkup(): string {
                     <div class="move-ledger" id="move-ledger" role="region" aria-labelledby="move-ledger-label"></div>
                   </div>
                   <div class="board-tools">
+                    <button type="button" class="ghost ghost--tool" id="btn-hint" hidden>Hint</button>
                     <button type="button" class="ghost ghost--tool" id="btn-undo" disabled>Take back</button>
                     <button type="button" class="ghost ghost--tool" id="btn-run-back" hidden>Run it back</button>
                     <button type="button" class="ghost ghost--tool" id="btn-reset" disabled>Reset</button>
