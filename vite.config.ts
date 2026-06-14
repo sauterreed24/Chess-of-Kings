@@ -43,7 +43,22 @@ export default defineConfig(({ command }) => ({
   build: {
     /** Skip gzip size reporting — small win for CI and local builds. */
     reportCompressedSize: false,
-    /** Main bundle is intentionally monolithic; avoid noisy warnings on ~180kB JS. */
+    /** Engine + app shell live in the index chunk; pure narrative/data is
+     *  peeled into game-data (below). Keep the warning limit relaxed. */
     chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          /* Pure narrative/data modules (type-only imports → no runtime
+             duplication). Peeling them out of the budgeted index chunk
+             reclaims gzip headroom; they still load at boot in parallel
+             via modulepreload. Keep these modules data-only so nothing
+             runtime leaks into this chunk. */
+          if (/\/src\/data\/(chapters|roadmap|rivals)\.ts$/.test(id)) {
+            return 'game-data'
+          }
+        },
+      },
+    },
   },
 }))
