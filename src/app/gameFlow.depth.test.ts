@@ -193,6 +193,42 @@ describe('GameFlow depth systems', () => {
     expect(flow.getCostliestMomentLine()).toBeNull()
   })
 
+  it('requestHint emits a teaching coach line on the player\'s turn', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const f = flow as unknown as { mode: string; playerColor: 'w' | 'b' }
+    f.mode = 'duel'
+    f.playerColor = 'w'
+    flow.chess.load('r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4')
+    onChessUpdate.mockClear()
+    flow.requestHint()
+    const payload = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(payload?.coachTip).toMatch(/^Hint — /)
+  })
+
+  it('requestHint is a no-op when it is not the player\'s turn', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const f = flow as unknown as { mode: string; playerColor: 'w' | 'b' }
+    f.mode = 'duel'
+    f.playerColor = 'w'
+    /* Black to move — not the player. */
+    flow.chess.load('rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1')
+    onChessUpdate.mockClear()
+    flow.requestHint()
+    expect(onChessUpdate).not.toHaveBeenCalled()
+  })
+
   it('records resolved outcomes into match history once', () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

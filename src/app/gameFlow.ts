@@ -1,11 +1,12 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
-import type { Move, Square, PieceSymbol } from 'chess.js'
+import type { Color, Move, Square, PieceSymbol } from 'chess.js'
 import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
 import { findCostliestMoment, plyMoveLabel } from './recap/costliestMoment'
+import { describeHint } from './play/hintReason'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
 import type { BoardPickMode, BoardSelectionState } from '../chess/boardView'
@@ -133,6 +134,8 @@ export type ChessUiPayload = {
   canRestoreStable: boolean
   /** Show the one-tap rematch affordance (finished duel/match, not won). */
   canRetry: boolean
+  /** Show the on-demand learning hint (player's turn on a live board). */
+  canHint: boolean
   /** Short hint tied to turn / mode — shown as `aria-describedby` for the board. */
   boardGuide: string
 }
@@ -888,6 +891,12 @@ export class GameFlow {
       canRetry:
         (this.mode === 'duel' || this.mode === 'match') &&
         (matchOutcome === 'loss' || matchOutcome === 'draw'),
+      canHint:
+        chessy &&
+        !this.aiThinking &&
+        !matchOutcome &&
+        !this.isSceneTerminalForCurrentMode() &&
+        this.chess.turn() === this.playerColor,
       boardGuide: this.boardGuideText(sc),
     })
   }
@@ -1415,6 +1424,48 @@ export class GameFlow {
   /** Rival's post-game line for the verdict recap (null when none). */
   getLastRivalRemark(): string | null {
     return this.lastRivalRemark
+  }
+
+  /**
+   * On-demand learning hint: highlights the piece the archive would move
+   * and explains the idea in the coach line — a nudge toward the plan, not
+   * a spelled-out answer. A bounded engine probe, off the hot path; safe to
+   * call repeatedly. No effect on the rating (the move you finally play is
+   * still graded normally).
+   */
+  requestHint(): void {
+    if (this.aiThinking || this.chess.turn() !== this.playerColor || this.chess.isGameOver()) return
+    const sc = this.currentScene()
+    if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return
+
+    let fromSquare: Square | null = null
+    let reason = 'This is the move the archive would choose.'
+    try {
+      const result = searchFen(this.chess.fen(), { maxDepth: 6, maxTimeMs: 80, freshTable: true })
+      if (result.move) {
+        const probe = new Chess(this.chess.fen())
+        const played = probe.move({
+          from: result.move.from,
+          to: result.move.to,
+          promotion: result.move.promotion,
+        })
+        if (played) {
+          fromSquare = played.from as Square
+          const opp: Color = this.playerColor === 'w' ? 'b' : 'w'
+          const underAttack = this.chess.attackers(played.from as Square, opp).length > 0
+          reason = describeHint(
+            { san: played.san, piece: played.piece, captured: played.captured },
+            underAttack,
+          )
+        }
+      }
+    } catch {
+      /* engine unavailable — fall back to the generic nudge */
+    }
+
+    if (fromSquare) this.board?.showLegalFrom(this.chess, fromSquare)
+    this.lastCoachTip = `Hint — ${reason}`
+    this.emitChess()
   }
 
   /**

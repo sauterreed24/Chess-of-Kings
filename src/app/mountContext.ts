@@ -50,6 +50,7 @@ export type MountDomRefs = {
   lessonNote: HTMLParagraphElement
   coachTipEl: HTMLParagraphElement
   btnReset: HTMLButtonElement
+  btnHint: HTMLButtonElement
   btnNext: HTMLButtonElement
   btnNextHint: HTMLSpanElement
   btnSkipAhead: HTMLButtonElement

@@ -80,6 +80,7 @@ export function mountApp(app: HTMLDivElement) {
   const btnUndo = app.querySelector<HTMLButtonElement>('#btn-undo')!
   const btnRunBack = app.querySelector<HTMLButtonElement>('#btn-run-back')!
   const btnReset = app.querySelector<HTMLButtonElement>('#btn-reset')!
+  const btnHint = app.querySelector<HTMLButtonElement>('#btn-hint')!
   const narrativeBody = app.querySelector<HTMLDivElement>('#narrative-body')!
   const sceneTag = app.querySelector<HTMLParagraphElement>('#scene-tag')!
   const chapterRail = app.querySelector<HTMLDivElement>('#chapter-rail')!
@@ -187,6 +188,7 @@ export function mountApp(app: HTMLDivElement) {
     lessonNote,
     coachTipEl,
     btnReset,
+    btnHint,
     btnNext,
     btnNextHint,
     btnSkipAhead,
@@ -1086,6 +1088,7 @@ export function mountApp(app: HTMLDivElement) {
     if (flow.retryCurrentBattle()) updateAdvance(flow)
   })
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
+  btnHint.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.requestHint() })
 
   let advanceTicker = 0
   const scheduleAdvanceTick = () => {
