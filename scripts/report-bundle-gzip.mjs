@@ -2,12 +2,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import zlib from 'node:zlib'
 
-/** Documented release budgets (see README / CHANGELOG). JS: 99 KiB — 96 KiB
- *  since Crown Engine v2 (in-house 0x88 search core), +2 KiB for the
- *  retention wave (rival voice, reply cadence, run-it-back, story hooks),
- *  +1 KiB for the post-game coach (costliest-moment review + skill ladder).
+/** Documented release budgets (see README / CHANGELOG). JS budget is
+ *  per-file: 99 KiB. The campaign narrative/data (chapters, roadmap,
+ *  rivals) is split into a `game-data` chunk via vite manualChunks, so the
+ *  `index` chunk (engine + app shell) carries ~18 KiB of headroom under the
+ *  cap; `game-data` (~18 KiB gzip) and the AI worker also sit well under it.
  *  CSS measured ~16 KiB gzip on v0.2.14+ builds. */
-const JS_GZIP_MAX = 101376 // 99 KiB
+const JS_GZIP_MAX = 101376 // 99 KiB (per file)
 const CSS_GZIP_MAX = 17600 // ~17.2 KiB — base Hellenistic sheet + Alexandrine Imperial polish layer
 
 const dir = path.join(process.cwd(), 'dist', 'assets')
