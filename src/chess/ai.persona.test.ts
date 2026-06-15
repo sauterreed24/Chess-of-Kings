@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { Chess } from 'chess.js'
-import { findBestMoveWithProfile } from './ai'
+import { clearEngineCaches, findBestMoveWithProfile } from './ai'
 import { AI_PROFILES } from './aiProfiles'
 
 describe('persona selection', () => {
@@ -65,6 +65,11 @@ describe('persona selection', () => {
   it('every persona converts KQ vs K instead of shuffling', () => {
     /* A won endgame must end in mate, not the fifty-move rule. */
     for (const profileId of ['novice_court', 'veteran_scholar', 'counterpart_apex']) {
+      /* Each game starts with fresh engine caches, exactly as the real game
+         does via resetAiGameContext() — without this the persistent
+         transposition table carries state from earlier tests and the
+         conversion path becomes suite-ordering dependent. */
+      clearEngineCaches()
       const chess = new Chess('8/8/8/4k3/8/8/4Q3/4K3 w - - 0 1')
       let lastAiKey: string | null = null
       for (let plyIndex = 0; plyIndex < 80 && !chess.isGameOver(); plyIndex++) {
