@@ -8,6 +8,7 @@ import {
   performanceDeltaLines,
 } from '../mainUiFormatters'
 import { styleGradeFromPayload, turningPointLine } from '../recap/styleGrade'
+import { buildEvalArcSvg } from '../recap/evalArc'
 import { rankLabel, nextRankThreshold } from '../recap/rankLabels'
 import { accuracyTrend, ratingDeltaLabel } from '../../game/rating'
 import type { Announcer } from '../a11y/announcer'
@@ -47,9 +48,17 @@ export function buildRewardOverlayHtml(
       return `<div class="reward-card"><h4>${escapeHtml(b.sourceLabel)}</h4><ul>${rows}</ul></div>`
     })
     .join('')
+  const evalArc = latestResolvedForRecap
+    ? buildEvalArcSvg({
+        sanLog: latestResolvedForRecap.sanLog,
+        evalTrace: latestResolvedForRecap.evalTrace,
+        playerColor: latestResolvedForRecap.playerColor,
+      })
+    : null
   const recap = latestResolvedForRecap
     ? `<div class="reward-card">
           <h4>Verdict Recap</h4>
+          ${evalArc ?? ''}
           <ul>
             <li><strong>Style grade:</strong> ${styleGradeFromPayload(latestResolvedForRecap)}</li>
             <li><strong>Turning point:</strong> ${escapeHtml(turningPointLine(latestResolvedForRecap))}</li>
