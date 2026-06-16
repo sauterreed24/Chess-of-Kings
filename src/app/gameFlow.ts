@@ -1192,15 +1192,20 @@ export class GameFlow {
     const tiltStreak = opponentId ? this.recentLossStreak(opponentId) : 0
     const antiTiltRelief = tiltStreak >= 2 ? Math.min(0.14, tiltStreak * 0.04) : 0
     if (difficulty === 'novice') {
+      /* The Forgiving band must be genuinely forgiving: a near-beginner
+         should win roughly half their entry duels, not get walled. The
+         persona model still guarantees legal moves and bounded mistakes
+         (never a queen-hang, never a walk into mate), so a high blunder
+         rate reads as a beatable human, not a broken one. */
       return {
         ...tunedBase,
         searchDepth: Math.max(1, tunedBase.searchDepth - 1),
         thinkTimeMs: Math.max(260, tunedBase.thinkTimeMs - 260 - Math.round(120 * (rivalryRelief + antiTiltRelief))),
-        blunderRate: Math.min(0.36, tunedBase.blunderRate + 0.09 + rivalryRelief * 0.2 + antiTiltRelief * 0.2),
-        tacticalAlertness: Math.max(0.2, tunedBase.tacticalAlertness - 0.14 - rivalryRelief * 0.2 - antiTiltRelief),
+        blunderRate: Math.min(0.45, tunedBase.blunderRate + 0.22 + rivalryRelief * 0.2 + antiTiltRelief * 0.2),
+        tacticalAlertness: Math.max(0.16, tunedBase.tacticalAlertness - 0.3 - rivalryRelief * 0.2 - antiTiltRelief),
         conversionStrictness: Math.max(
-          0.2,
-          tunedBase.conversionStrictness - 0.18 - rivalryRelief * 0.2 - antiTiltRelief * 0.9,
+          0.16,
+          tunedBase.conversionStrictness - 0.34 - rivalryRelief * 0.2 - antiTiltRelief * 0.9,
         ),
       }
     }
