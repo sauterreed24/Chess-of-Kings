@@ -703,10 +703,13 @@ export function mountApp(app: HTMLDivElement) {
     chapterRail.classList.add('hidden')
     chapterRail.innerHTML = ''
     manuscriptPanel.classList.remove('manuscript-panel--with-rail')
-    play.showEvalBar = false
-    evalBarWrap.classList.add('hidden')
-    capturedTop.classList.add('hidden')
-    capturedBot.classList.add('hidden')
+    /* A duel is a full rated game vs a rival, same as a campaign match —
+       show the engine-truthful eval bar and captured material so the
+       learning feedback is consistent across both. */
+    play.showEvalBar = true
+    evalBarWrap.classList.remove('hidden')
+    capturedTop.classList.remove('hidden')
+    capturedBot.classList.remove('hidden')
     capturedTop.innerHTML = ''
     capturedBot.innerHTML = ''
     calibrationRail.classList.add('hidden')
