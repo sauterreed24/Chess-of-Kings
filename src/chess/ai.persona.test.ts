@@ -72,9 +72,15 @@ describe('persona selection', () => {
       clearEngineCaches()
       const chess = new Chess('8/8/8/4k3/8/8/4Q3/4K3 w - - 0 1')
       let lastAiKey: string | null = null
-      for (let plyIndex = 0; plyIndex < 80 && !chess.isGameOver(); plyIndex++) {
+      /* A generous think budget so the (tiny, 3-piece) search always
+         completes its depth target rather than being wall-clock-bounded —
+         otherwise full-suite CPU load lowers the reached depth, the
+         conversion drifts, and the result becomes machine-speed dependent.
+         Cap stays under the 100-ply fifty-move draw for KQ-vs-K. */
+      const profile = { ...AI_PROFILES[profileId]!, thinkTimeMs: 800 }
+      for (let plyIndex = 0; plyIndex < 90 && !chess.isGameOver(); plyIndex++) {
         if (chess.turn() === 'w') {
-          const move = findBestMoveWithProfile(chess, AI_PROFILES[profileId]!, {
+          const move = findBestMoveWithProfile(chess, profile, {
             avoidMoveKey: lastAiKey,
           })
           expect(move).not.toBeNull()

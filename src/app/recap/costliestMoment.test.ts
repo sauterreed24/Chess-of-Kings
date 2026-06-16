@@ -54,6 +54,15 @@ describe('findCostliestMoment', () => {
     expect(findCostliestMoment(['e4'], [Number.NaN], 'w')).toBeNull()
   })
 
+  it('never flags White\'s first move (no measurable pre-game baseline)', () => {
+    /* A White game from a lopsided start: ply 0 must not be graded, even
+       though the post-move eval is far from zero. */
+    const sanLog = ['Qxa8', 'e5', 'Nf3', 'Nc6', 'Bc4', 'd6']
+    const evalTrace = [900, 880, 890, 885, 895, 890]
+    const m = findCostliestMoment(sanLog, evalTrace, 'w')
+    expect(m).toBeNull()
+  })
+
   it('formats ply move labels for both colors', () => {
     expect(plyMoveLabel(0)).toBe('1.')
     expect(plyMoveLabel(1)).toBe('1...')

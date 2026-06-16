@@ -148,7 +148,8 @@ export function accuracyTrend(history: ReadonlyArray<{ accuracy?: number }>): Fo
       values.push(entry.accuracy)
     }
   }
-  if (values.length < 4) return { delta: null, label: 'unproven' }
+  /* Need a full three-vs-three window; fewer is too noisy to label. */
+  if (values.length < 6) return { delta: null, label: 'unproven' }
   const recent = values.slice(-3)
   const prior = values.slice(-6, -3)
   const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length
