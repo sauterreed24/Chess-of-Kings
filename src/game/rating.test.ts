@@ -208,6 +208,12 @@ describe('form trend and odds', () => {
     const { accuracyTrend } = await import('./rating')
     expect(accuracyTrend([]).label).toBe('unproven')
     expect(accuracyTrend([{ accuracy: 70 }, {}, { accuracy: NaN }]).label).toBe('unproven')
+    /* Needs a full three-vs-three window: 4 and 5 samples are still unproven. */
+    expect(accuracyTrend([60, 70, 80, 90].map((a) => ({ accuracy: a }))).label).toBe('unproven')
+    expect(accuracyTrend([60, 70, 80, 90, 95].map((a) => ({ accuracy: a }))).label).toBe('unproven')
+    expect(accuracyTrend([60, 70, 80, 90, 95, 99].map((a) => ({ accuracy: a }))).label).not.toBe(
+      'unproven',
+    )
   })
 
   it('detects rising and settling form from recent precision', async () => {

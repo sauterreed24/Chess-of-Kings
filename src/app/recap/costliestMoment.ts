@@ -33,9 +33,13 @@ export function findCostliestMoment(
   const sign = playerColor === 'w' ? 1 : -1
   const playerMovesOnEven = playerColor === 'w' /* ply 0 is White's first move */
   let best: CostliestMoment | null = null
-  for (let i = 0; i < sanLog.length; i++) {
+  /* Start at ply 1: the first ply has no measurable "before" eval in the
+     trace, and a move from the opening can't be graded without a pre-game
+     baseline — which also keeps this correct for games that start from a
+     lopsided custom FEN (we never assume the opening was equal). */
+  for (let i = 1; i < sanLog.length; i++) {
     if ((i % 2 === 0) !== playerMovesOnEven) continue
-    const before = (i === 0 ? 0 : evalTrace[i - 1]!) * sign
+    const before = evalTrace[i - 1]! * sign
     const after = evalTrace[i]! * sign
     if (!Number.isFinite(before) || !Number.isFinite(after)) continue
     const drop = before - after
