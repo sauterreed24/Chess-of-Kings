@@ -45,7 +45,7 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (san === 'O-O' || san === 'O-O-O') {
-    if (doctrine) return `King housed vs ${doctrine}. Make the attack pay.`
+    if (doctrine) return `King housed — ${doctrine} respects a safe king. Now make the shelter pay.`
     return 'King housed. Put a rook on a file.'
   }
 
@@ -83,7 +83,7 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (move.piece === 'p' && CENTER_SQUARES.has(move.to)) {
-    if (doctrine) return `Center claimed vs ${doctrine}. Back it with a knight or bishop.`
+    if (doctrine) return `Center claimed — hold it against ${doctrine}, and back it with a minor.`
     return 'Center claimed. Back it with a knight or bishop.'
   }
 
@@ -91,7 +91,7 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
     (move.piece === 'n' || move.piece === 'b') &&
     (playerColor === 'w' ? WHITE_BACK_RANK_MINORS : BLACK_BACK_RANK_MINORS).has(move.from)
   ) {
-    if (doctrine) return `Developed vs ${doctrine}. Finish the rest before moving twice.`
+    if (doctrine) return `Developed — ${doctrine} punishes a half-built army. Finish the rest before you move it twice.`
     return 'Minor piece developed. Finish the rest before moving it twice.'
   }
 
@@ -112,7 +112,7 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   }
 
   if (input.quality === 'ok') {
-    if (doctrine) return `Held vs ${doctrine}. Improve worst piece or name next threat.`
+    if (doctrine) return `Held against ${doctrine}. Improve your worst piece, or name the next threat.`
     return 'Held. Improve worst piece or name the next threat.'
   }
 
