@@ -178,11 +178,13 @@ export function applyChessUi(
     b?.setCheckSquare(null)
   }
 
-  /* Coach tip */
-  if ((p.coachTip || p.mentorInsight) && !p.aiThinking) {
+  /* Coach tip — your move's feedback stays up while the rival ponders
+     (that's your reading window); GameFlow clears it when the rival
+     replies, so it never lingers as stale advice. */
+  if (p.coachTip || p.mentorInsight) {
     dom.coachTipEl.textContent = p.mentorInsight ?? p.coachTip ?? ''
     dom.coachTipEl.classList.remove('hidden')
-  } else if (!p.coachTip && !p.mentorInsight) {
+  } else {
     dom.coachTipEl.classList.add('hidden')
   }
 

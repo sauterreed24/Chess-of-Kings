@@ -220,6 +220,10 @@ export class GameFlow {
   private aiTurnEpoch = 0
   private aiTimer = 0
   private lastCoachTip: string | null = null
+  /** True when lastCoachTip is a "your piece can be won" threat warning,
+      which must clear when the rival replies (it goes stale) rather than
+      persist like a general move insight. */
+  private lastCoachTipIsThreat = false
   /** The rival's spoken reaction to the finished game (shown on the
       board ticker and the verdict recap). */
   private lastRivalRemark: string | null = null
@@ -1850,13 +1854,19 @@ export class GameFlow {
     const motifs = detectTacticalMotifs(this.chess, last, piece.color)
     this.lastTacticalPulse = this.tacticalPulseFromMove(last, playerQuality, motifs)
 
-    /* Coaching follows player moves across every board mode. */
+    /* Coaching follows player moves across every board mode. General move
+       insight persists after the rival replies (the player's reading
+       window); a threat warning does not — see commitEnginePliesOrThrow. */
     this.lastCoachTip = this.computeCoachTip(last, piece.color, playerQuality)
+    this.lastCoachTipIsThreat = false
 
     /* Highest-priority real-world lesson: did this move leave material to be
      * won on the reply? Skip puzzles, where curated sacrifices are the point. */
     if (this.mode === 'match' || this.mode === 'duel' || sc.type === 'freeplay') {
-      if (threat && playerQuality !== 'brilliant') this.lastCoachTip = hangingCoachTip(threat)
+      if (threat && playerQuality !== 'brilliant') {
+        this.lastCoachTip = hangingCoachTip(threat)
+        this.lastCoachTipIsThreat = true
+      }
     }
 
     if (this.mode === 'puzzle' && this.puzzleScene && this.puzzleSolved()) {
@@ -1909,6 +1919,15 @@ export class GameFlow {
     this.lastAiMoveKey = moveKey(result)
     this.board?.draw(this.chess, result, drawPick)
     this.lastTacticalPulse = `${this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'Archive'} reply: ${result.san}`
+    /* A "your knight on d8 can be won" threat warning is about the rival's
+       immediate reply; once they have moved (often capturing the very piece
+       it named) it is stale, so clear it. General move insight is kept — the
+       player's reading window — and refreshes on their next move. The reply
+       pulse above carries what the rival actually did. */
+    if (this.lastCoachTipIsThreat) {
+      this.lastCoachTip = null
+      this.lastCoachTipIsThreat = false
+    }
     return result
   }
 

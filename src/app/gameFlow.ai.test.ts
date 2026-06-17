@@ -280,6 +280,38 @@ describe('GameFlow AI / puzzles', () => {
     expect(tip).toMatch(/bishop on c4/)
   })
 
+  it('clears a "piece can be won" warning once the rival replies (no stale advice)', async () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 2
+    expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
+    /* White on move with a bishop able to walk onto a square a black pawn
+       attacks; reset the session log so tryPlayerMove is consistent. */
+    flow.chess.load('rnbqkbnr/p1pppppp/8/1p6/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2')
+    const f = flow as unknown as { sanLog: string[]; history: string[]; evalTrace: number[] }
+    f.sanLog = []
+    f.history = [flow.chess.fen()]
+    f.evalTrace = []
+    onChessUpdate.mockClear()
+
+    flow.tryPlayerMove('f1', 'c4') // hangs the bishop to the b5 pawn
+    const warned = onChessUpdate.mock.calls.at(-1)?.[0]?.coachTip
+    expect(warned).toMatch(/can be won/)
+
+    await vi.advanceTimersByTimeAsync(2000) // rival replies
+    const afterReply = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(flow.chess.turn()).toBe('w')
+    expect(afterReply?.tacticalPulse).toMatch(/reply:/)
+    /* The warning must not linger — the rival may have just taken the piece. */
+    expect(afterReply?.coachTip ?? '').not.toMatch(/can be won/)
+  })
+
   it('stays quiet when the developing move is safe', () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
