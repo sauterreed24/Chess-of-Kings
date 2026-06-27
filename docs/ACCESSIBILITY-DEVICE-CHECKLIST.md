@@ -36,6 +36,7 @@ Use this checklist before release candidates that touch input handling, overlays
 - Launch from home screen opens the app shell (`start_url`/`scope` behavior).
 - Privacy link and "Back to game" link resolve correctly under `/Chess-of-Kings/`.
 - After first load online, a follow-up launch with network disabled still shows app shell.
+- Board scenes on iPhone-class viewports (e.g. 390×844) show the full 8×8 grid without bottom ranks cut off; home-indicator safe area remains clear.
 
 ## Evidence to capture in PRs
 

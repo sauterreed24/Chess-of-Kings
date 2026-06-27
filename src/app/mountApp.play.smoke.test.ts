@@ -284,6 +284,49 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     }
   })
 
+  it('anchors the board reveal on compact viewports to the board stage', async () => {
+    const originalScroll = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+    const originalMatchMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia')
+    const scrollIntoView = vi.fn()
+    Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView })
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        matches: query.includes('700px'),
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+        onchange: null,
+      })),
+    })
+
+    try {
+      const app = boot()
+      app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+      app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+      const next = app.querySelector<HTMLButtonElement>('#btn-next')!
+      for (let i = 0; i < 5; i++) next.click()
+      next.click()
+      await new Promise((resolve) => window.requestAnimationFrame(resolve))
+      await new Promise((resolve) => window.requestAnimationFrame(resolve))
+      const boardStage = app.querySelector<HTMLElement>('#board-stage')!
+      expect(scrollIntoView).toHaveBeenCalled()
+      const boardCalls = scrollIntoView.mock.calls.filter((args) => {
+        const el = scrollIntoView.mock.contexts[scrollIntoView.mock.calls.indexOf(args)] as Element | undefined
+        return el === boardStage
+      })
+      expect(boardCalls.some((args) => args[0]?.block === 'nearest')).toBe(true)
+    } finally {
+      if (originalScroll) Object.defineProperty(Element.prototype, 'scrollIntoView', originalScroll)
+      else delete (Element.prototype as unknown as { scrollIntoView?: unknown }).scrollIntoView
+      if (originalMatchMedia) Object.defineProperty(window, 'matchMedia', originalMatchMedia)
+      else delete (window as typeof window & { matchMedia?: unknown }).matchMedia
+    }
+  })
+
   it('shows storage failure banner when streak persist fails at boot', () => {
     const original = Storage.prototype.setItem
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (this: Storage, key: string, value: string) {

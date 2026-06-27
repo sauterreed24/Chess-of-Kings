@@ -3494,6 +3494,14 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
     min-height: 100svh;
   }
 
+  @supports (height: 100dvh) {
+    html,
+    body,
+    #app {
+      min-height: 100dvh;
+    }
+  }
+
   .top-bar {
     justify-content: center;
     height: 50px;
@@ -3717,6 +3725,11 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
   .echo-controls .ghost {
     flex: 1 1 auto;
     min-height: 3rem;
+  }
+
+  .screen-play--board-scene :is(.board-brass, .board-wrap) {
+    max-width: var(--mobile-board-max, 100%);
+    margin-inline: auto;
   }
 }
 
