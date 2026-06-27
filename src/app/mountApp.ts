@@ -25,6 +25,7 @@ import { applyChessUi as applyChessUiImpl } from './ui/applyChessUi'
 import { renderScene as renderSceneUi } from './ui/renderScene'
 import { showRewardBundles as showRewardBundlesUi } from './ui/showRewardBundles'
 import { renderDuelUi as renderDuelUiUi } from './ui/renderDuelUi'
+import { COMPACT_MEDIA_QUERY, createMobileBoardFitController } from './mobileBoardFit'
 
 const SFX_PREF_KEY = 'cok-sfx-enabled'
 const MOVE_GUARD_PREF_KEY = 'cok-move-guard'
@@ -153,6 +154,8 @@ export function mountApp(app: HTMLDivElement) {
       screenCtl.setShellBackdropInert(confirmInertRestore, open, [confirmOverlay, liveAnnouncer])
     },
   })
+  const mobileBoardFit = createMobileBoardFitController({ playScreen, boardStage, labOverlay })
+  mobileBoardFit.attach()
   let storageFailureAnnounced = false
   function showStorageFailureBanner() {
     storageFailureBanner.classList.remove('hidden')
@@ -434,6 +437,7 @@ export function mountApp(app: HTMLDivElement) {
     flow.board?.setMoveGuard(moveGuardEnabled)
     syncTitleButtons()
     focusWithoutScroll(btnVestibule)
+    window.requestAnimationFrame(() => mobileBoardFit.apply())
   }
 
   function closeLab() {
@@ -447,6 +451,7 @@ export function mountApp(app: HTMLDivElement) {
     shell.classList.remove('shell--lab')
     flow.stopDuel()
     flow.setLastScreen('chapters')
+    mobileBoardFit.apply()
   }
 
   function closeLabIfActive() {
@@ -842,15 +847,16 @@ export function mountApp(app: HTMLDivElement) {
   function revealBoardScene() {
     window.requestAnimationFrame(() => {
       const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-      const compact = window.matchMedia?.('(max-width: 700px), (max-width: 1024px) and (max-height: 700px)').matches
+      const compact = window.matchMedia?.(COMPACT_MEDIA_QUERY).matches
       if (!compact) playScreen.scrollTop = 0
-      const target = compact ? boardPanel : moveLedger
+      const target = compact ? boardStage : moveLedger
       if (!target || typeof target.scrollIntoView !== 'function') return
       try {
-        target.scrollIntoView({ block: compact ? 'start' : 'end', behavior: reduce ? 'auto' : 'smooth' })
+        target.scrollIntoView({ block: compact ? 'nearest' : 'end', behavior: reduce ? 'auto' : 'smooth' })
       } catch {
         target.scrollIntoView(true)
       }
+      window.requestAnimationFrame(() => mobileBoardFit.apply())
     })
   }
 
