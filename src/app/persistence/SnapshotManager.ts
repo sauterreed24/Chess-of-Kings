@@ -94,12 +94,14 @@ export class SnapshotManager {
       this.persistTimer = null
     }
     const base = saveProvider()
+    const inProgress = buildInProgressSnapshot(snapshotProvider())
     const data: SaveData = {
       version: 3,
       ...base,
-      inProgress: buildInProgressSnapshot(snapshotProvider()),
+      inProgress,
     }
     if (!writeSave(data)) this.onPersistFailure()
+    if (inProgress !== null) this.setPendingSnapshot(inProgress)
   }
 
   /** Cancel any scheduled debounced write without flushing. */

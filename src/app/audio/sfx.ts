@@ -43,6 +43,7 @@ export type SfxEvent =
   | 'castle'
   | 'promotion'
   | 'unlock'
+  | 'hint'
 
 export interface SfxController {
   /** True when SFX are user-enabled. */
@@ -165,6 +166,7 @@ export function createSfxController(opts: SfxControllerOptions): SfxController {
         castle: { freq: 240, dur: 0.09, type: 'square' },
         promotion: { freq: 540, dur: 0.11, type: 'triangle' },
         unlock: { freq: 600, dur: 0.16, type: 'triangle' },
+        hint: { freq: 420, dur: 0.07, type: 'sine' },
       }
       const cue = cues[event]
       const now = c.currentTime

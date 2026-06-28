@@ -208,10 +208,11 @@ describe('createSfxController', () => {
     sfx.playEventSfx('castle')
     sfx.playEventSfx('promotion')
     sfx.playEventSfx('unlock')
+    sfx.playEventSfx('hint')
     const freqs = fake.oscillators.map(
       (o) => o.frequency.setValueAtTime.mock.calls[0]![0] as number,
     )
-    expect(freqs).toEqual([220, 320, 520, 250, 240, 540, 600])
+    expect(freqs).toEqual([220, 320, 520, 250, 240, 540, 600, 420])
   })
 
   it('playEventSfx is silent when disabled', () => {

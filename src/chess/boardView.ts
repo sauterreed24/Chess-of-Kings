@@ -655,6 +655,20 @@ export class BoardView {
     this.cells.get(from)?.focus()
   }
 
+  /** Coaching hint: highlight exactly one suggested destination, not every legal move. */
+  showHintMove(chess: Chess, from: Square, to: Square) {
+    const legal = chess.moves({ square: from, verbose: true }).some((m) => m.to === to)
+    if (!legal) {
+      this.showLegalFrom(chess, from)
+      return
+    }
+    this.selected = from
+    this.legalTargets.clear()
+    this.legalTargets.add(to)
+    this.updateHighlights()
+    this.cells.get(from)?.focus()
+  }
+
   private updateHighlights() {
     const ch = this.pendingChess
     for (const [sq, btn] of this.cells) {
