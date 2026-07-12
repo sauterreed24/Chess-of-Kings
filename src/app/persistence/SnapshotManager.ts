@@ -95,9 +95,9 @@ export class SnapshotManager {
     }
     const base = saveProvider()
     const live = buildInProgressSnapshot(snapshotProvider())
-    /* Preserve a pending recovery snapshot across idle shell navigations
-       (title/chapters/duel). Live board sessions still overwrite it; explicit
-       clearPendingSnapshot() discards recovery after resume/jump/new game. */
+    /* Keep memory and disk aligned: live board progress becomes the pending
+       recovery snapshot; idle navigations keep the last pending recovery. */
+    if (live) this.pendingInProgressSnapshot = live
     const data: SaveData = {
       version: 3,
       ...base,

@@ -165,6 +165,15 @@ describe('SnapshotManager', () => {
     const data = vi.mocked(writeSave).mock.calls[0]![0]
     expect(data.inProgress).toEqual(snap)
   })
+
+  it('promotes live board progress into the pending recovery snapshot', () => {
+    const mgr = new SnapshotManager({ syncIo: true })
+    expect(mgr.getPendingSnapshot()).toBeNull()
+    mgr.persist(() => saveBase(), defaultCtx)
+    const pending = mgr.getPendingSnapshot()
+    expect(pending?.sanLog).toEqual(['e4'])
+    expect(vi.mocked(writeSave).mock.calls[0]![0].inProgress?.sanLog).toEqual(['e4'])
+  })
 })
 
 describe('buildInProgressSnapshot', () => {

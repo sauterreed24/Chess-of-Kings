@@ -397,11 +397,13 @@ export function mountApp(app: HTMLDivElement) {
   function syncMvpFlag() {
     mvpFlag.textContent = flow.chapter3Complete
       ? 'Chapters I–III are inscribed. Daily Calculus and the Duel Archive remain open.'
-      : flow.chapter2Complete
-        ? 'Chapters I and II are inscribed in your save. Resume reopens the chronicle.'
-        : flow.chapter1Complete
-          ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
-          : ''
+      : flow.chapter3ReflectionComplete
+        ? 'Chapter III reflection is inscribed. Finish the rehearsal to claim the classical seal.'
+        : flow.chapter2Complete
+          ? 'Chapters I and II are inscribed in your save. Resume reopens the chronicle.'
+          : flow.chapter1Complete
+            ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
+            : ''
   }
 
   function syncTitleRating() {
@@ -502,8 +504,45 @@ export function mountApp(app: HTMLDivElement) {
     mobileBoardFit.apply()
   }
 
-  function closeLabIfActive() {
-    if (labOverlay.classList.contains('lab-overlay--active')) closeLab()
+  /**
+   * Returns a boolean immediately when no dialog is needed so top-nav / vestibule
+   * stay synchronous. Only returns a Promise when a confirm dialog is open.
+   */
+  function confirmLeaveLabIfNeeded(): boolean | Promise<boolean> {
+    const labOpen = labOverlay.classList.contains('lab-overlay--active')
+    if (!labOpen) return true
+    const mustConfirm =
+      flow.isInDuelMode() || flow.hasUnsavedPassageProgress() || flow.hasRecoverableSession()
+    if (!mustConfirm) return true
+    return confirmDialogCtl.open(
+      flow.isInDuelMode() ? CONFIRM_COPY.replaceRecoveredSession : CONFIRM_COPY.leaveLabSession,
+    )
+  }
+
+  function closeLabIfActive(): boolean | Promise<boolean> {
+    if (!labOverlay.classList.contains('lab-overlay--active')) return true
+    const ok = confirmLeaveLabIfNeeded()
+    if (ok === false) return false
+    if (ok === true) {
+      closeLab()
+      return true
+    }
+    return ok.then((confirmed) => {
+      if (!confirmed) return false
+      closeLab()
+      return true
+    })
+  }
+
+  function afterLeaveLab(next: () => void): void {
+    const result = closeLabIfActive()
+    if (typeof result === 'boolean') {
+      if (result) next()
+      return
+    }
+    void result.then((ok) => {
+      if (ok) next()
+    })
   }
 
   function setNavActive(active: 'title' | 'chapters' | 'duel' | null) {
@@ -1094,8 +1133,7 @@ export function mountApp(app: HTMLDivElement) {
     isLabActive: () => labOverlay.classList.contains('lab-overlay--active'),
     closeRewardOverlay,
     exitLab: () => {
-      closeLab()
-      showChapters()
+      afterLeaveLab(showChapters)
     },
     canAdvance: () => flow.canAdvance(),
     advance: advanceOrReveal,
@@ -1120,21 +1158,20 @@ export function mountApp(app: HTMLDivElement) {
     showChapters()
   })
   btnTitle.addEventListener('click', () => {
-    closeLabIfActive()
-    showTitle()
+    afterLeaveLab(showTitle)
   })
   btnChapters.addEventListener('click', () => {
-    closeLabIfActive()
-    showChapters()
+    afterLeaveLab(showChapters)
   })
   btnDuel.addEventListener('click', () => {
-    closeLabIfActive()
-    showDuel()
+    afterLeaveLab(showDuel)
   })
   btnChaptersBack.addEventListener('click', () => {
     showTitle()
   })
-  btnVestibule.addEventListener('click', () => { closeLab(); showChapters() })
+  btnVestibule.addEventListener('click', () => {
+    afterLeaveLab(showChapters)
+  })
   btnSfx.addEventListener('click', () => {
     sfx.setEnabled(!sfx.enabled)
     writePreference(SFX_PREF_KEY, sfx.enabled ? '1' : '0')
@@ -1193,9 +1230,14 @@ export function mountApp(app: HTMLDivElement) {
     updateAdvance(flow)
   })
   btnNext.addEventListener('click', advanceOrReveal)
-  btnSkipAhead.addEventListener('click', () => {
+  btnSkipAhead.addEventListener('click', async () => {
     const target = Number(btnSkipAhead.dataset.target)
     if (!Number.isInteger(target)) return
+    const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+    if (mustConfirm) {
+      const ok = await confirmDialogCtl.open(CONFIRM_COPY.replaceRecoveredSession)
+      if (!ok) return
+    }
     sfx.playEventSfx('advance')
     flow.jumpToScene(flow.chapterIndex, target)
   })

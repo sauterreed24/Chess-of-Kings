@@ -507,6 +507,18 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     app.querySelector<HTMLButtonElement>('#btn-confirm-ok')?.click()
     await Promise.resolve()
     expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    const afterOk = JSON.parse(localStorage.getItem('calculus-of-kings-progress-v3') || '{}')
+    // Daily Calculus replaces the old recovery with the new daily puzzle session.
+    expect(afterOk.inProgress).toMatchObject({
+      mode: 'puzzle',
+      chapterIndex: daily!.chapterIndex,
+      sceneIndex: daily!.sceneIndex,
+    })
+    expect(afterOk.inProgress).not.toMatchObject({
+      mode: 'calibration',
+      chapterIndex: 0,
+      sceneIndex: calIdx,
+    })
   })
 
   it('resets Stratarch Rating on confirmed new chronicle', async () => {
