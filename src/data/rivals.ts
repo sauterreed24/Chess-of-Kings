@@ -356,6 +356,43 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  kallistos: {
+    opponentId: 'kallistos',
+    displayName: 'Kallistos',
+    blend: {
+      primary: { school: 'Achaemenid Patience', weight: 70 },
+      secondary: { school: 'Egyptian Symmetry', weight: 30 },
+    },
+    counterPrep: [
+      'Name your pawn break before move 12 and prepare it; Kallistos vetoes improvisation that creates weak squares.',
+      'Trade a pair of minor pieces if she plants an outpost knight — leaving it forever is how quiet positions become lost ones.',
+      'Do not chase ghosts on the flank while her center remains flexible; prophylaxis works both ways.',
+    ],
+    whiteOpenings: ['Exchange Ruy Lopez', 'Quiet Italian with d3', 'Queen\'s Gambit Declined systems'],
+    blackOpenings: ['Berlin-structure solidity', 'Orthodox Queen\'s Gambit Declined', 'Caro-Kann classical'],
+    signature: 'Prophylactic waits that make the opponent\'s only plan illegal a move early.',
+    talk: {
+      opening: [
+        'I am here to see whether you can stop an idea before it is born.',
+        'Structure first. Spark later, if the ledger allows it.',
+      ],
+      punished: [
+        'You vetoed the break. That is classical manners.',
+        'Good. The outpost never arrived.',
+      ],
+      rattled: [
+        'You are reading one move deeper than I filed for a student.',
+        'The professor\'s law bends. Rare.',
+      ],
+      audacious: [
+        'You left a weak square for entertainment. I will collect rent.',
+        'Hope is not a plan. The outpost is.',
+      ],
+      draw: [
+        'A draw can be a correctly administered refusal.',
+      ],
+    },
+  },
 }
 
 /**

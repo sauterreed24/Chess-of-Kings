@@ -144,7 +144,7 @@ Play-test hardening on top of v0.2.14:
 - **Duel screen a11y** — title and chapters screens are `inert` and `aria-hidden` while the Duel Archive is active.
 - **Daily Calculus** — confirm dialog when abandoning a recoverable in-progress session (play-smoke locked).
 - **SFX** — capture-promotion and check/mate promotion SAN precedence tests (`exd8=N`, `exd8=Q+`, `axb8=R#`).
-- **Tests.** **495** automated tests (Pass 5 — v0.3.1).
+- **Tests.** Automated suite behind `quality:gate` (Pass 6 — v0.4.0).
 
 ---
 
@@ -362,9 +362,10 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 
 **Next (prioritized)**
 
-- **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening (`searchBench`, phase PST, `aiAsync`).
-- **Pass 5 (shipped v0.3.1)** — `RewardGrantService`, `aiTurnController`, and `aiSearch.worker` (enable with `localStorage.setItem('cok-ai-worker','1')`).
-- **Pass 3 deep (content)** — tune opening repertoires into measurable preference biases inside `chess/openings.ts` (talk lines already prefix live match/duel flavor).
+- **Pass 6 (shipped v0.4.0)** — see [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md). Continuity (Lukas/Marius rematches, loss recaps), calibration honesty, settings toggles, compact **Chapter III**, playtest checklist.
+- **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening.
+- **Pass 5 (shipped v0.3.1)** — `RewardGrantService`, `aiTurnController`, and `aiSearch.worker` (title **AI Thread** setting, or `localStorage` `cok-ai-worker`).
+- **Chapters IV–IX** — locked teasers remain; next content wave after classical plateau.
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
 ---
@@ -383,7 +384,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 
 **[Reed Sauter](https://github.com/sauterreed24)** is a self-taught developer and game builder. He ships narrative, systems-heavy web games in strict TypeScript — campaign progression, opponent-specific AI, accessibility-first UI, and deterministic test gates — without leaning on a heavyweight front-end framework.
 
-**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack, rival doctrine, post-loss coaching, PWA installability, and **495** automated tests behind every release.
+**The Calculus of Kings** is his flagship open-source portfolio piece: a story-driven chess RPG built in public with a custom search stack, rival doctrine, post-loss coaching, PWA installability, and a deterministic `quality:gate` behind every release.
 
 **Skills this repo demonstrates**
 

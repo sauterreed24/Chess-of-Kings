@@ -43,9 +43,12 @@ export function applyRewardToInventory(state: RewardInventoryState, reward: Rewa
 
 export function matchRivalUnlockId(matchId: string): string {
   if (matchId.includes('amara')) return 'amara'
+  if (matchId.includes('lukas')) return 'lukas'
   if (matchId.includes('edred')) return 'edred'
+  if (matchId.includes('marius')) return 'marius'
   if (matchId.includes('rowan')) return 'rowan'
   if (matchId.includes('vega')) return 'vega'
+  if (matchId.includes('kallistos')) return 'kallistos'
   if (matchId.includes('boss') || matchId.includes('demetrios')) return 'alexion'
   return ''
 }

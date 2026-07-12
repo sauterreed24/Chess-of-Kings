@@ -31,8 +31,11 @@ describe('DUEL_ROSTER profile wiring', () => {
 
   it('keeps visible rival variants aligned with their authored AI identities', () => {
     expect(variantProfile('edred', 'edred-guard')).toBe('scholar_guard')
+    expect(variantProfile('lukas', 'lukas-phalanx')).toBe('apprentice_court')
+    expect(variantProfile('marius', 'marius-patience')).toBe('veteran_scholar')
     expect(variantProfile('rowan', 'rowan-gambit')).toBe('rowan_gambit')
     expect(variantProfile('vega', 'vega-italian')).toBe('vega_italian')
+    expect(variantProfile('kallistos', 'kallistos-law')).toBe('kallistos_classical')
   })
 
   it('feeds the Duel Archive opening watchlist from the intended rival books', () => {

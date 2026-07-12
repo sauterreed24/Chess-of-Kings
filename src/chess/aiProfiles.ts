@@ -178,6 +178,22 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.76, positional: 0.8, sacrificial: 0.48, prophylactic: 0.86 },
     motifBias: { fork: 0.56, pin: 0.92, skewer: 0.74, kingHunt: 0.7 },
   },
+  kallistos_classical: {
+    id: 'kallistos_classical',
+    label: 'Kallistos Classical Law',
+    style: 'classical',
+    searchDepth: 4,
+    thinkTimeMs: 1200,
+    blunderRate: 0.04,
+    riskAppetite: 0.22,
+    tacticalAlertness: 0.8,
+    openingDiscipline: 0.95,
+    kingSafetyUrgency: 0.92,
+    conversionStrictness: 0.9,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.55, positional: 0.96, sacrificial: 0.18, prophylactic: 0.99 },
+    motifBias: { fork: 0.42, pin: 0.88, skewer: 0.7, kingHunt: 0.28 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -197,6 +213,7 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('rowan')) return AI_PROFILES.rowan_gambit
   if (matchId.includes('vega')) return AI_PROFILES.vega_italian
   if (matchId.includes('marius')) return AI_PROFILES.veteran_scholar
+  if (matchId.includes('kallistos')) return AI_PROFILES.kallistos_classical
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
   return AI_PROFILES.apprentice_court
@@ -209,6 +226,7 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('veteran')) return AI_PROFILES.veteran_scholar
   if (variantId.includes('rowan')) return AI_PROFILES.rowan_gambit
   if (variantId.includes('vega')) return AI_PROFILES.vega_italian
+  if (variantId.includes('kallistos')) return AI_PROFILES.kallistos_classical
   return AI_PROFILES.apprentice_court
 }
 

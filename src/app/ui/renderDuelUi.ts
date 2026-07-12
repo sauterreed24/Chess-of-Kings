@@ -12,7 +12,10 @@ import { escapeHtml } from '../htmlEscape'
 import { buildReplayFens, formatEchoTimeline, renderEchoBoardFen } from '../chronicleReplay'
 import { createEchoReplayTimer } from '../chronicleEchoTimer'
 import { deriveCalibrationLens } from '../duel/calibrationLens'
-import { formatRivalCalibrationLabel } from '../duel/rivalCalibration'
+import {
+  formatRivalCalibrationLabel,
+  sanitizeRivalCalibrationRating,
+} from '../duel/rivalCalibration'
 import { getRivalProfile } from '../../data/rivals'
 import { aiTraitBars } from '../mainUiFormatters'
 import type { GameFlow } from '../gameFlow'
@@ -292,6 +295,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
               Mastery Trial
             </button>
           </div>
+          <p class="opponent-note" id="duel-band-status" aria-live="polite">Lens suggests ${recommendedDifficulty} — selected.</p>
           <p class="mastery-trial-hint opponent-note">Mastery Trial locks the Relentless band for one match and the highest-tier skin unlock path.</p>
         </div>
         <div class="dossier-stat-grid" aria-label="Duel history">
@@ -331,7 +335,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <li><strong>Weakness map:</strong> ${escapeHtml(weaknessMap)}</li>
             <li><strong>Recommended pressure band:</strong> ${recommendedDifficulty}</li>
             ${rivalMem ? `<li><strong>Rival memory:</strong> ${rivalMem.games} logged games · adaptation intensity ${(Math.min(100, (rivalMem.punishedFlankPushes + rivalMem.punishedEarlyQueen + rivalMem.punishedCheckSpam) * 3)).toFixed(0)}%</li>` : ''}
-            ${rivalMem?.games ? `<li><strong>Archive calibration:</strong> ${rivalMem.calibrationRating} (${formatRivalCalibrationLabel(rivalMem.calibrationRating)})</li>` : ''}
+            <li><strong>Archive rating:</strong> ${sanitizeRivalCalibrationRating(rivalMem?.calibrationRating)} (${formatRivalCalibrationLabel(sanitizeRivalCalibrationRating(rivalMem?.calibrationRating))})</li>
           </ul>
         </div>
         <div class="reward-card">
@@ -351,6 +355,20 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     })
     const diffSelect = duelPanel.querySelector<HTMLSelectElement>('#duel-difficulty')
     if (diffSelect) diffSelect.value = recommendedDifficultyId
+    const bandStatusEl = duelPanel.querySelector<HTMLParagraphElement>('#duel-band-status')
+    const bandLabel = (id: string) =>
+      id === 'relentless' ? 'Relentless' : id === 'novice' ? 'Forgiving' : 'Balanced'
+    const syncBandStatus = () => {
+      if (!bandStatusEl || !diffSelect) return
+      const selected = diffSelect.value
+      if (selected === recommendedDifficultyId) {
+        bandStatusEl.textContent = `Lens suggests ${recommendedDifficulty} — selected.`
+        return
+      }
+      bandStatusEl.textContent = `Lens suggests ${recommendedDifficulty}; you chose ${bandLabel(selected)}.`
+    }
+    syncBandStatus()
+    diffSelect?.addEventListener('change', syncBandStatus)
     const variantSelect = duelPanel.querySelector<HTMLSelectElement>('#duel-variant')
     const openingWatchEl = duelPanel.querySelector<HTMLUListElement>('#duel-opening-watch')
     const traitEl = duelPanel.querySelector<HTMLDivElement>('#duel-ai-traits')
@@ -379,6 +397,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
       const colorSel = duelPanel.querySelector<HTMLSelectElement>('#duel-color')
       if (colorSel) colorSel.value = recommendedDifficultyId === 'novice' ? 'w' : 'b'
       updateOpeningWatch()
+      syncBandStatus()
     })
     for (const btnEcho of [...duelPanel.querySelectorAll<HTMLButtonElement>('.duel-echo-btn')]) {
       btnEcho.addEventListener('click', () => {

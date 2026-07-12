@@ -40,6 +40,20 @@ describe('rival opening bias', () => {
     expect(rivalOpeningWeightBoost('vega', 1, 'Nf6')).toBeGreaterThan(rivalOpeningWeightBoost('vega', 1, 'e5'))
     expect(rivalOpeningWeightBoost('vega', 7, 'O-O')).toBeGreaterThan(rivalOpeningWeightBoost('vega', 7, 'Be7'))
     expect(rivalOpeningWeightBoost('demetrios', 1, 'd5')).toBeGreaterThan(rivalOpeningWeightBoost('demetrios', 1, 'c5'))
+    expect(rivalOpeningWeightBoost('alexion', 1, 'd5')).toBeGreaterThan(rivalOpeningWeightBoost('alexion', 1, 'e5'))
+    expect(rivalOpeningWeightBoost('kallistos', 5, 'Be7')).toBeGreaterThan(rivalOpeningWeightBoost('kallistos', 5, 'Nf6'))
+  })
+
+  it('boosts Alexion Caro/QGD d5 over e5 after 1.e4', () => {
+    const c = new Chess()
+    c.move('e4')
+    const samples: Record<string, number> = { d5: 0, e5: 0 }
+    for (let i = 0; i < 80; i++) {
+      const clone = new Chess(c.fen())
+      const san = chooseOpeningBookMove(clone, 'alexion_mentor', 1, 'alexion')
+      if (san && san in samples) samples[san]!++
+    }
+    expect(samples.d5).toBeGreaterThan(samples.e5)
   })
 
   it('keeps signature Rowan and Vega replies sticky under live rival bias', () => {

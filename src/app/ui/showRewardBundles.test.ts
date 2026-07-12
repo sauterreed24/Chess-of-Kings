@@ -49,10 +49,33 @@ describe('showRewardBundles html', () => {
     const flow = createRewardFlowWithoutHistory()
     const html = buildRewardOverlayHtml(flow, [], null)
 
-    expect(html).toContain('New files, the hinge of the match, and the next seal.')
+    expect(html).toContain('the hinge of the match and the next seal')
     expect(html).toContain('Why It Mattered')
     expect(html).toContain('reveal your risk, tempo, and finish pattern')
     expect(html).toContain('>Advance</button>')
+  })
+
+  it('frames empty-bundle loss recaps as Result Inscribed with Quick Rematch for duels', () => {
+    const flow = {
+      getRankPoints: () => 40,
+      getLadderRating: () => ({ rating: 820, peak: 840, rated: 2 }),
+      getLastRatingDelta: () => -12,
+      getAdaptiveTrainingPlan: () => ['Revisit king safety before the next file.'],
+      getLatestMatchHistoryEntry: () => ({
+        mode: 'duel',
+        outcome: 'loss',
+        timestamp: Date.now(),
+        opponentId: 'amara',
+      }),
+      getMatchHistory: () => [],
+      getLastRivalRemark: () => null,
+      getCostliestMomentLine: () => null,
+    } as unknown as GameFlow
+    const html = buildRewardOverlayHtml(flow, [], null)
+    expect(html).toContain('Result Inscribed')
+    expect(html).toContain('rating movement')
+    expect(html).toContain('btn-reward-rematch')
+    expect(html).toContain('Quick Rematch')
   })
 
   it('shows the next rank seal as a concrete RP target', () => {

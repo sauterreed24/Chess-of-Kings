@@ -70,7 +70,18 @@ export function buildRewardOverlayHtml(
     : ''
   const trainingFocus = flow.getAdaptiveTrainingPlan().map((line) => `<li>${escapeHtml(line)}</li>`).join('')
   const last = flow.getLatestMatchHistoryEntry()
-  const canQuickRematch = last?.mode === 'duel' && last.outcome === 'win'
+  const canQuickRematch = last?.mode === 'duel' && (last.outcome === 'win' || last.outcome === 'loss' || last.outcome === 'draw')
+  const isLossOrDraw = last?.outcome === 'loss' || last?.outcome === 'draw'
+  const heroHeading = bundles.length
+    ? 'Rewards Inscribed'
+    : isLossOrDraw
+      ? 'Result Inscribed'
+      : 'Verdict Inscribed'
+  const heroCopy = bundles.length
+    ? 'New files, the hinge of the match, and the next seal.'
+    : isLossOrDraw
+      ? 'The court records the verdict, your rating movement, and the next training focus.'
+      : 'The court records the hinge of the match and the next seal.'
   const hist = flow.getMatchHistory()
   const deltaLines = last
     ? performanceDeltaLines(hist, last).map((line) => `<li>${escapeHtml(line)}</li>`).join('')
@@ -88,8 +99,8 @@ export function buildRewardOverlayHtml(
         <div class="reward-hero">
           <span class="reward-hero__sigil" aria-hidden="true">✦</span>
           <div>
-            <p class="section-heading">Rewards Inscribed</p>
-            <p class="reward-hero__copy">New files, the hinge of the match, and the next seal.</p>
+            <p class="section-heading">${heroHeading}</p>
+            <p class="reward-hero__copy">${heroCopy}</p>
           </div>
         </div>
         ${recap}
@@ -133,9 +144,21 @@ export function showRewardBundles(
   announcer: Announcer,
   callbacks: ShowRewardBundlesCallbacks,
 ): void {
-  if (!bundles.length) return
-  sfx.playEventSfx('reward')
-  announcer.say(ANNOUNCE_TEMPLATES.rewardsInscribed)
+  const last = flow.getLatestMatchHistoryEntry()
+  const hasRecap = Boolean(latestResolvedForRecap) || Boolean(last)
+  if (!bundles.length && !hasRecap) return
+  if (bundles.length) {
+    sfx.playEventSfx('reward')
+    announcer.say(ANNOUNCE_TEMPLATES.rewardsInscribed)
+  } else {
+    announcer.say(
+      last?.outcome === 'loss'
+        ? ANNOUNCE_TEMPLATES.matchLoss
+        : last?.outcome === 'draw'
+          ? ANNOUNCE_TEMPLATES.matchDraw
+          : ANNOUNCE_TEMPLATES.rewardsInscribed,
+    )
+  }
   const overlayHtml = buildRewardOverlayHtml(flow, bundles, latestResolvedForRecap)
   callbacks.openRewardOverlay(overlayHtml, (root) => {
     root.querySelector<HTMLButtonElement>('#btn-reward-rematch')?.addEventListener('click', () => {

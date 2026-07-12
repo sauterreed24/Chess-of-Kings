@@ -1,9 +1,10 @@
 import type { Chapter } from '../types'
 
 /**
- * Playable campaign: Prologue + Chapter I + Chapter II (Romantic arc).
+ * Playable campaign: Prologue + Chapter I + Chapter II (Romantic) + Chapter III (Classical).
  * Chapter I: six-rung ladder (Initiate → … → Counterpart).
  * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
+ * Chapter III: compact Classical arc — Demetrios return + Kallistos + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -1227,7 +1228,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'narrator',
-            text: 'Chapter II is sealed. The archive still holds classical lines, hypermodern shadows, Soviet steel, engine glare: each behind its own door. But tonight the locks answer to someone above the curator — Alexion requested the classical chamber for you, and for the first time since the breach, the Lab said: not yet. The forge cools. The chronicle remembers the heat. Somewhere upstairs, a committee is deciding what you are.',
+            text: 'Chapter II is sealed. The forge cools, and the chronicle remembers the heat. The classical chamber opens next: structure, weak squares, prophylaxis — the Professor\'s Law. Beyond it, hypermodern shadows and later steel still wait behind locked doors. Somewhere upstairs, a committee is deciding what you are.',
           },
         ],
       },
@@ -1250,6 +1251,281 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Romantic skill is pattern recognition under noise; repetition turns noise back into signal.',
           concept: 'The ladder tested you; the sandbox lets you steal back intuition cheaply.',
+        },
+      },
+    ],
+  },
+
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER III — The Professor's Law (Classical ladder — compact)
+     Prophylaxis, weak squares, Demetrios return + Kallistos.
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch3',
+    index: 3,
+    title: 'Chapter III',
+    subtitle: "The Professor's Law",
+    era: 'Classical truth — structure before spark',
+    themeClass: 'theme-classical',
+    philosophy: 'Stop the opponent\'s idea one move before it is born. Beauty that ignores structure is only noise.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c3-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'Fire cools into law',
+          body: 'Romantic tempo got Reed through the forge. Classical doctrine asks whether he can govern a position without needing drama to feel progress.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The chamber walls turn from forge-ember to pale stone. Files look longer. Weak squares feel like accusations. The pieces have not changed; the excuses have.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'Welcome to classical truth. Here, players win by preventing the opponent\'s plan, not by inventing a louder one. Prophylaxis is not fear — it is authorship.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So I stop attacking?',
+          },
+          {
+            speaker: 'alexion',
+            text: 'You stop attacking without a reason. You will meet Demetrios again — older in doctrine, not softer — and then Kallistos, who teaches the board to refuse your favorite mistakes before you make them.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c3-codex-law',
+        heading: "The Professor's Law — structure, outposts, prophylaxis",
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'Prevention is a move',
+          body: 'Classical court doctrine files three tools: the weak square, the outpost, and the quiet move that denies the opponent\'s only idea.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'Weak squares',
+            body: 'A square the opponent can no longer defend with a pawn becomes a lodging for a piece. If you create one in your own camp, you have written an invitation. If you create one in theirs, you have written a plan.',
+          },
+          {
+            term: 'Outposts',
+            body: 'A knight on a protected square that cannot be kicked by a pawn is not a decoration — it is a tax the opponent pays every move. Build the outpost; then force them to live with it.',
+          },
+          {
+            term: 'Prophylaxis',
+            body: 'Ask what they want. Then make that idea illegal. The best classical move often looks quiet because it stole the loud reply before it existed.',
+          },
+          {
+            term: 'Restraint',
+            body: 'Classical conversion prefers small edges and clean trades over speculative storms. If the endgame is good, do not invent a middlegame crisis to feel brave.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c3-puzzle-prophylaxis',
+        title: 'Puzzle — finish with geometry',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The quiet file is already loaded',
+          body: 'Classical attacks often look late: the pieces are already where they need to be. Finish without noise.',
+          tone: 'pressure',
+        },
+        fen: '6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'Black\'s back rank is undefended. The rook already owns the open file — one classical stroke ends the story.',
+        teaching: {
+          threat: 'If you dawdle, Black can make luft with ...h6 or ...g6 and the geometry evaporates.',
+          goalPlain: 'Deliver checkmate in one move using the open e-file.',
+          whyItWorks:
+            'Classical mating patterns punish neglected back ranks. Prophylaxis for Black would have been a pawn move; you punish the omission.',
+          concept: 'Geometry over noise — the file was the plan.',
+        },
+      },
+      {
+        type: 'dialogue',
+        id: 'c3-after-puzzle',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'The archive prefers clean ends',
+          body: 'Reed learns that classical beauty is often a single forced geometry, not a speech.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'Clean. No checks for their own sake. That restraint is already classical discipline.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Demetrios is waiting again?',
+          },
+          {
+            speaker: 'alexion',
+            text: 'As examiner, not as the Chapter I ladder\'s final mask. He will test whether your structures survive cross-examination.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c3-before-demetrios',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The library returns',
+          body: 'Demetrios brings synthesis into a classical classroom: development, restraint, and a refusal to gift tempos.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'demetrios',
+            text: 'You have learned fire. Show me whether you can govern a position when nothing is on fire.',
+          },
+          {
+            speaker: 'reed',
+            text: 'That sounds like a trap dressed as patience.',
+          },
+          {
+            speaker: 'demetrios',
+            text: 'Patience is the trap. Play as if every pawn move writes law.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c3-match-demetrios-return',
+        title: 'Encounter 1 of 2 — The Returning Examiner',
+        opponentName: 'Demetrios',
+        opponentNote:
+          'Classical examiner — disciplined development, central restraint, and prophylactic replies. Do not lose tempi to pawn moves before move 15.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Survive the quiet cross-examination',
+          body: 'Demetrios wins when you invent drama in a position that only needed accuracy. Keep structure; answer threats before they grow a name.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'classical',
+        ladderTier: 'veteran',
+        difficulty: 3,
+      },
+      {
+        type: 'dialogue',
+        id: 'c3-after-demetrios',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'The examiner nods once',
+          body: 'A classical win does not always feel like a triumph. Sometimes it feels like the board agreeing with you.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'demetrios',
+            text: 'Adequate. You did not donate a weak square for entertainment.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'One more rung. Kallistos is the Professor\'s Law made personal — prophylaxis as manners.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c3-before-kallistos',
+        storyBeat: {
+          label: 'Boss pressure',
+          title: 'The professor does not raise her voice',
+          body: 'Kallistos wins by making your intended plan illegal a move early. If you feel smothered, you are being taught.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'kallistos',
+            text: 'I am not here to entertain the gallery. I am here to see whether you can stop an idea before it is born.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I miss it?',
+          },
+          {
+            speaker: 'kallistos',
+            text: 'Then the outpost arrives, the file opens, and you will wonder when the game left you. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c3-match-kallistos',
+        title: 'Encounter 2 of 2 — The Professor',
+        opponentName: 'Kallistos',
+        opponentNote:
+          'Classical prophylaxis specialist — denies breaks, occupies outposts, and converts small edges. Manufacture a plan that survives her quiet refusals.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Write a plan she cannot veto',
+          body: 'Kallistos is strongest when you play hope chess. Name your break, prepare it, and do not gift her the weak-square ledger.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'classical',
+        ladderTier: 'boss',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c3-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Law after fire',
+          body: 'Classical doctrine does not erase Romantic tempo — it decides when tempo is allowed to spend structure.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You carried fire into a room that rewards silence. That is the Professor\'s Law: drama is optional; structure is not.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Demetrios tested patience. Kallistos tested whether I could see the threat before it had a name.',
+          },
+          {
+            speaker: 'kallistos',
+            text: 'Remember the habit. Hypermodern shadows and later machines will try to make you forget it.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter III is sealed. The compiled ages of this build end here. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, later schools wait — locked, not gone. The chronicle is no longer a cliff. It is a plateau with work left on it.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c3-freeplay',
+        title: 'Free board — Classical rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice the quiet refusals',
+          body: 'Rehearse outposts, pawn breaks, and prophylactic waits until they feel as natural as captures.',
+          tone: 'quiet',
+        },
+        lesson:
+          'Set up a closed or semi-closed structure and alternate sides. Practice stopping the opponent\'s break before it lands.',
+        teaching: {
+          threat: 'None — this is a sandbox after the classical ladder.',
+          goalPlain:
+            'Rehearse prophylaxis and weak-square control without a story timer. Return to the vestibule when finished.',
+          whyItWorks:
+            'Classical skill is recognizing the opponent\'s plan early enough to veto it cheaply.',
+          concept: 'The professor\'s drills become instinct only through quiet repetition.',
         },
       },
     ],

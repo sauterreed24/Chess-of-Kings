@@ -23,7 +23,7 @@ import type { AIStyle } from './evaluate'
 import type { AiProfile } from '../types'
 import type { WorkerSearchRequest, WorkerSearchResponse } from './workers/aiSearch.worker'
 
-export type AiSearchSurface = 'main' | 'worker'
+export type AiSearchSurface = 'main' | 'worker' | 'auto'
 
 const WORKER_PREF_KEY = 'cok-ai-worker'
 
@@ -71,7 +71,7 @@ function ensureWorker(): Worker | null {
   return worker
 }
 
-export function getAiSearchSurface(): AiSearchSurface {
+export function getAiSearchSurface(): 'main' | 'worker' {
   try {
     const pref = localStorage.getItem(WORKER_PREF_KEY)
     if (pref === '1') return 'worker'
@@ -82,15 +82,36 @@ export function getAiSearchSurface(): AiSearchSurface {
   return typeof Worker === 'undefined' ? 'main' : 'worker'
 }
 
+/** Stored preference: auto (unset), forced worker, or forced main-thread. */
+export function getAiSearchSurfacePreference(): AiSearchSurface {
+  try {
+    const pref = localStorage.getItem(WORKER_PREF_KEY)
+    if (pref === '1') return 'worker'
+    if (pref === '0') return 'main'
+  } catch {
+    /* private mode */
+  }
+  return 'auto'
+}
+
 export function setAiSearchSurface(surface: AiSearchSurface): void {
   try {
-    localStorage.setItem(WORKER_PREF_KEY, surface === 'worker' ? '1' : '0')
+    if (surface === 'auto') localStorage.removeItem(WORKER_PREF_KEY)
+    else localStorage.setItem(WORKER_PREF_KEY, surface === 'worker' ? '1' : '0')
   } catch {
     /* private mode */
   }
 }
 
-export function preferredAiSearchSurface(): AiSearchSurface {
+export function cycleAiSearchSurfacePreference(): AiSearchSurface {
+  const order: AiSearchSurface[] = ['auto', 'worker', 'main']
+  const current = getAiSearchSurfacePreference()
+  const next = order[(order.indexOf(current) + 1) % order.length]!
+  setAiSearchSurface(next)
+  return next
+}
+
+export function preferredAiSearchSurface(): 'main' | 'worker' {
   return getAiSearchSurface()
 }
 
@@ -148,7 +169,7 @@ export async function findBestMoveAsync(
   maxDepth: number,
   style: AIStyle,
   timeLimitMs = 2000,
-  surface: AiSearchSurface = getAiSearchSurface(),
+  surface: 'main' | 'worker' = getAiSearchSurface(),
 ): Promise<Move | null> {
   const recentFens = recentHistoryFens(chess)
   if (surface === 'worker' && ensureWorker() !== null) {
@@ -177,7 +198,7 @@ export async function findBestMoveWithProfileAsync(
   chess: Chess,
   profile: AiProfile,
   opts: ProfileMoveOptions | null = null,
-  surface: AiSearchSurface = getAiSearchSurface(),
+  surface: 'main' | 'worker' = getAiSearchSurface(),
 ): Promise<Move | null> {
   /* The worker rebuilds the position from a bare FEN, so the live game's
      recent positions and the persona's own last move (anti-reversal bias)

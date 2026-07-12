@@ -20,7 +20,10 @@ const emptyInventory = (): RewardInventoryState => ({
 describe('RewardGrantService', () => {
   it('matchRivalUnlockId maps story match ids', () => {
     expect(matchRivalUnlockId('c1-match-amara')).toBe('amara')
+    expect(matchRivalUnlockId('c1-match-lukas')).toBe('lukas')
+    expect(matchRivalUnlockId('c1-match-marius')).toBe('marius')
     expect(matchRivalUnlockId('c2-match-edred')).toBe('edred')
+    expect(matchRivalUnlockId('c3-match-kallistos')).toBe('kallistos')
     expect(matchRivalUnlockId('c5-boss-demetrios')).toBe('alexion')
   })
 

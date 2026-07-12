@@ -80,6 +80,31 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       duelVariantId: 'vega-italian',
     },
   ],
+  'c3-match-demetrios-return': [
+    {
+      id: 'rw-codex-demetrios-return',
+      kind: 'codex',
+      label: 'Archive Note: Returning Examiner',
+      description: 'Demetrios files that fire without structure is only noise — and that you heard him.',
+      codexId: 'codex-demetrios-return',
+    },
+  ],
+  'c3-match-kallistos': [
+    {
+      id: 'rw-variant-kallistos-law',
+      kind: 'duel-variant',
+      label: "Duel Variant Unlocked: Kallistos Professor's Law",
+      description: 'Replay Kallistos classical prophylaxis from Chapter III in Duel mode.',
+      duelVariantId: 'kallistos-law',
+    },
+    {
+      id: 'rw-title-classical',
+      kind: 'title',
+      label: 'Title Earned: Classical Analyst',
+      description: 'Recognized for stopping threats one move before they earn a name.',
+      titleId: 'classical-analyst',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
@@ -111,6 +136,21 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       kind: 'chronicle',
       label: 'Chronicle Echo Unlocked',
       description: 'A second echo joins your archive: Romantic trials, verdicts, and fire made legible.',
+    },
+  ],
+  ch3: [
+    {
+      id: 'rw-title-classical-seal',
+      kind: 'title',
+      label: "Title Earned: Seal of the Professor's Law",
+      description: 'Chapter III completed. Your chronicle carries classical restraint as a civic virtue.',
+      titleId: 'seal-professors-law',
+    },
+    {
+      id: 'rw-chronicle-echo-ch3',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'A third echo joins your archive: prophylaxis, outposts, and quiet refusals.',
     },
   ],
 }
