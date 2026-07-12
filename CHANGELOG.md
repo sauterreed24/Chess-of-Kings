@@ -11,6 +11,16 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.4.2] — 2026-07-12
+
+Playtest hardening after live Pages review:
+
+- **P0 recovery wipe** — idle shell navigations no longer overwrite a pending `inProgress` recovery with `null` on persist.
+- **P0/P1 confirm gates** — chapter jumps and duel starts confirm before discarding a recoverable / unsaved board session.
+- **Plateau honesty** — mastery plateau “sealed” copy waits for `c3-freeplay`; reflection-only saves get softer “Almost sealed” copy.
+- **Duel coaching** — graded `ok`/`good` tips outrank generic duel doctrine nudges; Chronicle Echoes open when present.
+- Docs: [`docs/PASS7_PLAYTEST_HARDENING.md`](docs/PASS7_PLAYTEST_HARDENING.md).
+
 ## [0.4.1] — 2026-07-12
 
 Pass 7 — Retention polish:

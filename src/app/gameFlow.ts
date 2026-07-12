@@ -193,8 +193,13 @@ export class GameFlow {
   set chapter2Complete(v: boolean) {
     this.campaign.progress.chapter2Complete = v
   }
-  /** Derived from sealed reflection — no separate save field required. */
+  /** True once Chapter III freeplay is recorded — matches campaign-finish rewards. */
   get chapter3Complete(): boolean {
+    return this.completedSceneIds.includes('c3-freeplay')
+  }
+
+  /** Reflection sealed but freeplay / clear rewards may still be pending. */
+  get chapter3ReflectionComplete(): boolean {
     return this.completedSceneIds.includes('c3-reflection')
   }
   get completedSceneIds(): string[] {
@@ -2295,11 +2300,13 @@ export class GameFlow {
 
   jumpToChapter(index: number) {
     if (!this.campaign.applyJumpToChapter(index)) return
+    this.snapshots.clearPendingSnapshot()
     this.refreshScene()
   }
 
   jumpToScene(chapterIndex: number, sceneIndex: number) {
     if (!this.campaign.applyJumpToScene(chapterIndex, sceneIndex)) return
+    this.snapshots.clearPendingSnapshot()
     this.refreshScene()
   }
 

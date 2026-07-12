@@ -236,7 +236,7 @@ describe('mounted duel dossier', () => {
       lastScreen: 'chapters',
       chapter1Complete: true,
       chapter2Complete: true,
-      completedSceneIds: ['c3-reflection', 'c3-match-kallistos'],
+      completedSceneIds: ['c3-reflection', 'c3-match-kallistos', 'c3-freeplay'],
       completedPuzzleIds: [],
       duelUnlockedOpponentIds: ['alexion', 'kallistos'],
       unlockedDuelVariantIds: ['alexion-mentor', 'kallistos-law'],
@@ -309,6 +309,71 @@ describe('mounted duel dossier', () => {
     expect(panel.textContent).toContain('Draw')
     expect(panel.textContent).toContain('Qh5')
     expect(panel.textContent).not.toContain('wins, losses, and draws all count')
+  })
+
+  it('confirms before chapter jump when a recoverable session exists', async () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 0,
+      sceneIndex: 4,
+      highestUnlockedChapter: 0,
+      lastScreen: 'chapters',
+      completedSceneIds: [],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      inProgress: {
+        mode: 'calibration',
+        chapterIndex: 0,
+        sceneIndex: 4,
+        fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+        history: [
+          'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+          'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+        ],
+        sanLog: ['e4', 'e5'],
+        sanQuality: ['good', 'ok'],
+        playerColor: 'w',
+        calibrationMoves: 1,
+        scriptedMoveIndex: 0,
+        sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      },
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    expect(app.querySelector('#btn-resume-recovered')).not.toBeNull()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+    expect(app.querySelector('#confirm-overlay')?.classList.contains('hidden')).toBe(false)
+    expect(app.querySelector('#confirm-overlay')?.textContent).toMatch(/Replace the recovered session/)
+    app.querySelector<HTMLButtonElement>('#btn-confirm-cancel')?.click()
+    await Promise.resolve()
+    const afterCancel = JSON.parse(localStorage.getItem('calculus-of-kings-progress-v3') || '{}')
+    expect(afterCancel.inProgress).toBeTruthy()
+  })
+
+  it('shows soft almost-sealed copy after reflection before freeplay finish', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 3,
+      sceneIndex: 0,
+      highestUnlockedChapter: 3,
+      lastScreen: 'chapters',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-match-kallistos'],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    const hub = app.querySelector('.plateau-hub')?.textContent ?? ''
+    expect(hub).toMatch(/Almost sealed/)
+    expect(hub).not.toMatch(/I–III are sealed/)
   })
 
   it('restores a reloaded duel session with duel briefing copy', () => {

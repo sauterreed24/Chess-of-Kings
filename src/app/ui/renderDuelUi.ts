@@ -19,6 +19,7 @@ import {
 import { getRivalProfile } from '../../data/rivals'
 import {
   CALIBRATION_LEVEL_LABELS,
+  CONFIRM_COPY,
   DOSSIER_ECHO_EMPTY,
   ECHO_OUTCOME_LABELS,
 } from '../../data/strings'
@@ -36,6 +37,7 @@ export type RenderDuelUiHost = {
   openRewardOverlay: (html: string, setup?: (root: HTMLDivElement) => void, cleanup?: () => void) => void
   openLab: () => void
   updateAdvance: (flow: GameFlow) => void
+  confirmReplaceSession: (copy: typeof CONFIRM_COPY.replaceWithDuel) => Promise<boolean>
   renderDuelLabBrief: (
     rival: DuelRosterEntry,
     variant: DuelVariant,
@@ -45,7 +47,17 @@ export type RenderDuelUiHost = {
 }
 
 export function renderDuelUi(host: RenderDuelUiHost): void {
-  const { flow, duelList, duelPanel, rewardOverlayCtl, closeRewardOverlay, openLab, updateAdvance, renderDuelLabBrief } = host
+  const {
+    flow,
+    duelList,
+    duelPanel,
+    rewardOverlayCtl,
+    closeRewardOverlay,
+    openLab,
+    updateAdvance,
+    confirmReplaceSession,
+    renderDuelLabBrief,
+  } = host
   const roster = [...flow.getDuelArchiveRoster()].sort((a, b) => Number(b.isOpen) - Number(a.isOpen))
   const revealDuelPanel = (shouldReveal: boolean) => {
     if (shouldReveal && innerWidth <= 960) {
@@ -351,7 +363,11 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <li><strong>Archive rating:</strong> ${sanitizeRivalCalibrationRating(rivalMem?.calibrationRating)} (${formatRivalCalibrationLabel(sanitizeRivalCalibrationRating(rivalMem?.calibrationRating))})</li>
           </ul>`,
         )}
-        ${fold('Chronicle Echoes', echoCards)}
+        ${fold(
+          'Chronicle Echoes',
+          echoCards,
+          echoes.length > 0,
+        )}
         ${schoolBlendHtml}
         ${fold(
           'Rival Trait Profile',
@@ -490,7 +506,12 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         drawEcho()
       })
     }
-    duelPanel.querySelector<HTMLButtonElement>('#btn-start-duel')?.addEventListener('click', () => {
+    duelPanel.querySelector<HTMLButtonElement>('#btn-start-duel')?.addEventListener('click', async () => {
+      const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+      if (mustConfirm) {
+        const allowed = await confirmReplaceSession(CONFIRM_COPY.replaceWithDuel)
+        if (!allowed) return
+      }
       const variantId = duelPanel.querySelector<HTMLSelectElement>('#duel-variant')?.value ?? unlockedVariants[0]!.id
       const color = (duelPanel.querySelector<HTMLSelectElement>('#duel-color')?.value ?? 'w') as 'w' | 'b'
       const difficulty =
@@ -508,7 +529,12 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         updateAdvance(flow)
       }
     })
-    duelPanel.querySelector<HTMLButtonElement>('#btn-mastery-trial')?.addEventListener('click', () => {
+    duelPanel.querySelector<HTMLButtonElement>('#btn-mastery-trial')?.addEventListener('click', async () => {
+      const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+      if (mustConfirm) {
+        const allowed = await confirmReplaceSession(CONFIRM_COPY.replaceWithDuel)
+        if (!allowed) return
+      }
       /* Mastery Trial: lock to ceiling, pick the highest-tier
        * unlocked variant, hand them the player's chosen color from
        * the dropdown if any, otherwise White. */

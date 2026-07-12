@@ -145,6 +145,28 @@ describe('move insight', () => {
     })).toMatch(/Duel clock.*Alexion law/)
   })
 
+  it('keeps graded ok/good duel tips above generic doctrine nudges', () => {
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 10,
+      materialAfterCp: 20,
+      playerColor: 'w',
+      mode: 'duel',
+      quality: 'ok',
+      opponentKey: 'alexion-mentor',
+    })).toMatch(/Held against Alexion law/)
+
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 10,
+      materialAfterCp: 40,
+      playerColor: 'w',
+      mode: 'duel',
+      quality: 'good',
+      opponentKey: 'kallistos-law',
+    })).toMatch(/Sound\. Convert/)
+  })
+
   it('distinguishes sound and unsafe captures', () => {
     expect(insight({ san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' }, 9, 120)).toMatch(/Material won/)
     expect(insight({ san: 'Bxd5', from: 'c4', to: 'd5', piece: 'b', captured: 'p' }, 9, -120)).toMatch(/Position worsened/)

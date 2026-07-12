@@ -82,7 +82,7 @@ test('post-Chapter III chapters screen shows mastery plateau hub', async ({ page
       lastScreen: 'title',
       chapter1Complete: true,
       chapter2Complete: true,
-      completedSceneIds: ['c3-reflection', 'c3-match-kallistos', 'c1-match-lukas'],
+      completedSceneIds: ['c3-reflection', 'c3-match-kallistos', 'c1-match-lukas', 'c3-freeplay'],
       completedPuzzleIds: [],
       stratarchiaUnlocked: false,
       duelUnlockedOpponentIds: ['alexion', 'kallistos', 'lukas'],
