@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyRuntimeUiProfile, shouldUsePerfLean } from './runtimeUiProfile'
+import { applyRuntimeUiProfile, resolvePerfLean, shouldUsePerfLean } from './runtimeUiProfile'
 
 describe('runtime UI profile', () => {
   it('does not treat Chrome capped 8GB memory as lean by itself', () => {
@@ -43,5 +43,22 @@ describe('runtime UI profile', () => {
     })
     expect(root.classList.contains('coarse-pointer')).toBe(true)
     expect(root.classList.contains('perf-lean')).toBe(false)
+  })
+
+  it('honours full and lean visual quality overrides', () => {
+    const leanDevice = {
+      coarsePointer: false,
+      reducedMotion: false,
+      deviceMemory: 2,
+      hardwareConcurrency: 2,
+    }
+    expect(resolvePerfLean(leanDevice, 'full')).toBe(false)
+    expect(resolvePerfLean(leanDevice, 'lean')).toBe(true)
+    expect(
+      resolvePerfLean(
+        { coarsePointer: false, reducedMotion: false, deviceMemory: 8, hardwareConcurrency: 8 },
+        'lean',
+      ),
+    ).toBe(true)
   })
 })

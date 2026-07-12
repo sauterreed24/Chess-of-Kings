@@ -7,20 +7,20 @@ describe('storage v3 migration and defaults', () => {
     localStorage.clear()
   })
 
-  it('loads minimal legacy-like payload with safe defaults', () => {
+  it('backfills Lukas and Marius duel unlocks from completed Chapter I scenes', () => {
     localStorage.setItem(
       'calculus-of-kings-progress-v3',
       JSON.stringify({
+        version: 3,
         chapterIndex: 1,
-        sceneIndex: 2,
+        sceneIndex: 0,
         highestUnlockedChapter: 1,
+        completedSceneIds: ['c1-match-lukas', 'c1-match-marius', 'c1-match-amara'],
+        duelUnlockedOpponentIds: ['amara'],
       }),
     )
     const s = loadSave()
-    expect(s).not.toBeNull()
-    expect(s?.version).toBe(3)
-    expect(s?.cosmetics.selectedPieceSkin).toBe('classic-royal')
-    expect(s?.unlockedDuelVariantIds).toContain('alexion-mentor')
+    expect(s?.duelUnlockedOpponentIds).toEqual(expect.arrayContaining(['amara', 'lukas', 'marius']))
   })
 
   it('sanitizes invalid skin selections', () => {

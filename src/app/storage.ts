@@ -13,6 +13,7 @@ import type {
 import { defaultLadderRating, clampRating } from '../game/rating'
 import { Chess } from 'chess.js'
 import { IN_PROGRESS_PLY_LIMIT } from './persistence/snapshotReplay'
+import { backfillDuelUnlocksFromScenes } from './duel/DuelManager'
 
 const KEY = 'calculus-of-kings-progress-v3'
 
@@ -258,7 +259,11 @@ export function loadSave(): SaveData | null {
       completedSceneIds: sanitizeStringArray(o.completedSceneIds, 1200),
       completedPuzzleIds: sanitizeStringArray(o.completedPuzzleIds, 600),
       stratarchiaUnlocked: Boolean(o.stratarchiaUnlocked),
-      duelUnlockedOpponentIds: sanitizeStringArray(o.duelUnlockedOpponentIds, 120),
+      duelUnlockedOpponentIds: (() => {
+        const scenes = sanitizeStringArray(o.completedSceneIds, 1200)
+        const ids = sanitizeStringArray(o.duelUnlockedOpponentIds, 120)
+        return backfillDuelUnlocksFromScenes(ids, scenes).slice(0, 120)
+      })(),
       unlockedDuelVariantIds: (() => {
         const ids = sanitizeStringArray(o.unlockedDuelVariantIds, 320)
         if (!ids.includes('alexion-mentor')) ids.unshift('alexion-mentor')

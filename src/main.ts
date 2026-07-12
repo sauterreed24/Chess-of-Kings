@@ -1,29 +1,11 @@
 import './style.css'
 import './style-alexandrine-imperial.css'
 import { mountApp } from './app/mountApp'
-import { shouldUsePerfLean } from './app/runtimeUiProfile'
+import { refreshDocumentUiProfile } from './app/runtimeUiProfile'
 
-function applyRuntimeUiProfile() {
-  const root = document.documentElement
-  const mqCoarse = window.matchMedia('(pointer: coarse)')
-  const mqReduced = window.matchMedia('(prefers-reduced-motion: reduce)')
-  root.classList.toggle('coarse-pointer', mqCoarse.matches)
+refreshDocumentUiProfile()
 
-  const nav = navigator as Navigator & { deviceMemory?: number }
-  /** Treat missing Device Memory as unknown — do not assume 8GB (that forced perf-lean everywhere). */
-  const mem = nav.deviceMemory
-  const lean = shouldUsePerfLean({
-    coarsePointer: mqCoarse.matches,
-    reducedMotion: mqReduced.matches,
-    deviceMemory: mem,
-    hardwareConcurrency: navigator.hardwareConcurrency,
-  })
-  root.classList.toggle('perf-lean', lean)
-}
-
-applyRuntimeUiProfile()
-
-const refreshProfile = () => applyRuntimeUiProfile()
+const refreshProfile = () => refreshDocumentUiProfile()
 for (const mq of [
   window.matchMedia('(pointer: coarse)'),
   window.matchMedia('(prefers-reduced-motion: reduce)'),

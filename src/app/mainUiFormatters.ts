@@ -26,6 +26,7 @@ const SPEAKER_META: Record<string, SpeakerMeta> = {
   edred: { label: 'Edred', sigil: 'ED', voice: 'scholar', cadenceMs: 8 },
   marius: { label: 'Marius', sigil: 'MA', voice: 'scholar', cadenceMs: 9 },
   demetrios: { label: 'Demetrios', sigil: 'DE', voice: 'scholar', cadenceMs: 9 },
+  kallistos: { label: 'Kallistos', sigil: 'KA', voice: 'scholar', cadenceMs: 9 },
   rowan: { label: 'Rowan Vale', sigil: 'RO', voice: 'fire', cadenceMs: 7 },
   vega: { label: 'Vega Sorn', sigil: 'VE', voice: 'rival', cadenceMs: 8 },
 }

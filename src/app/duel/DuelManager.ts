@@ -8,6 +8,20 @@ import type {
   RivalMemoryEntry,
 } from '../../types'
 
+/** Reconcile dossier unlocks from campaign scene completions (Pass 6+). */
+export function backfillDuelUnlocksFromScenes(
+  duelUnlockedOpponentIds: string[],
+  completedSceneIds: string[],
+): string[] {
+  const out = [...duelUnlockedOpponentIds]
+  for (const entry of DUEL_ROSTER) {
+    if (!entry.unlockedBySceneId) continue
+    if (!completedSceneIds.includes(entry.unlockedBySceneId)) continue
+    if (!out.includes(entry.opponentId)) out.push(entry.opponentId)
+  }
+  return out
+}
+
 export type DuelDifficulty = 'novice' | 'balanced' | 'relentless'
 
 export type DuelSession = {

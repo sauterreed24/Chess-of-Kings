@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   DuelManager,
+  backfillDuelUnlocksFromScenes,
   buildDuelArchiveRoster,
   findDuelVariant,
   isDuelOpponentUnlocked,
@@ -19,6 +20,12 @@ const baseCtx = (): DuelUnlockContext => ({
 })
 
 describe('DuelManager unlock + roster', () => {
+  it('backfills duel opponent unlocks from completed scene ids', () => {
+    expect(
+      backfillDuelUnlocksFromScenes(['amara'], ['c1-match-lukas', 'c1-match-marius', 'c2-match-rowan']),
+    ).toEqual(expect.arrayContaining(['amara', 'lukas', 'marius', 'rowan']))
+  })
+
   it('findDuelVariant resolves roster entries', () => {
     const found = findDuelVariant('alexion-mentor')
     expect(found?.rival.opponentId).toBe('alexion')

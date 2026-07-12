@@ -9,7 +9,7 @@ import zlib from 'node:zlib'
  *  cap; `game-data` (~18 KiB gzip) and the AI worker also sit well under it.
  *  CSS measured ~16 KiB gzip on v0.2.14+ builds. */
 const JS_GZIP_MAX = 101376 // 99 KiB (per file)
-const CSS_GZIP_MAX = 17600 // ~17.2 KiB — base Hellenistic sheet + Alexandrine Imperial polish layer
+const CSS_GZIP_MAX = 17800 // ~17.4 KiB — base + Alexandrine Imperial + classical chapter skin
 
 const dir = path.join(process.cwd(), 'dist', 'assets')
 let failed = false

@@ -79,8 +79,19 @@ describe('GameFlow depth systems', () => {
     flow.board = mockBoard() as unknown as BoardView
 
     const archive = flow.getDuelArchiveRoster()
-    expect(archive.map((entry) => entry.rival.opponentId)).toEqual(['amara', 'edred', 'alexion', 'rowan', 'vega'])
+    expect(archive.map((entry) => entry.rival.opponentId)).toEqual([
+      'amara',
+      'lukas',
+      'edred',
+      'marius',
+      'alexion',
+      'rowan',
+      'vega',
+      'kallistos',
+    ])
     expect(archive.find((entry) => entry.rival.opponentId === 'alexion')?.isOpen).toBe(true)
+    expect(archive.find((entry) => entry.rival.opponentId === 'lukas')?.isOpen).toBe(false)
+    expect(archive.find((entry) => entry.rival.opponentId === 'kallistos')?.isOpen).toBe(false)
     const rowan = archive.find((entry) => entry.rival.opponentId === 'rowan')
     expect(rowan?.isOpen).toBe(false)
     expect(rowan?.unlockHint).toContain('Defeat Rowan Vale in Chapter II')

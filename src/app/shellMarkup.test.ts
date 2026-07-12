@@ -75,6 +75,8 @@ const REQUIRED_IDS = [
   'btn-title-sfx',
   'btn-title-move-guard',
   'btn-title-motion',
+  'btn-title-ai-worker',
+  'btn-title-visual',
   'title-skin',
   'btn-title-kbdhelp',
   'btn-lab-kbdhelp',

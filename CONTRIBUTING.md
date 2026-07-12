@@ -78,17 +78,14 @@ recent maximum-effort commits in `git log` are reasonable templates.
 
 ## What we'd love help with
 
-See the active **Maximum Effort Pass 4** plan: [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md).
+See the shipped **Pass 6** plan: [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md) and the playtest checklist [`docs/PASS6_PLAYTEST_CHECKLIST.md`](docs/PASS6_PLAYTEST_CHECKLIST.md).
 
-Current focus (in flight / next PRs):
-- GameFlow decomposition (SnapshotManager, DuelManager, CampaignOrchestrator, AiOrchestrator seams)
-- AI surface (exported + tested eval features, per-phase PSTs, benchmark harness, opening bias, first Worker adapter)
-
-Later (after this wave):
-- Per-rival Elo-ish tracker (the old "Pass 4 deep")
+Current focus (next content / polish):
+- Chapters IV–IX authorship (hypermodern → apotheosis teasers already locked on the Chapters screen)
+- Contrast / accessibility hardening and mobile viewport sweeps
 - Native TestFlight / Play Internal pipeline (environment-dependent)
 
-The plan follows the same gated-PR, quality:gate, `cursor/*-9ff3` rules as Pass 3.
+Earlier architecture waves (Pass 4–5 GameFlow seams + AI worker) are complete — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md).
 
 ## Reporting issues
 

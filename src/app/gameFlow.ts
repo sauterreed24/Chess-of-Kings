@@ -74,6 +74,8 @@ import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, postGameTalkLine, selectTalkLine } from '../data/rivals'
 import {
   DEFAULT_RIVAL_CALIBRATION,
+  formatRivalCalibrationLabel,
+  sanitizeRivalCalibrationRating,
   updateRivalCalibrationRating,
 } from './duel/rivalCalibration'
 import { moveInsightFor, type MoveInsightMode } from './moveInsight'
@@ -190,6 +192,10 @@ export class GameFlow {
   }
   set chapter2Complete(v: boolean) {
     this.campaign.progress.chapter2Complete = v
+  }
+  /** Derived from sealed reflection — no separate save field required. */
+  get chapter3Complete(): boolean {
+    return this.completedSceneIds.includes('c3-reflection')
   }
   get completedSceneIds(): string[] {
     return this.campaign.progress.completedSceneIds
@@ -1014,22 +1020,35 @@ export class GameFlow {
   }
 
   private duelDoctrineLine(opponentId: string, variantLabel: string): string {
+    const mem = this.rivalMemory[opponentId]
+    const rating = sanitizeRivalCalibrationRating(mem?.calibrationRating)
+    const band = formatRivalCalibrationLabel(rating)
+    const archiveCite = ` (${band}, ${rating})`
     if (opponentId === 'alexion') {
-      return `${variantLabel}: Alexion audits plans like civic law; govern your structure before he breaks it.`
+      return `${variantLabel}${archiveCite}: Alexion audits plans like civic law; govern your structure before he breaks it.`
     }
     if (opponentId === 'rowan') {
-      return `${variantLabel}: Rowan turns imbalance into fire. Castle before greed; make the sacrifice pay rent.`
+      return `${variantLabel}${archiveCite}: Rowan turns imbalance into fire. Castle before greed; make the sacrifice pay rent.`
     }
     if (opponentId === 'vega') {
-      return `${variantLabel}: Vega audits romance with law. Shelter the king; answer pressure with development.`
+      return `${variantLabel}${archiveCite}: Vega audits romance with law. Shelter the king; answer pressure with development.`
     }
     if (opponentId === 'amara') {
-      return `${variantLabel}: Amara treats symmetry as jurisprudence. Open the center before the mirror hardens.`
+      return `${variantLabel}${archiveCite}: Amara treats symmetry as jurisprudence. Open the center before the mirror hardens.`
     }
     if (opponentId === 'edred') {
-      return `${variantLabel}: Edred hunts flight squares. Castle, blunt the file, and count forcing moves.`
+      return `${variantLabel}${archiveCite}: Edred hunts flight squares. Castle, blunt the file, and count forcing moves.`
     }
-    return `Duel calibration: ${variantLabel} is adapting to your tendencies.`
+    if (opponentId === 'lukas') {
+      return `${variantLabel}${archiveCite}: Lukas holds the classical center. Break the phalanx before it locks.`
+    }
+    if (opponentId === 'marius') {
+      return `${variantLabel}${archiveCite}: Marius squeezes with patience. Manufacture imbalance before the endgame arrives.`
+    }
+    if (opponentId === 'kallistos') {
+      return `${variantLabel}${archiveCite}: Kallistos teaches prophylaxis. Stop the threat one move before it is born.`
+    }
+    return `Duel archive${archiveCite}: ${variantLabel} is adapting to your tendencies.`
   }
 
   private currentAiFlavor(): string | null {
@@ -2245,6 +2264,10 @@ export class GameFlow {
         if (bundle) this.pendingRewards.push(bundle)
       }
       this.persist()
+      if (result.campaignFinished) {
+        this.handlers.onCampaignFinished()
+        return
+      }
       this.refreshScene()
       return
     }

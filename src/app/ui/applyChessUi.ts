@@ -236,8 +236,21 @@ export function applyChessUi(
   }
 
   const rewards = flowRef?.consumePendingRewards() ?? []
-  if (rewards.length) callbacks.showRewardBundles(rewards)
-  else callbacks.maybeShowPendingChapterPrompt()
+  if (rewards.length) {
+    const key = p.matchOutcome ? `${p.matchOutcome}|${p.ledgerFp}` : `reward|${p.ledgerFp}`
+    play.recapShownForKey = key
+    callbacks.showRewardBundles(rewards)
+  } else if (p.matchOutcome && play.latestResolvedForRecap) {
+    const key = `${p.matchOutcome}|${p.ledgerFp}`
+    if (key !== play.recapShownForKey) {
+      play.recapShownForKey = key
+      /* Losses and draws still earn a Verdict Recap — rating delta, study line, rematch. */
+      callbacks.showRewardBundles([])
+    }
+  } else {
+    if (!p.matchOutcome) play.recapShownForKey = ''
+    callbacks.maybeShowPendingChapterPrompt()
+  }
 
   if (play.pendingBoardReveal) {
     play.pendingBoardReveal = false

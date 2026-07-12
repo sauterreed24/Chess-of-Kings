@@ -57,6 +57,7 @@ export function renderScene(
   dom.narrativeBody.classList.remove('narrative-body--no-fade')
   dom.narrativeBody.scrollTop = 0
   play.announcedOutcomeKey = ''
+  play.recapShownForKey = ''
   dom.btnReset.disabled = true
   dom.btnNext.classList.remove('hidden')
   dom.btnNextHint.textContent = ''

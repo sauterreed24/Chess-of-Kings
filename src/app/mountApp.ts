@@ -26,6 +26,15 @@ import { renderScene as renderSceneUi } from './ui/renderScene'
 import { showRewardBundles as showRewardBundlesUi } from './ui/showRewardBundles'
 import { renderDuelUi as renderDuelUiUi } from './ui/renderDuelUi'
 import { COMPACT_MEDIA_QUERY, createMobileBoardFitController } from './mobileBoardFit'
+import {
+  cycleAiSearchSurfacePreference,
+  getAiSearchSurfacePreference,
+} from '../chess/aiAsync'
+import {
+  cycleVisualQualityPreference,
+  getVisualQualityPreference,
+  refreshDocumentUiProfile,
+} from './runtimeUiProfile'
 
 const SFX_PREF_KEY = 'cok-sfx-enabled'
 const MOVE_GUARD_PREF_KEY = 'cok-move-guard'
@@ -122,6 +131,8 @@ export function mountApp(app: HTMLDivElement) {
   const btnTitleSfx = app.querySelector<HTMLButtonElement>('#btn-title-sfx')!
   const btnTitleMoveGuard = app.querySelector<HTMLButtonElement>('#btn-title-move-guard')!
   const btnTitleMotion = app.querySelector<HTMLButtonElement>('#btn-title-motion')!
+  const btnTitleAiWorker = app.querySelector<HTMLButtonElement>('#btn-title-ai-worker')!
+  const btnTitleVisual = app.querySelector<HTMLButtonElement>('#btn-title-visual')!
   const titleSkinField = app.querySelector<HTMLLabelElement>('#title-skin-field')!
   const titleSkinSelect = app.querySelector<HTMLSelectElement>('#title-skin')!
   const btnTitleKbdhelp = app.querySelector<HTMLButtonElement>('#btn-title-kbdhelp')!
@@ -268,6 +279,30 @@ export function mountApp(app: HTMLDivElement) {
     const motionForced = readPreference(MOTION_PREF_KEY) === '1'
     btnTitleMotion.textContent = motionForced ? 'Motion: Reduced' : 'Motion: System'
     btnTitleMotion.setAttribute('aria-pressed', motionForced ? 'true' : 'false')
+    const aiPref = getAiSearchSurfacePreference()
+    const aiLabel = aiPref === 'worker' ? 'Worker' : aiPref === 'main' ? 'Main' : 'Auto'
+    btnTitleAiWorker.textContent = `AI Thread: ${aiLabel}`
+    btnTitleAiWorker.setAttribute('aria-pressed', aiPref === 'auto' ? 'false' : 'true')
+    btnTitleAiWorker.setAttribute(
+      'aria-label',
+      aiPref === 'worker'
+        ? 'AI search off main thread'
+        : aiPref === 'main'
+          ? 'AI search on main thread'
+          : 'AI search auto',
+    )
+    const visualPref = getVisualQualityPreference()
+    const visualLabel = visualPref === 'full' ? 'Full' : visualPref === 'lean' ? 'Lean' : 'Auto'
+    btnTitleVisual.textContent = `Visual: ${visualLabel}`
+    btnTitleVisual.setAttribute('aria-pressed', visualPref === 'auto' ? 'false' : 'true')
+    btnTitleVisual.setAttribute(
+      'aria-label',
+      visualPref === 'full'
+        ? 'Visual quality full'
+        : visualPref === 'lean'
+          ? 'Visual quality lean'
+          : 'Visual quality auto',
+    )
   }
 
   function applyMotionPreference() {
@@ -322,14 +357,18 @@ export function mountApp(app: HTMLDivElement) {
       window.setTimeout(() => maybeShowPendingChapterPrompt(), 0)
     },
     onCampaignFinished() {
-      const msg = flow.chapter2Complete
-        ? 'Chapters I and II are sealed. Further ages are not yet compiled for this build — your chronicle is marked.'
-        : flow.chapter1Complete === true
-          ? 'Chapter I sealed. Further ages are not built into this version — your chronicle is marked.'
-          : 'Bookmark updated.'
+      const pending = flow.consumePendingRewards()
+      const msg = flow.chapter3Complete
+        ? 'Chapters I–III are sealed. Daily Calculus and the Duel Archive remain open — mastery is the plateau, not a wall. Later ages stay locked for now.'
+        : flow.chapter2Complete
+          ? 'Chapters I and II are sealed. Further ages are not yet compiled for this build — your chronicle is marked.'
+          : flow.chapter1Complete === true
+            ? 'Chapter I sealed. Further ages are not built into this version — your chronicle is marked.'
+            : 'Bookmark updated.'
       pendingChapterPrompt = { completedTitle: msg, nextTitle: null }
       closeLab()
       showTitle()
+      if (pending.length) showRewardBundles(pending)
       maybeShowPendingChapterPrompt()
       syncMvpFlag()
     },
@@ -349,11 +388,13 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   function syncMvpFlag() {
-    mvpFlag.textContent = flow.chapter2Complete
-      ? 'Chapters I and II are inscribed in your save. Resume reopens the chronicle.'
-      : flow.chapter1Complete
-        ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
-        : ''
+    mvpFlag.textContent = flow.chapter3Complete
+      ? 'Chapters I–III are inscribed. Daily Calculus and the Duel Archive remain open.'
+      : flow.chapter2Complete
+        ? 'Chapters I and II are inscribed in your save. Resume reopens the chronicle.'
+        : flow.chapter1Complete
+          ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
+          : ''
   }
 
   function syncTitleRating() {
@@ -691,6 +732,7 @@ export function mountApp(app: HTMLDivElement) {
     play.lastCapturedFen = ''
     play.lastEvalScore = Number.NaN
     play.announcedOutcomeKey = ''
+  play.recapShownForKey = ''
 
     app.querySelector('#play-chapter-label')!.textContent = `Duel Archive · ${rival.era}`
     app.querySelector('#play-chapter-title')!.textContent = rival.opponentName
@@ -1065,6 +1107,16 @@ export function mountApp(app: HTMLDivElement) {
     const forced = readPreference(MOTION_PREF_KEY) === '1'
     writePreference(MOTION_PREF_KEY, forced ? '0' : '1')
     applyMotionPreference()
+    refreshDocumentUiProfile()
+    syncPreferenceButtons()
+  })
+  btnTitleAiWorker.addEventListener('click', () => {
+    cycleAiSearchSurfacePreference()
+    syncPreferenceButtons()
+  })
+  btnTitleVisual.addEventListener('click', () => {
+    cycleVisualQualityPreference()
+    refreshDocumentUiProfile()
     syncPreferenceButtons()
   })
   titleSkinSelect.addEventListener('change', () => {

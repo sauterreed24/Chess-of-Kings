@@ -70,6 +70,8 @@ export function getShellMarkup(): string {
                   <select id="title-skin" class="title-settings__select"></select>
                 </label>
                 <button type="button" class="ghost ghost--sound" id="btn-title-motion" aria-pressed="false">Motion: System</button>
+                <button type="button" class="ghost ghost--sound" id="btn-title-ai-worker" aria-pressed="false">AI Thread: Auto</button>
+                <button type="button" class="ghost ghost--sound" id="btn-title-visual" aria-pressed="false">Visual: Auto</button>
               </div>
             </section>
             <p class="title-privacy">

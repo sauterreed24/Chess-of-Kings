@@ -348,6 +348,7 @@ describe('GameFlow AI / puzzles', () => {
     expect(flow.startDuel('amara', 'amara-initiate', 'w')).toBe(true)
     const flavor = (flow as unknown as { currentAiFlavor(): string | null }).currentAiFlavor()
     expect(flavor).toMatch(/Amara treats symmetry as jurisprudence/)
+    expect(flavor).toMatch(/\(Measured Foe, 1500\)/)
     expect(flavor).toMatch(/ — /)
     expect(
       flavor?.includes('I have studied the board') ||

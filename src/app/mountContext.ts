@@ -14,6 +14,7 @@ export type MountPlayState = {
   pendingBoardReveal: boolean
   prevSessionRecovered: boolean
   announcedOutcomeKey: string
+  recapShownForKey: string
   latestResolvedForRecap: ChessUiPayload | null
   lastAdvanceSig: string
   advanceWasReady: boolean
@@ -30,6 +31,7 @@ export function createMountPlayState(): MountPlayState {
     pendingBoardReveal: false,
     prevSessionRecovered: false,
     announcedOutcomeKey: '',
+    recapShownForKey: '',
     latestResolvedForRecap: null,
     lastAdvanceSig: '',
     advanceWasReady: false,
