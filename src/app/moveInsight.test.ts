@@ -114,6 +114,35 @@ describe('move insight', () => {
       mode: 'duel',
       opponentKey: 'alexion-mentor',
     })).toMatch(/Alexion law/)
+
+    expect(moveInsightFor({
+      move: { san: 'Be7', from: 'f8', to: 'e7', piece: 'b' },
+      halfMoveCount: 8,
+      materialAfterCp: 0,
+      playerColor: 'b',
+      mode: 'duel',
+      opponentKey: 'kallistos-law',
+    })).toMatch(/Kallistos prophylaxis/)
+  })
+
+  it('adds duel-mode doctrine nudges when heuristics are quiet', () => {
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 14,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'duel',
+      opponentKey: 'kallistos-law',
+    })).toMatch(/Duel midgame.*Kallistos prophylaxis/)
+
+    expect(moveInsightFor({
+      move: { san: 'Re1', from: 'a1', to: 'e1', piece: 'r' },
+      halfMoveCount: 5,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'duel',
+      opponentKey: 'alexion-mentor',
+    })).toMatch(/Duel clock.*Alexion law/)
   })
 
   it('distinguishes sound and unsafe captures', () => {

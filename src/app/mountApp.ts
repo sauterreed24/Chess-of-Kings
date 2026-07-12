@@ -18,7 +18,13 @@ import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
 import { recordToday as recordStreakToday, readStreak } from './session/streak'
 import { pickDailyCalculus } from './session/dailyCalculus'
 import { createAnnouncer } from './a11y/announcer'
-import { CONFIRM_COPY, KEYBOARD_HELP_HEADING, RIBBON_LABELS, STORAGE_FAILURE_MESSAGE } from '../data/strings'
+import {
+  CONFIRM_COPY,
+  KEYBOARD_HELP_HEADING,
+  PLATEAU_COPY,
+  RIBBON_LABELS,
+  STORAGE_FAILURE_MESSAGE,
+} from '../data/strings'
 import { syncTitleActionGroups } from './titleActions'
 import { createMountPlayState, type MountDomRefs, type MountRuntime } from './mountContext'
 import { applyChessUi as applyChessUiImpl } from './ui/applyChessUi'
@@ -559,11 +565,38 @@ export function mountApp(app: HTMLDivElement) {
     btnChaptersBack.textContent = '← Return to title'
     chapterProgressSlot.innerHTML = renderChapterProgressHtml(flow.highestUnlockedChapter)
     chapterList.innerHTML = ''
-    if (flow.hasRecoverableSession()) {
-      chapterQuickActions.innerHTML = `
-        <button type="button" class="primary chapter-quick-actions__btn" id="btn-resume-recovered">
-          Resume Recovered Session
-        </button>`
+
+    const plateau = flow.chapter3Complete
+    const recoverable = flow.hasRecoverableSession()
+    const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
+    const daily =
+      dailyRaw && dailyRaw.chapterIndex <= flow.highestUnlockedChapter ? dailyRaw : null
+
+    if (plateau || recoverable) {
+      const resumeBtn = recoverable
+        ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-resume-recovered">
+            ${escapeHtml(PLATEAU_COPY.resumeCta)}
+          </button>`
+        : ''
+      const plateauBlock = plateau
+        ? `<div class="plateau-hub" role="region" aria-label="${escapeHtml(PLATEAU_COPY.heading)}">
+            <p class="plateau-hub__eyebrow">${escapeHtml(PLATEAU_COPY.heading)}</p>
+            <p class="plateau-hub__lede">${escapeHtml(PLATEAU_COPY.lede)}</p>
+            <div class="plateau-hub__actions">
+              ${daily
+                ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-plateau-daily"
+                    aria-label="${escapeHtml(PLATEAU_COPY.dailyCta)}: ${escapeHtml(daily.title)}">
+                    ${escapeHtml(PLATEAU_COPY.dailyCta)}
+                    <span class="plateau-hub__meta">${escapeHtml(daily.title)}</span>
+                  </button>`
+                : ''}
+              <button type="button" class="secondary chapter-quick-actions__btn" id="btn-plateau-duel">
+                ${escapeHtml(PLATEAU_COPY.duelCta)}
+              </button>
+            </div>
+          </div>`
+        : ''
+      chapterQuickActions.innerHTML = `${resumeBtn}${plateauBlock}`
       chapterQuickActions.classList.remove('hidden')
       chapterQuickActions.querySelector<HTMLButtonElement>('#btn-resume-recovered')?.addEventListener('click', () => {
         const ok = flow.resumeRecoverableSession()
@@ -571,6 +604,19 @@ export function mountApp(app: HTMLDivElement) {
           openLab()
           updateAdvance(flow)
         }
+      })
+      chapterQuickActions.querySelector<HTMLButtonElement>('#btn-plateau-daily')?.addEventListener('click', async () => {
+        if (!daily) return
+        const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+        if (mustConfirm) {
+          const ok = await confirmDialogCtl.open(CONFIRM_COPY.dailyCalculus)
+          if (!ok) return
+        }
+        flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
+        openLab()
+      })
+      chapterQuickActions.querySelector<HTMLButtonElement>('#btn-plateau-duel')?.addEventListener('click', () => {
+        showDuel()
       })
     } else {
       chapterQuickActions.classList.add('hidden')

@@ -16,16 +16,14 @@
  * dossier renderer in mountApp; safe to call as often as needed.
  */
 import type { MatchHistoryEntry, RivalMemoryEntry } from '../../types'
+import { CALIBRATION_LENS_HINTS, CALIBRATION_LEVEL_LABELS } from '../../data/strings'
 
-export type CalibrationLevel =
-  | 'Forgiving'
-  | 'Measured'
-  | 'Equilibrium'
-  | 'Sharpened'
-  | 'Relentless'
+export type CalibrationLevel = keyof typeof CALIBRATION_LEVEL_LABELS
 
 export interface CalibrationView {
   level: CalibrationLevel
+  /** Display label from the shared strings table. */
+  levelLabel: string
   /** 0 (forgiving) -> 1 (relentless), for the brass-dial fill. */
   dialPosition: number
   /** Short tooltip-friendly explanation. */
@@ -34,12 +32,14 @@ export interface CalibrationView {
 
 const LEVEL_ORDER: CalibrationLevel[] = ['Forgiving', 'Measured', 'Equilibrium', 'Sharpened', 'Relentless']
 
-const LEVEL_HINTS: Record<CalibrationLevel, string> = {
-  Forgiving: 'Anti-tilt active: slower replies, looser tactics.',
-  Measured: 'Measured pressure: the rival is reading your tendencies.',
-  Equilibrium: 'Rival doctrine unshifted.',
-  Sharpened: 'Sharpened pressure: the rival tightens their lines.',
-  Relentless: 'Ceiling band for Mastery Trials.',
+function viewFor(level: CalibrationLevel): CalibrationView {
+  const idx = LEVEL_ORDER.indexOf(level)
+  return {
+    level,
+    levelLabel: CALIBRATION_LEVEL_LABELS[level],
+    dialPosition: idx / (LEVEL_ORDER.length - 1),
+    hint: CALIBRATION_LENS_HINTS[level],
+  }
 }
 
 export function deriveCalibrationLens(
@@ -47,17 +47,11 @@ export function deriveCalibrationLens(
   rivalMem: RivalMemoryEntry | undefined,
   forced: 'novice' | 'balanced' | 'relentless' | null = null,
 ): CalibrationView {
-  if (forced === 'novice') {
-    return { level: 'Forgiving', dialPosition: 0, hint: LEVEL_HINTS.Forgiving }
-  }
-  if (forced === 'relentless') {
-    return { level: 'Relentless', dialPosition: 1, hint: LEVEL_HINTS.Relentless }
-  }
+  if (forced === 'novice') return viewFor('Forgiving')
+  if (forced === 'relentless') return viewFor('Relentless')
 
   /* No history yet -- centered. */
-  if (!recentHistory.length) {
-    return { level: 'Equilibrium', dialPosition: 0.5, hint: LEVEL_HINTS.Equilibrium }
-  }
+  if (!recentHistory.length) return viewFor('Equilibrium')
 
   const last = recentHistory.slice(-12)
   const score = last.reduce((acc, h) => {
@@ -74,12 +68,7 @@ export function deriveCalibrationLens(
   else if (adjusted >= 4) level = 'Relentless'
   else if (adjusted >= 2) level = 'Sharpened'
 
-  const idx = LEVEL_ORDER.indexOf(level)
-  return {
-    level,
-    dialPosition: idx / (LEVEL_ORDER.length - 1),
-    hint: LEVEL_HINTS[level],
-  }
+  return viewFor(level)
 }
 
 /**

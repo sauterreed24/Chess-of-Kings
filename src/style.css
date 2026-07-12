@@ -442,8 +442,50 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .chapters-lede { margin: 0 0 1.75rem; color: var(--muted); font-size: 1rem; }
 .chapter-quick-actions {
   display: flex;
-  gap: 0.55rem;
+  flex-direction: column;
+  gap: 0.7rem;
   margin: -0.8rem 0 1.1rem;
+}
+.plateau-hub {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(201,169,98,0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(42,96,148,0.16), transparent 45%),
+    rgba(0,0,0,0.22);
+}
+.plateau-hub__eyebrow {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.plateau-hub__lede {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--ivory-dim);
+}
+.plateau-hub__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.plateau-hub__actions .chapter-quick-actions__btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-height: 2.55rem;
+}
+.plateau-hub__meta {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  color: rgba(10,9,8,0.62);
 }
 .chapter-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 0.6rem; }
 .chapters-back { margin-bottom: 1.25rem; }
@@ -1336,9 +1378,9 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   margin: 0.55rem 0 0;
   padding: 0.5rem 0.75rem;
   font-size: 0.82rem; font-style: italic; line-height: 1.45;
-  color: var(--ivory-dim);
-  background: linear-gradient(90deg, rgba(42,96,148,0.16), rgba(201,169,98,0.07));
-  border-left: 2px solid rgba(201,169,98,0.35);
+  color: var(--ivory);
+  background: linear-gradient(90deg, rgba(42,96,148,0.22), rgba(201,169,98,0.1));
+  border-left: 2px solid rgba(232,201,126,0.55);
   border-radius: 0 3px 3px 0;
   animation: coach-slide 0.35s var(--ease-out) both;
 }
@@ -2849,6 +2891,58 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   border-top: 1px solid rgba(201, 169, 98, 0.18);
 }
 
+.dossier-fold {
+  margin: 0.5rem 0;
+  border: 1px solid rgba(201,169,98,0.16);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.18);
+}
+.dossier-fold__summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.58rem 0.72rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  min-height: 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.dossier-fold__summary::-webkit-details-marker { display: none; }
+.dossier-fold__summary::before {
+  content: '▸';
+  color: var(--gold-bright);
+}
+.dossier-fold[open] > .dossier-fold__summary::before {
+  content: '▾';
+}
+.dossier-fold__body { padding: 0 0.72rem 0.65rem; }
+.dossier-fold__body ul { margin: 0; padding-left: 1.05rem; }
+.duel-echo-btn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  text-align: left;
+  margin: 0.22rem 0;
+}
+.duel-echo-btn__outcome {
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid rgba(201,169,98,0.3);
+  color: var(--ivory);
+}
+.duel-echo-btn__outcome--win { border-color: rgba(120,170,110,0.55); }
+.duel-echo-btn__outcome--loss { border-color: rgba(180,80,60,0.55); }
+.duel-echo-btn__outcome--draw { border-color: rgba(160,150,120,0.5); }
+
 .move-ledger {
   border-radius: 9px;
   background:
@@ -3315,12 +3409,21 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
   .duel-launch {
     padding: 0.62rem;
   }
+  .duel-panel .duel-launch {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    background: rgba(12,10,7,0.96);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.42);
+  }
   :is(.duel-launch__grid,.duel-launch__actions) {
     grid-template-columns: 1fr;
   }
   .duel-launch__actions :is(.primary,.secondary,.ghost) {
     min-height: 2.75rem;
   }
+  .plateau-hub__actions { flex-direction: column; }
+  .plateau-hub__actions .chapter-quick-actions__btn { width: 100%; }
   .btn-advance-label { font-size: 0.62rem; }
 }
 

@@ -11,6 +11,19 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-07-12
+
+Pass 7 — Retention polish:
+
+- **Mastery plateau hub** on the Chapters screen after Chapter III seals — Daily Calculus + Duel Archive CTAs so the content cliff becomes a practice loop.
+- **Richer roadmap teasers** for locked Chapters IV–IX (doctrine hooks instead of “— locked.” stubs).
+- **Dossier UX** — sticky duel launch controls on narrow screens; collapsible folds for prep, openings, training, analytics, echoes, and traits.
+- **Chronicle Echoes** now list the last three games of any outcome (win / loss / draw) with outcome badges.
+- **Duel coaching** — Kallistos prophylaxis doctrine label + duel-mode midgame nudges in `moveInsight`.
+- **Copy centralization** — Calibration Lens labels/hints and Archive rating band names live in `strings.ts`; coach tip contrast raised.
+- Docs: [`docs/PASS7_RETENTION_POLISH_PLAN.md`](docs/PASS7_RETENTION_POLISH_PLAN.md), [`docs/PASS7_PLAYTEST_CHECKLIST.md`](docs/PASS7_PLAYTEST_CHECKLIST.md).
+- Theme: CSS gzip gate **17800 → 18200** B for plateau hub + dossier folds.
+
 ## [0.4.0] — 2026-07-12
 
 Pass 6 — Continuity, Intuition, Chapter III:

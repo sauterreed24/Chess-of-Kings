@@ -227,6 +227,90 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector<HTMLButtonElement>('#btn-next')?.classList.contains('hidden')).toBe(true)
   })
 
+  it('shows a mastery plateau hub after Chapter III is sealed', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 3,
+      sceneIndex: 0,
+      highestUnlockedChapter: 3,
+      lastScreen: 'chapters',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-match-kallistos'],
+      completedPuzzleIds: [],
+      duelUnlockedOpponentIds: ['alexion', 'kallistos'],
+      unlockedDuelVariantIds: ['alexion-mentor', 'kallistos-law'],
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    const hub = app.querySelector('.plateau-hub')
+    expect(hub).not.toBeNull()
+    expect(hub?.textContent).toMatch(/Mastery plateau/)
+    expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
+    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/fianchetto|Refuse the center/i)
+
+    app.querySelector<HTMLButtonElement>('#btn-plateau-duel')?.click()
+    expect(app.querySelector('#screen-duel')?.classList.contains('hidden')).toBe(false)
+  })
+
+  it('lists loss and draw echoes beside wins in the dossier', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 1,
+      sceneIndex: 0,
+      highestUnlockedChapter: 2,
+      lastScreen: 'duel',
+      duelUnlockedOpponentIds: ['alexion'],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      matchHistory: [
+        {
+          id: 'echo-loss-1',
+          timestamp: 1_700_000_000_000,
+          mode: 'duel',
+          sourceId: 'alexion-mentor',
+          opponentId: 'alexion',
+          opponentLabel: 'Alexion',
+          outcome: 'loss',
+          moves: 40,
+          styleGrade: 'C',
+          turningPointSan: 'Qh5',
+          replaySans: ['e4', 'e5'],
+          replayStartFen: 'start',
+        },
+        {
+          id: 'echo-draw-1',
+          timestamp: 1_700_000_100_000,
+          mode: 'duel',
+          sourceId: 'alexion-mentor',
+          opponentId: 'alexion',
+          opponentLabel: 'Alexion',
+          outcome: 'draw',
+          moves: 60,
+          styleGrade: 'B',
+          turningPointSan: 'Nf3',
+          replaySans: ['e4', 'c5'],
+          replayStartFen: 'start',
+        },
+      ],
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    app.querySelector<HTMLButtonElement>('[data-op="alexion"]')?.click()
+
+    const panel = app.querySelector('#duel-panel')!
+    expect(panel.querySelector('.dossier-fold')).not.toBeNull()
+    expect(panel.textContent).toContain('Defeat')
+    expect(panel.textContent).toContain('Draw')
+    expect(panel.textContent).toContain('Qh5')
+    expect(panel.textContent).not.toContain('wins, losses, and draws all count')
+  })
+
   it('restores a reloaded duel session with duel briefing copy', () => {
     const app = document.createElement('div')
     document.body.appendChild(app)

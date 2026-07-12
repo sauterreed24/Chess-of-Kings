@@ -17,6 +17,11 @@ import {
   sanitizeRivalCalibrationRating,
 } from '../duel/rivalCalibration'
 import { getRivalProfile } from '../../data/rivals'
+import {
+  CALIBRATION_LEVEL_LABELS,
+  DOSSIER_ECHO_EMPTY,
+  ECHO_OUTCOME_LABELS,
+} from '../../data/strings'
 import { aiTraitBars } from '../mainUiFormatters'
 import type { GameFlow } from '../gameFlow'
 import type { RewardOverlayController } from '../rewardOverlayController'
@@ -169,15 +174,17 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
       .map((v) => `<option value="${escapeHtml(v.id)}">${escapeHtml(v.label)}</option>`)
       .join('')
     const primaryVariant = unlockedVariants[0]
-    const echoes = history
-      .filter((h) => h.outcome === 'win')
-      .slice(-3)
-      .reverse()
+    const echoes = history.slice(-3).reverse()
     const echoCards = echoes.length
-      ? echoes.map((e) => `<button type="button" class="ghost duel-echo-btn" data-echo-id="${escapeHtml(e.id)}">
-          Echo ${new Date(e.timestamp).toLocaleDateString()} · ${e.styleGrade} · ${e.turningPointSan}
-        </button>`).join('')
-      : '<p class="ledger-empty">Defeat this rival to inscribe chronicle echoes.</p>'
+      ? echoes.map((e) => {
+          const outcome = ECHO_OUTCOME_LABELS[e.outcome]
+          return `<button type="button" class="ghost duel-echo-btn" data-echo-id="${escapeHtml(e.id)}"
+            aria-label="Replay ${outcome} echo from ${new Date(e.timestamp).toLocaleDateString()}, grade ${e.styleGrade}, turning point ${escapeHtml(e.turningPointSan)}">
+            <span class="duel-echo-btn__outcome duel-echo-btn__outcome--${e.outcome}">${escapeHtml(outcome)}</span>
+            ${new Date(e.timestamp).toLocaleDateString()} · ${e.styleGrade} · ${escapeHtml(e.turningPointSan)}
+          </button>`
+        }).join('')
+      : `<p class="ledger-empty">${escapeHtml(DOSSIER_ECHO_EMPTY)}</p>`
     const prepLines = (() => {
       /* Prefer the curated counter-prep when we have a known rival;
        * fall back to the heuristic-driven bullets for unknown ids
@@ -216,7 +223,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
       : ''
     const trainingPlan = flow.getAdaptiveTrainingPlan(rival.opponentId)
     const lens = deriveCalibrationLens(history, rivalMem)
-    const lensTicks = ['Forgiving', 'Measured', 'Equilibrium', 'Sharpened', 'Relentless']
+    const lensTicks = Object.values(CALIBRATION_LEVEL_LABELS)
     const lensTickHtml = lensTicks
       .map((t, i) => {
         const fillIdx = Math.round(lens.dialPosition * 4)
@@ -226,6 +233,11 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         return `<span class="${cls}" aria-hidden="true" title="${escapeHtml(t)}"></span>`
       })
       .join('')
+    const fold = (title: string, body: string, open = false) =>
+      `<details class="dossier-fold"${open ? ' open' : ''}>
+        <summary class="dossier-fold__summary">${escapeHtml(title)}</summary>
+        <div class="dossier-fold__body">${body}</div>
+      </details>`
     const openingWatch = (variantId: string) => {
       const variant = unlockedVariants.find((v) => v.id === variantId) ?? unlockedVariants[0]
       if (!variant) return []
@@ -307,28 +319,29 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         <div class="cal-lens" role="group" aria-label="Calibration Lens for ${escapeHtml(rival.opponentName)}">
           <div class="cal-lens__head">
             <span class="cal-lens__label">Calibration Lens</span>
-            <strong class="cal-lens__level">${escapeHtml(lens.level)}</strong>
+            <strong class="cal-lens__level">${escapeHtml(lens.levelLabel)}</strong>
           </div>
           <div class="cal-lens__dial" aria-hidden="true">${lensTickHtml}</div>
           <p class="cal-lens__hint">${escapeHtml(lens.hint)}</p>
         </div>
-        <div class="reward-card">
-          <h4>Counter-Prep Briefing</h4>
-          <ul>${prepLines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
-        </div>
-        <div class="reward-card">
-          <h4>Opening Watchlist</h4>
-          <ul id="duel-opening-watch">${openingWatch(unlockedVariants[0]!.id).map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
-        </div>
-        <div class="reward-card">
-          <h4>Adaptive Training Missions</h4>
-          <ul>${trainingPlan.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>
-        </div>
+        ${fold(
+          'Counter-Prep Briefing',
+          `<ul>${prepLines.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>`,
+          true,
+        )}
+        ${fold(
+          'Opening Watchlist',
+          `<ul id="duel-opening-watch">${openingWatch(unlockedVariants[0]!.id).map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>`,
+        )}
+        ${fold(
+          'Adaptive Training Missions',
+          `<ul>${trainingPlan.map((line) => `<li>${escapeHtml(line)}</li>`).join('')}</ul>`,
+        )}
         <p class="opponent-note"><strong>Strengths:</strong> ${escapeHtml(rival.strengths)}</p>
         <p class="opponent-note"><strong>Weaknesses:</strong> ${escapeHtml(rival.weaknesses)}</p>
-        <div class="reward-card">
-          <h4>Duel Analytics</h4>
-          <ul>
+        ${fold(
+          'Duel Analytics',
+          `<ul>
             <li><strong>Record:</strong> ${wins}W · ${losses}L · ${draws}D</li>
             <li><strong>Average length:</strong> ${avgMoves} ply</li>
             <li><strong>Common style grade:</strong> ${dominantGrade}</li>
@@ -336,17 +349,14 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <li><strong>Recommended pressure band:</strong> ${recommendedDifficulty}</li>
             ${rivalMem ? `<li><strong>Rival memory:</strong> ${rivalMem.games} logged games · adaptation intensity ${(Math.min(100, (rivalMem.punishedFlankPushes + rivalMem.punishedEarlyQueen + rivalMem.punishedCheckSpam) * 3)).toFixed(0)}%</li>` : ''}
             <li><strong>Archive rating:</strong> ${sanitizeRivalCalibrationRating(rivalMem?.calibrationRating)} (${formatRivalCalibrationLabel(sanitizeRivalCalibrationRating(rivalMem?.calibrationRating))})</li>
-          </ul>
-        </div>
-        <div class="reward-card">
-          <h4>Chronicle Echoes</h4>
-          ${echoCards}
-        </div>
+          </ul>`,
+        )}
+        ${fold('Chronicle Echoes', echoCards)}
         ${schoolBlendHtml}
-        <div class="reward-card">
-          <h4>Rival Trait Profile</h4>
-          <div id="duel-ai-traits">${variantTraitHtml(unlockedVariants[0]!.id)}</div>
-        </div>
+        ${fold(
+          'Rival Trait Profile',
+          `<div id="duel-ai-traits">${variantTraitHtml(unlockedVariants[0]!.id)}</div>`,
+        )}
       </div>`
     revealDuelPanel(shouldReveal)
     duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
