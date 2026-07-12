@@ -15,7 +15,13 @@ export type CampaignProgress = {
 
 export type AdvanceResult =
   | { kind: 'next-scene' }
-  | { kind: 'chapter-complete'; chapter: Chapter; rewards: RewardDefinition[] }
+  | {
+      kind: 'chapter-complete'
+      chapter: Chapter
+      rewards: RewardDefinition[]
+      /** True when the completed chapter was the last playable chapter. */
+      campaignFinished?: boolean
+    }
   | { kind: 'campaign-finished' }
 
 export type BoardAdvanceContext = {
@@ -149,7 +155,8 @@ export class CampaignOrchestrator {
       return { kind: 'chapter-complete', chapter: ch, rewards }
     }
 
-    return { kind: 'campaign-finished' }
+    /* Last playable chapter: still grant chapter-clear rewards, then finish. */
+    return { kind: 'chapter-complete', chapter: ch, rewards, campaignFinished: true }
   }
 
   canAdvance(ctx: BoardAdvanceContext): boolean {

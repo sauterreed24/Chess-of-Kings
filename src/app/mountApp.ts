@@ -357,6 +357,7 @@ export function mountApp(app: HTMLDivElement) {
       window.setTimeout(() => maybeShowPendingChapterPrompt(), 0)
     },
     onCampaignFinished() {
+      const pending = flow.consumePendingRewards()
       const msg = flow.chapter3Complete
         ? 'Chapters I–III are sealed. Daily Calculus and the Duel Archive remain open — mastery is the plateau, not a wall. Later ages stay locked for now.'
         : flow.chapter2Complete
@@ -367,6 +368,7 @@ export function mountApp(app: HTMLDivElement) {
       pendingChapterPrompt = { completedTitle: msg, nextTitle: null }
       closeLab()
       showTitle()
+      if (pending.length) showRewardBundles(pending)
       maybeShowPendingChapterPrompt()
       syncMvpFlag()
     },

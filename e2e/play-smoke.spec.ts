@@ -33,6 +33,45 @@ test('settings toggles for AI thread and visual quality persist', async ({ page 
   await expect(page.locator('#btn-title-visual')).toContainText('Full')
 })
 
+test('seeded save unlocks Lukas from scene history without explicit duel ids', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 1,
+      sceneIndex: 0,
+      highestUnlockedChapter: 3,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c1-match-lukas', 'c1-match-marius', 'c2-reflection'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: [],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 80,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1100, peak: 1100, rated: 1 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.goto('./')
+  await page.locator('#btn-duel').click({ timeout: 15_000 })
+  await expect(page.locator('.duel-row[data-op="lukas"]:not(.duel-row--sealed)')).toBeVisible()
+  await page.locator('.duel-row[data-op="lukas"]').click()
+  await expect(page.locator('#duel-panel .duel-launch')).toBeVisible()
+  await expect(page.locator('#duel-panel')).toContainText('Archive rating:')
+})
+
 test('seeded save unlocks Lukas in the duel archive and shows Chapter III', async ({ page }) => {
   await page.addInitScript(() => {
     const save = {

@@ -150,15 +150,8 @@ export function showRewardBundles(
   if (bundles.length) {
     sfx.playEventSfx('reward')
     announcer.say(ANNOUNCE_TEMPLATES.rewardsInscribed)
-  } else {
-    announcer.say(
-      last?.outcome === 'loss'
-        ? ANNOUNCE_TEMPLATES.matchLoss
-        : last?.outcome === 'draw'
-          ? ANNOUNCE_TEMPLATES.matchDraw
-          : ANNOUNCE_TEMPLATES.rewardsInscribed,
-    )
   }
+  /* Loss/draw recaps: outcome was already announced in applyChessUi with the rival name. */
   const overlayHtml = buildRewardOverlayHtml(flow, bundles, latestResolvedForRecap)
   callbacks.openRewardOverlay(overlayHtml, (root) => {
     root.querySelector<HTMLButtonElement>('#btn-reward-rematch')?.addEventListener('click', () => {

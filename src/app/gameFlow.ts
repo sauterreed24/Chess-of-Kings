@@ -2264,6 +2264,10 @@ export class GameFlow {
         if (bundle) this.pendingRewards.push(bundle)
       }
       this.persist()
+      if (result.campaignFinished) {
+        this.handlers.onCampaignFinished()
+        return
+      }
       this.refreshScene()
       return
     }

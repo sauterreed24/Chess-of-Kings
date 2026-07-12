@@ -24,6 +24,7 @@ Pass 6 — Continuity, Intuition, Chapter III:
 - **Settings** — title toggles for **AI Thread** (Auto / Worker / Main) and **Visual** quality (Auto / Full / Lean) overriding silent `perf-lean` heuristics.
 - **Playtest gate** — expanded Playwright smoke (settings persist, seeded Lukas unlock + Chapter III visibility); [`docs/PASS6_PLAYTEST_CHECKLIST.md`](docs/PASS6_PLAYTEST_CHECKLIST.md); [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md).
 - Theme: compact `theme-classical` chapter skin; CSS gzip gate **17600 → 17800** B.
+- **Playtest hardening** — final-chapter clear rewards now grant on campaign finish; duel unlocks backfill from `completedSceneIds` (pre-Pass-6 Lukas/Marius saves); Demetrios-return no longer maps to Alexion unlock; loss/draw recap no longer double-announces.
 
 ### Also shipping (previously unreleased on main)
 

@@ -58,8 +58,33 @@ describe('CampaignOrchestrator', () => {
     expect(result.kind).toBe('chapter-complete')
     if (result.kind === 'chapter-complete') {
       expect(result.chapter.id).toBe(ch.id)
+      expect(result.campaignFinished).toBeFalsy()
       expect(campaign.progress.chapterIndex).toBe(1)
       expect(campaign.progress.sceneIndex).toBe(0)
+    }
+  })
+
+  it('grants Chapter III clear rewards when the final chapter seals', () => {
+    const ch3Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch3')
+    expect(ch3Index).toBeGreaterThanOrEqual(0)
+    const ch3 = PLAYABLE_CHAPTERS[ch3Index]!
+    const campaign = new CampaignOrchestrator(PLAYABLE_CHAPTERS, {
+      ...defaultCampaignProgress(),
+      chapterIndex: ch3Index,
+      sceneIndex: ch3.scenes.length - 1,
+      highestUnlockedChapter: ch3Index,
+      chapter1Complete: true,
+      chapter2Complete: true,
+    })
+    const last = campaign.currentScene()
+    expect(last.id).toBe('c3-freeplay')
+    const result = campaign.advanceAfterLeaving(last)
+    expect(result.kind).toBe('chapter-complete')
+    if (result.kind === 'chapter-complete') {
+      expect(result.campaignFinished).toBe(true)
+      expect(result.chapter.id).toBe('ch3')
+      expect(result.rewards.some((r) => r.id === 'rw-title-classical-seal')).toBe(true)
+      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch3')).toBe(true)
     }
   })
 
