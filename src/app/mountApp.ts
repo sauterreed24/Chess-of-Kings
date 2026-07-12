@@ -22,6 +22,7 @@ import {
   CONFIRM_COPY,
   KEYBOARD_HELP_HEADING,
   PLATEAU_COPY,
+  PLATEAU_PENDING_COPY,
   RIBBON_LABELS,
   STORAGE_FAILURE_MESSAGE,
 } from '../data/strings'
@@ -567,24 +568,27 @@ export function mountApp(app: HTMLDivElement) {
     chapterList.innerHTML = ''
 
     const plateau = flow.chapter3Complete
+    const plateauPending = !plateau && flow.chapter3ReflectionComplete
     const recoverable = flow.hasRecoverableSession()
     const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
     const daily =
       dailyRaw && dailyRaw.chapterIndex <= flow.highestUnlockedChapter ? dailyRaw : null
 
-    if (plateau || recoverable) {
+    if (plateau || plateauPending || recoverable) {
       const resumeBtn = recoverable
         ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-resume-recovered">
             ${escapeHtml(PLATEAU_COPY.resumeCta)}
           </button>`
         : ''
-      const plateauBlock = plateau
-        ? `<div class="plateau-hub" role="region" aria-label="${escapeHtml(PLATEAU_COPY.heading)}">
-            <p class="plateau-hub__eyebrow">${escapeHtml(PLATEAU_COPY.heading)}</p>
-            <p class="plateau-hub__lede">${escapeHtml(PLATEAU_COPY.lede)}</p>
+      const hubHeading = plateau ? PLATEAU_COPY.heading : PLATEAU_PENDING_COPY.heading
+      const hubLede = plateau ? PLATEAU_COPY.lede : PLATEAU_PENDING_COPY.lede
+      const plateauBlock = (plateau || plateauPending)
+        ? `<div class="plateau-hub" role="region" aria-label="${escapeHtml(hubHeading)}">
+            <p class="plateau-hub__eyebrow">${escapeHtml(hubHeading)}</p>
+            <p class="plateau-hub__lede">${escapeHtml(hubLede)}</p>
             <div class="plateau-hub__actions">
               ${daily
-                ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-plateau-daily"
+                ? `<button type="button" class="secondary chapter-quick-actions__btn" id="btn-plateau-daily"
                     aria-label="${escapeHtml(PLATEAU_COPY.dailyCta)}: ${escapeHtml(daily.title)}">
                     ${escapeHtml(PLATEAU_COPY.dailyCta)}
                     <span class="plateau-hub__meta">${escapeHtml(daily.title)}</span>
@@ -644,7 +648,12 @@ export function mountApp(app: HTMLDivElement) {
             <span class="chapter-btn__arrow" aria-hidden="true">→</span>
           </button>`
       if (!locked) {
-        li.querySelector('button')?.addEventListener('click', () => {
+        li.querySelector('button')?.addEventListener('click', async () => {
+          const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+          if (mustConfirm) {
+            const ok = await confirmDialogCtl.open(CONFIRM_COPY.replaceRecoveredSession)
+            if (!ok) return
+          }
           flow.jumpToChapter(i)
           openLab()
         })
@@ -731,6 +740,7 @@ export function mountApp(app: HTMLDivElement) {
       openRewardOverlay,
       openLab,
       updateAdvance,
+      confirmReplaceSession: (copy) => confirmDialogCtl.open(copy),
       renderDuelLabBrief,
     })
   }

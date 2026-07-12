@@ -130,13 +130,40 @@ describe('SnapshotManager', () => {
     expect(failed).toBe(true)
   })
 
-  it('persists null inProgress when build context is idle', () => {
+  it('persists null inProgress when idle and no pending recovery exists', () => {
     const mgr = new SnapshotManager({ syncIo: true })
     const ctx = defaultCtx()
     ctx.mode = 'idle'
     mgr.persist(() => saveBase(), () => ctx)
     const data = vi.mocked(writeSave).mock.calls[0]![0]
     expect(data.inProgress).toBeNull()
+  })
+
+  it('preserves pending recovery when idle shell navigation would otherwise wipe it', () => {
+    const mgr = new SnapshotManager({ syncIo: true })
+    const snap = {
+      mode: 'calibration',
+      chapterIndex: 0,
+      sceneIndex: 4,
+      fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+      history: [
+        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+      ],
+      sanLog: ['e4'],
+      sanQuality: ['good'],
+      playerColor: 'w',
+      calibrationMoves: 1,
+      scriptedMoveIndex: 0,
+      sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    } as InProgressSnapshot
+    mgr.setPendingSnapshot(snap)
+    const idle = defaultCtx()
+    idle.mode = 'idle'
+    idle.history = []
+    mgr.persist(() => saveBase(), () => idle)
+    const data = vi.mocked(writeSave).mock.calls[0]![0]
+    expect(data.inProgress).toEqual(snap)
   })
 })
 

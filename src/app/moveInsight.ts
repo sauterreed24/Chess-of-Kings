@@ -108,11 +108,6 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
     return 'Minor piece developed. Finish the rest before moving it twice.'
   }
 
-  if (input.mode === 'duel') {
-    const duelLine = duelDoctrineNudge(doctrine, halfMoveCount)
-    if (duelLine) return duelLine
-  }
-
   if (input.mode === 'calibration' && halfMoveCount <= 8) {
     return 'Calibration logged. Tie the next move to center, development, or king safety.'
   }
@@ -132,6 +127,11 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   if (input.quality === 'ok') {
     if (doctrine) return `Held against ${doctrine}. Improve your worst piece, or name the next threat.`
     return 'Held. Improve worst piece or name the next threat.'
+  }
+
+  if (input.mode === 'duel') {
+    const duelLine = duelDoctrineNudge(doctrine, halfMoveCount)
+    if (duelLine) return duelLine
   }
 
   return null

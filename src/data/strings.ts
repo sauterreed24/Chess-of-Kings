@@ -75,6 +75,12 @@ export const PLATEAU_COPY = {
   resumeCta: 'Resume Recovered Session',
 } as const
 
+/** Softer hub while Chapter III freeplay / clear rewards are still outstanding. */
+export const PLATEAU_PENDING_COPY = {
+  heading: 'Almost sealed',
+  lede: 'The Professor\'s Law reflection is inscribed. Finish the Chapter III rehearsal to claim the classical seal, then the mastery plateau opens fully.',
+} as const
+
 export const ECHO_OUTCOME_LABELS = {
   win: 'Victory',
   loss: 'Defeat',
@@ -91,6 +97,16 @@ export const CONFIRM_COPY = {
     title: 'Leave the current passage?',
     message: "Today's Daily Calculus will replace your open simulation.",
     confirmLabel: 'Open Daily Calculus',
+  },
+  replaceRecoveredSession: {
+    title: 'Replace the recovered session?',
+    message: 'You have a recoverable board position. Continuing here will discard that recovery.',
+    confirmLabel: 'Continue and discard',
+  },
+  replaceWithDuel: {
+    title: 'Replace the recovered session?',
+    message: 'Starting this duel will discard your recoverable campaign or board session.',
+    confirmLabel: 'Start duel',
   },
   newChronicle: {
     title: 'Begin a new chronicle?',
