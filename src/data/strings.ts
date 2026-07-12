@@ -62,6 +62,11 @@ export const CONFIRM_COPY = {
     message: 'Your saved expedition, unlocks, and chronicle will be cleared from this browser.',
     confirmLabel: 'New chronicle',
   },
+  leavePassage: {
+    title: 'Leave the current passage?',
+    message: 'Your open simulation will be replaced. Resume it later from the chronicle index if you return soon.',
+    confirmLabel: 'Switch passage',
+  },
 } as const
 
 export const STORAGE_FAILURE_MESSAGE =

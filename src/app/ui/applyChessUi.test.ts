@@ -71,14 +71,16 @@ function payload(chess: Chess): ChessUiPayload {
     coachTip: null,
     matchOutcome: null,
     evalScore: 0,
-    canRetry: false,
-    canHint: false,
+    evalTrace: [],
+    playerColor: 'w',
     mentorInsight: null,
     aiPersona: null,
     aiFlavor: null,
     tacticalPulse: null,
     sessionRecovered: false,
     canRestoreStable: false,
+    canRetry: false,
+    canHint: false,
     boardGuide: 'Calibration complete.',
   }
 }
@@ -113,5 +115,35 @@ describe('applyChessUi', () => {
     expect(dom.moveCounterEl.textContent).toBe('4/4 White moves')
     expect(dom.calibrationRail.classList.contains('hidden')).toBe(false)
     expect(dom.calibrationTrack.querySelectorAll('.cal-dot--on')).toHaveLength(4)
+  })
+
+  it('flips the eval bar to the player perspective when Black', () => {
+    const chess = new Chess()
+    const dom = refs()
+    const play = createMountPlayState()
+    play.showEvalBar = true
+
+    applyChessUi(
+      {
+        ...payload(chess),
+        evalScore: 120,
+        playerColor: 'b',
+      },
+      {
+        dom,
+        play,
+        getFlow: () => null,
+        sfx: createSfxController({ enabled: false }),
+        announcer: createAnnouncer(node()),
+      },
+      {
+        showRewardBundles: vi.fn(),
+        maybeShowPendingChapterPrompt: vi.fn(),
+        revealBoardScene: vi.fn(),
+      },
+    )
+
+    expect(dom.evalBarScore.textContent).toBe('-1.2')
+    expect(dom.evalBarFill.style.height).toBe('40%')
   })
 })

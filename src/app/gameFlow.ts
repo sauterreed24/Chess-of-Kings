@@ -1467,6 +1467,7 @@ export class GameFlow {
     if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return
 
     let fromSquare: Square | null = null
+    let hintToSquare: Square | null = null
     let reason = 'This is the move the archive would choose.'
     try {
       const result = searchFen(this.chess.fen(), { maxDepth: 6, maxTimeMs: 80, freshTable: true })
@@ -1479,6 +1480,7 @@ export class GameFlow {
         })
         if (played) {
           fromSquare = played.from as Square
+          hintToSquare = played.to as Square
           const opp: Color = this.playerColor === 'w' ? 'b' : 'w'
           const underAttack = this.chess.attackers(played.from as Square, opp).length > 0
           reason = describeHint(
@@ -1491,7 +1493,11 @@ export class GameFlow {
       /* engine unavailable — fall back to the generic nudge */
     }
 
-    if (fromSquare) this.board?.showLegalFrom(this.chess, fromSquare)
+    if (fromSquare && hintToSquare) {
+      this.board?.showHintMove(this.chess, fromSquare, hintToSquare)
+    } else if (fromSquare) {
+      this.board?.showLegalFrom(this.chess, fromSquare)
+    }
     this.lastCoachTip = `Hint — ${reason}`
     this.emitChess()
   }
@@ -2295,11 +2301,13 @@ export class GameFlow {
 
   jumpToChapter(index: number) {
     if (!this.campaign.applyJumpToChapter(index)) return
+    this.snapshots.clearPendingSnapshot()
     this.refreshScene()
   }
 
   jumpToScene(chapterIndex: number, sceneIndex: number) {
     if (!this.campaign.applyJumpToScene(chapterIndex, sceneIndex)) return
+    this.snapshots.clearPendingSnapshot()
     this.refreshScene()
   }
 

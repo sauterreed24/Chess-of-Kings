@@ -18,6 +18,7 @@ import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
 import { recordToday as recordStreakToday, readStreak } from './session/streak'
 import { pickDailyCalculus } from './session/dailyCalculus'
 import { createAnnouncer } from './a11y/announcer'
+import { createFocusTrap } from './a11y/focusTrap'
 import { CONFIRM_COPY, KEYBOARD_HELP_HEADING, RIBBON_LABELS, STORAGE_FAILURE_MESSAGE } from '../data/strings'
 import { syncTitleActionGroups } from './titleActions'
 import { createMountPlayState, type MountDomRefs, type MountRuntime } from './mountContext'
@@ -165,6 +166,7 @@ export function mountApp(app: HTMLDivElement) {
       screenCtl.setShellBackdropInert(confirmInertRestore, open, [confirmOverlay, liveAnnouncer])
     },
   })
+  const labFocusTrap = createFocusTrap(labOverlay)
   const mobileBoardFit = createMobileBoardFitController({ playScreen, boardStage, labOverlay })
   mobileBoardFit.attach()
   let storageFailureAnnounced = false
@@ -447,14 +449,11 @@ export function mountApp(app: HTMLDivElement) {
     dailyRibbon.innerHTML = `${streakBadge}${dailyBlock}`
     dailyRibbon.classList.remove('hidden')
     if (daily) {
-      dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', async () => {
-        const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
-        if (mustConfirm) {
-          const ok = await confirmDialogCtl.open(CONFIRM_COPY.dailyCalculus)
-          if (!ok) return
-        }
-        flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
-        openLab()
+      dailyRibbon.querySelector<HTMLButtonElement>('#btn-daily-calculus')?.addEventListener('click', () => {
+        leavePassageOrConfirm(CONFIRM_COPY.dailyCalculus, () => {
+          flow.jumpToScene(daily.chapterIndex, daily.sceneIndex)
+          openLab()
+        })
       })
     }
   }
@@ -477,11 +476,14 @@ export function mountApp(app: HTMLDivElement) {
     renderActiveDuelLabBrief()
     flow.board?.setMoveGuard(moveGuardEnabled)
     syncTitleButtons()
+    labFocusTrap.activate()
     focusWithoutScroll(btnVestibule)
     window.requestAnimationFrame(() => mobileBoardFit.apply())
   }
 
   function closeLab() {
+    labFocusTrap.deactivate()
+    flow.flushDeferredIO()
     closeRewardOverlay()
     screenCtl.setLabOpen(false)
     labOverlay.classList.remove('lab-overlay--active')
@@ -493,6 +495,38 @@ export function mountApp(app: HTMLDivElement) {
     flow.stopDuel()
     flow.setLastScreen('chapters')
     mobileBoardFit.apply()
+    if (
+      focusBeforeLab &&
+      document.contains(focusBeforeLab) &&
+      !focusBeforeLab.closest('[aria-hidden="true"], .hidden')
+    ) {
+      focusWithoutScroll(focusBeforeLab)
+      focusBeforeLab = null
+    }
+  }
+
+  function needsLeavePassageConfirm(): boolean {
+    return flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+  }
+
+  function confirmLeavePassage(
+    copy: (typeof CONFIRM_COPY)[keyof typeof CONFIRM_COPY] = CONFIRM_COPY.leavePassage,
+  ): Promise<boolean> {
+    if (!needsLeavePassageConfirm()) return Promise.resolve(true)
+    return confirmDialogCtl.open(copy)
+  }
+
+  function leavePassageOrConfirm(
+    copy: (typeof CONFIRM_COPY)[keyof typeof CONFIRM_COPY],
+    proceed: () => void,
+  ) {
+    if (!needsLeavePassageConfirm()) {
+      proceed()
+      return
+    }
+    void confirmLeavePassage(copy).then((ok) => {
+      if (ok) proceed()
+    })
   }
 
   function closeLabIfActive() {
@@ -530,14 +564,8 @@ export function mountApp(app: HTMLDivElement) {
 
   function showTitle() {
     closeRewardOverlay()
+    closeLabIfActive()
     if (hasSave()) flow.setLastScreen('title')
-    screenCtl.setLabOpen(false)
-    labOverlay.classList.remove('lab-overlay--active')
-    labOverlay.setAttribute('aria-hidden', 'true')
-    labOverlay.removeAttribute('aria-modal')
-    labOverlay.removeAttribute('role')
-    labOverlay.removeAttribute('aria-label')
-    shell.classList.remove('shell--lab')
     screenCtl.setTopLevelScreen('title')
     setNavActive('title')
     syncTitleButtons()
@@ -551,7 +579,7 @@ export function mountApp(app: HTMLDivElement) {
 
   function showChapters() {
     closeRewardOverlay()
-    screenCtl.setLabOpen(false)
+    closeLabIfActive()
     flow.setLastScreen('chapters')
     screenCtl.setTopLevelScreen('chapters')
     setNavActive('chapters')
@@ -599,8 +627,10 @@ export function mountApp(app: HTMLDivElement) {
           </button>`
       if (!locked) {
         li.querySelector('button')?.addEventListener('click', () => {
-          flow.jumpToChapter(i)
-          openLab()
+          leavePassageOrConfirm(CONFIRM_COPY.leavePassage, () => {
+            flow.jumpToChapter(i)
+            openLab()
+          })
         })
       }
       chapterList.appendChild(li)
@@ -691,7 +721,7 @@ export function mountApp(app: HTMLDivElement) {
 
   function showDuel() {
     closeRewardOverlay()
-    screenCtl.setLabOpen(false)
+    closeLabIfActive()
     flow.setLastScreen('chapters')
     screenCtl.setTopLevelScreen('duel')
     setNavActive('duel')
@@ -1149,7 +1179,7 @@ export function mountApp(app: HTMLDivElement) {
     if (flow.retryCurrentBattle()) updateAdvance(flow)
   })
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
-  btnHint.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.requestHint() })
+  btnHint.addEventListener('click', () => { sfx.playEventSfx('hint'); flow.requestHint() })
 
   let advanceTicker = 0
   const scheduleAdvanceTick = () => {

@@ -151,6 +151,25 @@ describe('BoardView keyboard navigation', () => {
     root.remove()
   })
 
+  it('showHintMove highlights only the coached destination', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+    })
+    const chess = new Chess('7k/8/8/8/8/8/6P1/6K1 w - - 0 1')
+    view.draw(chess, null, { mode: 'solo', soloColor: 'w' })
+
+    view.showHintMove(chess, 'g2', 'g3')
+
+    expect(root.querySelectorAll('.sq-legal')).toHaveLength(1)
+    expect(root.querySelector('[data-square="g3"]')?.classList.contains('sq-legal')).toBe(true)
+    expect(root.querySelector('[data-square="g4"]')?.classList.contains('sq-legal')).toBe(false)
+    root.remove()
+  })
+
   it('reports capture targets in selection state', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)

@@ -190,17 +190,18 @@ export function applyChessUi(
 
   /* Eval bar + captured material (match mode) — skip DOM when score/FEN unchanged (RAF batching). */
   if (play.showEvalBar) {
-    if (play.lastEvalScore !== p.evalScore) {
-      play.lastEvalScore = p.evalScore
-      const clamped = Math.max(-600, Math.min(600, p.evalScore))
+    const povScore = p.playerColor === 'b' ? -p.evalScore : p.evalScore
+    if (play.lastEvalScore !== povScore) {
+      play.lastEvalScore = povScore
+      const clamped = Math.max(-600, Math.min(600, povScore))
       const pct = 50 + clamped / 12
       dom.evalBarFill.style.height = `${Math.max(3, Math.min(97, pct))}%`
-      const abs = Math.abs(p.evalScore)
+      const abs = Math.abs(povScore)
       if (abs < 15) {
         dom.evalBarScore.textContent = '0.0'
       } else {
-        const val = (Math.abs(p.evalScore) / 100).toFixed(1)
-        dom.evalBarScore.textContent = p.evalScore > 0 ? `+${val}` : `-${val}`
+        const val = (Math.abs(povScore) / 100).toFixed(1)
+        dom.evalBarScore.textContent = povScore > 0 ? `+${val}` : `-${val}`
       }
     }
     const fen = p.fen

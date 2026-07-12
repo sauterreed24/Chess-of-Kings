@@ -531,4 +531,52 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(loadSave()?.ladder).toEqual({ rating: 800, peak: 800, rated: 0 })
     expect(app.querySelector('#title-rating')?.classList.contains('hidden')).toBe(true)
   })
+
+  it('surfaces resume after leaving the lab mid-match', () => {
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+
+    const next = app.querySelector<HTMLButtonElement>('#btn-next')!
+    const tag = app.querySelector<HTMLElement>('#scene-tag')!
+    for (let i = 0; i < 8 && !tag.textContent?.startsWith('Calibration'); i += 1) {
+      next.click()
+    }
+
+    app.querySelector<HTMLButtonElement>('[data-square="e2"]')?.click()
+    app.querySelector<HTMLButtonElement>('[data-square="e4"]')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-vestibule')?.click()
+
+    expect(app.querySelector('#btn-resume-recovered')).not.toBeNull()
+    expect(app.querySelector('#chapter-quick-actions')?.classList.contains('hidden')).toBe(false)
+  })
+
+  it('gates chapter switches behind confirm when a recoverable session exists', async () => {
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+
+    const next = app.querySelector<HTMLButtonElement>('#btn-next')!
+    const tag = app.querySelector<HTMLElement>('#scene-tag')!
+    for (let i = 0; i < 8 && !tag.textContent?.startsWith('Calibration'); i += 1) {
+      next.click()
+    }
+
+    app.querySelector<HTMLButtonElement>('[data-square="e2"]')?.click()
+    app.querySelector<HTMLButtonElement>('[data-square="e4"]')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-vestibule')?.click()
+
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+    expect(app.querySelector('#confirm-overlay')?.classList.contains('hidden')).toBe(false)
+    expect(app.querySelector('#confirm-overlay')?.textContent).toContain(CONFIRM_COPY.leavePassage.title)
+
+    app.querySelector<HTMLButtonElement>('#btn-confirm-cancel')?.click()
+    await Promise.resolve()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(false)
+
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-confirm-ok')?.click()
+    await Promise.resolve()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+  })
 })

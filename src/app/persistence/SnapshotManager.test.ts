@@ -87,6 +87,7 @@ describe('SnapshotManager', () => {
     const data = vi.mocked(writeSave).mock.calls[0]![0]
     expect(data.version).toBe(3)
     expect(data.inProgress?.sanLog).toEqual(['e4'])
+    expect(mgr.getPendingSnapshot()?.sanLog).toEqual(['e4'])
   })
 
   it('debounces writes in async mode', () => {

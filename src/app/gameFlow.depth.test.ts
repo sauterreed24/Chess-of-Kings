@@ -448,7 +448,7 @@ describe('GameFlow depth systems', () => {
     const ok = flow.resumeRecoverableSession()
     expect(ok).toBe(true)
     expect(flow.chess.fen()).toBe(snapshot.fen)
-    expect(flow.hasRecoverableSession()).toBe(false)
+    expect(flow.hasRecoverableSession()).toBe(true)
   })
 
   it('rejects recovered snapshots when the SAN ledger cannot replay to the board FEN', () => {
