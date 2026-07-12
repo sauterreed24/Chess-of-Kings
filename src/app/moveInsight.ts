@@ -31,8 +31,21 @@ function doctrineLabel(key: string | null | undefined): string | null {
   if (k.includes('rowan')) return 'Rowan fire'
   if (k.includes('vega')) return 'Vega pressure'
   if (k.includes('alexion')) return 'Alexion law'
+  if (k.includes('kallistos')) return 'Kallistos prophylaxis'
   if (k.includes('counterpart') || k.includes('apotheosis') || k.includes('boss')) return 'Court synthesis'
   return null
+}
+
+/** Compact duel-mode coaching when quality/heuristics have nothing sharper. */
+function duelDoctrineNudge(doctrine: string | null, halfMoveCount: number): string | null {
+  if (!doctrine || halfMoveCount > 16) return null
+  if (halfMoveCount <= 6) {
+    return `Duel clock: against ${doctrine}, claim center or develop before inventing plans.`
+  }
+  if (halfMoveCount <= 12) {
+    return `Duel pressure: ${doctrine} punishes loose tempi — castle or finish development.`
+  }
+  return `Duel midgame: name the threat ${doctrine} is building, then improve your worst piece.`
 }
 
 export function moveInsightFor(input: MoveInsightInput): string | null {
@@ -93,6 +106,11 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   ) {
     if (doctrine) return `Developed — ${doctrine} punishes a half-built army. Finish the rest before you move it twice.`
     return 'Minor piece developed. Finish the rest before moving it twice.'
+  }
+
+  if (input.mode === 'duel') {
+    const duelLine = duelDoctrineNudge(doctrine, halfMoveCount)
+    if (duelLine) return duelLine
   }
 
   if (input.mode === 'calibration' && halfMoveCount <= 8) {

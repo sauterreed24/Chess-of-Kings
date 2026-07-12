@@ -49,6 +49,41 @@ export const CALIBRATION_LEVEL_LABELS = {
   Relentless: 'Relentless',
 } as const
 
+/** Short Lens dial tooltips — keep in sync with deriveCalibrationLens. */
+export const CALIBRATION_LENS_HINTS = {
+  Forgiving: 'Anti-tilt active: slower replies, looser tactics.',
+  Measured: 'Measured pressure: the rival is reading your tendencies.',
+  Equilibrium: 'Rival doctrine unshifted.',
+  Sharpened: 'Sharpened pressure: the rival tightens their lines.',
+  Relentless: 'Ceiling band for Mastery Trials.',
+} as const
+
+/** Archive rating band names shown beside Elo-ish calibration numbers. */
+export const ARCHIVE_RATING_BAND_LABELS = {
+  elite: 'Archive Elite',
+  courtMaster: 'Court Master',
+  seasoned: 'Seasoned Rival',
+  measured: 'Measured Foe',
+  forgiving: 'Forgiving Band',
+} as const
+
+export const PLATEAU_COPY = {
+  heading: 'Mastery plateau',
+  lede: 'Chapters I–III are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
+  dailyCta: 'Daily Calculus',
+  duelCta: 'Duel Archive',
+  resumeCta: 'Resume Recovered Session',
+} as const
+
+export const ECHO_OUTCOME_LABELS = {
+  win: 'Victory',
+  loss: 'Defeat',
+  draw: 'Draw',
+} as const
+
+export const DOSSIER_ECHO_EMPTY =
+  'Play this rival to inscribe chronicle echoes — wins, losses, and draws all count.'
+
 export const KEYBOARD_HELP_HEADING = 'Keyboard atlas'
 
 export const CONFIRM_COPY = {
@@ -68,7 +103,8 @@ export const STORAGE_FAILURE_MESSAGE =
   'Progress could not be saved in this browser. Check storage settings or exit private mode.'
 
 /** Short coach line shown when there is no specific lesson context. */
-export const FALLBACK_LESSON = 'Apply the ancient laws — develop, castle early, avoid loose pieces.'
+export const FALLBACK_LESSON =
+  'Hold the ancient laws: center first, develop minors, castle early, then ask what hangs.'
 
 export type StatusLabel = (typeof STATUS_LABELS)[keyof typeof STATUS_LABELS]
 export type AnnounceKey = keyof typeof ANNOUNCE_TEMPLATES

@@ -26,7 +26,9 @@ describe('deriveCalibrationLens', () => {
   it('returns Equilibrium when history is empty', () => {
     const v = deriveCalibrationLens([], undefined)
     expect(v.level).toBe('Equilibrium')
+    expect(v.levelLabel).toBe('Equilibrium')
     expect(v.dialPosition).toBeCloseTo(0.5)
+    expect(v.hint).toMatch(/unshifted/i)
   })
 
   it('flags Relentless when the player wins many in a row', () => {

@@ -3,6 +3,8 @@
  * Tracks how hard the archive judges this rival for you from outcomes.
  * Higher = the rival has been beating you more often recently.
  */
+import { ARCHIVE_RATING_BAND_LABELS } from '../../data/strings'
+
 export const DEFAULT_RIVAL_CALIBRATION = 1500
 export const RIVAL_CALIBRATION_MIN = 1200
 export const RIVAL_CALIBRATION_MAX = 2200
@@ -37,9 +39,9 @@ export function updateRivalCalibrationRating(
 
 export function formatRivalCalibrationLabel(rating: number): string {
   const r = sanitizeRivalCalibrationRating(rating)
-  if (r >= 1850) return 'Archive Elite'
-  if (r >= 1700) return 'Court Master'
-  if (r >= 1580) return 'Seasoned Rival'
-  if (r >= 1450) return 'Measured Foe'
-  return 'Forgiving Band'
+  if (r >= 1850) return ARCHIVE_RATING_BAND_LABELS.elite
+  if (r >= 1700) return ARCHIVE_RATING_BAND_LABELS.courtMaster
+  if (r >= 1580) return ARCHIVE_RATING_BAND_LABELS.seasoned
+  if (r >= 1450) return ARCHIVE_RATING_BAND_LABELS.measured
+  return ARCHIVE_RATING_BAND_LABELS.forgiving
 }
