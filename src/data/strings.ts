@@ -103,6 +103,11 @@ export const CONFIRM_COPY = {
     message: 'You have a recoverable board position. Continuing here will discard that recovery.',
     confirmLabel: 'Continue and discard',
   },
+  leaveLabSession: {
+    title: 'Leave the simulation?',
+    message: 'Your current board position will be saved for Resume, but this passage will close.',
+    confirmLabel: 'Leave simulation',
+  },
   replaceWithDuel: {
     title: 'Replace the recovered session?',
     message: 'Starting this duel will discard your recoverable campaign or board session.',

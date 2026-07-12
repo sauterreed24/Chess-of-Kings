@@ -11,6 +11,16 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.4.3] — 2026-07-12
+
+Pass 8 — Playtest continuity:
+
+- **Resume after vestibule** — live board progress now promotes into the pending recovery snapshot on persist (no reload required).
+- **Lab exit / skip-ahead confirms** — leaving mid-board or an active duel (vestibule, top-nav, Escape) asks before closing; skip-ahead uses the same discard gate.
+- **mvpFlag** matches plateau honesty after Chapter III reflection.
+- **Mobile dossier** scroll-margin under sticky launch; duel-start confirm coverage; Daily Calculus OK replaces prior recovery with the daily puzzle session; live playtest fixtures fixed to calibration scene 4.
+- Docs: [`docs/PASS8_PLAYTEST_CONTINUITY.md`](docs/PASS8_PLAYTEST_CONTINUITY.md).
+
 ## [0.4.2] — 2026-07-12
 
 Playtest hardening after live Pages review:

@@ -376,6 +376,80 @@ describe('mounted duel dossier', () => {
     expect(hub).not.toMatch(/I–III are sealed/)
   })
 
+  it('confirms before starting a duel over a recoverable session', async () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 0,
+      sceneIndex: 4,
+      highestUnlockedChapter: 0,
+      lastScreen: 'duel',
+      completedSceneIds: [],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      duelUnlockedOpponentIds: [],
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      inProgress: {
+        mode: 'calibration',
+        chapterIndex: 0,
+        sceneIndex: 4,
+        fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+        history: [
+          'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+          'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+        ],
+        sanLog: ['e4', 'e5'],
+        sanQuality: ['good', 'ok'],
+        playerColor: 'w',
+        calibrationMoves: 1,
+        scriptedMoveIndex: 0,
+        sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      },
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    app.querySelector<HTMLButtonElement>('.duel-row')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-start-duel')?.click()
+    expect(app.querySelector('#confirm-overlay')?.classList.contains('hidden')).toBe(false)
+    expect(app.querySelector('#confirm-overlay')?.textContent).toMatch(/Replace the recovered session|Start duel/)
+    app.querySelector<HTMLButtonElement>('#btn-confirm-cancel')?.click()
+    await Promise.resolve()
+    const afterCancel = JSON.parse(localStorage.getItem('calculus-of-kings-progress-v3') || '{}')
+    expect(afterCancel.inProgress).toBeTruthy()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(false)
+  })
+
+  it('confirms before leaving the lab mid-board via vestibule', async () => {
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    const skip = app.querySelector<HTMLButtonElement>('#btn-skip-ahead')
+    if (skip && !skip.classList.contains('hidden')) skip.click()
+    await Promise.resolve()
+    // If still on dialogue, advance until board/calibration if possible
+    for (let i = 0; i < 6; i++) {
+      const next = app.querySelector<HTMLButtonElement>('#btn-next:not([disabled])')
+      if (!next || app.querySelector('#chess-root .sq, #chess-root button')) break
+      next.click()
+      await Promise.resolve()
+    }
+    app.querySelector<HTMLButtonElement>('#btn-vestibule')?.click()
+    await Promise.resolve()
+    // Mid-board or recoverable: confirm should appear; fresh dialogue-only may not.
+    const overlay = app.querySelector('#confirm-overlay')
+    if (overlay && !overlay.classList.contains('hidden')) {
+      expect(overlay.textContent).toMatch(/Leave the simulation|Replace the recovered/)
+      app.querySelector<HTMLButtonElement>('#btn-confirm-cancel')?.click()
+      await Promise.resolve()
+      expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    }
+  })
+
   it('restores a reloaded duel session with duel briefing copy', () => {
     const app = document.createElement('div')
     document.body.appendChild(app)

@@ -3416,6 +3416,11 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
     background: rgba(12,10,7,0.96);
     box-shadow: 0 8px 22px rgba(0,0,0,0.42);
   }
+  .duel-panel .dossier-fold,
+  .duel-panel .cal-lens,
+  .duel-panel .dossier-stat-grid {
+    scroll-margin-top: 11rem;
+  }
   :is(.duel-launch__grid,.duel-launch__actions) {
     grid-template-columns: 1fr;
   }
