@@ -2017,28 +2017,16 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 
 #screen-play[data-theme='theme-classical'] .manuscript-panel {
   background:
-    radial-gradient(circle at 18% 0%, rgba(90,120,150,0.16), transparent 42%),
-    linear-gradient(180deg, rgba(14,16,18,0.98) 0%, rgba(6,7,8,0.99) 100%);
+    radial-gradient(circle at 18% 0%, rgba(90,120,150,0.14), transparent 42%),
+    linear-gradient(180deg, #0e1012fa 0%, #060708fc 100%);
 }
-#screen-play[data-theme='theme-classical'] .instrument-frame {
-  box-shadow: 0 18px 42px rgba(0,0,0,0.48), inset 0 0 0 1px rgba(150,175,200,0.12);
-}
-#screen-play[data-theme='theme-classical'] .play-crawl {
-  color: color-mix(in srgb, #c8d6e6 70%, var(--muted));
-}
-#screen-play[data-theme='theme-classical'] .chapter-title {
-  color: #d7e2ee;
-  text-shadow: 0 0 28px rgba(120,150,180,0.16);
-}
-#screen-play[data-theme='theme-classical'] .philosophy {
-  color: color-mix(in srgb, #a8bdd0 55%, var(--muted));
-}
-#screen-play[data-theme='theme-classical'] .scene-tag {
-  color: #b7c9da;
-}
+#screen-play[data-theme='theme-classical'] .chapter-title { color: #d7e2ee; }
+#screen-play[data-theme='theme-classical'] .philosophy,
+#screen-play[data-theme='theme-classical'] .play-crawl { color: #a8bdd08c; }
+#screen-play[data-theme='theme-classical'] .scene-tag { color: #b7c9da; }
 #screen-play[data-theme='theme-classical'] .chapter-rail__row--current {
-  border-color: rgba(150,180,210,0.5);
-  background: rgba(70,100,130,0.14);
+  border-color: #96b4d280;
+  background: #46648224;
 }
 
 /* ─── Final polish pass: contrast + readability ─── */

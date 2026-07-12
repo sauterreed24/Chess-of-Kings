@@ -23,7 +23,7 @@ Pass 6 — Continuity, Intuition, Chapter III:
 - **Alexion + Kallistos opening SAN bias** in the book.
 - **Settings** — title toggles for **AI Thread** (Auto / Worker / Main) and **Visual** quality (Auto / Full / Lean) overriding silent `perf-lean` heuristics.
 - **Playtest gate** — expanded Playwright smoke (settings persist, seeded Lukas unlock + Chapter III visibility); [`docs/PASS6_PLAYTEST_CHECKLIST.md`](docs/PASS6_PLAYTEST_CHECKLIST.md); [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md).
-- Theme: compact `theme-classical` chapter skin (budget-conscious).
+- Theme: compact `theme-classical` chapter skin; CSS gzip gate **17600 → 17800** B.
 
 ### Also shipping (previously unreleased on main)
 

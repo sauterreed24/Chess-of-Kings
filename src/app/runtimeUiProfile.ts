@@ -64,8 +64,12 @@ export function applyRuntimeUiProfile(
 
 /** Re-read device heuristics + stored visual preference and apply to <html>. */
 export function refreshDocumentUiProfile(root: HTMLElement = document.documentElement): void {
-  const mqCoarse = window.matchMedia('(pointer: coarse)')
-  const mqReduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const matchMedia =
+    typeof window.matchMedia === 'function'
+      ? window.matchMedia.bind(window)
+      : (() => ({ matches: false }) as MediaQueryList)
+  const mqCoarse = matchMedia('(pointer: coarse)')
+  const mqReduced = matchMedia('(prefers-reduced-motion: reduce)')
   const nav = navigator as Navigator & { deviceMemory?: number }
   applyRuntimeUiProfile(
     root,
