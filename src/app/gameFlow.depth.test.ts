@@ -448,7 +448,10 @@ describe('GameFlow depth systems', () => {
     const ok = flow.resumeRecoverableSession()
     expect(ok).toBe(true)
     expect(flow.chess.fen()).toBe(snapshot.fen)
-    expect(flow.hasRecoverableSession()).toBe(false)
+    // Pass 8: live board progress re-promotes into pending on persist so Resume
+    // works after vestibule without a reload.
+    expect(flow.hasRecoverableSession()).toBe(true)
+    expect(flow.hasUnsavedPassageProgress()).toBe(true)
   })
 
   it('rejects recovered snapshots when the SAN ledger cannot replay to the board FEN', () => {
