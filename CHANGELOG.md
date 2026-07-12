@@ -22,6 +22,7 @@ Pass 7 — Retention polish:
 - **Duel coaching** — Kallistos prophylaxis doctrine label + duel-mode midgame nudges in `moveInsight`.
 - **Copy centralization** — Calibration Lens labels/hints and Archive rating band names live in `strings.ts`; coach tip contrast raised.
 - Docs: [`docs/PASS7_RETENTION_POLISH_PLAN.md`](docs/PASS7_RETENTION_POLISH_PLAN.md), [`docs/PASS7_PLAYTEST_CHECKLIST.md`](docs/PASS7_PLAYTEST_CHECKLIST.md).
+- Theme: CSS gzip gate **17800 → 18200** B for plateau hub + dossier folds.
 
 ## [0.4.0] — 2026-07-12
 
