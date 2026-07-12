@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test'
 /** Optional smoke — not part of `quality:gate` (keeps CI ~60s). Run: npm run build && npm run test:e2e */
 export default defineConfig({
   testDir: 'e2e',
+  testMatch: 'play-smoke.spec.ts',
   fullyParallel: false,
   workers: 1,
   retries: 0,
