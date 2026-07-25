@@ -72,21 +72,35 @@ test('seeded save unlocks Lukas from scene history without explicit duel ids', a
   await expect(page.locator('#duel-panel')).toContainText('Archive rating:')
 })
 
-test('post-Chapter III chapters screen shows mastery plateau hub', async ({ page }) => {
+test('post-Chapter IV chapters screen shows mastery plateau hub', async ({ page }) => {
   await page.addInitScript(() => {
     const save = {
       version: 3,
-      chapterIndex: 3,
+      chapterIndex: 4,
       sceneIndex: 0,
-      highestUnlockedChapter: 3,
+      highestUnlockedChapter: 4,
       lastScreen: 'title',
       chapter1Complete: true,
       chapter2Complete: true,
-      completedSceneIds: ['c3-reflection', 'c3-match-kallistos', 'c1-match-lukas', 'c3-freeplay'],
+      completedSceneIds: [
+        'c3-reflection',
+        'c3-match-kallistos',
+        'c1-match-lukas',
+        'c3-freeplay',
+        'c4-reflection',
+        'c4-match-cassian',
+        'c4-freeplay',
+      ],
       completedPuzzleIds: [],
       stratarchiaUnlocked: false,
-      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'lukas'],
-      unlockedDuelVariantIds: ['alexion-mentor', 'kallistos-law', 'lukas-phalanx'],
+      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'lukas', 'nysa', 'cassian'],
+      unlockedDuelVariantIds: [
+        'alexion-mentor',
+        'kallistos-law',
+        'lukas-phalanx',
+        'nysa-frontier',
+        'cassian-paradox',
+      ],
       codexUnlocks: [],
       titleUnlocks: [],
       chronicleEchoes: [],
@@ -108,7 +122,8 @@ test('post-Chapter III chapters screen shows mastery plateau hub', async ({ page
   await expect(page.locator('.plateau-hub')).toBeVisible()
   await expect(page.locator('.plateau-hub')).toContainText('Mastery plateau')
   await expect(page.locator('#btn-plateau-duel')).toBeVisible()
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/center|fianchetto|Refuse/i)
+  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Systems over inspiration|long squeeze/i)
+  await expect(page.locator('.chapter-btn, .chapter-locked').filter({ hasText: 'Paradox Masters' })).toBeVisible()
   await page.locator('#btn-plateau-duel').click()
   await expect(page.locator('#screen-duel')).toBeVisible()
   await expect(page.locator('.duel-row').first()).toBeVisible()

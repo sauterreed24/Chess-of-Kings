@@ -194,6 +194,38 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.55, positional: 0.96, sacrificial: 0.18, prophylactic: 0.99 },
     motifBias: { fork: 0.42, pin: 0.88, skewer: 0.7, kingHunt: 0.28 },
   },
+  nysa_frontier: {
+    id: 'nysa_frontier',
+    label: 'Nysa Bactrian Frontier',
+    style: 'hypermodern',
+    searchDepth: 4,
+    thinkTimeMs: 1000,
+    blunderRate: 0.055,
+    riskAppetite: 0.48,
+    tacticalAlertness: 0.76,
+    openingDiscipline: 0.7,
+    kingSafetyUrgency: 0.72,
+    conversionStrictness: 0.62,
+    conversionPersona: 'universal',
+    weights: { tactical: 0.58, positional: 0.9, sacrificial: 0.28, prophylactic: 0.7 },
+    motifBias: { fork: 0.5, pin: 0.72, skewer: 0.55, kingHunt: 0.36 },
+  },
+  cassian_paradox: {
+    id: 'cassian_paradox',
+    label: 'Cassian Paradox Master',
+    style: 'hypermodern',
+    searchDepth: 4,
+    thinkTimeMs: 1280,
+    blunderRate: 0.035,
+    riskAppetite: 0.4,
+    tacticalAlertness: 0.84,
+    openingDiscipline: 0.88,
+    kingSafetyUrgency: 0.8,
+    conversionStrictness: 0.82,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.64, positional: 0.96, sacrificial: 0.3, prophylactic: 0.86 },
+    motifBias: { fork: 0.48, pin: 0.86, skewer: 0.68, kingHunt: 0.34 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -214,6 +246,8 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('vega')) return AI_PROFILES.vega_italian
   if (matchId.includes('marius')) return AI_PROFILES.veteran_scholar
   if (matchId.includes('kallistos')) return AI_PROFILES.kallistos_classical
+  if (matchId.includes('nysa')) return AI_PROFILES.nysa_frontier
+  if (matchId.includes('cassian')) return AI_PROFILES.cassian_paradox
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
   return AI_PROFILES.apprentice_court
@@ -227,6 +261,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('rowan')) return AI_PROFILES.rowan_gambit
   if (variantId.includes('vega')) return AI_PROFILES.vega_italian
   if (variantId.includes('kallistos')) return AI_PROFILES.kallistos_classical
+  if (variantId.includes('nysa')) return AI_PROFILES.nysa_frontier
+  if (variantId.includes('cassian')) return AI_PROFILES.cassian_paradox
   return AI_PROFILES.apprentice_court
 }
 

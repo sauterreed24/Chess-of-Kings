@@ -393,6 +393,80 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  nysa: {
+    opponentId: 'nysa',
+    displayName: 'Nysa',
+    blend: {
+      primary: { school: 'Bactrian Frontier', weight: 75 },
+      secondary: { school: 'Indic Combinatorics', weight: 25 },
+    },
+    counterPrep: [
+      'Occupy the center with purpose, then ask whether her fianchetto still bites — empty space is her favorite tax.',
+      'Do not overextend the e- and d-pawns before development finishes; Nysa punishes greed that looks like ambition.',
+      'Trade her dark-square bishop when you can; the long diagonal is how the frontier collects rent.',
+    ],
+    whiteOpenings: ['Quiet king-pawn with restraint', 'Closed structures against fianchetto', 'English-like flank probes'],
+    blackOpenings: ['Modern g6 systems', 'King\'s Indian structures', 'Hypermodern knight-first refusals'],
+    signature: 'Fianchetto pressure that invites the center, then taxes whoever takes too much of it.',
+    talk: {
+      opening: [
+        'Take the center if you must. I will measure what it costs you.',
+        'The frontier does not occupy. It waits for overreach.',
+      ],
+      punished: [
+        'You refused the empty invitation. That is disciplined greed.',
+        'My diagonal lost its lawsuit. Annoying.',
+      ],
+      rattled: [
+        'You are treating space like a ledger, not a trophy. Rare for a student.',
+        'The paradox is bending toward you. I dislike that arithmetic.',
+      ],
+      audacious: [
+        'You planted pawns where pieces should live. I will harvest them.',
+        'Ambition without development is how frontiers become graves.',
+      ],
+      draw: [
+        'A draw can be a correctly refused invitation.',
+      ],
+    },
+  },
+  cassian: {
+    opponentId: 'cassian',
+    displayName: 'Cassian',
+    blend: {
+      primary: { school: 'Bactrian Frontier', weight: 60 },
+      secondary: { school: 'Achaemenid Patience', weight: 40 },
+    },
+    counterPrep: [
+      'Name a break before move fourteen and prepare it; Cassian thrives when you invent a plan after the pawns are already overcommitted.',
+      'Keep a minor ready to challenge his fianchetto bishop — leaving the long diagonal uncontested is how quiet positions become lost ones.',
+      'If he offers the center, take only what you can defend twice; paradox masters collect the third weakness.',
+    ],
+    whiteOpenings: ['Catalan-flavored restraint', 'English pressure with delayed center', 'Quiet queen-pawn systems'],
+    blackOpenings: ['Nimzo-Indian spirit without the modern label', 'King\'s Indian counterpunch', 'Hypermodern provocation suites'],
+    signature: 'Refuse the center, provoke overextension, then strangle with diagonals and breaks.',
+    talk: {
+      opening: [
+        'I do not need the center to own it. Prove you can hold what you seize.',
+        'Paradox is not mysticism. It is delayed ownership.',
+      ],
+      punished: [
+        'You kept the center from becoming a museum. Correct.',
+        'The strangling line never closed. Well seen.',
+      ],
+      rattled: [
+        'You answered provocation with structure. That is the Long Reign habit.',
+        'I filed you as impatient. Amend the file.',
+      ],
+      audacious: [
+        'You took every square and defended none. The diagonal thanks you.',
+        'Overextension is a confession. I accept it.',
+      ],
+      draw: [
+        'A draw is a paradox that refused to resolve. Acceptable.',
+      ],
+    },
+  },
 }
 
 /**
