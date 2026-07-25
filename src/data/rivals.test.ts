@@ -3,7 +3,19 @@ import { RIVAL_PROFILES, getRivalProfile, selectTalkLine, inferRivalIdFromSceneI
 import { DUEL_ROSTER } from './duelRoster'
 
 describe('RIVAL_PROFILES data', () => {
-  const expectedIds = ['amara', 'lukas', 'edred', 'marius', 'demetrios', 'alexion', 'rowan', 'vega', 'kallistos']
+  const expectedIds = [
+    'amara',
+    'lukas',
+    'edred',
+    'marius',
+    'demetrios',
+    'alexion',
+    'rowan',
+    'vega',
+    'kallistos',
+    'nysa',
+    'cassian',
+  ]
 
   it('contains every named campaign and Duel Archive rival', () => {
     for (const id of expectedIds) {
@@ -94,6 +106,8 @@ describe('inferRivalIdFromSceneId', () => {
     expect(inferRivalIdFromSceneId('c2-match-rowan')).toBe('rowan')
     expect(inferRivalIdFromSceneId('c2-match-vega')).toBe('vega')
     expect(inferRivalIdFromSceneId('c3-match-kallistos')).toBe('kallistos')
+    expect(inferRivalIdFromSceneId('c4-match-nysa')).toBe('nysa')
+    expect(inferRivalIdFromSceneId('c4-match-cassian')).toBe('cassian')
     expect(inferRivalIdFromSceneId('c3-match-demetrios-return')).toBe('demetrios')
   })
 

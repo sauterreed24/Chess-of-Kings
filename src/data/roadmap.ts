@@ -3,14 +3,6 @@ import type { RoadmapChapter } from '../types'
 /** Post-MVP chapters — visible on Chapters screen, not playable. */
 export const LOCKED_ROADMAP: RoadmapChapter[] = [
   {
-    id: 'ch4',
-    listTitle: 'Chapter IV',
-    subtitle: 'The Paradox Masters',
-    era: 'Hypermodernism',
-    teaser:
-      'Refuse the center to own it later — fianchetto doctrine, provocation, and the slow strangling of overextended kings.',
-  },
-  {
     id: 'ch5',
     listTitle: 'Chapter V',
     subtitle: 'The Machine of Discipline',

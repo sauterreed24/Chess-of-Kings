@@ -56,6 +56,20 @@ export const RIVAL_OPENING_SAN_BIAS: Record<string, Record<number, Record<string
     5: { Bc5: 7, Nf6: 2, Be7: 2, d6: 7 },
     7: { Bc5: 3, Be7: 2, 'O-O': 8 },
   },
+  nysa: {
+    1: { g6: 8, Nf6: 4, d6: 2 },
+    3: { Bg7: 9, Nf6: 3 },
+    5: { Nf6: 7, d6: 5 },
+    7: { 'O-O': 7, d6: 4 },
+    9: { d6: 6, c5: 4 },
+  },
+  cassian: {
+    1: { Nf6: 8, g6: 5, d6: 2 },
+    3: { g6: 7, d6: 4 },
+    5: { Bg7: 8, d6: 4 },
+    7: { 'O-O': 7, d6: 4 },
+    9: { d6: 5, c5: 5 },
+  },
 }
 
 export function rivalOpeningWeightBoost(

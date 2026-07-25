@@ -1,10 +1,11 @@
 import type { Chapter } from '../types'
 
 /**
- * Playable campaign: Prologue + Chapter I + Chapter II (Romantic) + Chapter III (Classical).
+ * Playable campaign: Prologue + Chapters I–IV.
  * Chapter I: six-rung ladder (Initiate → … → Counterpart).
  * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
  * Chapter III: compact Classical arc — Demetrios return + Kallistos + rehearsal.
+ * Chapter IV: Hypermodern / Paradox Masters — Nysa + Cassian + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -1503,7 +1504,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'narrator',
-            text: 'Chapter III is sealed. The compiled ages of this build end here. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, later schools wait — locked, not gone. The chronicle is no longer a cliff. It is a plateau with work left on it.',
+            text: 'Chapter III is sealed. The Professor\'s Law stands. Beyond this door the Paradox Masters wait — refuse the center to own it later. Daily Calculus and the Duel Archive remain open while you prepare.',
           },
         ],
       },
@@ -1526,6 +1527,327 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Classical skill is recognizing the opponent\'s plan early enough to veto it cheaply.',
           concept: 'The professor\'s drills become instinct only through quiet repetition.',
+        },
+      },
+    ],
+  },
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER IV — The Paradox Masters (Hypermodern ladder — compact)
+     Fianchetto doctrine, provocation, Nysa + Cassian.
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch4',
+    index: 4,
+    title: 'Chapter IV',
+    subtitle: 'The Paradox Masters',
+    era: 'Hypermodernism — refuse the center to own it later',
+    themeClass: 'theme-hypermodern',
+    philosophy:
+      'Occupation is not ownership. Invite the center, tax the overreach, and let the long diagonal collect the rent.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c4-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'Law meets paradox',
+          body: 'Classical structure taught Reed to stop bad ideas. Hypermodern doctrine asks whether he can win without planting a flag on every central square.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The chamber light thins. Files look longer from the corners. The center of the board is empty on purpose — not abandoned, invited.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'Welcome to paradox. The old courts said occupy the center. The frontier says: let them occupy it badly, then prove the occupation was a loan.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So I give up the middle?',
+          },
+          {
+            speaker: 'alexion',
+            text: 'You refuse empty occupation. You will meet Nysa, who taxes greed from a fianchetto, and Cassian, who makes ambition confess. Development still matters. Drama still lies.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c4-codex-paradox',
+        heading: 'Paradox doctrine — fianchetto, provocation, delayed ownership',
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'Ownership without occupation',
+          body: 'Hypermodern court files three tools: the long diagonal, the invited overextension, and the break that arrives after the opponent has seized too much.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'Fianchetto',
+            body: 'A bishop developed to b2 or g2 (or the black mirrors) does not hide — it aims through the whole board. The diagonal is a delayed claim on the center.',
+          },
+          {
+            term: 'Provocation',
+            body: 'Allowing central pawns to advance is not surrender when those pawns become targets. Ask whether the opponent can defend what they seized.',
+          },
+          {
+            term: 'Overextension',
+            body: 'Pawns that outrun their pieces write IOUs. Hypermodern wins often begin when the center looks impressive and ends when it cannot be held.',
+          },
+          {
+            term: 'Delayed ownership',
+            body: 'Strike the overbuilt center with breaks and pressure only after development is real. Paradox is patience with teeth, not passivity.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c4-puzzle-fianchetto',
+        title: 'Puzzle — finish the fianchetto',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The diagonal needs its bishop',
+          body: 'Hypermodern plans begin with a habit: put the bishop where the long diagonal can collect rent.',
+          tone: 'pressure',
+        },
+        fen: 'rnbqkbnr/pppppppp/8/8/8/6P1/PPPPPP1P/RNBQKBNR w KQkq - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'pieceOn', square: 'g2', color: 'w', pieceType: 'b' },
+        lesson:
+          'g3 alone is only a promise. Bg2 completes the fianchetto and aims the bishop through the center.',
+        teaching: {
+          threat: 'If you wander with knights first, the diagonal stays empty and the paradox never starts.',
+          goalPlain: 'Place your light-squared bishop on g2.',
+          whyItWorks:
+            'The fianchetto bishop pressures central squares from a distance — ownership without planting a pawn on e4 first.',
+          concept: 'Habit before paradox — finish the diagonal.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c4-puzzle-queenside-fianchetto',
+        title: 'Puzzle — the other long diagonal',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'Both wings can refuse the center',
+          body: 'Paradox is not only kingside poetry. The queenside fianchetto teaches the same delayed claim.',
+          tone: 'pressure',
+        },
+        fen: 'rnbqkbnr/pppppppp/8/8/8/1P6/P1PPPPPP/RNBQKBNR w KQkq - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'pieceOn', square: 'b2', color: 'w', pieceType: 'b' },
+        lesson:
+          'b3 prepares the mirror claim. Bb2 puts a bishop on the long diagonal that watches d4 and e5.',
+        teaching: {
+          threat: 'Leaving the bishop on c1 keeps the paradox theoretical.',
+          goalPlain: 'Place your dark-squared bishop on b2.',
+          whyItWorks:
+            'A queenside fianchetto pressures the center from the opposite wing — same doctrine, second file.',
+          concept: 'Two diagonals, one idea: refuse empty occupation.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c4-puzzle-battery',
+        title: 'Puzzle — diagonal battery',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The long diagonal finishes loud',
+          body: 'Hypermodern geometry is patient until the battery arrives. Then the empty back rank becomes a verdict.',
+          tone: 'fire',
+        },
+        fen: '6k1/5ppp/8/8/8/6PQ/5PBP/6K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'Queen and fianchetto bishop share the long diagonal. One quiet-looking geometry ends the game.',
+        teaching: {
+          threat: 'If you shuffle without using the diagonal, Black makes luft and the battery loses its lawsuit.',
+          goalPlain: 'Deliver checkmate using the queen-and-bishop battery.',
+          whyItWorks:
+            'Qc8# seals the back rank while the g2-bishop owns the escape geometry — paradox ending as force.',
+          concept: 'Delayed ownership can still mate.',
+        },
+      },
+      {
+        type: 'dialogue',
+        id: 'c4-after-puzzles',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'Habits before the frontier',
+          body: 'Reed has the diagonal habits. Nysa will ask whether he can hold a center without becoming the overextended king in the codex.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'Good. You can build the claim. Now survive someone who wants you to seize too much.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Nysa?',
+          },
+          {
+            speaker: 'alexion',
+            text: 'Frontier manners. She will leave the center open like a dare.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c4-before-nysa',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The invitation',
+          body: 'Nysa thrives when ambition outruns development. Occupy with purpose, or become the example in her dossier.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'nysa',
+            text: 'Take the center if you must. I will measure what it costs you.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I refuse?',
+          },
+          {
+            speaker: 'nysa',
+            text: 'Then we both wait — and waiting is a frontier skill. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c4-match-nysa',
+        title: 'Encounter 1 of 2 — The Frontier',
+        opponentName: 'Nysa',
+        opponentNote:
+          'Hypermodern provocateur — fianchetto pressure, invited overextension, and diagonal taxation. Occupy only what you can defend twice.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Do not buy the empty center',
+          body: 'Nysa wins when your pawns look impressive and your pieces look late. Develop, castle, and ask which diagonal is collecting rent.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'hypermodern',
+        ladderTier: 'veteran',
+        difficulty: 3,
+      },
+      {
+        type: 'dialogue',
+        id: 'c4-after-nysa',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'The invoice is paid',
+          body: 'Surviving Nysa feels less like a charge and more like refusing a bad loan.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'nysa',
+            text: 'You treated space like a ledger. The frontier notices.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'One more rung. Cassian is paradox with patience — delayed ownership as law.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c4-before-cassian',
+        storyBeat: {
+          label: 'Boss pressure',
+          title: 'The paradox master',
+          body: 'Cassian does not need the center to own it. If you seize everything early, he will strangle the confession out of your structure.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'cassian',
+            text: 'I do not need the center to own it. Prove you can hold what you seize.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if the seizure is sound?',
+          },
+          {
+            speaker: 'cassian',
+            text: 'Then your breaks arrive on time, and my diagonals stay hungry. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c4-match-cassian',
+        title: 'Encounter 2 of 2 — The Paradox Master',
+        opponentName: 'Cassian',
+        opponentNote:
+          'Paradox specialist — knight-first refusals, fianchetto strangling, and breaks timed against overcommitment. Manufacture a center that survives provocation.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Hold the center without confessing',
+          body: 'Cassian is strongest when you invent a plan after the pawns are already overcommitted. Name your break, develop fully, and contest the long diagonal.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'hypermodern',
+        ladderTier: 'boss',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c4-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Ownership after refusal',
+          body: 'Hypermodern doctrine does not erase classical law — it decides when occupation is a loan and when it is a title.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You learned to refuse empty flags. That is the Paradox Masters\' seal: ownership can wait, but development cannot.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Nysa taxed greed. Cassian asked whether my center could survive its own ambition.',
+          },
+          {
+            speaker: 'cassian',
+            text: 'Remember the habit. Later machines will calculate faster than your fear — but they still punish overextension.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter IV is sealed. The compiled ages of this build end here. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, Soviet steel and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c4-freeplay',
+        title: 'Free board — Paradox rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice delayed ownership',
+          body: 'Rehearse fianchetto structures, invited centers, and timely breaks until paradox feels as natural as occupation.',
+          tone: 'quiet',
+        },
+        lesson:
+          'Set up a fianchetto structure and alternate sides. Practice inviting a big center, then striking it only after development is complete.',
+        teaching: {
+          threat: 'None — this is a sandbox after the hypermodern ladder.',
+          goalPlain:
+            'Rehearse provocation and diagonal pressure without a story timer. Return to the vestibule when finished.',
+          whyItWorks:
+            'Hypermodern skill is recognizing when the opponent\'s center is a trophy and when it is a liability.',
+          concept: 'Paradox becomes instinct only through quiet repetition.',
         },
       },
     ],
