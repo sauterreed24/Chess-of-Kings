@@ -19,6 +19,7 @@ Doctrine succession — Chapter IV playable:
 - **Bactrian rivals** in Duel Archive with opening books and `hypermodern` AI profiles.
 - **Plateau succession:** mastery plateau / campaign-finished copy now keys off Chapter IV; Chapter III opens the paradox age instead of ending the chronicle.
 - Daily Calculus pool accrues the new hypermodern puzzles automatically.
+- CSS gzip budget ratcheted to 18350 for the Chapter IV theme.
 - Docs: [`docs/CHAPTER_IV_PARADOX_MASTERS.md`](docs/CHAPTER_IV_PARADOX_MASTERS.md).
 
 ## [0.4.3] — 2026-07-12
