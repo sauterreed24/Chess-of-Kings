@@ -64,7 +64,7 @@ describe('CampaignOrchestrator', () => {
     }
   })
 
-  it('grants Chapter III clear rewards when the final chapter seals', () => {
+  it('opens Chapter IV when Chapter III seals', () => {
     const ch3Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch3')
     expect(ch3Index).toBeGreaterThanOrEqual(0)
     const ch3 = PLAYABLE_CHAPTERS[ch3Index]!
@@ -81,10 +81,35 @@ describe('CampaignOrchestrator', () => {
     const result = campaign.advanceAfterLeaving(last)
     expect(result.kind).toBe('chapter-complete')
     if (result.kind === 'chapter-complete') {
-      expect(result.campaignFinished).toBe(true)
+      expect(result.campaignFinished).toBeFalsy()
       expect(result.chapter.id).toBe('ch3')
       expect(result.rewards.some((r) => r.id === 'rw-title-classical-seal')).toBe(true)
-      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch3')).toBe(true)
+      expect(campaign.progress.chapterIndex).toBe(ch3Index + 1)
+      expect(PLAYABLE_CHAPTERS[campaign.progress.chapterIndex]?.id).toBe('ch4')
+    }
+  })
+
+  it('grants Chapter IV clear rewards when the final chapter seals', () => {
+    const ch4Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch4')
+    expect(ch4Index).toBeGreaterThanOrEqual(0)
+    const ch4 = PLAYABLE_CHAPTERS[ch4Index]!
+    const campaign = new CampaignOrchestrator(PLAYABLE_CHAPTERS, {
+      ...defaultCampaignProgress(),
+      chapterIndex: ch4Index,
+      sceneIndex: ch4.scenes.length - 1,
+      highestUnlockedChapter: ch4Index,
+      chapter1Complete: true,
+      chapter2Complete: true,
+    })
+    const last = campaign.currentScene()
+    expect(last.id).toBe('c4-freeplay')
+    const result = campaign.advanceAfterLeaving(last)
+    expect(result.kind).toBe('chapter-complete')
+    if (result.kind === 'chapter-complete') {
+      expect(result.campaignFinished).toBe(true)
+      expect(result.chapter.id).toBe('ch4')
+      expect(result.rewards.some((r) => r.id === 'rw-title-hypermodern-seal')).toBe(true)
+      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch4')).toBe(true)
     }
   })
 

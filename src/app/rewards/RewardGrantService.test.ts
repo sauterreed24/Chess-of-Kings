@@ -24,6 +24,8 @@ describe('RewardGrantService', () => {
     expect(matchRivalUnlockId('c1-match-marius')).toBe('marius')
     expect(matchRivalUnlockId('c2-match-edred')).toBe('edred')
     expect(matchRivalUnlockId('c3-match-kallistos')).toBe('kallistos')
+    expect(matchRivalUnlockId('c4-match-nysa')).toBe('nysa')
+    expect(matchRivalUnlockId('c4-match-cassian')).toBe('cassian')
     expect(matchRivalUnlockId('c3-match-demetrios-return')).toBe('')
     expect(matchRivalUnlockId('c5-boss-demetrios')).toBe('alexion')
   })

@@ -17,6 +17,17 @@ describe('campaign story beats', () => {
     expect(matches.every((scene) => scene.storyBeat)).toBe(true)
   })
 
+  it('authors Chapter IV as a playable Paradox Masters arc', () => {
+    const ch4 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch4')
+    expect(ch4).toBeTruthy()
+    expect(ch4?.subtitle).toMatch(/Paradox/)
+    const matches = ch4?.scenes.filter((scene) => scene.type === 'match') ?? []
+    expect(matches.map((scene) => scene.id)).toEqual(['c4-match-nysa', 'c4-match-cassian'])
+    expect(matches.every((scene) => scene.type === 'match' && scene.aiStyle === 'hypermodern')).toBe(true)
+    const puzzles = ch4?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
+    expect(puzzles.length).toBeGreaterThanOrEqual(3)
+  })
+
   it('anchors the Prologue in the Long Reign modern commonwealth', () => {
     const prologue = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'prologue')
     const codex = prologue?.scenes.find((scene) => scene.id === 'pr-codex-long-reign')
@@ -72,20 +83,31 @@ describe('PLAYABLE_CHAPTERS — FENs & solvable goals', () => {
 
         if (sc.goal.kind === 'advantage') {
           const goal = sc.goal
-          it(`${ch.id} / ${sc.id}: Bxd4+ wins enough material`, () => {
+          it(`${ch.id} / ${sc.id}: some capture reaches the advantage threshold`, () => {
             const c = new Chess(sc.fen)
             const captures = c.moves({ verbose: true }).filter((m) => m.captured)
             expect(captures.length).toBeGreaterThan(0)
-            const t = new Chess(sc.fen)
-            t.move('Bxd4+')
-            expect(materialAdvantage(t, sc.playerColor)).toBeGreaterThanOrEqual(goal.minCp)
+            const reached = captures.some((m) => {
+              const t = new Chess(sc.fen)
+              t.move(m.san)
+              return materialAdvantage(t, sc.playerColor) >= goal.minCp
+            })
+            expect(reached).toBe(true)
           })
         }
 
         if (sc.goal.kind === 'pieceOn') {
-          it(`${ch.id} / ${sc.id}: castling is legal`, () => {
+          const goal = sc.goal
+          it(`${ch.id} / ${sc.id}: a legal move places the goal piece`, () => {
             const c = new Chess(sc.fen)
-            expect(c.moves().some((m) => m === 'O-O' || m === 'O-O-O')).toBe(true)
+            expect(c.turn()).toBe(sc.playerColor)
+            const hits = c.moves({ verbose: true }).filter(
+              (m) =>
+                m.to === goal.square &&
+                m.piece === goal.pieceType &&
+                (goal.pieceType !== 'k' || m.san === 'O-O' || m.san === 'O-O-O' || m.to === goal.square),
+            )
+            expect(hits.length).toBeGreaterThan(0)
           })
         }
       }

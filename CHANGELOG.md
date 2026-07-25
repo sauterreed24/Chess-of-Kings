@@ -11,6 +11,16 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.4.4] — 2026-07-25
+
+Doctrine succession — Chapter IV playable:
+
+- **Chapter IV — The Paradox Masters** (hypermodern): codex, three drills, Nysa + Cassian matches, rehearsal, seal rewards.
+- **Bactrian rivals** in Duel Archive with opening books and `hypermodern` AI profiles.
+- **Plateau succession:** mastery plateau / campaign-finished copy now keys off Chapter IV; Chapter III opens the paradox age instead of ending the chronicle.
+- Daily Calculus pool accrues the new hypermodern puzzles automatically.
+- Docs: [`docs/CHAPTER_IV_PARADOX_MASTERS.md`](docs/CHAPTER_IV_PARADOX_MASTERS.md).
+
 ## [0.4.3] — 2026-07-12
 
 Pass 8 — Playtest continuity:

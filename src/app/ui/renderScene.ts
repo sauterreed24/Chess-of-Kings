@@ -195,9 +195,13 @@ export function renderScene(
     dom.lessonNote.textContent =
       scene.aiStyle === 'romantic'
         ? 'Weather the first wave: castle, finish development, make every sacrifice prove its debt.'
-        : scene.aiStyle === 'alexandrine' || scene.aiStyle === 'apotheosis'
-          ? 'Quiet moves decide this: keep structure, deny loose pieces, convert without drift.'
-          : 'Use the ancient laws: develop, castle early, keep every piece defended.'
+        : scene.aiStyle === 'classical'
+          ? 'Stop their idea early: watch weak squares, contest outposts, convert without inventing drama.'
+          : scene.aiStyle === 'hypermodern'
+            ? 'Occupy only what you can defend: finish development, contest the long diagonal, punish overextension.'
+            : scene.aiStyle === 'alexandrine' || scene.aiStyle === 'apotheosis'
+              ? 'Quiet moves decide this: keep structure, deny loose pieces, convert without drift.'
+              : 'Use the ancient laws: develop, castle early, keep every piece defended.'
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = 'Requires victory'
   } else if (scene.type === 'calibration') {
