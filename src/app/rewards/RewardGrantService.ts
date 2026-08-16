@@ -49,6 +49,8 @@ export function matchRivalUnlockId(matchId: string): string {
   if (matchId.includes('rowan')) return 'rowan'
   if (matchId.includes('vega')) return 'vega'
   if (matchId.includes('kallistos')) return 'kallistos'
+  if (matchId.includes('nysa')) return 'nysa'
+  if (matchId.includes('cassian')) return 'cassian'
   /* Demetrios return / boss scenes unlock the Alexion archive mentor, not a Demetrios dossier. */
   if (matchId.includes('demetrios-return')) return ''
   if (matchId.includes('boss') || matchId.includes('demetrios')) return 'alexion'

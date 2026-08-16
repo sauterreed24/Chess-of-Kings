@@ -72,6 +72,27 @@ const BOOKS: Record<string, OpeningBook> = {
     7: [{ san: 'O-O', weight: 9 }, { san: 'Be6', weight: 3 }],
     9: [{ san: 'Re8', weight: 7 }, { san: 'h6', weight: 3 }],
   },
+  kallistos_classical: {
+    1: [{ san: 'e5', weight: 7 }, { san: 'd5', weight: 3 }],
+    3: [{ san: 'Nf6', weight: 8 }, { san: 'Nc6', weight: 3 }],
+    5: [{ san: 'Be7', weight: 7 }, { san: 'd6', weight: 4 }],
+    7: [{ san: 'O-O', weight: 8 }, { san: 'd6', weight: 3 }],
+    9: [{ san: 'd6', weight: 6 }, { san: 'Re8', weight: 3 }],
+  },
+  nysa_frontier: {
+    1: [{ san: 'g6', weight: 9 }, { san: 'Nf6', weight: 5 }, { san: 'd6', weight: 2 }],
+    3: [{ san: 'Bg7', weight: 10 }, { san: 'Nf6', weight: 3 }],
+    5: [{ san: 'Nf6', weight: 8 }, { san: 'd6', weight: 5 }],
+    7: [{ san: 'O-O', weight: 8 }, { san: 'd6', weight: 4 }],
+    9: [{ san: 'd6', weight: 7 }, { san: 'c5', weight: 4 }],
+  },
+  cassian_paradox: {
+    1: [{ san: 'Nf6', weight: 9 }, { san: 'g6', weight: 5 }, { san: 'd6', weight: 2 }],
+    3: [{ san: 'g6', weight: 8 }, { san: 'd6', weight: 4 }, { san: 'e6', weight: 2 }],
+    5: [{ san: 'Bg7', weight: 9 }, { san: 'd6', weight: 4 }],
+    7: [{ san: 'O-O', weight: 8 }, { san: 'd6', weight: 5 }],
+    9: [{ san: 'd6', weight: 6 }, { san: 'c5', weight: 5 }, { san: 'Nbd7', weight: 3 }],
+  },
 }
 
 export function getBookTopLines(

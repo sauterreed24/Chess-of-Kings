@@ -41,6 +41,13 @@ describe('opening books', () => {
   })
 
   it('exposes distinct Rowan and Vega opening previews', () => {
+    const nysa = getBookTopLines('nysa_frontier', 9)
+    expect(nysa.map((line) => line.san)).toContain('g6')
+    expect(nysa.map((line) => line.san)).toContain('Bg7')
+    const cassian = getBookTopLines('cassian_paradox', 9)
+    expect(cassian.map((line) => line.san)).toContain('Nf6')
+    expect(getBookTopLines('kallistos_classical', 7).map((line) => line.san)).toContain('Be7')
+
     const rowan = getBookTopLines('rowan_gambit', 9)
     const vega = getBookTopLines('vega_italian', 9)
     expect(rowan.map((line) => line.san)).toContain('exf4')

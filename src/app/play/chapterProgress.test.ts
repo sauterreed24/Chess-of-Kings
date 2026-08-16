@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { chapterProgressSummary, countInscribedAges, renderChapterProgressHtml } from './chapterProgress'
+import {
+  chapterProgressSummary,
+  countInscribedAges,
+  doctrineAtlasMarks,
+  renderChapterProgressHtml,
+} from './chapterProgress'
 
 describe('chapterProgress', () => {
   it('counts inscribed playable chapters up to highestUnlockedChapter', () => {
@@ -14,10 +19,20 @@ describe('chapterProgress', () => {
     expect(s.label).toMatch(/2 of \d+ ages inscribed/)
   })
 
-  it('renders progress HTML with aria-live', () => {
+  it('renders progress HTML with aria-live and a doctrine atlas', () => {
     const html = renderChapterProgressHtml(0)
     expect(html).toContain('chapter-progress')
     expect(html).toContain('aria-live="polite"')
     expect(html).toContain('1 of')
+    expect(html).toContain('doctrine-atlas')
+    expect(html).toContain('Lens')
+    expect(html).toContain('Paradox')
+  })
+
+  it('marks sealed, current, and locked ages along the succession', () => {
+    const marks = doctrineAtlasMarks(3)
+    expect(marks.find((mark) => mark.id === 'ch2')?.state).toBe('sealed')
+    expect(marks.find((mark) => mark.id === 'ch3')?.state).toBe('current')
+    expect(marks.find((mark) => mark.id === 'ch4')?.state).toBe('locked')
   })
 })

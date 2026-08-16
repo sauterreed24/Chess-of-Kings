@@ -2071,6 +2071,26 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   background: #46648224;
 }
 
+#screen-play[data-theme='theme-hypermodern'] .manuscript-panel {
+  background:
+    radial-gradient(circle at 82% 8%, #486e4e29, transparent 44%),
+    linear-gradient(180deg, #10140ffa, #070907fc);
+  border-color: #8caa7838;
+}
+#screen-play[data-theme='theme-hypermodern'] .instrument-frame {
+  background: linear-gradient(180deg, #141a14, #0c100c);
+  border-color: #8caa7842;
+}
+#screen-play[data-theme='theme-hypermodern'] .play-crawl { border-bottom-color: #8caa782e; }
+#screen-play[data-theme='theme-hypermodern'] .chapter-title { color: #d7e6cf; }
+#screen-play[data-theme='theme-hypermodern'] .philosophy,
+#screen-play[data-theme='theme-hypermodern'] .play-crawl { color: #a7bda08c; }
+#screen-play[data-theme='theme-hypermodern'] .scene-tag { color: #b7cda8; }
+#screen-play[data-theme='theme-hypermodern'] .chapter-rail__row--current {
+  border-color: #96b4788c;
+  background: #46643c29;
+}
+
 /* ─── Final polish pass: contrast + readability ─── */
 .chapters-lede {
   color: color-mix(in srgb, var(--ivory) 78%, var(--muted));
@@ -2085,6 +2105,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 #screen-play[data-theme='theme-romantic'] .match-card { --school: 214,94,66; }
 #screen-play[data-theme='theme-classical'] .match-card { --school: 140,170,200; }
+#screen-play[data-theme='theme-hypermodern'] .match-card { --school: 120,160,100; }
 .opponent-note {
   color: color-mix(in srgb, var(--ivory) 84%, var(--muted));
   line-height: 1.56;
@@ -3969,14 +3990,19 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
 }
 .title-privacy__kbd:hover { color: var(--gold-bright); }
 
+.chapter-progress-wrap { margin: -0.35rem 0 0.65rem; }
 .chapter-progress {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--gold-dim);
-  margin: -0.35rem 0 0.65rem;
+  margin: 0 0 0.28rem;
 }
+.doctrine-atlas { display: flex; flex-wrap: wrap; gap: 0.28rem 0.55rem; margin: 0; padding: 0; list-style: none; }
+.doctrine-atlas__mark { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.doctrine-atlas__mark--sealed { color: var(--gold-dim); }
+.doctrine-atlas__mark--current { color: var(--ivory); font-weight: 600; }
 
 .mobile-tips {
   display: none;

@@ -3,6 +3,7 @@ import { PLAYABLE_CHAPTERS } from '../../data/chapters'
 import { defaultLadderRating } from '../../game/rating'
 import {
   CampaignOrchestrator,
+  backfillSuccessorUnlocks,
   canAdvanceBoardScene,
   canAdvanceNarrativeScene,
   defaultCampaignProgress,
@@ -64,7 +65,7 @@ describe('CampaignOrchestrator', () => {
     }
   })
 
-  it('grants Chapter III clear rewards when the final chapter seals', () => {
+  it('opens Chapter IV when Chapter III seals', () => {
     const ch3Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch3')
     expect(ch3Index).toBeGreaterThanOrEqual(0)
     const ch3 = PLAYABLE_CHAPTERS[ch3Index]!
@@ -81,10 +82,35 @@ describe('CampaignOrchestrator', () => {
     const result = campaign.advanceAfterLeaving(last)
     expect(result.kind).toBe('chapter-complete')
     if (result.kind === 'chapter-complete') {
-      expect(result.campaignFinished).toBe(true)
+      expect(result.campaignFinished).toBeFalsy()
       expect(result.chapter.id).toBe('ch3')
       expect(result.rewards.some((r) => r.id === 'rw-title-classical-seal')).toBe(true)
-      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch3')).toBe(true)
+      expect(campaign.progress.chapterIndex).toBe(ch3Index + 1)
+      expect(PLAYABLE_CHAPTERS[campaign.progress.chapterIndex]?.id).toBe('ch4')
+    }
+  })
+
+  it('grants Chapter IV clear rewards when the final chapter seals', () => {
+    const ch4Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch4')
+    expect(ch4Index).toBeGreaterThanOrEqual(0)
+    const ch4 = PLAYABLE_CHAPTERS[ch4Index]!
+    const campaign = new CampaignOrchestrator(PLAYABLE_CHAPTERS, {
+      ...defaultCampaignProgress(),
+      chapterIndex: ch4Index,
+      sceneIndex: ch4.scenes.length - 1,
+      highestUnlockedChapter: ch4Index,
+      chapter1Complete: true,
+      chapter2Complete: true,
+    })
+    const last = campaign.currentScene()
+    expect(last.id).toBe('c4-freeplay')
+    const result = campaign.advanceAfterLeaving(last)
+    expect(result.kind).toBe('chapter-complete')
+    if (result.kind === 'chapter-complete') {
+      expect(result.campaignFinished).toBe(true)
+      expect(result.chapter.id).toBe('ch4')
+      expect(result.rewards.some((r) => r.id === 'rw-title-hypermodern-seal')).toBe(true)
+      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch4')).toBe(true)
     }
   })
 
@@ -95,6 +121,47 @@ describe('CampaignOrchestrator', () => {
     campaign.recordLeavingScene(puzzle)
     expect(campaign.progress.completedSceneIds).toContain(puzzle.id)
     expect(campaign.progress.completedPuzzleIds).toContain(puzzle.id)
+  })
+
+  it('unlocks Chapter IV for chronicles that sealed Chapter III before the paradox age existed', () => {
+    const ch4Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch4')
+    expect(ch4Index).toBeGreaterThanOrEqual(0)
+    const campaign = CampaignOrchestrator.hydrateFromSave(PLAYABLE_CHAPTERS, {
+      version: 3,
+      chapterIndex: 3,
+      sceneIndex: 0,
+      highestUnlockedChapter: 3,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: [],
+      unlockedDuelVariantIds: [],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 0,
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: defaultLadderRating(),
+      inProgress: null,
+    })
+    expect(campaign.progress.highestUnlockedChapter).toBe(ch4Index)
+    expect(campaign.canJumpToChapter(ch4Index)).toBe(true)
+  })
+
+  it('does not invent a paradox unlock from an unfinished classical chapter', () => {
+    const progress = {
+      ...defaultCampaignProgress(),
+      highestUnlockedChapter: 3,
+      completedSceneIds: ['c3-intro'],
+    }
+    backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
+    expect(progress.highestUnlockedChapter).toBe(3)
   })
 
   it('gates chapter jumps by highest unlocked chapter', () => {

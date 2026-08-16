@@ -69,7 +69,7 @@ export const ARCHIVE_RATING_BAND_LABELS = {
 
 export const PLATEAU_COPY = {
   heading: 'Mastery plateau',
-  lede: 'Chapters I–III are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
+  lede: 'Chapters I–IV are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
   dailyCta: 'Daily Calculus',
   duelCta: 'Duel Archive',
   resumeCta: 'Resume Recovered Session',
@@ -78,7 +78,20 @@ export const PLATEAU_COPY = {
 /** Softer hub while Chapter III freeplay / clear rewards are still outstanding. */
 export const PLATEAU_PENDING_COPY = {
   heading: 'Almost sealed',
-  lede: 'The Professor\'s Law reflection is inscribed. Finish the Chapter III rehearsal to claim the classical seal, then the mastery plateau opens fully.',
+  lede: 'The Professor\'s Law reflection is inscribed. Finish the Chapter III rehearsal to claim the classical seal, then the Paradox Masters open.',
+} as const
+
+/** Hub after Chapter IV reflection while freeplay / clear rewards are still outstanding. */
+export const PLATEAU_PENDING_CH4_COPY = {
+  heading: 'Almost sealed',
+  lede: 'The Paradox Masters reflection is inscribed. Finish the Chapter IV rehearsal to claim the hypermodern seal, then the mastery plateau opens fully.',
+} as const
+
+/** Shown when Chapter III is sealed and Chapter IV is waiting, including migrated saves. */
+export const PARADOX_OPENED_COPY = {
+  heading: 'A new age is open',
+  lede: 'The Professor\'s Law is sealed. The Paradox Masters wait in the vestibule — refuse the center to own it later.',
+  enterCta: 'Enter the Paradox Masters',
 } as const
 
 export const ECHO_OUTCOME_LABELS = {

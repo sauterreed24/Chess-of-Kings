@@ -21,7 +21,9 @@ import { createAnnouncer } from './a11y/announcer'
 import {
   CONFIRM_COPY,
   KEYBOARD_HELP_HEADING,
+  PARADOX_OPENED_COPY,
   PLATEAU_COPY,
+  PLATEAU_PENDING_CH4_COPY,
   PLATEAU_PENDING_COPY,
   RIBBON_LABELS,
   STORAGE_FAILURE_MESSAGE,
@@ -365,13 +367,15 @@ export function mountApp(app: HTMLDivElement) {
     },
     onCampaignFinished() {
       const pending = flow.consumePendingRewards()
-      const msg = flow.chapter3Complete
-        ? 'Chapters I–III are sealed. Daily Calculus and the Duel Archive remain open — mastery is the plateau, not a wall. Later ages stay locked for now.'
-        : flow.chapter2Complete
-          ? 'Chapters I and II are sealed. Further ages are not yet compiled for this build — your chronicle is marked.'
-          : flow.chapter1Complete === true
-            ? 'Chapter I sealed. Further ages are not built into this version — your chronicle is marked.'
-            : 'Bookmark updated.'
+      const msg = flow.chapter4Complete
+        ? 'Chapters I–IV are sealed. Daily Calculus and the Duel Archive remain open — mastery is the plateau, not a wall. Later ages stay locked for now.'
+        : flow.chapter3Complete
+          ? 'Chapters I–III are sealed. The Paradox Masters should have opened — resume the chronicle if the vestibule stalled.'
+          : flow.chapter2Complete
+            ? 'Chapters I and II are sealed. Further ages are not yet compiled for this build — your chronicle is marked.'
+            : flow.chapter1Complete === true
+              ? 'Chapter I sealed. Further ages are not built into this version — your chronicle is marked.'
+              : 'Bookmark updated.'
       pendingChapterPrompt = { completedTitle: msg, nextTitle: null }
       closeLab()
       showTitle()
@@ -395,15 +399,19 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   function syncMvpFlag() {
-    mvpFlag.textContent = flow.chapter3Complete
-      ? 'Chapters I–III are inscribed. Daily Calculus and the Duel Archive remain open.'
-      : flow.chapter3ReflectionComplete
-        ? 'Chapter III reflection is inscribed. Finish the rehearsal to claim the classical seal.'
-        : flow.chapter2Complete
-          ? 'Chapters I and II are inscribed in your save. Resume reopens the chronicle.'
-          : flow.chapter1Complete
-            ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
-            : ''
+    mvpFlag.textContent = flow.chapter4Complete
+      ? 'Chapters I–IV are inscribed. Daily Calculus and the Duel Archive remain open.'
+      : flow.chapter4ReflectionComplete
+        ? 'Chapter IV reflection is inscribed. Finish the rehearsal to claim the paradox seal.'
+        : flow.chapter3Complete
+          ? 'Chapters I–III are inscribed. Chapter IV — The Paradox Masters — is open.'
+          : flow.chapter3ReflectionComplete
+            ? 'Chapter III reflection is inscribed. Finish the rehearsal to claim the classical seal.'
+            : flow.chapter2Complete
+              ? 'Chapters I and II are inscribed in your save. Resume reopens the chronicle.'
+              : flow.chapter1Complete
+                ? 'Chapter I is inscribed in your save. Resume opens your chapter ledger.'
+                : ''
   }
 
   function syncTitleRating() {
@@ -606,26 +614,45 @@ export function mountApp(app: HTMLDivElement) {
     chapterProgressSlot.innerHTML = renderChapterProgressHtml(flow.highestUnlockedChapter)
     chapterList.innerHTML = ''
 
-    const plateau = flow.chapter3Complete
-    const plateauPending = !plateau && flow.chapter3ReflectionComplete
+    const plateau = flow.chapter4Complete
+    const plateauPendingCh3 = !flow.chapter3Complete && flow.chapter3ReflectionComplete
+    const plateauPendingCh4 = flow.chapter3Complete && !plateau && flow.chapter4ReflectionComplete
+    const paradoxOpened = flow.chapter3Complete && !plateau && !flow.chapter4ReflectionComplete
+    const plateauPending = plateauPendingCh3 || plateauPendingCh4
     const recoverable = flow.hasRecoverableSession()
     const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
     const daily =
       dailyRaw && dailyRaw.chapterIndex <= flow.highestUnlockedChapter ? dailyRaw : null
+    const ch4Index = PLAYABLE_CHAPTERS.findIndex((chapter) => chapter.id === 'ch4')
 
-    if (plateau || plateauPending || recoverable) {
+    if (plateau || plateauPending || paradoxOpened || recoverable) {
       const resumeBtn = recoverable
         ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-resume-recovered">
             ${escapeHtml(PLATEAU_COPY.resumeCta)}
           </button>`
         : ''
-      const hubHeading = plateau ? PLATEAU_COPY.heading : PLATEAU_PENDING_COPY.heading
-      const hubLede = plateau ? PLATEAU_COPY.lede : PLATEAU_PENDING_COPY.lede
-      const plateauBlock = (plateau || plateauPending)
+      const pendingCopy = plateauPendingCh4 ? PLATEAU_PENDING_CH4_COPY : PLATEAU_PENDING_COPY
+      const hubHeading = plateau
+        ? PLATEAU_COPY.heading
+        : paradoxOpened
+          ? PARADOX_OPENED_COPY.heading
+          : pendingCopy.heading
+      const hubLede = plateau
+        ? PLATEAU_COPY.lede
+        : paradoxOpened
+          ? PARADOX_OPENED_COPY.lede
+          : pendingCopy.lede
+      const paradoxBtn = paradoxOpened && ch4Index >= 0
+        ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-plateau-paradox">
+            ${escapeHtml(PARADOX_OPENED_COPY.enterCta)}
+          </button>`
+        : ''
+      const plateauBlock = (plateau || plateauPending || paradoxOpened)
         ? `<div class="plateau-hub" role="region" aria-label="${escapeHtml(hubHeading)}">
             <p class="plateau-hub__eyebrow">${escapeHtml(hubHeading)}</p>
             <p class="plateau-hub__lede">${escapeHtml(hubLede)}</p>
             <div class="plateau-hub__actions">
+              ${paradoxBtn}
               ${daily
                 ? `<button type="button" class="secondary chapter-quick-actions__btn" id="btn-plateau-daily"
                     aria-label="${escapeHtml(PLATEAU_COPY.dailyCta)}: ${escapeHtml(daily.title)}">
@@ -660,6 +687,16 @@ export function mountApp(app: HTMLDivElement) {
       })
       chapterQuickActions.querySelector<HTMLButtonElement>('#btn-plateau-duel')?.addEventListener('click', () => {
         showDuel()
+      })
+      chapterQuickActions.querySelector<HTMLButtonElement>('#btn-plateau-paradox')?.addEventListener('click', async () => {
+        if (ch4Index < 0) return
+        const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+        if (mustConfirm) {
+          const ok = await confirmDialogCtl.open(CONFIRM_COPY.replaceRecoveredSession)
+          if (!ok) return
+        }
+        flow.jumpToChapter(ch4Index)
+        openLab()
       })
     } else {
       chapterQuickActions.classList.add('hidden')

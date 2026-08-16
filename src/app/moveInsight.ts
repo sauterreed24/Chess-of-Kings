@@ -32,6 +32,8 @@ function doctrineLabel(key: string | null | undefined): string | null {
   if (k.includes('vega')) return 'Vega pressure'
   if (k.includes('alexion')) return 'Alexion law'
   if (k.includes('kallistos')) return 'Kallistos prophylaxis'
+  if (k.includes('nysa')) return 'Nysa frontier'
+  if (k.includes('cassian')) return 'Cassian paradox'
   if (k.includes('counterpart') || k.includes('apotheosis') || k.includes('boss')) return 'Court synthesis'
   return null
 }
@@ -98,6 +100,11 @@ export function moveInsightFor(input: MoveInsightInput): string | null {
   if (move.piece === 'p' && CENTER_SQUARES.has(move.to)) {
     if (doctrine) return `Center claimed — hold it against ${doctrine}, and back it with a minor.`
     return 'Center claimed. Back it with a knight or bishop.'
+  }
+
+  if (move.piece === 'b' && (move.to === 'b2' || move.to === 'g2' || move.to === 'b7' || move.to === 'g7')) {
+    if (doctrine) return `Fianchetto set — ${doctrine} now has a diagonal to tax. Do not rush the empty center.`
+    return 'Fianchetto set. The long diagonal is a delayed claim on the center.'
   }
 
   if (

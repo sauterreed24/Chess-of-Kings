@@ -11,6 +11,29 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-08-16
+
+The Paradox age, finished as a living chapter rather than a locked teaser:
+
+- **Chapter IV — The Paradox Masters** is playable: Bactrian Frontier lore, committee/Kallistos continuity, Nysa + Cassian matches with hypermodern scripts, and a seal that moves the mastery plateau forward.
+- **Overreach drill** replaces the second habit puzzle — the fianchetto bishop taxes a hanging knight on the long diagonal.
+- **Successor unlock backfill** opens Chapter IV for chronicles that sealed Chapter III when it was the last compiled age.
+- **Doctrine atlas** on the Chapters screen names the succession (Lens → Ancient → Romantic → Classical → Paradox).
+- **Paradox-opened hub** invites Chapter III survivors into the new age instead of leaving a silent unlock.
+- Hypermodern personas now prefer fianchetto geometry; move coaching names Nysa, Cassian, and delayed-ownership bishops.
+- CSS gzip budget **18350 → 18400** B for the doctrine atlas.
+- Docs: [`docs/CHAPTER_IV_PARADOX_MASTERS.md`](docs/CHAPTER_IV_PARADOX_MASTERS.md).
+
+## [0.4.4] — 2026-07-25
+
+Doctrine succession — Chapter IV playable (unreleased draft lineage, now folded into 0.5.0):
+
+- **Chapter IV — The Paradox Masters** (hypermodern): codex, drills, Nysa + Cassian matches, rehearsal, seal rewards.
+- **Bactrian rivals** in Duel Archive with opening books and `hypermodern` AI profiles.
+- **Plateau succession:** mastery plateau / campaign-finished copy now keys off Chapter IV; Chapter III opens the paradox age instead of ending the chronicle.
+- Daily Calculus pool accrues the new hypermodern puzzles automatically.
+- CSS gzip budget ratcheted to 18350 for the Chapter IV theme.
+
 ## [0.4.3] — 2026-07-12
 
 Pass 8 — Playtest continuity:

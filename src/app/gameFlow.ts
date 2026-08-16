@@ -193,7 +193,7 @@ export class GameFlow {
   set chapter2Complete(v: boolean) {
     this.campaign.progress.chapter2Complete = v
   }
-  /** True once Chapter III freeplay is recorded — matches campaign-finish rewards. */
+  /** True once Chapter III freeplay is recorded. */
   get chapter3Complete(): boolean {
     return this.completedSceneIds.includes('c3-freeplay')
   }
@@ -201,6 +201,16 @@ export class GameFlow {
   /** Reflection sealed but freeplay / clear rewards may still be pending. */
   get chapter3ReflectionComplete(): boolean {
     return this.completedSceneIds.includes('c3-reflection')
+  }
+
+  /** True once Chapter IV freeplay is recorded — matches campaign-finish rewards. */
+  get chapter4Complete(): boolean {
+    return this.completedSceneIds.includes('c4-freeplay')
+  }
+
+  /** Chapter IV reflection sealed but freeplay / clear rewards may still be pending. */
+  get chapter4ReflectionComplete(): boolean {
+    return this.completedSceneIds.includes('c4-reflection')
   }
   get completedSceneIds(): string[] {
     return this.campaign.progress.completedSceneIds

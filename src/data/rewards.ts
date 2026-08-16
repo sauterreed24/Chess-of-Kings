@@ -105,6 +105,38 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       titleId: 'classical-analyst',
     },
   ],
+  'c4-match-nysa': [
+    {
+      id: 'rw-variant-nysa-frontier',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Nysa Bactrian Frontier',
+      description: "Replay Nysa's hypermodern frontier doctrine from Chapter IV in Duel mode.",
+      duelVariantId: 'nysa-frontier',
+    },
+    {
+      id: 'rw-codex-nysa-frontier',
+      kind: 'codex',
+      label: 'Archive Note: Frontier Invitation',
+      description: 'Nysa files that empty space is a tax, and that you learned to read the invoice.',
+      codexId: 'codex-nysa-frontier',
+    },
+  ],
+  'c4-match-cassian': [
+    {
+      id: 'rw-variant-cassian-paradox',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Cassian Paradox Master',
+      description: "Replay Cassian's paradox doctrine from Chapter IV in Duel mode.",
+      duelVariantId: 'cassian-paradox',
+    },
+    {
+      id: 'rw-title-hypermodern',
+      kind: 'title',
+      label: 'Title Earned: Paradox Analyst',
+      description: 'Recognized for refusing empty occupation and punishing overextended kings.',
+      titleId: 'paradox-analyst',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
@@ -151,6 +183,21 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       kind: 'chronicle',
       label: 'Chronicle Echo Unlocked',
       description: 'A third echo joins your archive: prophylaxis, outposts, and quiet refusals.',
+    },
+  ],
+  ch4: [
+    {
+      id: 'rw-title-hypermodern-seal',
+      kind: 'title',
+      label: 'Title Earned: Seal of the Paradox Masters',
+      description: 'Chapter IV completed. Your chronicle carries delayed ownership as a civic virtue.',
+      titleId: 'seal-paradox-masters',
+    },
+    {
+      id: 'rw-chronicle-echo-ch4',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'A fourth echo joins your archive: fianchetto pressure, provocation, and the slow squeeze.',
     },
   ],
 }

@@ -52,6 +52,22 @@ export function defaultCampaignProgress(): CampaignProgress {
   }
 }
 
+/**
+ * Players who sealed Chapter III when it was the last compiled age never
+ * received a successor unlock. Opening Chapter IV must not leave those
+ * chronicles locked out of the paradox door.
+ */
+export function backfillSuccessorUnlocks(progress: CampaignProgress, chapters: Chapter[]): void {
+  const ch4Index = chapters.findIndex((chapter) => chapter.id === 'ch4')
+  if (ch4Index < 0) return
+  const sealedClassical =
+    progress.completedSceneIds.includes('c3-reflection') ||
+    progress.completedSceneIds.includes('c3-freeplay')
+  if (sealedClassical) {
+    progress.highestUnlockedChapter = Math.max(progress.highestUnlockedChapter, ch4Index)
+  }
+}
+
 export function canAdvanceNarrativeScene(scene: Scene): boolean {
   return (
     scene.type === 'dialogue' ||
@@ -103,6 +119,7 @@ export class CampaignOrchestrator {
       progress.completedSceneIds = [...save.completedSceneIds]
       progress.completedPuzzleIds = [...save.completedPuzzleIds]
       progress.stratarchiaUnlocked = save.stratarchiaUnlocked
+      backfillSuccessorUnlocks(progress, chapters)
     }
     return new CampaignOrchestrator(chapters, progress)
   }
