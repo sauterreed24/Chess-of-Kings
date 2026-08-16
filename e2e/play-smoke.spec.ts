@@ -129,6 +129,48 @@ test('post-Chapter IV chapters screen shows mastery plateau hub', async ({ page 
   await expect(page.locator('.duel-row').first()).toBeVisible()
 })
 
+test('Chapter III survivors are invited into the Paradox Masters', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 3,
+      sceneIndex: 0,
+      highestUnlockedChapter: 3,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-match-kallistos', 'c3-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: ['alexion', 'kallistos'],
+      unlockedDuelVariantIds: ['alexion-mentor', 'kallistos-law'],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 130,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1220, peak: 1220, rated: 2 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await expect(page.locator('.plateau-hub')).toContainText('A new age is open')
+  await expect(page.locator('#btn-plateau-paradox')).toBeVisible()
+  await expect(page.locator('.doctrine-atlas')).toContainText('Paradox')
+  await page.locator('#btn-plateau-paradox').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter IV')
+  await expect(page.locator('#narrative-body')).toContainText(/committee|Bactrian|school-flexible/i)
+})
+
 test('seeded save unlocks Lukas in the duel archive and shows Chapter III', async ({ page }) => {
   await page.addInitScript(() => {
     const save = {
