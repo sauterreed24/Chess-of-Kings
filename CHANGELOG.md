@@ -21,6 +21,7 @@ The Paradox age, finished as a living chapter rather than a locked teaser:
 - **Doctrine atlas** on the Chapters screen names the succession (Lens → Ancient → Romantic → Classical → Paradox).
 - **Paradox-opened hub** invites Chapter III survivors into the new age instead of leaving a silent unlock.
 - Hypermodern personas now prefer fianchetto geometry; move coaching names Nysa, Cassian, and delayed-ownership bishops.
+- CSS gzip budget **18350 → 18400** B for the doctrine atlas.
 - Docs: [`docs/CHAPTER_IV_PARADOX_MASTERS.md`](docs/CHAPTER_IV_PARADOX_MASTERS.md).
 
 ## [0.4.4] — 2026-07-25

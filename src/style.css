@@ -3999,21 +3999,8 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
   color: var(--gold-dim);
   margin: 0 0 0.28rem;
 }
-.doctrine-atlas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.28rem 0.55rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.doctrine-atlas__mark {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--muted) 82%, var(--ivory));
-}
+.doctrine-atlas { display: flex; flex-wrap: wrap; gap: 0.28rem 0.55rem; margin: 0; padding: 0; list-style: none; }
+.doctrine-atlas__mark { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .doctrine-atlas__mark--sealed { color: var(--gold-dim); }
 .doctrine-atlas__mark--current { color: var(--ivory); font-weight: 600; }
 
