@@ -99,7 +99,7 @@ src/
 │
 ├── data/                    Pure-data modules (no DOM, no IO).
 │   ├── chapters.ts          PLAYABLE_CHAPTERS array — Prologue + Ch I–IV.
-│   ├── roadmap.ts           Locked future chapters (IV–IX) shown on the index.
+│   ├── roadmap.ts           Locked future chapters (V–IX) shown on the index.
 │   ├── duelRoster.ts        Rivals + their unlocked variants.
 │   └── rewards.ts           CHAPTER_CLEAR_REWARDS + BASE_VICTORY_REWARDS.
 │

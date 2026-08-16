@@ -1557,11 +1557,15 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'narrator',
-            text: 'The chamber light thins. Files look longer from the corners. The center of the board is empty on purpose — not abandoned, invited.',
+            text: 'The chamber light thins. Files look longer from the corners. A sealed brief waits on the lectern — the same upstairs committee that has been deciding what Reed is since the Romantic seal. The center of the board is empty on purpose: not abandoned, invited.',
           },
           {
             speaker: 'alexion',
-            text: 'Welcome to paradox. The old courts said occupy the center. The frontier says: let them occupy it badly, then prove the occupation was a loan.',
+            text: 'They filed you as school-flexible. That is not a compliment. It is a warrant to test whether you can change doctrine without becoming a tourist.',
+          },
+          {
+            speaker: 'kallistos',
+            text: 'I warned you the shadows would try to make you forget structure. They will. The frontier does not cancel the Professor\'s Law. It asks whether you can keep it while refusing a flag.',
           },
           {
             speaker: 'reed',
@@ -1569,7 +1573,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'alexion',
-            text: 'You refuse empty occupation. You will meet Nysa, who taxes greed from a fianchetto, and Cassian, who makes ambition confess. Development still matters. Drama still lies.',
+            text: 'You refuse empty occupation. The Bactrian commentaries reached Alexandria with the same caravans that brought chaturanga west. Nysa taxes greed from a fianchetto. Cassian makes ambition confess. Development still matters. Drama still lies.',
           },
         ],
       },
@@ -1600,6 +1604,10 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
             term: 'Delayed ownership',
             body: 'Strike the overbuilt center with breaks and pressure only after development is real. Paradox is patience with teeth, not passivity.',
           },
+          {
+            term: 'Bactrian Frontier',
+            body: 'Eastern archive colleges treated the center as a caravan road: you do not occupy every mile. You tax the ones who try. Alexander\'s long reign made that commentary civic law, not a provincial curiosity.',
+          },
         ],
       },
       {
@@ -1627,25 +1635,25 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
       },
       {
         type: 'puzzle',
-        id: 'c4-puzzle-queenside-fianchetto',
-        title: 'Puzzle — the other long diagonal',
+        id: 'c4-puzzle-overreach',
+        title: 'Puzzle — collect the rent',
         storyBeat: {
           label: 'Drill pressure',
-          title: 'Both wings can refuse the center',
-          body: 'Paradox is not only kingside poetry. The queenside fianchetto teaches the same delayed claim.',
+          title: 'The diagonal taxes greed',
+          body: 'A knight that parked on an open long diagonal is not a guest. It is an invoice. Take it.',
           tone: 'pressure',
         },
-        fen: 'rnbqkbnr/pppppppp/8/8/8/1P6/P1PPPPPP/RNBQKBNR w KQkq - 0 1',
+        fen: '6k1/5ppp/8/3n4/8/6P1/5PBP/6K1 w - - 0 1',
         playerColor: 'w',
-        goal: { kind: 'pieceOn', square: 'b2', color: 'w', pieceType: 'b' },
+        goal: { kind: 'advantage', minCp: 250 },
         lesson:
-          'b3 prepares the mirror claim. Bb2 puts a bishop on the long diagonal that watches d4 and e5.',
+          'Black\'s knight sat on the long diagonal as if the bishop were furniture. Bxd5 is the frontier\'s favorite tax.',
         teaching: {
-          threat: 'Leaving the bishop on c1 keeps the paradox theoretical.',
-          goalPlain: 'Place your dark-squared bishop on b2.',
+          threat: 'If you ignore the hanging knight, the paradox stays a lecture.',
+          goalPlain: 'Win the knight on d5 with the fianchetto bishop.',
           whyItWorks:
-            'A queenside fianchetto pressures the center from the opposite wing — same doctrine, second file.',
-          concept: 'Two diagonals, one idea: refuse empty occupation.',
+            'Hypermodern geometry is patient until a piece steps onto the diagonal without a defender. Then ownership arrives as a capture.',
+          concept: 'Overextension is a confession. Accept it.',
         },
       },
       {
@@ -1683,15 +1691,15 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         lines: [
           {
             speaker: 'alexion',
-            text: 'Good. You can build the claim. Now survive someone who wants you to seize too much.',
+            text: 'Good. You can build the claim, and you can cash it. Now survive someone who wants you to seize too much.',
           },
           {
             speaker: 'reed',
-            text: 'Nysa?',
+            text: 'Nysa — the frontier examiner?',
           },
           {
             speaker: 'alexion',
-            text: 'Frontier manners. She will leave the center open like a dare.',
+            text: 'She learned the board on Bactrian roads, not marble courts. She will leave the center open like a dare, then ask what it cost you.',
           },
         ],
       },
@@ -1735,6 +1743,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         playerColor: 'w',
         aiDepth: 4,
         aiStyle: 'hypermodern',
+        scriptedBlackSans: ['g6', 'Bg7', 'd6', 'Nf6', 'O-O', 'c5'],
         ladderTier: 'veteran',
         difficulty: 3,
       },
@@ -1798,6 +1807,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         playerColor: 'w',
         aiDepth: 4,
         aiStyle: 'hypermodern',
+        scriptedBlackSans: ['Nf6', 'g6', 'Bg7', 'd5', 'c5', 'O-O'],
         ladderTier: 'boss',
         difficulty: 4,
       },
@@ -1820,12 +1830,16 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
             text: 'Nysa taxed greed. Cassian asked whether my center could survive its own ambition.',
           },
           {
+            speaker: 'kallistos',
+            text: 'You kept the habit. The committee will have to amend the file.',
+          },
+          {
             speaker: 'cassian',
-            text: 'Remember the habit. Later machines will calculate faster than your fear — but they still punish overextension.',
+            text: 'Remember the geometry. Later machines will calculate faster than your fear — but they still punish overextension.',
           },
           {
             speaker: 'narrator',
-            text: 'Chapter IV is sealed. The compiled ages of this build end here. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, Soviet steel and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+            text: 'Chapter IV is sealed. Upstairs, the brief is rewritten: Reed is no longer only a control specimen. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, Soviet steel and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
           },
         ],
       },

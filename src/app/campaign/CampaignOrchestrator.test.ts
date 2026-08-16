@@ -3,6 +3,7 @@ import { PLAYABLE_CHAPTERS } from '../../data/chapters'
 import { defaultLadderRating } from '../../game/rating'
 import {
   CampaignOrchestrator,
+  backfillSuccessorUnlocks,
   canAdvanceBoardScene,
   canAdvanceNarrativeScene,
   defaultCampaignProgress,
@@ -120,6 +121,47 @@ describe('CampaignOrchestrator', () => {
     campaign.recordLeavingScene(puzzle)
     expect(campaign.progress.completedSceneIds).toContain(puzzle.id)
     expect(campaign.progress.completedPuzzleIds).toContain(puzzle.id)
+  })
+
+  it('unlocks Chapter IV for chronicles that sealed Chapter III before the paradox age existed', () => {
+    const ch4Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch4')
+    expect(ch4Index).toBeGreaterThanOrEqual(0)
+    const campaign = CampaignOrchestrator.hydrateFromSave(PLAYABLE_CHAPTERS, {
+      version: 3,
+      chapterIndex: 3,
+      sceneIndex: 0,
+      highestUnlockedChapter: 3,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: [],
+      unlockedDuelVariantIds: [],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 0,
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: defaultLadderRating(),
+      inProgress: null,
+    })
+    expect(campaign.progress.highestUnlockedChapter).toBe(ch4Index)
+    expect(campaign.canJumpToChapter(ch4Index)).toBe(true)
+  })
+
+  it('does not invent a paradox unlock from an unfinished classical chapter', () => {
+    const progress = {
+      ...defaultCampaignProgress(),
+      highestUnlockedChapter: 3,
+      completedSceneIds: ['c3-intro'],
+    }
+    backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
+    expect(progress.highestUnlockedChapter).toBe(3)
   })
 
   it('gates chapter jumps by highest unlocked chapter', () => {

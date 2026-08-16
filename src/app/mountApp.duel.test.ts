@@ -385,6 +385,33 @@ describe('mounted duel dossier', () => {
     expect(hub).not.toMatch(/I–III are sealed/)
   })
 
+  it('opens a paradox-age hub for chronicles that sealed Chapter III', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 3,
+      sceneIndex: 0,
+      highestUnlockedChapter: 3,
+      lastScreen: 'chapters',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-match-kallistos', 'c3-freeplay'],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    const hub = app.querySelector('.plateau-hub')
+    expect(hub?.textContent).toMatch(/A new age is open/)
+    expect(hub?.textContent).toMatch(/Paradox Masters wait/)
+    expect(app.querySelector('#btn-plateau-paradox')).not.toBeNull()
+    expect(app.textContent).toMatch(/Paradox/)
+    app.querySelector<HTMLButtonElement>('#btn-plateau-paradox')?.click()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(app.querySelector('#play-chapter-label')?.textContent).toMatch(/Chapter IV|Paradox/)
+  })
+
   it('confirms before starting a duel over a recoverable session', async () => {
     localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
       version: 3,

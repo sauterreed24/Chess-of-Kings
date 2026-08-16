@@ -58,7 +58,7 @@ describe('collectPuzzlePool', () => {
     const ids = collectPuzzlePool(PLAYABLE_CHAPTERS).map((p) => p.scene.id)
     expect(ids).toEqual(expect.arrayContaining([
       'c4-puzzle-fianchetto',
-      'c4-puzzle-queenside-fianchetto',
+      'c4-puzzle-overreach',
       'c4-puzzle-battery',
     ]))
     expect(ids.length).toBeGreaterThanOrEqual(8)

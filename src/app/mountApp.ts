@@ -21,6 +21,7 @@ import { createAnnouncer } from './a11y/announcer'
 import {
   CONFIRM_COPY,
   KEYBOARD_HELP_HEADING,
+  PARADOX_OPENED_COPY,
   PLATEAU_COPY,
   PLATEAU_PENDING_CH4_COPY,
   PLATEAU_PENDING_COPY,
@@ -616,26 +617,42 @@ export function mountApp(app: HTMLDivElement) {
     const plateau = flow.chapter4Complete
     const plateauPendingCh3 = !flow.chapter3Complete && flow.chapter3ReflectionComplete
     const plateauPendingCh4 = flow.chapter3Complete && !plateau && flow.chapter4ReflectionComplete
+    const paradoxOpened = flow.chapter3Complete && !plateau && !flow.chapter4ReflectionComplete
     const plateauPending = plateauPendingCh3 || plateauPendingCh4
     const recoverable = flow.hasRecoverableSession()
     const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
     const daily =
       dailyRaw && dailyRaw.chapterIndex <= flow.highestUnlockedChapter ? dailyRaw : null
+    const ch4Index = PLAYABLE_CHAPTERS.findIndex((chapter) => chapter.id === 'ch4')
 
-    if (plateau || plateauPending || recoverable) {
+    if (plateau || plateauPending || paradoxOpened || recoverable) {
       const resumeBtn = recoverable
         ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-resume-recovered">
             ${escapeHtml(PLATEAU_COPY.resumeCta)}
           </button>`
         : ''
       const pendingCopy = plateauPendingCh4 ? PLATEAU_PENDING_CH4_COPY : PLATEAU_PENDING_COPY
-      const hubHeading = plateau ? PLATEAU_COPY.heading : pendingCopy.heading
-      const hubLede = plateau ? PLATEAU_COPY.lede : pendingCopy.lede
-      const plateauBlock = (plateau || plateauPending)
+      const hubHeading = plateau
+        ? PLATEAU_COPY.heading
+        : paradoxOpened
+          ? PARADOX_OPENED_COPY.heading
+          : pendingCopy.heading
+      const hubLede = plateau
+        ? PLATEAU_COPY.lede
+        : paradoxOpened
+          ? PARADOX_OPENED_COPY.lede
+          : pendingCopy.lede
+      const paradoxBtn = paradoxOpened && ch4Index >= 0
+        ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-plateau-paradox">
+            ${escapeHtml(PARADOX_OPENED_COPY.enterCta)}
+          </button>`
+        : ''
+      const plateauBlock = (plateau || plateauPending || paradoxOpened)
         ? `<div class="plateau-hub" role="region" aria-label="${escapeHtml(hubHeading)}">
             <p class="plateau-hub__eyebrow">${escapeHtml(hubHeading)}</p>
             <p class="plateau-hub__lede">${escapeHtml(hubLede)}</p>
             <div class="plateau-hub__actions">
+              ${paradoxBtn}
               ${daily
                 ? `<button type="button" class="secondary chapter-quick-actions__btn" id="btn-plateau-daily"
                     aria-label="${escapeHtml(PLATEAU_COPY.dailyCta)}: ${escapeHtml(daily.title)}">
@@ -670,6 +687,16 @@ export function mountApp(app: HTMLDivElement) {
       })
       chapterQuickActions.querySelector<HTMLButtonElement>('#btn-plateau-duel')?.addEventListener('click', () => {
         showDuel()
+      })
+      chapterQuickActions.querySelector<HTMLButtonElement>('#btn-plateau-paradox')?.addEventListener('click', async () => {
+        if (ch4Index < 0) return
+        const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+        if (mustConfirm) {
+          const ok = await confirmDialogCtl.open(CONFIRM_COPY.replaceRecoveredSession)
+          if (!ok) return
+        }
+        flow.jumpToChapter(ch4Index)
+        openLab()
       })
     } else {
       chapterQuickActions.classList.add('hidden')

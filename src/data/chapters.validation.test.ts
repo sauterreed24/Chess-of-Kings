@@ -24,8 +24,32 @@ describe('campaign story beats', () => {
     const matches = ch4?.scenes.filter((scene) => scene.type === 'match') ?? []
     expect(matches.map((scene) => scene.id)).toEqual(['c4-match-nysa', 'c4-match-cassian'])
     expect(matches.every((scene) => scene.type === 'match' && scene.aiStyle === 'hypermodern')).toBe(true)
+    const nysa = matches.find((scene) => scene.id === 'c4-match-nysa')
+    const cassian = matches.find((scene) => scene.id === 'c4-match-cassian')
+    expect(nysa?.type === 'match' && nysa.scriptedBlackSans?.[0]).toBe('g6')
+    expect(cassian?.type === 'match' && cassian.scriptedBlackSans?.[0]).toBe('Nf6')
     const puzzles = ch4?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
-    expect(puzzles.length).toBeGreaterThanOrEqual(3)
+    expect(puzzles.map((scene) => scene.id)).toEqual(
+      expect.arrayContaining(['c4-puzzle-fianchetto', 'c4-puzzle-overreach', 'c4-puzzle-battery']),
+    )
+    const intro = ch4?.scenes.find((scene) => scene.id === 'c4-intro')
+    const codex = ch4?.scenes.find((scene) => scene.id === 'c4-codex-paradox')
+    const reflection = ch4?.scenes.find((scene) => scene.id === 'c4-reflection')
+    expect(intro?.type).toBe('dialogue')
+    expect(codex?.type).toBe('codex')
+    expect(reflection?.type).toBe('dialogue')
+    if (intro?.type === 'dialogue') {
+      const spoken = intro.lines.map((line) => line.text).join(' ')
+      expect(spoken).toContain('committee')
+      expect(spoken).toContain('Bactrian')
+      expect(intro.lines.some((line) => line.speaker === 'kallistos')).toBe(true)
+    }
+    if (codex?.type === 'codex') {
+      expect(codex.entries.map((entry) => entry.term)).toContain('Bactrian Frontier')
+    }
+    if (reflection?.type === 'dialogue') {
+      expect(reflection.lines.map((line) => line.text).join(' ')).toContain('amend the file')
+    }
   })
 
   it('anchors the Prologue in the Long Reign modern commonwealth', () => {

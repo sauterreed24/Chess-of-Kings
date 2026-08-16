@@ -20,6 +20,7 @@ import {
   PIECE_VALUES,
   resolveEvalPhase,
   rookSeventhBonus,
+  styleBias,
 } from './evaluate'
 import { analyzePosition } from './bitboard'
 
@@ -151,5 +152,16 @@ describe('evaluate feature exports (direct)', () => {
     const opening = pieceSquareValue('n', square, 'w', 'opening', false)
     const endgame = pieceSquareValue('n', square, 'w', 'endgame', true)
     expect(opening).not.toBe(endgame)
+  })
+
+  it('hypermodern style prefers fianchetto geometry over empty center flags', () => {
+    const ready = new Chess('rnbqkbnr/pppppppp/8/8/8/6P1/PPPPPP1P/RNBQKBNR w KQkq - 0 1')
+    const bg2 = ready.moves({ verbose: true }).find((move) => move.san === 'Bg2')
+    expect(bg2).toBeTruthy()
+    const start = new Chess()
+    const e4 = start.moves({ verbose: true }).find((move) => move.san === 'e4')
+    expect(e4).toBeTruthy()
+    expect(styleBias(bg2!, 'hypermodern')).toBeGreaterThan(styleBias(e4!, 'hypermodern'))
+    expect(styleBias(e4!, 'classical')).toBeGreaterThan(styleBias(e4!, 'hypermodern'))
   })
 })

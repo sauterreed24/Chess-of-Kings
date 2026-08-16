@@ -2,25 +2,35 @@
 
 ## Summary
 
-Playable hypermodern chapter added after Chapter III. The campaign no longer ends at the Professor's Law; sealing Chapter III opens Chapter IV, and the mastery plateau moves to Chapter IV freeplay completion.
+Playable hypermodern chapter after Chapter III. Sealing the Professor's Law opens the Paradox Masters. The mastery plateau moves to Chapter IV freeplay completion. Existing chronicles that already sealed Chapter III receive the new age through a successor-unlock backfill.
+
+## Lore
+
+The upstairs committee that has been "deciding what Reed is" since the Romantic seal files him as school-flexible. Kallistos returns to warn that frontier doctrine does not cancel the Professor's Law. The Bactrian commentaries — the same eastern archive tradition that traveled west with chaturanga — treat the center as a caravan road: occupy nothing you cannot tax, and tax anyone who occupies too much.
+
+- **Nysa** examines from Bactrian roads, not marble courts. She invites the center, then measures the invoice.
+- **Cassian** is delayed ownership as law. He does not need the center to own it.
+
+Sealing the chapter amends the committee file: Reed is no longer only a control specimen.
 
 ## Player-facing content
 
-- **Codex:** fianchetto, provocation, overextension, delayed ownership
-- **Drills:** kingside fianchetto (`Bg2`), queenside fianchetto (`Bb2`), queen+bishop battery mate
-- **Matches:** Nysa (Bactrian Frontier), Cassian (Paradox Master)
-- **Seal:** paradox title + chronicle echo; Daily Calculus pool grows by the new puzzles automatically
+- **Codex:** fianchetto, provocation, overextension, delayed ownership, Bactrian Frontier
+- **Drills:** kingside fianchetto (`Bg2`), overreach tax (`Bxd5` on the long diagonal), queen+bishop battery mate
+- **Matches:** Nysa (Modern/Pirc script) and Cassian (Grünfeld-flavored script)
+- **Seal:** paradox title + chronicle echo; Daily Calculus pool grows automatically
 
-## Systems touched
+## Systems
 
-- `src/data/chapters.ts`, `roadmap.ts`, `rewards.ts`, `duelRoster.ts`, `rivals.ts`
-- AI: `nysa_frontier` / `cassian_paradox` profiles (`aiStyle: 'hypermodern'`), opening books, rival SAN bias
-- Plateau / mvpFlag copy now keys off Chapter IV completion
+- Successor unlock: `backfillSuccessorUnlocks` in `CampaignOrchestrator`
+- Doctrine atlas on the Chapters screen
+- Paradox-opened hub CTA for Chapter III survivors
+- `nysa_frontier` / `cassian_paradox` profiles, books, SAN bias, and `hypermodern` style that prefers fianchetto geometry
 - Theme: `theme-hypermodern`
 
 ## Testing notes
 
-- Chapter FEN/goal validation covers new puzzles
-- Orchestrator: Ch III seal opens Ch IV; Ch IV seal finishes campaign
+- Chapter FEN/goal validation covers the new overreach capture
+- Orchestrator: Ch III seal opens Ch IV; pre-Ch-IV saves that sealed the classical age unlock Ch IV on load
 - Duel roster / reward unlock ids for Nysa and Cassian
-- Unit + e2e plateau hub fixtures updated for post–Ch IV sealed saves
+- Plateau hub fixtures cover sealed Ch IV, pending Ch III, and paradox-opened Ch III survivors

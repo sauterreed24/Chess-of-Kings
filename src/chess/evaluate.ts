@@ -454,8 +454,18 @@ export function styleBias(move: import('chess.js').Move, style: AIStyle): number
   if (move.piece === 'p' && Math.abs(Number(move.to[1]) - Number(move.from[1])) === 2) {
     b += style === 'romantic' ? 20 : 5
   }
-  if (style === 'hypermodern' && (move.piece === 'b' || move.piece === 'n')) {
-    if (move.to[0] === 'a' || move.to[0] === 'h') b += 15
+  if (style === 'hypermodern') {
+    const to = move.to
+    if (move.piece === 'b' && (to === 'b2' || to === 'g2' || to === 'b7' || to === 'g7')) b += 28
+    if (move.piece === 'p' && (to === 'b3' || to === 'g3' || to === 'b6' || to === 'g6')) b += 18
+    if (move.piece === 'n' && (to === 'c3' || to === 'f3' || to === 'c6' || to === 'f6')) b += 10
+    if (
+      move.piece === 'p' &&
+      (to === 'e4' || to === 'd4' || to === 'e5' || to === 'd5') &&
+      Math.abs(Number(move.to[1]) - Number(move.from[1])) === 2
+    ) {
+      b -= 8
+    }
   }
   if (style === 'soviet' || style === 'alexandrine') {
     if (move.captured) b += 10

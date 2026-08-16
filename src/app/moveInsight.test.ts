@@ -123,6 +123,36 @@ describe('move insight', () => {
       mode: 'duel',
       opponentKey: 'kallistos-law',
     })).toMatch(/Kallistos prophylaxis/)
+
+    expect(moveInsightFor({
+      move: { san: 'e4', from: 'e2', to: 'e4', piece: 'p' },
+      halfMoveCount: 1,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+      opponentKey: 'c4-match-nysa',
+    })).toMatch(/Nysa frontier/)
+
+    expect(moveInsightFor({
+      move: { san: 'Nf3', from: 'g1', to: 'f3', piece: 'n' },
+      halfMoveCount: 3,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'duel',
+      opponentKey: 'cassian-paradox',
+    })).toMatch(/Cassian paradox/)
+  })
+
+  it('names fianchetto development as delayed ownership', () => {
+    expect(insight({ san: 'Bg2', from: 'f1', to: 'g2', piece: 'b' }, 3)).toMatch(/Fianchetto set/)
+    expect(moveInsightFor({
+      move: { san: 'Bg2', from: 'f1', to: 'g2', piece: 'b' },
+      halfMoveCount: 3,
+      materialAfterCp: 0,
+      playerColor: 'w',
+      mode: 'match',
+      opponentKey: 'c4-match-nysa',
+    })).toMatch(/Nysa frontier/)
   })
 
   it('adds duel-mode doctrine nudges when heuristics are quiet', () => {

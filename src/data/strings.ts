@@ -87,6 +87,13 @@ export const PLATEAU_PENDING_CH4_COPY = {
   lede: 'The Paradox Masters reflection is inscribed. Finish the Chapter IV rehearsal to claim the hypermodern seal, then the mastery plateau opens fully.',
 } as const
 
+/** Shown when Chapter III is sealed and Chapter IV is waiting, including migrated saves. */
+export const PARADOX_OPENED_COPY = {
+  heading: 'A new age is open',
+  lede: 'The Professor\'s Law is sealed. The Paradox Masters wait in the vestibule — refuse the center to own it later.',
+  enterCta: 'Enter the Paradox Masters',
+} as const
+
 export const ECHO_OUTCOME_LABELS = {
   win: 'Victory',
   loss: 'Defeat',
