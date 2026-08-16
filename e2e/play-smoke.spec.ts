@@ -171,6 +171,63 @@ test('Chapter III survivors are invited into the Paradox Masters', async ({ page
   await expect(page.locator('#narrative-body')).toContainText(/committee|Bactrian|school-flexible/i)
 })
 
+test('Chapter IV drills solve on the live board', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 4,
+      sceneIndex: 0,
+      highestUnlockedChapter: 4,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: ['alexion', 'kallistos'],
+      unlockedDuelVariantIds: ['alexion-mentor', 'kallistos-law'],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 130,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1220, peak: 1220, rated: 2 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn', { hasText: 'Chapter IV' }).click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter IV')
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Fianchetto|Bactrian Frontier/)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="f1"]')).toBeVisible()
+  await page.locator('[data-square="f1"]').click()
+  await page.locator('[data-square="g2"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/invoice|diagonal|knight/i)
+  await page.locator('[data-square="g2"]').click()
+  await page.locator('[data-square="d5"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await page.locator('[data-square="h3"]').click()
+  await page.locator('[data-square="c8"]').click()
+  await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Nysa|frontier/i)
+})
+
 test('seeded save unlocks Lukas in the duel archive and shows Chapter III', async ({ page }) => {
   await page.addInitScript(() => {
     const save = {
