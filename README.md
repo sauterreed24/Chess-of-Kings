@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.29)
+## What's new in this release (v0.5.30)
+
+**Pass 38 — Knight mane** — ivory and lapis knights get a carved mane crest so the hanging knight is not the flat leftover. See [`docs/PASS38_KNIGHT_MANE.md`](docs/PASS38_KNIGHT_MANE.md).
+
+## Previous release (v0.5.29)
 
 **Pass 37 — Foot ferrule** — ivory and lapis sit on a gold/lapis band above the foot, including knights. See [`docs/PASS37_FOOT_FERRULE.md`](docs/PASS37_FOOT_FERRULE.md).
 

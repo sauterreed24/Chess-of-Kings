@@ -57,6 +57,9 @@ const SHEEN_PATH: Record<PieceSymbol, string> = {
   k: 'M20.4 6.4h4.2v1.7h2.1v2.2h-2.1v2.4h-4.2v-2.4h-2.1V8.1h2.1z',
 }
 
+/** Crest shade on the horse — knights skip the lathe cup, so the mane carries the volume. */
+const MANE_PATH = 'M21.4 10.2c5.2 1.1 9.6 5.6 10.8 14.8-4-4.8-7.8-9.8-10.8-14.8z'
+
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
 const COLLAR_CY: Record<PieceSymbol, number> = {
   p: 31.8,
@@ -220,13 +223,19 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     ? `<ellipse class="piece-cup" cx="22.5" cy="${cupSpec.cy}" rx="${cupSpec.rx}" ry="${cupSpec.ry}" ` +
       `fill="${cupFill}" stroke="${cupStroke}" stroke-width="0.45"/>`
     : ''
+  const maneFill = color === 'w' ? 'rgba(62,32,10,0.3)' : 'rgba(0,4,12,0.42)'
+  const mane =
+    piece === 'n' ? `<path class="piece-mane" d="${MANE_PATH}" fill="${maneFill}"/>` : ''
   return svg
     .replace(
       /<svg([^>]*)>/,
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${highlight}</svg>`)
+    .replace(
+      '</svg>',
+      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${highlight}</svg>`,
+    )
 }
 
 export function glyphForSkin(

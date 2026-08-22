@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.30] — 2026-08-22
+
+Pass 38 — Knight mane:
+
+- **Ivory/lapis knights** get a carved mane crest so the hanging knight is not the flat leftover after the crown cup. Forced **Visual: Lean** keeps the mane.
+- Playwright asserts `.piece-mane` on hanging-knight d4 and title honor.
+- Docs: [`docs/PASS38_KNIGHT_MANE.md`](docs/PASS38_KNIGHT_MANE.md).
+
 ## [0.5.29] — 2026-08-22
 
 Pass 37 — Foot ferrule:
