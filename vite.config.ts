@@ -54,7 +54,7 @@ export default defineConfig(({ command }) => ({
              reclaims gzip headroom; they still load at boot in parallel
              via modulepreload. Keep these modules data-only so nothing
              runtime leaks into this chunk. */
-          if (/\/src\/data\/(chapters|roadmap|rivals)\.ts$/.test(id)) {
+          if (/\/src\/data\/(chapters|roadmap|rivals|matchAims)\.ts$/.test(id)) {
             return 'game-data'
           }
         },

@@ -677,6 +677,61 @@ describe('GameFlow depth systems', () => {
     expect(latest?.boardGuide).toContain('Save king: move, block, capture.')
   })
 
+  it('keeps Amara\'s opening aim when a pawn is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const matchIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.id === 'c1-match-amara')
+    expect(matchIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch1, matchIdx)
+
+    expect(latest?.boardGuide).toMatch(/Open the center/)
+    expect(latest?.boardGuide).toMatch(/Amara/)
+    expect(latest?.boardGuide).not.toMatch(/Targets glow/)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+
+    flow.board?.showLegalFrom(flow.chess, 'e2')
+
+    expect(latest?.boardGuide).toMatch(/Open the center/)
+    expect(latest?.boardGuide).not.toMatch(/e2 pawn selected/)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    root.remove()
+  })
+
+  it('keeps the Alexion duel aim when a pawn is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
+    expect(latest?.boardGuide).toMatch(/accountable/)
+    flow.board?.showLegalFrom(flow.chess, 'e2')
+    expect(latest?.boardGuide).toMatch(/accountable/)
+    expect(latest?.boardGuide).not.toMatch(/e2 pawn selected/)
+    expect(latest?.boardGuide).not.toMatch(/Targets glow/)
+    root.remove()
+  })
+
   it('flushDeferredIO flushes pending UI emit and does not throw', () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
