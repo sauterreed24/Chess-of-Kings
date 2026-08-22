@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test
+import { test, expect, type Page } from '@playwright/test'
 
 test('calibration board registers a pawn move from skip-ahead', async ({ page }) => {
   await page.goto('./')
