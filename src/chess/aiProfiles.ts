@@ -226,6 +226,38 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.64, positional: 0.96, sacrificial: 0.3, prophylactic: 0.86 },
     motifBias: { fork: 0.48, pin: 0.86, skewer: 0.68, kingHunt: 0.34 },
   },
+  gage_discipline: {
+    id: 'gage_discipline',
+    label: 'Gage Discipline Pause',
+    style: 'soviet',
+    searchDepth: 4,
+    thinkTimeMs: 1180,
+    blunderRate: 0.04,
+    riskAppetite: 0.2,
+    tacticalAlertness: 0.78,
+    openingDiscipline: 0.94,
+    kingSafetyUrgency: 0.94,
+    conversionStrictness: 0.86,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.5, positional: 0.97, sacrificial: 0.16, prophylactic: 0.99 },
+    motifBias: { fork: 0.4, pin: 0.9, skewer: 0.66, kingHunt: 0.24 },
+  },
+  helia_machine: {
+    id: 'helia_machine',
+    label: 'Helia Conversion Machine',
+    style: 'soviet',
+    searchDepth: 4,
+    thinkTimeMs: 1320,
+    blunderRate: 0.032,
+    riskAppetite: 0.22,
+    tacticalAlertness: 0.86,
+    openingDiscipline: 0.9,
+    kingSafetyUrgency: 0.88,
+    conversionStrictness: 0.97,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.62, positional: 0.96, sacrificial: 0.2, prophylactic: 0.92 },
+    motifBias: { fork: 0.46, pin: 0.92, skewer: 0.74, kingHunt: 0.3 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -248,6 +280,8 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('kallistos')) return AI_PROFILES.kallistos_classical
   if (matchId.includes('nysa')) return AI_PROFILES.nysa_frontier
   if (matchId.includes('cassian')) return AI_PROFILES.cassian_paradox
+  if (matchId.includes('gage')) return AI_PROFILES.gage_discipline
+  if (matchId.includes('helia')) return AI_PROFILES.helia_machine
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
   return AI_PROFILES.apprentice_court
@@ -263,6 +297,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('kallistos')) return AI_PROFILES.kallistos_classical
   if (variantId.includes('nysa')) return AI_PROFILES.nysa_frontier
   if (variantId.includes('cassian')) return AI_PROFILES.cassian_paradox
+  if (variantId.includes('gage')) return AI_PROFILES.gage_discipline
+  if (variantId.includes('helia')) return AI_PROFILES.helia_machine
   return AI_PROFILES.apprentice_court
 }
 

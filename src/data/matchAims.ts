@@ -17,6 +17,8 @@ export const MATCH_AIM_BY_SCENE_ID: Record<string, string> = {
   'c3-match-kallistos': 'Name your break; do not gift Kallistos a weak square.',
   'c4-match-nysa': 'Occupy only what you can defend twice.',
   'c4-match-cassian': 'Hold the center; contest the long diagonal.',
+  'c5-match-gage': 'Castle; refuse the square Gage wants named.',
+  'c5-match-helia': 'Cash what you win; do not donate counterplay.',
 }
 
 export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
@@ -30,6 +32,8 @@ export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
   kallistos: MATCH_AIM_BY_SCENE_ID['c3-match-kallistos']!,
   nysa: MATCH_AIM_BY_SCENE_ID['c4-match-nysa']!,
   cassian: MATCH_AIM_BY_SCENE_ID['c4-match-cassian']!,
+  gage: MATCH_AIM_BY_SCENE_ID['c5-match-gage']!,
+  helia: MATCH_AIM_BY_SCENE_ID['c5-match-helia']!,
 }
 
 export function matchAimForSceneId(sceneId: string): string {

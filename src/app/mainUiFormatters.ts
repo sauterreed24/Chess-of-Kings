@@ -28,6 +28,10 @@ const SPEAKER_META: Record<string, SpeakerMeta> = {
   marius: { label: 'Marius', sigil: 'MA', voice: 'scholar', cadenceMs: 9 },
   demetrios: { label: 'Demetrios', sigil: 'DE', voice: 'scholar', cadenceMs: 9 },
   kallistos: { label: 'Kallistos', sigil: 'KA', voice: 'scholar', cadenceMs: 9 },
+  nysa: { label: 'Nysa', sigil: 'NY', voice: 'rival', cadenceMs: 8 },
+  cassian: { label: 'Cassian', sigil: 'CA', voice: 'rival', cadenceMs: 9 },
+  gage: { label: 'Gage', sigil: 'GA', voice: 'scholar', cadenceMs: 9 },
+  helia: { label: 'Helia', sigil: 'HE', voice: 'rival', cadenceMs: 8 },
   rowan: { label: 'Rowan Vale', sigil: 'RO', voice: 'fire', cadenceMs: 7 },
   vega: { label: 'Vega Sorn', sigil: 'VE', voice: 'rival', cadenceMs: 8 },
 }

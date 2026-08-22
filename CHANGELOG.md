@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.60] — 2026-08-22
+
+Pass 68 — Chapter V playable:
+
+- **Chapter V — The Machine of Discipline** is playable: discipline-college lore, Gage + Helia matches with prophylactic/conversion scripts, luft / hanging-queen / opposition drills, and a seal that moves the mastery plateau forward.
+- **Successor unlock backfill** opens Chapter V for chronicles that sealed Chapter IV when it was the last compiled age.
+- Hub copy: Chapter IV survivors are invited into the Machine; the mastery plateau now keys off Chapter V freeplay.
+- Theme reuses `theme-classical` (CSS gzip locked). Docs: [`docs/PASS68_CHAPTER_V.md`](docs/PASS68_CHAPTER_V.md).
+
 ## [0.5.59] — 2026-08-22
 
 Pass 67 — Square lamp facets:

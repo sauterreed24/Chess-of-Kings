@@ -210,7 +210,7 @@ export class GameFlow {
     return this.completedSceneIds.includes('c3-reflection')
   }
 
-  /** True once Chapter IV freeplay is recorded — matches campaign-finish rewards. */
+  /** True once Chapter IV freeplay is recorded. */
   get chapter4Complete(): boolean {
     return this.completedSceneIds.includes('c4-freeplay')
   }
@@ -218,6 +218,16 @@ export class GameFlow {
   /** Chapter IV reflection sealed but freeplay / clear rewards may still be pending. */
   get chapter4ReflectionComplete(): boolean {
     return this.completedSceneIds.includes('c4-reflection')
+  }
+
+  /** True once Chapter V freeplay is recorded — matches campaign-finish rewards. */
+  get chapter5Complete(): boolean {
+    return this.completedSceneIds.includes('c5-freeplay')
+  }
+
+  /** Chapter V reflection sealed but freeplay / clear rewards may still be pending. */
+  get chapter5ReflectionComplete(): boolean {
+    return this.completedSceneIds.includes('c5-reflection')
   }
   get completedSceneIds(): string[] {
     return this.campaign.progress.completedSceneIds

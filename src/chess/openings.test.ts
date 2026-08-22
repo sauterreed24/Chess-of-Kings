@@ -47,6 +47,8 @@ describe('opening books', () => {
     const cassian = getBookTopLines('cassian_paradox', 9)
     expect(cassian.map((line) => line.san)).toContain('Nf6')
     expect(getBookTopLines('kallistos_classical', 7).map((line) => line.san)).toContain('Be7')
+    expect(getBookTopLines('gage_discipline', 9).map((line) => line.san)).toContain('d6')
+    expect(getBookTopLines('helia_machine', 9).map((line) => line.san)).toContain('e6')
 
     const rowan = getBookTopLines('rowan_gambit', 9)
     const vega = getBookTopLines('vega_italian', 9)

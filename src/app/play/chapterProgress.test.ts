@@ -27,6 +27,7 @@ describe('chapterProgress', () => {
     expect(html).toContain('doctrine-atlas')
     expect(html).toContain('Lens')
     expect(html).toContain('Paradox')
+    expect(html).toContain('Machine')
   })
 
   it('marks sealed, current, and locked ages along the succession', () => {

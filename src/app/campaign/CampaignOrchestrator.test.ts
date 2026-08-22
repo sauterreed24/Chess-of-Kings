@@ -90,7 +90,7 @@ describe('CampaignOrchestrator', () => {
     }
   })
 
-  it('grants Chapter IV clear rewards when the final chapter seals', () => {
+  it('opens Chapter V when Chapter IV seals', () => {
     const ch4Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch4')
     expect(ch4Index).toBeGreaterThanOrEqual(0)
     const ch4 = PLAYABLE_CHAPTERS[ch4Index]!
@@ -107,10 +107,35 @@ describe('CampaignOrchestrator', () => {
     const result = campaign.advanceAfterLeaving(last)
     expect(result.kind).toBe('chapter-complete')
     if (result.kind === 'chapter-complete') {
-      expect(result.campaignFinished).toBe(true)
+      expect(result.campaignFinished).toBeFalsy()
       expect(result.chapter.id).toBe('ch4')
       expect(result.rewards.some((r) => r.id === 'rw-title-hypermodern-seal')).toBe(true)
-      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch4')).toBe(true)
+      expect(campaign.progress.chapterIndex).toBe(ch4Index + 1)
+      expect(PLAYABLE_CHAPTERS[campaign.progress.chapterIndex]?.id).toBe('ch5')
+    }
+  })
+
+  it('grants Chapter V clear rewards when the final chapter seals', () => {
+    const ch5Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch5')
+    expect(ch5Index).toBeGreaterThanOrEqual(0)
+    const ch5 = PLAYABLE_CHAPTERS[ch5Index]!
+    const campaign = new CampaignOrchestrator(PLAYABLE_CHAPTERS, {
+      ...defaultCampaignProgress(),
+      chapterIndex: ch5Index,
+      sceneIndex: ch5.scenes.length - 1,
+      highestUnlockedChapter: ch5Index,
+      chapter1Complete: true,
+      chapter2Complete: true,
+    })
+    const last = campaign.currentScene()
+    expect(last.id).toBe('c5-freeplay')
+    const result = campaign.advanceAfterLeaving(last)
+    expect(result.kind).toBe('chapter-complete')
+    if (result.kind === 'chapter-complete') {
+      expect(result.campaignFinished).toBe(true)
+      expect(result.chapter.id).toBe('ch5')
+      expect(result.rewards.some((r) => r.id === 'rw-title-discipline-seal')).toBe(true)
+      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch5')).toBe(true)
     }
   })
 
@@ -162,6 +187,47 @@ describe('CampaignOrchestrator', () => {
     }
     backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
     expect(progress.highestUnlockedChapter).toBe(3)
+  })
+
+  it('unlocks Chapter V for chronicles that sealed Chapter IV before the discipline age existed', () => {
+    const ch5Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch5')
+    expect(ch5Index).toBeGreaterThanOrEqual(0)
+    const campaign = CampaignOrchestrator.hydrateFromSave(PLAYABLE_CHAPTERS, {
+      version: 3,
+      chapterIndex: 4,
+      sceneIndex: 0,
+      highestUnlockedChapter: 4,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c4-reflection', 'c4-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: [],
+      unlockedDuelVariantIds: [],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 0,
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: defaultLadderRating(),
+      inProgress: null,
+    })
+    expect(campaign.progress.highestUnlockedChapter).toBe(ch5Index)
+    expect(campaign.canJumpToChapter(ch5Index)).toBe(true)
+  })
+
+  it('does not invent a machine unlock from an unfinished paradox chapter', () => {
+    const progress = {
+      ...defaultCampaignProgress(),
+      highestUnlockedChapter: 4,
+      completedSceneIds: ['c4-intro'],
+    }
+    backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
+    expect(progress.highestUnlockedChapter).toBe(4)
   })
 
   it('gates chapter jumps by highest unlocked chapter', () => {

@@ -1,11 +1,12 @@
 import type { Chapter } from '../types'
 
 /**
- * Playable campaign: Prologue + Chapters I–IV.
+ * Playable campaign: Prologue + Chapters I–V.
  * Chapter I: six-rung ladder (Initiate → … → Counterpart).
  * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
  * Chapter III: compact Classical arc — Demetrios return + Kallistos + rehearsal.
  * Chapter IV: Hypermodern / Paradox Masters — Nysa + Cassian + rehearsal.
+ * Chapter V: Discipline colleges — Gage + Helia + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -1838,11 +1839,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'cassian',
-            text: 'Remember the geometry. Later machines will calculate faster than your fear — but they still punish overextension.',
+            text: 'Remember the geometry. Later machines will calculate faster than your fear — but they still punish overextension. The next door teaches how to wait without becoming furniture.',
           },
           {
             speaker: 'narrator',
-            text: 'Chapter IV is sealed. Upstairs, the brief is rewritten: Reed is no longer only a control specimen. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, Soviet steel and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+            text: 'Chapter IV is sealed. Upstairs, the brief is rewritten: Reed is no longer only a control specimen. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Machine of Discipline waits — prophylaxis, luft, and the long squeeze. The chronicle has another age to inscribe.',
           },
         ],
       },
@@ -1865,6 +1866,342 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Hypermodern skill is recognizing when the opponent\'s center is a trophy and when it is a liability.',
           concept: 'Paradox becomes instinct only through quiet repetition.',
+        },
+      },
+    ],
+  },
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER V — The Machine of Discipline (compact ladder)
+     Prophylaxis, luft, conversion. Gage + Helia.
+     Reuses theme-classical (CSS gzip locked).
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch5',
+    index: 5,
+    title: 'Chapter V',
+    subtitle: 'The Machine of Discipline',
+    era: 'Discipline colleges — prophylaxis, luft, and the long squeeze',
+    themeClass: 'theme-classical',
+    philosophy:
+      'A pause is not fear. Make luft before the back rank names you, convert what you won, and refuse to gift the opponent a square.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c5-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'Paradox meets the pause',
+          body: 'Frontier geometry taught Reed to refuse empty flags. The discipline colleges ask whether he can wait without becoming furniture — and whether a winning file is a fact or a rumor.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The chamber does not brighten. Files arrive already indexed: luft, conversion, the long squeeze. No caravan roads this time. Desks. Clocks. A doctrine that treats inspiration as a leak in the hull.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'They filed you as school-flexible, then as paradox-capable. That is not a medal. It is a warrant to test whether you can stop an idea one square before it earns a name.',
+          },
+          {
+            speaker: 'cassian',
+            text: 'I asked whether your center could survive its own ambition. Gage will ask whether you gift squares. Helia will ask whether you cash what you win. Neither is a villain. Drought taught their colleges that drama spends water.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So I wait?',
+          },
+          {
+            speaker: 'kallistos',
+            text: 'You refuse the gift. The Professor\'s Law still holds. The machine is only the habit of applying it before the opponent notices the hole.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c5-codex-discipline',
+        heading: 'Discipline doctrine — prophylaxis, luft, conversion, squeeze',
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'Stop the square, then cash the file',
+          body: 'Northern archive colleges under the Long Reign treat patience as civic infrastructure: make an escape square, convert a won piece, and squeeze without needing a speech.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'Prophylaxis',
+            body: 'Prevent the opponent\'s idea before it is born. The cheapest tactic is the square you refuse to gift — a pause with a reason, not a freeze.',
+          },
+          {
+            term: 'Luft',
+            body: 'An air hole for the king. A quiet pawn step that makes back-rank mates illegal. Discipline begins by surviving the cheap shot you should have seen.',
+          },
+          {
+            term: 'Conversion',
+            body: 'A hanging piece or a won endgame is only a rumor until you take it. Advantage that stays on the board as courtesy is how wins become draws.',
+          },
+          {
+            term: 'Long squeeze',
+            body: 'Technical pressure without a sacrifice speech. Restrict, improve, and let the opponent run out of useful squares. The machine is slow on purpose.',
+          },
+          {
+            term: 'Discipline colleges',
+            body: 'Steppe and river-city archives that survived drought by treating chess as logistics: no wasted tempi, no romantic leaks. Gage files pauses. Helia files conversion. The Long Reign made both civic law, not a provincial temper.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c5-puzzle-luft',
+        title: 'Puzzle — make luft',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The back rank wants a name',
+          body: 'Discipline begins with a quiet pawn. Give the king an air hole before the e-file rook writes a verdict.',
+          tone: 'pressure',
+        },
+        fen: '4r1k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'pieceOn', square: 'h3', color: 'w', pieceType: 'p' },
+        lesson:
+          'h3 is not decoration. It is luft — the king can step up if the back rank ever opens.',
+        teaching: {
+          threat: 'If you shuffle without making air, the e-file contest can name you on the back rank.',
+          goalPlain: 'Make luft — push the h-pawn to h3.',
+          whyItWorks:
+            'A flight square costs one quiet tempo and cancels a whole class of mates. Prophylaxis is cheapest when it looks like nothing.',
+          concept: 'Luft before drama.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c5-puzzle-conversion',
+        title: 'Puzzle — cash the hanging queen',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'Advantage is a rumor until taken',
+          body: 'A queen sitting undefended is not a guest. Conversion is the habit of taking what the file already granted.',
+          tone: 'pressure',
+        },
+        fen: '6k1/5ppp/8/3q4/8/8/5PPP/3Q2K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'advantage', minCp: 250 },
+        lesson:
+          'Black\'s queen sat on d5 as if courtesy were a rule. Qxd5 is the machine\'s favorite receipt.',
+        teaching: {
+          threat: 'If you ignore the hanging queen, the conversion lecture stays a lecture.',
+          goalPlain: 'Win the hanging queen on d5.',
+          whyItWorks:
+            'Discipline does not wait for a prettier tactic. A free piece is the squeeze beginning, not a plot twist.',
+          concept: 'Convert what you already won.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c5-puzzle-squeeze',
+        title: 'Puzzle — convert the opposition',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The long squeeze finishes quiet',
+          body: 'King opposition plus a rook file is not a speech. It is a door closing. Convert it.',
+          tone: 'fire',
+        },
+        fen: '4k3/8/4K3/8/8/8/8/R7 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'The kings face each other. The rook owns the back rank. One file move ends the rumor.',
+        teaching: {
+          threat: 'If you check from the side instead of sealing the rank, the king wriggles and the squeeze leaks.',
+          goalPlain: 'Deliver checkmate with the rook on the back rank.',
+          whyItWorks:
+            'Ra8# uses opposition: the black king cannot step forward, and the rook owns every flight square on the eighth.',
+          concept: 'Conversion can still mate.',
+        },
+      },
+      {
+        type: 'dialogue',
+        id: 'c5-after-puzzles',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'Habits before the pause',
+          body: 'Reed has luft, capture, and opposition. Gage will ask whether he can refuse a square before it becomes a threat with a name.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'Good. You can make air, you can cash a piece, and you can close a file. Now survive someone who wants you to gift a square.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Gage — the pause examiner?',
+          },
+          {
+            speaker: 'alexion',
+            text: 'He learned the board in river-city drill halls, not on marble. He will leave a hole in your camp like a dare, then ask why you filled it too late.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c5-before-gage',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The pause',
+          body: 'Gage thrives when you attack a square that was never the idea. Refuse the gift, or become the example in his dossier.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'gage',
+            text: 'A pause is not fear. It is a refusal to gift the opponent a name. Begin.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if the name is already on the board?',
+          },
+          {
+            speaker: 'gage',
+            text: 'Then you stop the square it wanted next. That is the whole machine.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c5-match-gage',
+        title: 'Encounter 1 of 2 — The Pause',
+        opponentName: 'Gage',
+        opponentNote:
+          'Discipline examiner — quiet structures, prophylactic pauses, and luft before drama. Do not gift a square that names his plan.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Do not gift the next square',
+          body: 'Gage wins when your attack arrives one tempo after his idea is already illegal. Develop, castle, and ask which hole you are about to donate.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'soviet',
+        scriptedBlackSans: ['d6', 'Nf6', 'Be7', 'O-O', 'h6'],
+        ladderTier: 'veteran',
+        difficulty: 3,
+      },
+      {
+        type: 'dialogue',
+        id: 'c5-after-gage',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'The pause is filed',
+          body: 'Surviving Gage feels less like a charge and more like refusing a bad gift.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'gage',
+            text: 'You treated squares like a ledger. The colleges notice.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'One more rung. Helia is conversion with patience — a won file as law, not as a rumor.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c5-before-helia',
+        storyBeat: {
+          label: 'Boss pressure',
+          title: 'The converter',
+          body: 'Helia does not need a sacrifice speech. If you leave a hanging advantage on the table, she will cash it and call it weather.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'helia',
+            text: 'Advantage that is not converted is a rumor. Make it a fact.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if the conversion is ugly?',
+          },
+          {
+            speaker: 'helia',
+            text: 'Ugly facts still feed cities in a drought. Pretty rumors do not. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c5-match-helia',
+        title: 'Encounter 2 of 2 — The Converter',
+        opponentName: 'Helia',
+        opponentNote:
+          'Conversion specialist — French and queen-pawn squeezes, technical endgames, and no courtesy toward hanging pieces. Cash what you win.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Cash the file',
+          body: 'Helia is strongest when you treat a won piece as atmosphere. Name the conversion, simplify when ahead, and do not donate counterplay.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'soviet',
+        scriptedBlackSans: ['e6', 'd5', 'Nf6', 'Be7', 'O-O'],
+        ladderTier: 'boss',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c5-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Discipline after paradox',
+          body: 'The machine does not erase frontier geometry — it decides when a pause is law and when a won file is still a rumor.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You learned to refuse gifts and to cash facts. That is the Machine of Discipline\'s seal: patience with a receipt.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Gage asked which square I was about to donate. Helia asked whether my advantage was a fact.',
+          },
+          {
+            speaker: 'kallistos',
+            text: 'You kept the habit. The committee will have to amend the file again.',
+          },
+          {
+            speaker: 'helia',
+            text: 'Remember the conversion. Later engines will calculate faster than your fear — but they still punish courtesy toward hanging pieces.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter V is sealed. Upstairs, the brief is rewritten again: Reed can wait without becoming furniture. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, silicon thresholds and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c5-freeplay',
+        title: 'Free board — Discipline rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice the pause and the cash',
+          body: 'Rehearse luft, quiet refusals, and technical conversion until discipline feels as natural as a capture.',
+          tone: 'quiet',
+        },
+        lesson:
+          'Set up a simple structure and alternate sides. Practice making luft, stopping a plan one square early, and converting a won piece without a speech.',
+        teaching: {
+          threat: 'None — this is a sandbox after the discipline ladder.',
+          goalPlain:
+            'Rehearse prophylaxis and conversion without a story timer. Return to the vestibule when finished.',
+          whyItWorks:
+            'Discipline is recognizing the opponent\'s idea early enough to veto it cheaply, then cashing what the veto won.',
+          concept: 'The machine becomes instinct only through quiet repetition.',
         },
       },
     ],

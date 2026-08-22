@@ -52,6 +52,43 @@ describe('campaign story beats', () => {
     }
   })
 
+  it('authors Chapter V as a playable Machine of Discipline arc', () => {
+    const ch5 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch5')
+    expect(ch5).toBeTruthy()
+    expect(ch5?.subtitle).toMatch(/Machine of Discipline/)
+    expect(ch5?.themeClass).toBe('theme-classical')
+    const matches = ch5?.scenes.filter((scene) => scene.type === 'match') ?? []
+    expect(matches.map((scene) => scene.id)).toEqual(['c5-match-gage', 'c5-match-helia'])
+    expect(matches.every((scene) => scene.type === 'match' && scene.aiStyle === 'soviet')).toBe(true)
+    const gage = matches.find((scene) => scene.id === 'c5-match-gage')
+    const helia = matches.find((scene) => scene.id === 'c5-match-helia')
+    expect(gage?.type === 'match' && gage.scriptedBlackSans?.[0]).toBe('d6')
+    expect(helia?.type === 'match' && helia.scriptedBlackSans?.[0]).toBe('e6')
+    const puzzles = ch5?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
+    expect(puzzles.map((scene) => scene.id)).toEqual(
+      expect.arrayContaining(['c5-puzzle-luft', 'c5-puzzle-conversion', 'c5-puzzle-squeeze']),
+    )
+    const intro = ch5?.scenes.find((scene) => scene.id === 'c5-intro')
+    const codex = ch5?.scenes.find((scene) => scene.id === 'c5-codex-discipline')
+    const reflection = ch5?.scenes.find((scene) => scene.id === 'c5-reflection')
+    expect(intro?.type).toBe('dialogue')
+    expect(codex?.type).toBe('codex')
+    expect(reflection?.type).toBe('dialogue')
+    if (intro?.type === 'dialogue') {
+      const spoken = intro.lines.map((line) => line.text).join(' ')
+      expect(spoken).toContain('Gage')
+      expect(spoken).toContain('Helia')
+      expect(intro.lines.some((line) => line.speaker === 'cassian')).toBe(true)
+    }
+    if (codex?.type === 'codex') {
+      expect(codex.entries.map((entry) => entry.term)).toContain('Discipline colleges')
+      expect(codex.entries.map((entry) => entry.term)).toContain('Luft')
+    }
+    if (reflection?.type === 'dialogue') {
+      expect(reflection.lines.map((line) => line.text).join(' ')).toContain('amend the file again')
+    }
+  })
+
   it('anchors the Prologue in the Long Reign modern commonwealth', () => {
     const prologue = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'prologue')
     const codex = prologue?.scenes.find((scene) => scene.id === 'pr-codex-long-reign')
