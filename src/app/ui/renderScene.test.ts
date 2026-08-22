@@ -281,6 +281,7 @@ describe('renderScene', () => {
     })
     expect(play.showEvalBar).toBe(false)
     expect(dom.evalBarWrap.classList.contains('hidden')).toBe(true)
+    expect(dom.evalBarWrap.style.width).toBe('')
 
     const freeIdx = PLAYABLE_CHAPTERS[1]!.scenes.findIndex((scene) => scene.type === 'freeplay')
     const freeChapter = freeIdx >= 0 ? PLAYABLE_CHAPTERS[1]! : PLAYABLE_CHAPTERS.find((ch) => ch.scenes.some((s) => s.type === 'freeplay'))!
@@ -295,6 +296,8 @@ describe('renderScene', () => {
     })
     expect(play.showEvalBar).toBe(true)
     expect(dom.evalBarWrap.classList.contains('hidden')).toBe(false)
+    expect(dom.evalBarWrap.style.width).toBe('18px')
+    expect(dom.evalBarScore.style.fontSize).toBe('0.78rem')
     expect(dom.capturedTop.classList.contains('hidden')).toBe(false)
   })
 

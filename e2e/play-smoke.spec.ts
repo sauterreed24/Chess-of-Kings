@@ -3372,6 +3372,22 @@ test('duel archive setup stays 44px on the phone instrument', { timeout: 120_000
   }
 })
 
+test('eval bar stays readable on the phone instrument', { timeout: 90_000 }, async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-enter-archive').click({ timeout: 15_000 })
+  await page.locator('#btn-duel').click()
+  await page.locator('.duel-row').first().click()
+  await page.locator('#btn-start-duel').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#eval-bar-wrap')).toBeVisible()
+  expect(await page.locator('#eval-bar-wrap').evaluate((el) => (el as HTMLElement).style.width)).toBe('18px')
+  expect(await page.locator('#eval-bar-score').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.78rem')
+  const barBox = await page.locator('#eval-bar-wrap').boundingBox()
+  expect(barBox).toBeTruthy()
+  expect(barBox!.width).toBeGreaterThanOrEqual(16)
+})
+
 test('starting a duel registers e2-e4 and an archive reply', { timeout: 90_000 }, async ({ page }) => {
   await page.goto('./')
   await page.locator('#btn-enter-archive').click({ timeout: 15_000 })

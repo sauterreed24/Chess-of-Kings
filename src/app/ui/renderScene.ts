@@ -13,6 +13,7 @@ import {
   teachingBlock,
   tierLabel,
   showsEvalHud,
+  syncEvalBarScale,
 } from '../mainUiFormatters'
 import { buildChapterRail, buildLadderTrack } from '../play/chapterRail'
 import { prosePeekSkipIndex } from '../play/skipAhead'
@@ -113,6 +114,7 @@ export function renderScene(
   /* Hide eval bar and captured rows outside rated / rehearsal boards */
   play.showEvalBar = showsEvalHud(scene.type)
   dom.evalBarWrap.classList.toggle('hidden', !play.showEvalBar)
+  syncEvalBarScale(dom.evalBarWrap, dom.evalBarScore, play.showEvalBar)
   dom.capturedTop.classList.toggle('hidden', !play.showEvalBar)
   dom.capturedBot.classList.toggle('hidden', !play.showEvalBar)
   if (!play.showEvalBar) {

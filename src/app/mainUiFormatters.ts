@@ -379,6 +379,26 @@ export function showsEvalHud(sceneType: Scene['type']): boolean {
   return sceneType === 'match' || sceneType === 'freeplay'
 }
 
+/** Rotated score must fit the tray; 8px + 0.38rem collapses on phone. */
+export const EVAL_BAR_WIDTH = '18px'
+export const EVAL_BAR_SCORE_SIZE = '0.78rem'
+export const EVAL_BAR_SCORE_COLOR = 'rgba(246,240,226,0.88)'
+
+export function syncEvalBarScale(
+  wrap: HTMLElement | null | undefined,
+  score: HTMLElement | null | undefined,
+  visible: boolean,
+): void {
+  if (wrap) {
+    wrap.style.width = visible ? EVAL_BAR_WIDTH : ''
+    wrap.style.flexShrink = visible ? '0' : ''
+  }
+  if (score) {
+    score.style.fontSize = visible ? EVAL_BAR_SCORE_SIZE : ''
+    score.style.color = visible ? EVAL_BAR_SCORE_COLOR : ''
+  }
+}
+
 export function capturedRow(
   types: string[],
   color: Color,
