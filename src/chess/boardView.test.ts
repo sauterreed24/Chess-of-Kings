@@ -223,6 +223,34 @@ describe('BoardView keyboard navigation', () => {
   })
 })
 
+describe('BoardView square facets', () => {
+  it('carves a lamp facet on every square and keeps it after a redraw', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+    })
+    const chess = new Chess()
+    view.draw(chess, null, { mode: 'free' })
+    expect(root.querySelectorAll('.sq-facet')).toHaveLength(64)
+    const lightLamp = root.querySelector('.sq-light .sq-facet-lamp')?.getAttribute('fill')
+    const darkLamp = root.querySelector('.sq-dark .sq-facet-lamp')?.getAttribute('fill')
+    expect(lightLamp).toBeTruthy()
+    expect(darkLamp).toBeTruthy()
+    expect(lightLamp).not.toBe(darkLamp)
+    const last = chess.move({ from: 'e2', to: 'e4' })!
+    view.draw(chess, last, { mode: 'free' })
+    expect(root.querySelectorAll('.sq-facet')).toHaveLength(64)
+    expect(root.querySelector('[data-square="e4"] .sq-facet')).toBeTruthy()
+    expect(root.querySelector('[data-square="e4"] .piece')).toBeTruthy()
+    expect(root.querySelector('[data-square="e2"] .sq-facet')).toBeTruthy()
+    expect(root.querySelector('[data-square="e2"] .piece')).toBeNull()
+    root.remove()
+  })
+})
+
 describe('BoardView promotion picker keyboard', () => {
   /** Position with White to play b7-b8=?, sets up the promotion picker via clickSquare. */
   const PROMO_FEN = '4k3/1P6/8/8/8/8/8/4K3 w - - 0 1'

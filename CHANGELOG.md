@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.59] — 2026-08-22
+
+Pass 67 — Square lamp facets:
+
+- **Every marble/lapis square** gets a carved lamp and shade ellipse so the board reads as turned stone instead of a pillow balloon. The CSS corner blob on `.sq::before` is removed (no CSS budget growth).
+- Playwright asserts 64 facets on calibration, including occupied e2 and empty e4.
+- Docs: [`docs/PASS67_SQUARE_FACET.md`](docs/PASS67_SQUARE_FACET.md).
+
 ## [0.5.58] — 2026-08-22
 
 Pass 66 — Queen coronet cup:
