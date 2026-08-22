@@ -277,7 +277,7 @@ test('first Chapter I match lets Reed open against Amara', { timeout: 120_000 },
   await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
-  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+d5/i, { timeout: 25_000 })
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+\S+/, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
 })
 

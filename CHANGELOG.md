@@ -15,7 +15,7 @@ level (the save format has its own version field — see
 
 Pass 24 — First live match:
 
-- Playwright walks Chapter I teaching through hanging knight, castle, and mate, then opens **Amara** on a full 32-piece lamp-lit board and plays `1. e4 d5`.
+- Playwright walks Chapter I teaching through hanging knight, castle, and mate, then opens **Amara** on a full 32-piece lamp-lit board and plays `1. e4` against a live reply.
 - Docs: [`docs/PASS24_FIRST_MATCH.md`](docs/PASS24_FIRST_MATCH.md).
 
 ## [0.5.15] — 2026-08-22
