@@ -87,15 +87,22 @@ export function teachingBlock(teaching: NonNullable<PuzzleScene['teaching']>) {
         <span class="teach-label">Your goal</span>
         <p class="teach-body">${escapeHtml(teaching.goalPlain)}</p>
       </div>
-      <div class="teaching-card">
-        <span class="teach-label">Why it works</span>
-        <p class="teach-body">${escapeHtml(teaching.whyItWorks)}</p>
+    </div>
+    <details class="dossier-fold teaching-more">
+      <summary class="dossier-fold__summary">Why it works · Concept</summary>
+      <div class="dossier-fold__body">
+        <div class="teaching">
+          <div class="teaching-card">
+            <span class="teach-label">Why it works</span>
+            <p class="teach-body">${escapeHtml(teaching.whyItWorks)}</p>
+          </div>
+          <div class="teaching-card">
+            <span class="teach-label">Concept</span>
+            <p class="teach-body">${escapeHtml(teaching.concept)}</p>
+          </div>
+        </div>
       </div>
-      <div class="teaching-card">
-        <span class="teach-label">Concept</span>
-        <p class="teach-body">${escapeHtml(teaching.concept)}</p>
-      </div>
-    </div>`
+    </details>`
 }
 
 export function storyBeatBlock(storyBeat: StoryBeat | undefined): string {

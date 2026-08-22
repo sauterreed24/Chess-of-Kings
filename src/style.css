@@ -3397,10 +3397,6 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
 
   .instrument-frame { padding: 0.75rem 0.75rem 1rem; }
 
-  .teaching {
-    grid-template-columns: 1fr;
-  }
-
   .board-brass { padding: 7px; }
   .board-guide { display: none; }
   .dossier-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3430,10 +3426,6 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
   .btn-advance-label { font-size: 0.62rem; }
 }
 
-@media (min-width: 700px) {
-  /* Teaching cards side-by-side on wider screens */
-  .teaching { grid-template-columns: 1fr 1fr; }
-}
 
 /* ═══════════════════════════════
    MAX PASS — UI DEPTH + PERFORMANCE PROFILE

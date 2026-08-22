@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.5)
+## What's new in this release (v0.5.6)
+
+**Pass 14 — Teaching clarity** — Threat and Your goal stay fully readable on the live lab; the deeper brief folds away. See [`docs/PASS14_TEACHING_CLARITY.md`](docs/PASS14_TEACHING_CLARITY.md).
+
+## Previous release (v0.5.5)
 
 **Pass 13 — Carved piece presence** — ivory/lapis glyphs get a foot shadow and crown sheen, and Playwright finishes the four-move calibration prove. See [`docs/PASS13_CARVED_PIECES.md`](docs/PASS13_CARVED_PIECES.md).
 

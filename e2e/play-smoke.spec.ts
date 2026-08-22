@@ -71,6 +71,26 @@ test('calibration prove completes after four developing white moves', async ({ p
   await expect(page.locator('.calibration-rail__label')).toContainText('4 / 4')
 })
 
+test('calibration teaching keeps the goal fully readable', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await page.locator('#btn-skip-ahead').click()
+  const goal = page.locator('.teaching-card').filter({ hasText: 'Your goal' })
+  await expect(goal).toContainText('Complete four moves as White')
+  await expect(goal).toContainText('the Lab is watching every choice')
+  const goalBox = await goal.boundingBox()
+  const bodyBox = await page.locator('#narrative-body').boundingBox()
+  expect(goalBox).toBeTruthy()
+  expect(bodyBox).toBeTruthy()
+  expect(goalBox!.y + goalBox!.height).toBeLessThanOrEqual(bodyBox!.y + bodyBox!.height + 2)
+  await expect(page.locator('.teaching-more')).not.toHaveAttribute('open')
+  await page.locator('.teaching-more > summary').click()
+  await expect(page.locator('.teaching-more')).toContainText('Every move should have a reason')
+})
+
 test('compact calibration stacks the board above the manuscript', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
