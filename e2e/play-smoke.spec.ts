@@ -223,6 +223,52 @@ function seedChapterIAfterAmara() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+/** Mid-age Chapter I save: after Lukas, parked on `c1-before-edred` (scene 13). */
+function seedChapterIAfterLukas() {
+  const save = {
+    version: 3,
+    chapterIndex: 1,
+    sceneIndex: 13,
+    highestUnlockedChapter: 1,
+    lastScreen: 'title',
+    chapter1Complete: false,
+    chapter2Complete: false,
+    completedSceneIds: [
+      'c1-intro',
+      'c1-codex-principles',
+      'c1-tutorial-hanging',
+      'c1-after-hanging',
+      'c1-tutorial-castle',
+      'c1-after-castle',
+      'c1-puzzle-mate',
+      'c1-before-amara',
+      'c1-match-amara',
+      'c1-after-amara',
+      'c1-before-lukas',
+      'c1-match-lukas',
+      'c1-after-lukas',
+    ],
+    completedPuzzleIds: ['c1-tutorial-hanging', 'c1-tutorial-castle', 'c1-puzzle-mate'],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion', 'amara', 'lukas'],
+    unlockedDuelVariantIds: ['alexion-mentor'],
+    codexUnlocks: ['codex-lukas-deviation'],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 30,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1140, peak: 1140, rated: 2 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 function seedChapterIIUnlocked() {
   const save = {
     version: 3,
@@ -1076,6 +1122,12 @@ async function advanceToLukasMatch(page: Page) {
   await expect(page.locator('[data-square="e2"]')).toBeVisible()
 }
 
+async function advanceToEdredMatch(page: Page) {
+  await expect(page.locator('#narrative-body')).toContainText(/care about the king|where yours is hiding|It will be/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+}
+
 async function enterChapterII(page: Page) {
   await page.locator('#btn-chapters').click({ timeout: 15_000 })
   await page.locator('.chapter-btn[data-idx="2"]').click()
@@ -1889,6 +1941,79 @@ test('second Chapter I match stays board-first on the phone instrument', { timeo
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+e5/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+  await expect(page.locator('#btn-reset')).toBeVisible()
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('resize'))
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
+  })
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
+test('third Chapter I match lets Reed open against Edred', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIAfterLukas)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await expect(page.locator('.chapter-btn[data-idx="1"] .chapter-btn__state')).toHaveText('Resume')
+  await page.locator('.chapter-btn[data-idx="1"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toHaveText(/Chapter I\b/)
+  await advanceToEdredMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Edred')
+  await expect(page.locator('[data-square="e2"] .piece-lit')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  await expect(page.locator('#board-guide')).toContainText(/Castle through the fire|deny Edred|open lines/i)
+  await expect(page.locator('#board-status')).toBeHidden()
+  await expect(page.locator('.play-crawl')).toBeVisible()
+  await expect(page.locator('.move-ledger-wrap')).toBeVisible()
+  await expect(page.locator('.instrument-toggles')).toBeVisible()
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('#board-guide')).toContainText(/Castle through the fire|deny Edred|open lines/i)
+  await expect(page.locator('#board-guide')).not.toContainText(/legal targets/i)
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+c5/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+})
+
+test('third Chapter I match stays board-first on the phone instrument', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIAfterLukas)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await enterChapterI(page)
+  await advanceToEdredMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Edred')
+  await expect(page.locator('[data-square="e2"] .pawn-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e1"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  const boardBox = await page.locator('#board-panel').boundingBox()
+  expect(boardBox).toBeTruthy()
+  expect(boardBox!.width).toBeGreaterThan(300)
+  expect(boardBox!.y).toBeLessThan(220)
+  await expect(page.locator('#board-panel')).toBeInViewport()
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#board-guide')).toContainText(/Castle through the fire|deny Edred|open lines/i)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  expect(
+    await page.locator('#board-guide').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+c5/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')

@@ -26,6 +26,13 @@ describe('campaign story beats', () => {
     expect(lukas?.type === 'match' && lukas.scriptedBlackSans?.[0]).toBe('e5')
   })
 
+  it('authors Chapter I Edred after Lukas on scene 13', () => {
+    const ch1 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch1')
+    expect(ch1?.scenes.findIndex((scene) => scene.id === 'c1-before-edred')).toBe(13)
+    const edred = ch1?.scenes.find((scene) => scene.id === 'c1-match-edred')
+    expect(edred?.type === 'match' && edred.scriptedBlackSans?.[0]).toBe('c5')
+  })
+
   it('authors Chapter III Demetrios return with a classical e5 reply', () => {
     const ch3 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch3')
     const drill = ch3?.scenes.find((scene) => scene.id === 'c3-puzzle-prophylaxis')
