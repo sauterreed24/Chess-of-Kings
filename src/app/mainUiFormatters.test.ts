@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { Chess } from 'chess.js'
 import {
   capturedRow,
+  EVAL_BAR_SCORE_COLOR,
+  EVAL_BAR_SCORE_SIZE,
+  EVAL_BAR_WIDTH,
   showsEvalHud,
+  syncEvalBarScale,
   diffStars,
   formatMoveLedger,
   getCaptured,
@@ -134,6 +138,15 @@ describe('mainUiFormatters', () => {
     expect(showsEvalHud('calibration')).toBe(false)
     expect(showsEvalHud('puzzle')).toBe(false)
     expect(showsEvalHud('dialogue')).toBe(false)
+    const wrap = document.createElement('div')
+    const score = document.createElement('span')
+    syncEvalBarScale(wrap, score, true)
+    expect(wrap.style.width).toBe(EVAL_BAR_WIDTH)
+    expect(score.style.fontSize).toBe(EVAL_BAR_SCORE_SIZE)
+    expect(score.style.color).toBe(EVAL_BAR_SCORE_COLOR)
+    syncEvalBarScale(wrap, score, false)
+    expect(wrap.style.width).toBe('')
+    expect(score.style.fontSize).toBe('')
   })
 
   it('diffStars renders five stars', () => {

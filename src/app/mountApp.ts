@@ -13,7 +13,7 @@ import { createConfirmDialogController } from './overlays/confirmDialogControlle
 import { createScreenController } from './screenController'
 import { applyLabOverlayCaption, clearPhoneLessonMarkers, isPhoneLabNav, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneDossierFolds, syncPhoneHitTarget, syncPhoneInlineHitTarget, syncPhonePuzzleLesson } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
-import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
+import { aiTraitBars, sceneTypeLabel, syncEvalBarScale } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
 import { createSfxController } from './audio/sfx'
 import { attachGlobalShortcuts } from './keyboard/globalShortcuts'
@@ -1116,6 +1116,7 @@ export function mountApp(app: HTMLDivElement) {
        learning feedback is consistent across both. */
     play.showEvalBar = true
     evalBarWrap.classList.remove('hidden')
+    syncEvalBarScale(evalBarWrap, evalBarScore, true)
     capturedTop.classList.remove('hidden')
     capturedBot.classList.remove('hidden')
     capturedTop.innerHTML = ''

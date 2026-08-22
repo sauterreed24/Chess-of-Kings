@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.112] — 2026-08-22
+
+Pass 120 — eval bar readability:
+
+- **Graphics** — match/duel eval trays render at 18px with a 0.78rem ivory score so the rotated number still reads on phone. No new CSS.
+- **Playwright** — 390×844 starts a Duel Archive game and asserts the tray is 18px.
+- No CSS budget change. Docs: [`docs/PASS120_EVAL_BAR.md`](docs/PASS120_EVAL_BAR.md).
+
 ## [0.5.111] — 2026-08-22
 
 Pass 119 — captured HUD scale:
