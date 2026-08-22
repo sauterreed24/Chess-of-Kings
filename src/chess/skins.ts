@@ -133,7 +133,7 @@ const CUP: Record<PieceSymbol, { cy: number; rx: number; ry: number } | null> = 
   n: null,
   b: { cy: 11.4, rx: 2.35, ry: 2.2 },
   r: { cy: 11.4, rx: 7.35, ry: 2.38 },
-  q: { cy: 15.1, rx: 5.1, ry: 1.85 },
+  q: { cy: 15.8, rx: 5.35, ry: 2.38 },
   k: { cy: 15.2, rx: 3.45, ry: 2.38 },
 }
 

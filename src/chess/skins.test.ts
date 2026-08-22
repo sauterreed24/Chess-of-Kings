@@ -207,6 +207,12 @@ describe('carveGlyph', () => {
     expect(ry).toBeGreaterThanOrEqual(2.2)
   })
 
+  it('sizes the queen coronet cup to read on a phone square', () => {
+    const queen = carveGlyph('<svg></svg>', 'w', 'q')
+    const ry = Number(queen.match(/class="piece-cup"[^>]*ry="([\d.]+)"/)?.[1])
+    expect(ry).toBeGreaterThanOrEqual(2.2)
+  })
+
   it('sizes the foot ferrule to read on a phone square', () => {
     const pawn = carveGlyph('<svg></svg>', 'w', 'p')
     const ry = Number(pawn.match(/class="piece-ferrule"[^>]*ry="([\d.]+)"/)?.[1])

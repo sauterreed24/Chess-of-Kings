@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.58] — 2026-08-22
+
+Pass 66 — Queen coronet cup:
+
+- **Ivory/lapis queens** deepen the lathe cup so calibration d1 is not a 3.6px dish under readable pearls. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration d1 and mate-puzzle e5 cups are at least 3.5 CSS pixels tall.
+- Docs: [`docs/PASS66_QUEEN_BOWL.md`](docs/PASS66_QUEEN_BOWL.md).
+
 ## [0.5.57] — 2026-08-22
 
 Pass 65 — King crown cup:

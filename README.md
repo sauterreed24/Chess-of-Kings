@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.57)
+## What's new in this release (v0.5.58)
+
+**Pass 66 — Queen coronet cup** — ivory and lapis queens get a deeper lathe bowl under the pearls, instead of a 3.6px dish. See [`docs/PASS66_QUEEN_BOWL.md`](docs/PASS66_QUEEN_BOWL.md).
+
+## Previous release (v0.5.57)
 
 **Pass 65 — King crown cup** — ivory and lapis kings get a deeper lathe bowl under the plus, instead of a 3.2px dish. See [`docs/PASS65_KING_BOWL.md`](docs/PASS65_KING_BOWL.md).
 
