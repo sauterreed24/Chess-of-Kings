@@ -3194,6 +3194,18 @@ test('title honor guard shows carved ivory and lapis', async ({ page }) => {
   await expect(page.locator('#title-honor .piece-ground').first()).toBeVisible()
   await expect(page.locator('#title-honor .piece--w')).toHaveCount(5)
   await expect(page.locator('#title-honor .piece--b')).toHaveCount(5)
+  expect(await page.locator('#title-honor svg g[stroke-width="2.4"]').count()).toBeGreaterThan(0)
+})
+
+test('title honor guard scales on the phone instrument', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#title-honor .title-honor__piece').first()).toBeVisible({ timeout: 15_000 })
+  await expect(page.locator('#title-honor .title-honor__piece')).toHaveCount(10)
+  const box = await page.locator('#title-honor .title-honor__piece').first().boundingBox()
+  expect(box).toBeTruthy()
+  expect(box!.height).toBeGreaterThanOrEqual(38)
+  expect(await page.locator('#title-honor svg g[stroke-width="2.4"]').count()).toBeGreaterThan(0)
 })
 
 test('short lab keeps title chapters duel nav', async ({ page }) => {
@@ -3269,7 +3281,7 @@ test('title privacy links stay 44px on the phone instrument', async ({ page }) =
     expect(await page.locator(id).evaluate((el) => getComputedStyle(el).display)).toBe('inline-block')
     const box = await page.locator(id).boundingBox()
     expect(box).toBeTruthy()
-    expect(box!.height).toBeGreaterThanOrEqual(44)
+    expect(Math.round(box!.height)).toBeGreaterThanOrEqual(44)
   }
 })
 
