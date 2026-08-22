@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.120] — 2026-08-22
+
+Pass 128 — calibration rail readability:
+
+- **Graphics** — the opening calibration label renders at 0.7rem and the inscribed dots at 16px so the 0/4 track still reads on phone. No new CSS.
+- **Playwright** — 390×844 skip-ahead calibration asserts the rail label and first dot.
+- No CSS budget change. Docs: [`docs/PASS128_CAL_RAIL.md`](docs/PASS128_CAL_RAIL.md).
+
 ## [0.5.119] — 2026-08-22
 
 Pass 127 — echo timeline chips:

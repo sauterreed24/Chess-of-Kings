@@ -224,14 +224,17 @@ export function applyChessUi(
         dom.btnNextHint.textContent = left === 1 ? '1 remaining' : `${left} remaining`
       }
       const railLabel = dom.calibrationRail.querySelector('.calibration-rail__label')
-      if (railLabel) railLabel.textContent = `${current} / ${target} inscribed`
+      if (railLabel instanceof HTMLElement) {
+        railLabel.textContent = `${current} / ${target} inscribed`
+        railLabel.style.fontSize = '0.7rem'
+      }
       dom.calibrationRail.setAttribute(
         'aria-label',
         `${current} of ${target} White moves inscribed`,
       )
       dom.calibrationTrack.innerHTML = Array.from({ length: target }, (_, i) => {
         const filled = i < current
-        return `<span class="cal-dot ${filled ? 'cal-dot--on' : ''}" aria-hidden="true"></span>`
+        return `<span class="cal-dot${filled ? ' cal-dot--on' : ''}" aria-hidden="true" style="width:16px;height:16px"></span>`
       }).join('')
     }
     dom.calibrationRail.classList.remove('hidden')

@@ -3536,6 +3536,15 @@ test('file and rank labels stay readable on the phone marble', { timeout: 90_000
   const fileBox = await file.boundingBox()
   expect(fileBox).toBeTruthy()
   expect(fileBox!.height).toBeGreaterThanOrEqual(10)
+  const rail = page.locator('.calibration-rail__label')
+  await expect(rail).toBeVisible()
+  expect(await rail.evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  const dot = page.locator('.cal-dot').first()
+  await expect(dot).toBeVisible()
+  expect(await dot.evaluate((el) => (el as HTMLElement).style.width)).toBe('16px')
+  const dotBox = await dot.boundingBox()
+  expect(dotBox).toBeTruthy()
+  expect(dotBox!.width).toBeGreaterThanOrEqual(16)
 })
 
 test('legal aim pearls stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {

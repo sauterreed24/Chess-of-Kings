@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.119)
+## What's new in this release (v0.5.120)
+
+**Pass 128 — calibration rail** — the opening 0/4 inscribed track uses a 0.7rem label and 16px dots so the first session still reads on a 390×844 instrument. See [`docs/PASS128_CAL_RAIL.md`](docs/PASS128_CAL_RAIL.md).
+
+## Previous release (v0.5.119)
 
 **Pass 127 — echo timeline chips** — chronicle echo SAN chips render at 0.7rem so the replay line still reads next to the labeled board on a 390×844 instrument. See [`docs/PASS127_ECHO_LINE.md`](docs/PASS127_ECHO_LINE.md).
 
