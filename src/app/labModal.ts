@@ -56,6 +56,7 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
     const hint = tools.querySelector('#btn-hint')
     if (hint) hint.after(next)
     else tools.prepend(next)
+    tools.classList.remove('hidden')
     manuscript.classList.add('hidden')
   } else {
     actions.prepend(next)

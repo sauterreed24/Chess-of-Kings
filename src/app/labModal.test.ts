@@ -148,6 +148,7 @@ describe('setTopBarInertForLab', () => {
     syncPhonePuzzleLesson(body)
     expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(true)
     expect(next.parentElement?.classList.contains('board-tools')).toBe(true)
+    expect(next.parentElement?.classList.contains('hidden')).toBe(false)
     expect(next.previousElementSibling?.id).toBe('btn-hint')
 
     stubPhoneLabNav(false)

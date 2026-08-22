@@ -262,4 +262,40 @@ describe('applyChessUi', () => {
     expect(dom.btnUndo.disabled).toBe(false)
     expect(dom.btnReset.hidden).toBe(false)
   })
+
+  it('keeps the tool row when Prove is docked even if Hint is idle', () => {
+    const chess = new Chess()
+    const tools = document.createElement('div')
+    tools.className = 'board-tools'
+    const dom = refs()
+    tools.append(dom.btnHint, dom.btnNext, dom.btnUndo, dom.btnRunBack, dom.btnReset)
+    const rt = {
+      dom,
+      play: createMountPlayState(),
+      getFlow: () => null,
+      sfx: createSfxController({ enabled: false }),
+      announcer: createAnnouncer(node()),
+    }
+    const cbs = {
+      showRewardBundles: vi.fn(),
+      maybeShowPendingChapterPrompt: vi.fn(),
+      revealBoardScene: vi.fn(),
+    }
+
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: undefined,
+        status: 'White to move.',
+        canUndo: false,
+        sanLog: [],
+        sanQuality: [],
+        canHint: false,
+      },
+      rt,
+      cbs,
+    )
+    expect(dom.btnHint.hidden).toBe(true)
+    expect(tools.classList.contains('hidden')).toBe(false)
+  })
 })
