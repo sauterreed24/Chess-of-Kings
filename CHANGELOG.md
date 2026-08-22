@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.88] — 2026-08-22
+
+Pass 96 — Chapter VIII Elara match on the phone instrument:
+
+- **Playwright** — a post-Voss Chapter VIII seed resumes `c8-before-elara` (Pass 92 current-age resume). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted Sicilian `c5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS96_PHONE_CH8_ELARA.md`](docs/PASS96_PHONE_CH8_ELARA.md).
+
 ## [0.5.87] — 2026-08-22
 
 Pass 95 — Chapter VII Soren match on the phone instrument:
