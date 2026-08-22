@@ -90,6 +90,14 @@ export function renderScene(
     dom.chapterRail.innerHTML = ''
   }
   
+  /* Teaching puzzles keep command + marble + take-back. The chapter crawl,
+     empty ledger, sound row, and duplicate lesson line are match chrome. */
+  const teachingPuzzle = scene.type === 'puzzle'
+  dom.app.querySelector('.play-crawl')?.classList.toggle('hidden', teachingPuzzle)
+  dom.moveLedger.closest('.move-ledger-wrap')?.classList.toggle('hidden', teachingPuzzle)
+  dom.app.querySelector('.instrument-toggles')?.classList.toggle('hidden', teachingPuzzle)
+  dom.lessonNote.classList.toggle('hidden', teachingPuzzle)
+
   /* Hide eval bar and captured rows outside rated / rehearsal boards */
   play.showEvalBar = showsEvalHud(scene.type)
   dom.evalBarWrap.classList.toggle('hidden', !play.showEvalBar)
