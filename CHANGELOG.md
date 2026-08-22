@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.73] — 2026-08-22
+
+Pass 81 — Pawn globe silhouette:
+
+- **Ivory and lapis pawns** replace the Wikipedia Staunton teardrop with a civic pawn: round globe, collar ring, and stem in the glyph. Carved orb, spark, sheen, and neck follow the new head.
+- **High-contrast** keeps the same silhouette (no carve overlays), so tournament pawns still read as globes, not cups.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS81_PAWN_GLOBE_HEAD.md`](docs/PASS81_PAWN_GLOBE_HEAD.md).
+
 ## [0.5.72] — 2026-08-22
 
 Pass 80 — Rook battlement silhouette:
