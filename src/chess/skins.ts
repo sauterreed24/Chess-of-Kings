@@ -60,6 +60,21 @@ const SHEEN_PATH: Record<PieceSymbol, string> = {
 /** Crest shade on the horse — knights skip the lathe cup, so the mane carries the volume. */
 const MANE_PATH = 'M21.4 10.2c5.2 1.1 9.6 5.6 10.8 14.8-4-4.8-7.8-9.8-10.8-14.8z'
 
+/** Lamp-side catch-lights on the five coronet orbs. */
+const QUEEN_PEARLS: ReadonlyArray<{ cx: number; cy: number }> = [
+  { cx: 6, cy: 12 },
+  { cx: 14, cy: 9 },
+  { cx: 22.5, cy: 8 },
+  { cx: 31, cy: 9 },
+  { cx: 39, cy: 12 },
+]
+
+/** Crenel wells between the three Staunton merlons. */
+const ROOK_MERLONS: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
+  { x: 15.3, y: 9.15, w: 4.4, h: 2.15 },
+  { x: 25.3, y: 9.15, w: 4.4, h: 2.15 },
+]
+
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
 const COLLAR_CY: Record<PieceSymbol, number> = {
   p: 31.8,
@@ -226,6 +241,22 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const maneFill = color === 'w' ? 'rgba(62,32,10,0.3)' : 'rgba(0,4,12,0.42)'
   const mane =
     piece === 'n' ? `<path class="piece-mane" d="${MANE_PATH}" fill="${maneFill}"/>` : ''
+  const pearlFill = color === 'w' ? 'rgba(255,255,255,0.55)' : 'rgba(232,201,126,0.42)'
+  const pearls =
+    piece === 'q'
+      ? QUEEN_PEARLS.map(
+          (p) =>
+            `<circle class="piece-pearl" cx="${(p.cx - 0.55).toFixed(2)}" cy="${(p.cy - 0.7).toFixed(2)}" r="1.05" fill="${pearlFill}"/>`,
+        ).join('')
+      : ''
+  const merlonFill = color === 'w' ? 'rgba(36,18,6,0.4)' : 'rgba(0,2,8,0.52)'
+  const merlons =
+    piece === 'r'
+      ? ROOK_MERLONS.map(
+          (m) =>
+            `<rect class="piece-merlon" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.35" fill="${merlonFill}"/>`,
+        ).join('')
+      : ''
   return svg
     .replace(
       /<svg([^>]*)>/,
@@ -234,7 +265,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
     .replace(
       '</svg>',
-      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${highlight}</svg>`,
+      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${pearls}${merlons}${highlight}</svg>`,
     )
 }
 

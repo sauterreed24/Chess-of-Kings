@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.34] — 2026-08-22
+
+Pass 42 — Coronet pearls and rook merlons:
+
+- **Ivory/lapis queens** get lamp-side catch-lights on the five coronet orbs. **Rooks** get carved wells between the three battlements. Forced **Visual: Lean** keeps both (geometry, not a filter).
+- Playwright asserts ten pearls and four merlons on the title honor, merlons on the castle h1 rook, and pearls on the mate-in-one queen.
+- Docs: [`docs/PASS42_CORONET_MERLON.md`](docs/PASS42_CORONET_MERLON.md).
+
 ## [0.5.33] — 2026-08-22
 
 Pass 41 — Phone puzzle lesson-lead:

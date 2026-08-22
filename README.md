@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.33)
+## What's new in this release (v0.5.34)
+
+**Pass 42 — Coronet pearls and rook merlons** — ivory and lapis queens get coronet catch-lights; rooks get carved battlement wells. See [`docs/PASS42_CORONET_MERLON.md`](docs/PASS42_CORONET_MERLON.md).
+
+## Previous release (v0.5.33)
 
 **Pass 41 — Phone puzzle lesson-lead** — hanging-knight phones hide the lesson-lead paragraph that duplicates the marble command. See [`docs/PASS41_PHONE_LESSON_LEAD.md`](docs/PASS41_PHONE_LESSON_LEAD.md).
 
