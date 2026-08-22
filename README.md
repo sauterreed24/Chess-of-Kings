@@ -47,7 +47,7 @@
 | **What it is** | Story-driven chess RPG with adaptive rival AI, shipped as a **static PWA** (no backend, no accounts). |
 | **Play** | **[Live demo](https://sauterreed24.github.io/Chess-of-Kings/)** — first step is always [Start here](#start-here). |
 | **Stack** | **TypeScript (strict)**, plain DOM, **Vite**, **Vitest**, `chess.js`; Capacitor shells for optional native builds. |
-| **Quality** | **761** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, pages-build assertions, bundle gzip report). Optional Playwright smoke job on `main`. |
+| **Quality** | **762** automated tests, ESLint **0** warnings, CI on every PR (`quality:gate`: lint, typecheck, deterministic tests, UI smoke, build, pages-build assertions, bundle gzip report). Optional Playwright smoke job on `main`. |
 | **Fit signals** | Accessibility-minded UI, save-format migrations, property-tested engine, small **gzip** JS budget (<99 KB). |
 | **Author** | **Reed Sauter** — [GitHub](https://github.com/sauterreed24) · [LinkedIn](https://www.linkedin.com/in/reed-sauter-205774208) |
 | **Core skills** | TypeScript · Vite · game development · chess engine / game AI · accessibility (ARIA, keyboard UI) · Vitest & property-based testing · PWA · client persistence · CI release gates · technical writing |
