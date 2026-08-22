@@ -265,7 +265,7 @@ describe('GameFlow AI / puzzles', () => {
     expect(payload?.boardGuide).toMatch(/Select side/)
   })
 
-  it('keeps the last player move insight visible after the trainer replies', async () => {
+  it('keeps calibration quiet after the archive replies', async () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),
@@ -281,15 +281,34 @@ describe('GameFlow AI / puzzles', () => {
 
     flow.tryPlayerMove('e2', 'e4')
 
-    const playerInsight = onChessUpdate.mock.calls.at(-1)?.[0]?.coachTip
-    expect(playerInsight).toMatch(/Center claimed/)
+    const playerInsight = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(playerInsight?.coachTip).toBeNull()
+    expect(playerInsight?.mentorInsight).toBeNull()
+    expect(playerInsight?.tacticalPulse).toBeNull()
 
     await vi.advanceTimersByTimeAsync(500)
 
     const afterReply = onChessUpdate.mock.calls.at(-1)?.[0]
     expect(flow.chess.turn()).toBe('w')
-    expect(afterReply?.coachTip).toBe(playerInsight)
-    expect(afterReply?.tacticalPulse).toMatch(/Archive reply:/)
+    expect(afterReply?.coachTip).toBeNull()
+    expect(afterReply?.tacticalPulse).toBeNull()
+  })
+
+  it('still files an explicit Hint line on calibration', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    const calibrationIdx = PLAYABLE_CHAPTERS[0]!.scenes.findIndex((s) => s.id === 'pr-calibration')
+    flow.jumpToScene(0, calibrationIdx)
+    onChessUpdate.mockClear()
+    flow.requestHint()
+    const latest = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(latest?.coachTip).toMatch(/^Hint — /)
   })
 
   it('threads active rival doctrine into visible move coaching and replies', async () => {

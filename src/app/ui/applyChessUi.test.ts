@@ -382,5 +382,6 @@ describe('applyChessUi', () => {
       cbs,
     )
     expect(dom.btnReset.hidden).toBe(false)
+    expect(dom.btnHint.hidden).toBe(true)
   })
 })
