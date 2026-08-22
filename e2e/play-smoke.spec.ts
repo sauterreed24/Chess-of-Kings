@@ -46,6 +46,37 @@ async function playIfLegal(
   return true
 }
 
+function seedChapterIUnlocked() {
+  const save = {
+    version: 3,
+    chapterIndex: 1,
+    sceneIndex: 0,
+    highestUnlockedChapter: 1,
+    lastScreen: 'title',
+    chapter1Complete: false,
+    chapter2Complete: false,
+    completedSceneIds: [],
+    completedPuzzleIds: [],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion'],
+    unlockedDuelVariantIds: ['alexion-mentor'],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 0,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1100, peak: 1100, rated: 0 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 test('calibration prove completes after four developing white moves', async ({ page }) => {
   await page.goto('./')
   await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
@@ -115,36 +146,7 @@ test('compact calibration stacks the board above the manuscript', async ({ page 
 })
 
 test('hanging knight goal stays short on the phone instrument', async ({ page }) => {
-  await page.addInitScript(() => {
-    const save = {
-      version: 3,
-      chapterIndex: 1,
-      sceneIndex: 0,
-      highestUnlockedChapter: 1,
-      lastScreen: 'title',
-      chapter1Complete: false,
-      chapter2Complete: false,
-      completedSceneIds: [],
-      completedPuzzleIds: [],
-      stratarchiaUnlocked: false,
-      duelUnlockedOpponentIds: ['alexion'],
-      unlockedDuelVariantIds: ['alexion-mentor'],
-      codexUnlocks: [],
-      titleUnlocks: [],
-      chronicleEchoes: [],
-      rankPoints: 0,
-      cosmetics: {
-        unlockedPieceSkins: ['classic-royal'],
-        selectedPieceSkin: 'classic-royal',
-      },
-      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
-      matchHistory: [],
-      rivalMemory: {},
-      ladder: { rating: 1100, peak: 1100, rated: 0 },
-      inProgress: null,
-    }
-    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
-  })
+  await page.addInitScript(seedChapterIUnlocked)
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
   await page.locator('#btn-chapters').click({ timeout: 15_000 })
@@ -165,6 +167,32 @@ test('hanging knight goal stays short on the phone instrument', async ({ page })
   await page.locator('[data-square="c3"]').click()
   await expect(page.locator('[data-square="d4"]')).toHaveClass(/sq-legal-capture/)
   await page.locator('[data-square="d4"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+})
+
+test('castle puzzle marks kingside as a castle destination', async ({ page }) => {
+  await page.addInitScript(seedChapterIUnlocked)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn[data-idx="1"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Develop your pieces|opening theory|Ancient Laws/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="d4"]')).toBeVisible()
+  await page.locator('[data-square="c3"]').click()
+  await page.locator('[data-square="d4"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/You saw it|forcing moves|tempo/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e1"]')).toBeVisible()
+  await expect(page.locator('#board-guide')).toContainText(/Castle kingside/i)
+  await page.locator('[data-square="e1"]').click()
+  await expect(page.locator('[data-square="g1"]')).toHaveClass(/sq-legal-castle/)
+  await expect(page.locator('#board-guide')).toContainText(/castle kingside to g1/i)
+  await page.locator('[data-square="g1"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
 })
 

@@ -1765,10 +1765,12 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
     linear-gradient(135deg, #fff2, #0000 42%),
     radial-gradient(circle at 76% 82%, #0004, #0000 50%);
 }
-.sq-last-to {
+.sq-last-to,
+.sq-legal-castle {
   box-shadow: inset 0 0 0 3px #f0d28af5, 0 0 22px #e8c97e55;
 }
-.sq-last-to::before {
+.sq-last-to::before,
+.sq-legal-castle::before {
   background:
     radial-gradient(circle at 54% 46%, #e8c97e73, transparent 64%),
     linear-gradient(135deg, #fff2, #0000 42%),
@@ -3888,7 +3890,6 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
   .play-crawl .philosophy {
     display: none;
   }
-  .instrument-eyebrow { display: none; }
 
   @media (min-width: 961px) {
     .screen-play--board-scene .instrument-frame {

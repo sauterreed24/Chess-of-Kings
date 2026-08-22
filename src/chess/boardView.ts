@@ -25,6 +25,7 @@ export interface BoardSelectionState {
   legalMoveCount: number
   captureCount: number
   quietMoveCount: number
+  castleSquares: Square[]
   guardTarget: Square | null
 }
 
@@ -61,6 +62,7 @@ export class BoardView {
   private cells = new Map<Square, HTMLButtonElement>()
   private selected: Square | null = null
   private legalTargets = new Set<Square>()
+  private castleTargets = new Set<Square>()
   private checkSquare: Square | null = null
   private lastMove: { from: Square; to: Square } | null = null
   private pendingChess: Chess | null = null
@@ -496,6 +498,7 @@ export class BoardView {
 
     this.selected = null
     this.legalTargets.clear()
+    this.castleTargets.clear()
     this.guardFrom = null
     this.guardTo = null
     this.guardStamp = 0
@@ -649,8 +652,12 @@ export class BoardView {
   showLegalFrom(chess: Chess, from: Square) {
     this.selected = from
     this.legalTargets.clear()
+    this.castleTargets.clear()
     const moves = chess.moves({ square: from, verbose: true })
-    for (const m of moves) this.legalTargets.add(m.to)
+    for (const m of moves) {
+      this.legalTargets.add(m.to)
+      if (m.flags.includes('k') || m.flags.includes('q')) this.castleTargets.add(m.to)
+    }
     this.updateHighlights()
     this.cells.get(from)?.focus()
   }
@@ -665,6 +672,7 @@ export class BoardView {
         'sq-legal',
         'sq-legal-dot',
         'sq-legal-capture',
+        'sq-legal-castle',
         'sq-last',
         'sq-last-from',
         'sq-last-to',
@@ -690,9 +698,16 @@ export class BoardView {
       if (this.legalTargets.has(sq)) {
         btn.classList.add('sq-legal')
         const occ = piece
-        if (occ) btn.classList.add('sq-legal-capture')
-        else btn.classList.add('sq-legal-dot')
-        labels.push(occ ? 'legal capture target' : 'legal move target')
+        if (this.castleTargets.has(sq)) {
+          btn.classList.add('sq-legal-castle')
+          labels.push('legal castle destination')
+        } else if (occ) {
+          btn.classList.add('sq-legal-capture')
+          labels.push('legal capture target')
+        } else {
+          btn.classList.add('sq-legal-dot')
+          labels.push('legal move target')
+        }
       }
       if (this.guardTo === sq && this.guardFrom && this.guardFrom === this.selected) {
         btn.classList.add('sq-guard')
@@ -715,6 +730,7 @@ export class BoardView {
       legalMoveCount: this.legalTargets.size,
       captureCount,
       quietMoveCount: Math.max(0, this.legalTargets.size - captureCount),
+      castleSquares: [...this.castleTargets],
       guardTarget: this.guardFrom === this.selected ? this.guardTo : null,
     }
   }
@@ -727,6 +743,7 @@ export class BoardView {
       state.legalMoveCount,
       state.captureCount,
       state.quietMoveCount,
+      state.castleSquares.join(','),
       state.guardTarget ?? '',
     ].join('|')
     if (sig === this.lastSelectionSig) return
@@ -744,6 +761,7 @@ export class BoardView {
   clearSelection() {
     this.selected = null
     this.legalTargets.clear()
+    this.castleTargets.clear()
     this.clearGuard()
     this.updateHighlights()
   }
