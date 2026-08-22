@@ -67,9 +67,29 @@ const COLLAR_CY: Record<PieceSymbol, number> = {
   k: 32.4,
 }
 
+/** Neck ring under the head / mitre / crown. Knights skip this — the horse is not lathe-turned. */
+const NECK_CY: Record<PieceSymbol, number> = {
+  p: 21.2,
+  n: 24.6,
+  b: 18.4,
+  r: 15.8,
+  q: 19.6,
+  k: 18.4,
+}
+
+/** Molded plinth just above the foot. */
+const PLINTH_CY: Record<PieceSymbol, number> = {
+  p: 38.4,
+  n: 39.0,
+  b: 38.6,
+  r: 39.2,
+  q: 38.4,
+  k: 38.2,
+}
+
 const LAMP = {
-  w: { hi: '#ffffff', lo: '#5c3a14', spec: '#fff6e0' },
-  b: { hi: '#6a98c4', lo: '#000208', spec: '#f0d28a' },
+  w: { hi: '#ffffff', lo: '#4a2e10', spec: '#fff6e0', diff: '#ffe4b0' },
+  b: { hi: '#7aa8d4', lo: '#000105', spec: '#f0d28a', diff: '#3d6a96' },
 } as const
 
 let carveSeq = 0
@@ -82,44 +102,63 @@ function preferLeanGlyphs(): boolean {
   }
 }
 
-/** Foot shadow + lamp-lit body so Staunton glyphs read as carved ivory/lapis, not flat cutouts. */
+function latheRing(
+  cls: string,
+  cy: number,
+  rx: number,
+  ry: number,
+  fill: string,
+  stroke: string,
+): string {
+  return (
+    `<ellipse class="${cls}" cx="22.5" cy="${cy}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(2)}" ` +
+    `fill="${fill}" stroke="${stroke}" stroke-width="0.55"/>`
+  )
+}
+
+/** Foot shadow + lamp-lit turned body so Staunton glyphs read as carved ivory/lapis, not flat cutouts. */
 export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'): string {
   if (svg.includes('piece-lit') || svg.includes('piece-carve')) return svg
   const id = `pl${(carveSeq += 1)}`
   const lamp = LAMP[color]
-  const sheen = color === 'w' ? 'rgba(255,255,255,0.32)' : 'rgba(232,201,126,0.28)'
+  const sheen = color === 'w' ? 'rgba(255,255,255,0.36)' : 'rgba(232,201,126,0.32)'
   const rx = FOOT_RX[piece] ?? 10.6
   const lean = preferLeanGlyphs()
   const gradient =
-    `<linearGradient id="${id}g" x1=".16" y1=".04" x2=".88" y2=".96">` +
-    `<stop offset="0" stop-color="${lamp.hi}"/><stop offset=".4" stop-color="var(--piece-fill)"/>` +
+    `<linearGradient id="${id}g" x1=".12" y1=".03" x2=".9" y2=".97">` +
+    `<stop offset="0" stop-color="${lamp.hi}"/><stop offset=".32" stop-color="var(--piece-fill)"/>` +
     `<stop offset="1" stop-color="${lamp.lo}"/></linearGradient>`
   const lampFilter = lean
     ? ''
-    : `<filter id="${id}f" x="-.15" y="-.15" width="1.3" height="1.3" color-interpolation-filters="sRGB">` +
-      `<feGaussianBlur in="SourceAlpha" stdDeviation=".4" result="b"/>` +
-      `<feSpecularLighting in="b" surfaceScale="2.6" specularConstant=".85" specularExponent="18" lighting-color="${lamp.spec}" result="s">` +
-      `<fePointLight x="-8" y="-14" z="28"/></feSpecularLighting>` +
-      `<feComposite in="SourceGraphic" in2="s" operator="arithmetic" k1="0" k2="1" k3=".95" k4="0"/>` +
+    : `<filter id="${id}f" x="-.18" y="-.18" width="1.36" height="1.36" color-interpolation-filters="sRGB">` +
+      `<feGaussianBlur in="SourceAlpha" stdDeviation=".45" result="b"/>` +
+      `<feDiffuseLighting in="b" surfaceScale="3.2" diffuseConstant=".95" lighting-color="${lamp.diff}" result="d">` +
+      `<fePointLight x="-12" y="-18" z="34"/></feDiffuseLighting>` +
+      `<feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1=".55" k2=".7" k3="0" k4="0" result="sh"/>` +
+      `<feSpecularLighting in="b" surfaceScale="2.8" specularConstant="1.05" specularExponent="14" lighting-color="${lamp.spec}" result="s">` +
+      `<fePointLight x="-8" y="-14" z="30"/></feSpecularLighting>` +
+      `<feComposite in="sh" in2="s" operator="arithmetic" k1="0" k2="1" k3="1.12" k4="0"/>` +
       `</filter>`
   const filterAttr = lean ? '' : ` filter="url(#${id}f)"`
   const defs = `<defs>${gradient}${lampFilter}</defs>`
   const ground = `<ellipse class="piece-ground" cx="22.5" cy="42.15" rx="${(rx + 2.3).toFixed(1)}" ry="2.6" fill="rgba(0,0,0,0.28)"/>`
   const foot = `<ellipse class="piece-foot" cx="22.5" cy="41.3" rx="${rx}" ry="1.65" fill="rgba(0,0,0,0.55)"/>`
   const highlight = `<path class="piece-carve" d="${SHEEN_PATH[piece]}" fill="${sheen}"/>`
-  const cy = COLLAR_CY[piece] ?? 32.8
-  const collarFill = color === 'w' ? 'rgba(160,110,40,0.38)' : 'rgba(6,16,28,0.58)'
-  const collarStroke = color === 'w' ? 'rgba(255,255,255,0.42)' : 'rgba(232,201,126,0.38)'
-  const collar =
-    `<ellipse class="piece-collar" cx="22.5" cy="${cy}" rx="${(rx * 0.78).toFixed(1)}" ry="1.25" ` +
-    `fill="${collarFill}" stroke="${collarStroke}" stroke-width="0.55"/>`
+  const ringFill = color === 'w' ? 'rgba(160,110,40,0.4)' : 'rgba(6,16,28,0.6)'
+  const ringStroke = color === 'w' ? 'rgba(255,255,255,0.46)' : 'rgba(232,201,126,0.4)'
+  const plinth = latheRing('piece-plinth', PLINTH_CY[piece] ?? 38.4, rx * 0.92, 1.35, ringFill, ringStroke)
+  const collar = latheRing('piece-collar', COLLAR_CY[piece] ?? 32.8, rx * 0.78, 1.25, ringFill, ringStroke)
+  const neck =
+    piece === 'n'
+      ? ''
+      : latheRing('piece-neck', NECK_CY[piece] ?? 20, rx * 0.48, 1.05, ringFill, ringStroke)
   return svg
     .replace(
       /<svg([^>]*)>/,
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${collar}${highlight}</svg>`)
+    .replace('</svg>', `</g>${plinth}${collar}${neck}${highlight}</svg>`)
 }
 
 export function glyphForSkin(

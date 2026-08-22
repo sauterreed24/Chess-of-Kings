@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.18] — 2026-08-22
+
+Pass 26 — Turned lathe rings:
+
+- **Ivory/lapis glyphs** get a lathe-turned plinth and neck, plus lamp-side diffuse shade on the real Staunton silhouette. Knights skip the neck. Forced **Visual: Lean** keeps the rings without the filters.
+- Playwright asserts plinth, neck, and both lighting primitives on the calibration pawn, hanging-knight bishop, and title honor guard.
+- Docs: [`docs/PASS26_TURNED_LATHE.md`](docs/PASS26_TURNED_LATHE.md).
+
 ## [0.5.17] — 2026-08-22
 
 Pass 25 — Match aim stays:
