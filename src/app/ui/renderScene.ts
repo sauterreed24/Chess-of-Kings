@@ -171,7 +171,6 @@ export function renderScene(
       scene.teaching ? teachingBlock(scene.teaching) : ''
     }${scene.hint ? `<p class="hint-block"><span class="hint-label">Hint</span> ${escapeHtml(scene.hint)}</p>` : ''}`
     dom.lessonNote.textContent = 'Solve the board objective. Take back to retry; Advance unlocks when the proof is clean.'
-    syncPhonePuzzleLesson(dom.narrativeBody)
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = 'Requires objective met'
   } else if (scene.type === 'match') {
@@ -240,6 +239,9 @@ export function renderScene(
     dom.btnNextHint.textContent = 'Leave when ready'
   }
   
+  /* Dock/restore Prove on every scene so leaving a phone puzzle unhides
+     the manuscript and puts Advance back in .narrative-actions. */
+  syncPhonePuzzleLesson(dom.narrativeBody)
   callbacks.updateAdvance(flow)
   window.requestAnimationFrame(callbacks.syncNarrativeFade)
   if (showBoard) callbacks.revealBoardScene()

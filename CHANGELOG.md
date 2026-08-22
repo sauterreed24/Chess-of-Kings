@@ -16,7 +16,7 @@ level (the save format has its own version field — see
 Pass 46 — Phone puzzle Prove dock:
 
 - **Narrow phones** hide the leftover tutorial card on teaching puzzles and dock Prove beside Hint under the marble. Wide labs keep the manuscript.
-- Playwright hides `#manuscript-panel` on the hanging-knight phone and keeps Prove inside it on the 1280 castle puzzle.
+- Playwright hides `#manuscript-panel` on the hanging-knight phone, places Hint|Prove on one row, then restores manuscript Advance after Prove. Wide castle keeps Prove inside the panel.
 - Docs: [`docs/PASS46_PHONE_PROVE_DOCK.md`](docs/PASS46_PHONE_PROVE_DOCK.md).
 
 ## [0.5.37] — 2026-08-22

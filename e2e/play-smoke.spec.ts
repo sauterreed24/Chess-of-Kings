@@ -290,6 +290,11 @@ test('hanging knight goal stays short on the phone instrument', async ({ page })
   await expect(page.locator('#btn-undo')).toBeVisible()
   await expect(page.locator('#btn-reset')).toBeVisible()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toBeVisible()
+  await expect(page.locator('#narrative-body')).toContainText(/You saw it|forcing moves|tempo/i)
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#manuscript-panel #btn-next')).toBeVisible()
 })
 
 test('castle puzzle marks kingside as a castle destination', async ({ page }) => {
