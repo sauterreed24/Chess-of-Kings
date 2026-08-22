@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.52)
+## What's new in this release (v0.5.53)
+
+**Pass 61 — Foot ferrule band** — ivory and lapis pieces get a thicker gold/lapis band at the foot, instead of a 1.4px hairline. See [`docs/PASS61_FERRULE_BAND.md`](docs/PASS61_FERRULE_BAND.md).
+
+## Previous release (v0.5.52)
 
 **Pass 60 — King cross bar** — ivory and lapis kings get a thicker plus on the crown, instead of a 2px scratch. See [`docs/PASS60_CROSS_BAR.md`](docs/PASS60_CROSS_BAR.md).
 
