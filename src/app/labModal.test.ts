@@ -163,6 +163,34 @@ describe('setTopBarInertForLab', () => {
     expect(document.querySelector('#btn-next-hint')?.classList.contains('hidden')).toBe(false)
   })
 
+  it('hides Reset when a phone puzzle docks Prove after a ply and restores it on a wide lab', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body" data-puzzle-lesson></div>
+          <div class="narrative-actions"><button id="btn-next">Advance</button></div>
+        </article>
+        <div class="move-ledger-wrap"><div id="move-ledger"><div class="ledger-row">1. Bxd4</div></div></div>
+        <div class="board-tools">
+          <button id="btn-hint">Hint</button>
+          <button id="btn-undo">Take back</button>
+          <button id="btn-reset">Reset</button>
+        </div>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const reset = document.querySelector<HTMLButtonElement>('#btn-reset')!
+    reset.hidden = false
+    syncPhonePuzzleLesson(body)
+    expect(reset.hidden).toBe(true)
+    expect(document.querySelector('#btn-next')?.parentElement?.classList.contains('board-tools')).toBe(true)
+
+    stubPhoneLabNav(false)
+    syncPhonePuzzleLesson(body)
+    expect(reset.hidden).toBe(false)
+    expect(document.querySelector('#btn-next')?.parentElement?.classList.contains('narrative-actions')).toBe(true)
+  })
+
   it('docks Prove and hides the empty ledger on phone calibration', () => {
     stubPhoneLabNav(true)
     document.body.innerHTML = `

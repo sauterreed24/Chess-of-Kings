@@ -89,6 +89,10 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
   scope.querySelector('.instrument-toggles')?.classList.toggle('hidden', hideMatchChrome)
   const lessonNote = scope.querySelector('#lesson-note')
   if (lessonNote) lessonNote.classList.toggle('hidden', hideMatchChrome)
+  /* Resize docks Prove without a chess update; keep Reset in lockstep. */
+  const reset = scope.querySelector<HTMLButtonElement>('#btn-reset')
+  const idleTools = !scope.querySelector('#move-ledger .ledger-row')
+  if (reset) reset.hidden = idleTools || (phone && puzzle)
   if (!next || !tools || !actions || !manuscript) return
   if (hide) {
     const hint = tools.querySelector('#btn-hint')

@@ -17,6 +17,7 @@ Pass 51 — Sealed puzzle tool row:
 
 - **Phone puzzles** hide Reset once Prove is docked. After Bxd4, Advance and Take back share one row instead of Reset wrapping full-width. Take back still retries. Phone calibration keeps Reset (four-move restart).
 - **Phone Duel** clears leftover calibration/puzzle lesson markers so leaving the opening board for a rival does not hide the dossier, ledger, or sound row.
+- **Resize** hides Reset when Prove docks on a phone puzzle, and restores it on a wide lab.
 - Playwright keeps hanging-knight Advance|Take back on one row after the seal.
 - Docs: [`docs/PASS51_SEALED_RESET_ROW.md`](docs/PASS51_SEALED_RESET_ROW.md).
 
