@@ -19,6 +19,8 @@ export const MATCH_AIM_BY_SCENE_ID: Record<string, string> = {
   'c4-match-cassian': 'Hold the center; contest the long diagonal.',
   'c5-match-gage': 'Castle; refuse the square Gage wants named.',
   'c5-match-helia': 'Cash what you win; do not donate counterplay.',
+  'c6-match-prax': 'Occupy the hole; take what hangs.',
+  'c6-match-iota': 'Finish the plus; do not donate a back rank.',
 }
 
 export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
@@ -34,6 +36,8 @@ export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
   cassian: MATCH_AIM_BY_SCENE_ID['c4-match-cassian']!,
   gage: MATCH_AIM_BY_SCENE_ID['c5-match-gage']!,
   helia: MATCH_AIM_BY_SCENE_ID['c5-match-helia']!,
+  prax: MATCH_AIM_BY_SCENE_ID['c6-match-prax']!,
+  iota: MATCH_AIM_BY_SCENE_ID['c6-match-iota']!,
 }
 
 export function matchAimForSceneId(sceneId: string): string {

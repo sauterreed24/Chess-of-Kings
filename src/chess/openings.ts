@@ -107,6 +107,20 @@ const BOOKS: Record<string, OpeningBook> = {
     7: [{ san: 'Be7', weight: 8 }, { san: 'O-O', weight: 4 }],
     9: [{ san: 'O-O', weight: 8 }, { san: 'c5', weight: 4 }],
   },
+  prax_precision: {
+    1: [{ san: 'c5', weight: 9 }, { san: 'e5', weight: 3 }, { san: 'c6', weight: 2 }],
+    3: [{ san: 'Nc6', weight: 9 }, { san: 'd6', weight: 4 }],
+    5: [{ san: 'd6', weight: 8 }, { san: 'Nf6', weight: 5 }],
+    7: [{ san: 'Nf6', weight: 8 }, { san: 'Be7', weight: 4 }],
+    9: [{ san: 'Be7', weight: 7 }, { san: 'O-O', weight: 5 }],
+  },
+  iota_threshold: {
+    1: [{ san: 'c6', weight: 9 }, { san: 'd5', weight: 4 }, { san: 'e6', weight: 2 }],
+    3: [{ san: 'd5', weight: 9 }, { san: 'Nf6', weight: 3 }],
+    5: [{ san: 'Nf6', weight: 8 }, { san: 'e6', weight: 4 }],
+    7: [{ san: 'e6', weight: 8 }, { san: 'Be7', weight: 4 }],
+    9: [{ san: 'Be7', weight: 7 }, { san: 'O-O', weight: 5 }],
+  },
 }
 
 export function getBookTopLines(

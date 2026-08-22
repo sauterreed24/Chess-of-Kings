@@ -1,12 +1,13 @@
 import type { Chapter } from '../types'
 
 /**
- * Playable campaign: Prologue + Chapters I–V.
+ * Playable campaign: Prologue + Chapters I–VI.
  * Chapter I: six-rung ladder (Initiate → … → Counterpart).
  * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
  * Chapter III: compact Classical arc — Demetrios return + Kallistos + rehearsal.
  * Chapter IV: Hypermodern / Paradox Masters — Nysa + Cassian + rehearsal.
  * Chapter V: Discipline colleges — Gage + Helia + rehearsal.
+ * Chapter VI: Silicon Threshold — Prax + Iota + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -2175,11 +2176,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'helia',
-            text: 'Remember the conversion. Later engines will calculate faster than your fear — but they still punish courtesy toward hanging pieces.',
+            text: 'Remember the conversion. Later ledger-engines will calculate faster than your fear — but they still punish courtesy toward hanging pieces. The next door asks whether you can follow a line you did not invent.',
           },
           {
             speaker: 'narrator',
-            text: 'Chapter V is sealed. Upstairs, the brief is rewritten again: Reed can wait without becoming furniture. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, silicon thresholds and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+            text: 'Chapter V is sealed. Upstairs, the brief is rewritten again: Reed can wait without becoming furniture. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Silicon Threshold waits — precision without a speech. The chronicle has another age to inscribe.',
           },
         ],
       },
@@ -2202,6 +2203,342 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Discipline is recognizing the opponent\'s idea early enough to veto it cheaply, then cashing what the veto won.',
           concept: 'The machine becomes instinct only through quiet repetition.',
+        },
+      },
+    ],
+  },
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER VI — The Silicon Threshold (compact ladder)
+     Precision, outposts, forced finishes. Prax + Iota.
+     Reuses theme-classical (CSS gzip locked).
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch6',
+    index: 6,
+    title: 'Chapter VI',
+    subtitle: 'The Silicon Threshold',
+    era: 'Ledger engines — precision without a speech',
+    themeClass: 'theme-classical',
+    philosophy:
+      'The line is already there. Occupy the hole, take what hangs, finish the file. Intuition is a luxury the counting rooms do not budget.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c6-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'Discipline meets the ledger',
+          body: 'The pause taught Reed to refuse gifts. The counting rooms ask whether he can follow a line he did not invent — and whether a human still belongs in the verdict.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The chamber smells of oil and index cards. Brass gears tick behind lapis glass: civic ledger-engines, older than Reed, younger than the Long Reign. They do not dream. They enumerate. A clerk has already laid out three positions the machine called trivial.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'They filed you as disciplined. That is not a compliment here. It is a warrant to test whether you can keep up when the line is public and your pulse is not.',
+          },
+          {
+            speaker: 'helia',
+            text: 'I asked whether your advantage was a fact. Prax will ask whether you occupy the hole the ledger already named. Iota will ask whether you finish a plus instead of narrating it. Neither is a villain. Drought taught the counting rooms that inspiration is a leak.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So I become the machine?',
+          },
+          {
+            speaker: 'gage',
+            text: 'You follow the line without becoming furniture. A pause that ignores a hanging piece is not prophylaxis. It is vanity.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c6-codex-ledger',
+        heading: 'Ledger doctrine — outpost, precision, forced finish',
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'The line is public',
+          body: 'Civic counting rooms under the Long Reign treat chess as audit: occupy the hole, take the hanging piece, finish the back rank. Mercy is how facts become rumors.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'Outpost',
+            body: 'A hole the opponent cannot easily challenge. The ledger names it first. A knight that sits there is not drama — it is rent.',
+          },
+          {
+            term: 'Precision capture',
+            body: 'If a piece hangs, take it. The counting rooms do not wait for a prettier tactic. Missed captures are how drought files get people killed in the real city.',
+          },
+          {
+            term: 'Forced finish',
+            body: 'Back-rank mates, locked kings, and one-move conversions. When the line is forced, narration is delay. Finish it.',
+          },
+          {
+            term: 'Ledger engine',
+            body: 'Brass-and-lapis civic calculators in archive counting rooms. They enumerate legal moves faster than a clerk can blush. They do not hate you. They do not love you. They report the plus.',
+          },
+          {
+            term: 'Silicon Threshold',
+            body: 'The civic argument of this age: if the ledger sees further than a human, what is a stratarch for? Prax answers follow. Iota answers finish. Reed has to answer without becoming a rubber stamp.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c6-puzzle-outpost',
+        title: 'Puzzle — occupy the hole',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The ledger named d5 first',
+          body: 'Engine doctrine begins with a habit: put the knight where the hole already is. Do not wait for a speech.',
+          tone: 'pressure',
+        },
+        fen: '6k1/5ppp/8/8/8/2N5/5PPP/6K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'pieceOn', square: 'd5', color: 'w', pieceType: 'n' },
+        lesson:
+          'd5 is a hole. Nd5 occupies it. The ledger does not ask whether the move feels inspired.',
+        teaching: {
+          threat: 'If you wander with checks, the outpost stays empty and the threshold never starts.',
+          goalPlain: 'Plant your knight on the d5 outpost.',
+          whyItWorks:
+            'An unchallenged central knight restricts the king and owns key squares — precision as occupancy, not as a sacrifice.',
+          concept: 'Occupy what the ledger already named.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c6-puzzle-precision',
+        title: 'Puzzle — take the hanging queen',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The plus is a fact',
+          body: 'A queen sitting undefended is not a plot twist. Precision is the habit of taking it on this move.',
+          tone: 'pressure',
+        },
+        fen: '6k1/5ppp/8/3q4/8/4N3/5PPP/6K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'advantage', minCp: 250 },
+        lesson:
+          'Black\'s queen sat on d5 as if the knight were furniture. Nxd5 is the counting room\'s favorite receipt.',
+        teaching: {
+          threat: 'If you ignore the hanging queen, the ledger files you as a leak.',
+          goalPlain: 'Win the hanging queen on d5 with the knight.',
+          whyItWorks:
+            'Engine geometry is unkind: the knight already attacks the queen. Taking it is not greed. It is audit.',
+          concept: 'Take what hangs. Now.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c6-puzzle-backrank',
+        title: 'Puzzle — finish the back rank',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The line is forced',
+          body: 'King locked behind his own pawns. The rook owns the eighth. Finish the file; do not narrate it.',
+          tone: 'fire',
+        },
+        fen: '6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'No luft, no escape. Re8 is mate. The ledger would not spend a tempo on anything else.',
+        teaching: {
+          threat: 'If you check from the side or shuffle, the king makes air and the plus becomes a rumor.',
+          goalPlain: 'Deliver back-rank checkmate with the rook.',
+          whyItWorks:
+            'Re8# seals the eighth while the king is boxed by his own pawns — a forced finish, not a speech.',
+          concept: 'When the line is forced, finish it.',
+        },
+      },
+      {
+        type: 'dialogue',
+        id: 'c6-after-puzzles',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'Habits before the counting room',
+          body: 'Reed has the outpost, the capture, and the finish. Prax will ask whether he can follow a public line when his pulse disagrees.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'Good. You can occupy, you can take, and you can finish. Now survive someone who already knows the next eight moves of a clean file.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Prax — the precision examiner?',
+          },
+          {
+            speaker: 'alexion',
+            text: 'He learned the board against ledger-engines, not against poets. He will leave a hole like an invoice, then ask why you did not sit on it.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c6-before-prax',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The public line',
+          body: 'Prax thrives when you invent instead of occupying. Follow the hole, or become the leak in his dossier.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'prax',
+            text: 'The line is already there. Follow it, or be the leak.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if the line is ugly?',
+          },
+          {
+            speaker: 'prax',
+            text: 'Ugly lines still feed cities. Pretty leaks do not. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c6-match-prax',
+        title: 'Encounter 1 of 2 — The Public Line',
+        opponentName: 'Prax',
+        opponentNote:
+          'Ledger examiner — Sicilian-sharp structures, outposts, and no patience for missed captures. Occupy the hole; take what hangs.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Do not invent past the hole',
+          body: 'Prax wins when you look for a speech instead of the outpost. Develop, castle, and ask which square the ledger already named.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'engine',
+        scriptedBlackSans: ['c5', 'Nc6', 'd6', 'Nf6', 'Be7', 'O-O'],
+        ladderTier: 'veteran',
+        difficulty: 3,
+      },
+      {
+        type: 'dialogue',
+        id: 'c6-after-prax',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'The line was followed',
+          body: 'Surviving Prax feels less like a charge and more like passing an audit.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'prax',
+            text: 'You sat on the hole. The counting rooms notice.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'One more rung. Iota is the finish — a plus as law, not as atmosphere.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c6-before-iota',
+        storyBeat: {
+          label: 'Boss pressure',
+          title: 'The finisher',
+          body: 'Iota does not need a sacrifice speech. If you leave a plus on the table, she will cash it and call it weather.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'iota',
+            text: 'A plus of one pawn is a fact. Mercy is how facts become rumors.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if the finish is ugly?',
+          },
+          {
+            speaker: 'iota',
+            text: 'Then finish it uglier than drought. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c6-match-iota',
+        title: 'Encounter 2 of 2 — The Finisher',
+        opponentName: 'Iota',
+        opponentNote:
+          'Threshold specialist — Caro and Slav walls, tiny pluses converted without courtesy, and back-rank finishes. Cash the file.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Finish the plus',
+          body: 'Iota is strongest when you treat a small advantage as atmosphere. Name the conversion, occupy the hole, and do not donate a back rank.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'engine',
+        scriptedBlackSans: ['c6', 'd5', 'Nf6', 'e6', 'Be7', 'O-O'],
+        ladderTier: 'boss',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c6-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Judgment after the ledger',
+          body: 'The threshold does not erase discipline — it decides when a human is still required once the line is public.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You learned to occupy, take, and finish. That is the Silicon Threshold\'s seal: a human who can keep up without becoming a stamp.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Prax asked whether I would sit on the hole. Iota asked whether my plus was a fact.',
+          },
+          {
+            speaker: 'gage',
+            text: 'You kept the pause. The ledger does not cancel it. It only punishes the pause that ignores a hanging piece.',
+          },
+          {
+            speaker: 'iota',
+            text: 'Remember the finish. Later ages will mix schools faster than your fear — but they still punish courtesy toward a plus.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter VI is sealed. Upstairs, the brief is rewritten again: Reed can follow a public line without vanishing into it. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, human synthesis and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c6-freeplay',
+        title: 'Free board — Ledger rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice the public line',
+          body: 'Rehearse outposts, hanging-piece captures, and forced finishes until precision feels as natural as a pause.',
+          tone: 'quiet',
+        },
+        lesson:
+          'Set up a simple structure and alternate sides. Practice occupying holes, taking hanging pieces, and finishing back ranks without a speech.',
+        teaching: {
+          threat: 'None — this is a sandbox after the ledger ladder.',
+          goalPlain:
+            'Rehearse outposts and forced finishes without a story timer. Return to the vestibule when finished.',
+          whyItWorks:
+            'Ledger skill is recognizing the public line early enough to follow it cheaply, then finishing what the follow won.',
+          concept: 'Precision becomes instinct only through quiet repetition.',
         },
       },
     ],

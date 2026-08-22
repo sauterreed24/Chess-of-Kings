@@ -84,6 +84,20 @@ export const RIVAL_OPENING_SAN_BIAS: Record<string, Record<number, Record<string
     7: { Be7: 7, 'O-O': 4 },
     9: { 'O-O': 7, c5: 4 },
   },
+  prax: {
+    1: { c5: 8, e5: 3, c6: 2 },
+    3: { Nc6: 8, d6: 4 },
+    5: { d6: 7, Nf6: 5 },
+    7: { Nf6: 7, Be7: 4 },
+    9: { Be7: 6, 'O-O': 5 },
+  },
+  iota: {
+    1: { c6: 8, d5: 4, e6: 2 },
+    3: { d5: 8, Nf6: 3 },
+    5: { Nf6: 7, e6: 4 },
+    7: { e6: 7, Be7: 4 },
+    9: { Be7: 6, 'O-O': 5 },
+  },
 }
 
 export function rivalOpeningWeightBoost(

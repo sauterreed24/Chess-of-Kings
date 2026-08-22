@@ -169,6 +169,38 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       titleId: 'discipline-analyst',
     },
   ],
+  'c6-match-prax': [
+    {
+      id: 'rw-variant-prax-precision',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Prax Public Line',
+      description: "Replay Prax's ledger-precision doctrine from Chapter VI in Duel mode.",
+      duelVariantId: 'prax-precision',
+    },
+    {
+      id: 'rw-codex-prax-line',
+      kind: 'codex',
+      label: 'Archive Note: The Public Line',
+      description: 'Prax files that an unoccupied hole is a leak, and that you sat on it.',
+      codexId: 'codex-prax-line',
+    },
+  ],
+  'c6-match-iota': [
+    {
+      id: 'rw-variant-iota-threshold',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Iota Ledger Finish',
+      description: "Replay Iota's threshold-finish doctrine from Chapter VI in Duel mode.",
+      duelVariantId: 'iota-threshold',
+    },
+    {
+      id: 'rw-title-ledger',
+      kind: 'title',
+      label: 'Title Earned: Ledger Analyst',
+      description: 'Recognized for occupying holes, taking hanging pieces, and finishing forced lines.',
+      titleId: 'ledger-analyst',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
@@ -245,6 +277,21 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       kind: 'chronicle',
       label: 'Chronicle Echo Unlocked',
       description: 'A fifth echo joins your archive: luft, the pause, and technical conversion.',
+    },
+  ],
+  ch6: [
+    {
+      id: 'rw-title-ledger-seal',
+      kind: 'title',
+      label: 'Title Earned: Seal of the Silicon Threshold',
+      description: 'Chapter VI completed. Your chronicle carries precision without a speech as a civic virtue.',
+      titleId: 'seal-silicon-threshold',
+    },
+    {
+      id: 'rw-chronicle-echo-ch6',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'A sixth echo joins your archive: outposts, hanging captures, and forced finishes.',
     },
   ],
 }

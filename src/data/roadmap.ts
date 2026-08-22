@@ -3,14 +3,6 @@ import type { RoadmapChapter } from '../types'
 /** Post-MVP chapters — visible on Chapters screen, not playable. */
 export const LOCKED_ROADMAP: RoadmapChapter[] = [
   {
-    id: 'ch6',
-    listTitle: 'Chapter VI',
-    subtitle: 'The Silicon Threshold',
-    era: 'Engine supremacy',
-    teaser:
-      'Precision without mercy — when calculation outpaces intuition, and the archive teaches how far a human can follow.',
-  },
-  {
     id: 'ch7',
     listTitle: 'Chapter VII',
     subtitle: 'The Human Synthesis',
