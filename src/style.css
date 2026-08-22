@@ -3710,10 +3710,6 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
     margin-bottom: 0.75rem;
     padding: 0.72rem 0.82rem 0.86rem;
   }
-  .screen-play--board-scene .play-crawl {
-    margin-bottom: 0.32rem;
-    padding: 0.26rem 0.5rem;
-  }
 
   .play-crawl__row {
     align-items: flex-start;
