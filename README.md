@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.106)
+## What's new in this release (v0.5.107)
+
+**Pass 115 — phone dossier folds** — World of the Long Reign and Chronicle Index lore summaries keep a 44px hit target on a 390×844 instrument. See [`docs/PASS115_PHONE_DOSSIER_FOLD.md`](docs/PASS115_PHONE_DOSSIER_FOLD.md).
+
+## Previous release (v0.5.106)
 
 **Pass 114 — phone honor guard** — the title plate’s carved ivory/lapis set wraps into two readable ranks on a 390×844 instrument. See [`docs/PASS114_PHONE_HONOR_SCALE.md`](docs/PASS114_PHONE_HONOR_SCALE.md).
 

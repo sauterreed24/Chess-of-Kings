@@ -66,6 +66,14 @@ export function syncPhoneHitTarget(el: HTMLElement | null | undefined, visible: 
   stylePhoneHitTarget(el, isPhoneLabNav() && visible)
 }
 
+/** Lore / dossier summaries are flex but CSS floors them at 2.4rem (~41px). */
+export function syncPhoneDossierFolds(root: ParentNode | null | undefined): void {
+  if (!root) return
+  for (const el of root.querySelectorAll<HTMLElement>('.dossier-fold__summary')) {
+    syncPhoneHitTarget(el, true)
+  }
+}
+
 /** Title privacy anchors are `display:inline`; min-height only grows an inline-block box. */
 export function syncPhoneInlineHitTarget(el: HTMLElement | null | undefined, visible: boolean): void {
   if (!el) return

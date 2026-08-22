@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
-import { applyLabOverlayCaption, clearPhoneLessonMarkers, isPhoneLabNav, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneHitTarget, syncPhoneInlineHitTarget, syncPhonePuzzleLesson } from './labModal'
+import { applyLabOverlayCaption, clearPhoneLessonMarkers, isPhoneLabNav, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneDossierFolds, syncPhoneHitTarget, syncPhoneInlineHitTarget, syncPhonePuzzleLesson } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -345,6 +345,7 @@ export function mountApp(app: HTMLDivElement) {
     syncPhoneHitTarget(btnTitleVisual, true)
     for (const el of titlePrivacyHits) syncPhoneInlineHitTarget(el, true)
     syncPhoneTopNav()
+    syncPhoneDossierFolds(app)
   }
 
   function syncPhoneTopNav() {

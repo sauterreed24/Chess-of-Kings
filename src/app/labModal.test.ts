@@ -5,6 +5,7 @@ import {
   clearPhoneLessonMarkers,
   setTopBarInertForLab,
   syncLabOverlayCaption,
+  syncPhoneDossierFolds,
   syncPhoneInlineHitTarget,
   syncPhonePuzzleLesson,
 } from './labModal'
@@ -394,5 +395,16 @@ describe('setTopBarInertForLab', () => {
     syncPhoneInlineHitTarget(link, true)
     expect(link.style.minHeight).toBe('')
     expect(link.style.display).toBe('')
+  })
+
+  it('floors dossier-fold summaries at 44px on phone', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = '<details class="dossier-fold"><summary class="dossier-fold__summary">World</summary></details>'
+    const summary = document.querySelector<HTMLElement>('.dossier-fold__summary')!
+    syncPhoneDossierFolds(document.body)
+    expect(summary.style.minHeight).toBe('44px')
+    stubPhoneLabNav(false)
+    syncPhoneDossierFolds(document.body)
+    expect(summary.style.minHeight).toBe('')
   })
 })

@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.107] — 2026-08-22
+
+Pass 115 — phone dossier folds:
+
+- **Playability** — title / chronicle lore summaries, duel dossier folds, and teaching “Why it works” stay 44px on `max-width: 700px`. CSS still floors them at 2.4rem (~41px). No new CSS.
+- **Playwright** — 390×844 asserts the title and Chronicle Index lore folds.
+- No CSS budget change. Docs: [`docs/PASS115_PHONE_DOSSIER_FOLD.md`](docs/PASS115_PHONE_DOSSIER_FOLD.md).
+
 ## [0.5.106] — 2026-08-22
 
 Pass 114 — phone title honor guard:

@@ -3255,6 +3255,18 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-band-status')).toBeVisible()
 })
 
+test('title lore fold stays 44px on the phone instrument', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  const titleFold = page.locator('.title-lore-fold .dossier-fold__summary')
+  await expect(titleFold).toBeVisible({ timeout: 15_000 })
+  expect(await titleFold.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.locator('#btn-chapters').click()
+  const chronicleFold = page.locator('.chronicle-lore-fold .dossier-fold__summary')
+  await expect(chronicleFold).toBeVisible()
+  expect(await chronicleFold.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
 test('title top nav stays 44px on the phone instrument', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')

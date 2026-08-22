@@ -19,7 +19,7 @@ import { prosePeekSkipIndex } from '../play/skipAhead'
 import { resolveProfileByMatchId } from '../../chess/aiProfiles'
 import type { GameFlow } from '../gameFlow'
 import type { MountDomRefs, MountPlayState } from '../mountContext'
-import { syncPhonePuzzleLesson } from '../labModal'
+import { syncPhoneDossierFolds, syncPhonePuzzleLesson } from '../labModal'
 
 export type RenderSceneCallbacks = {
   setBoardVisible: (on: boolean) => void
@@ -248,6 +248,7 @@ export function renderScene(
   /* Dock/restore Prove on every scene so leaving a phone puzzle or the
      opening calibration unhides the manuscript and puts Advance back. */
   syncPhonePuzzleLesson(dom.narrativeBody)
+  syncPhoneDossierFolds(dom.narrativeBody)
   callbacks.updateAdvance(flow)
   window.requestAnimationFrame(callbacks.syncNarrativeFade)
   if (showBoard) callbacks.revealBoardScene()

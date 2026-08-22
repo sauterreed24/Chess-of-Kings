@@ -23,7 +23,7 @@ import {
   DOSSIER_ECHO_EMPTY,
   ECHO_OUTCOME_LABELS,
 } from '../../data/strings'
-import { syncPhoneHitTarget } from '../labModal'
+import { syncPhoneDossierFolds, syncPhoneHitTarget } from '../labModal'
 import { aiTraitBars } from '../mainUiFormatters'
 import type { GameFlow } from '../gameFlow'
 import type { RewardOverlayController } from '../rewardOverlayController'
@@ -388,6 +388,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     ]) {
       syncPhoneHitTarget(duelPanel.querySelector<HTMLElement>(`#${id}`), true)
     }
+    syncPhoneDossierFolds(duelPanel)
     duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
       const val = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? 'classic-royal') as PieceSkinId
       flow.setPieceSkin(val)
