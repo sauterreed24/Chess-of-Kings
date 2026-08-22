@@ -37,4 +37,4 @@ Sealing the chapter amends the committee file again: Reed can still choose after
 - Orchestrator: Ch VIII seal opens Ch IX; pre-Ch-IX saves that sealed the Alexandrine age unlock Ch IX on load; sealing IX finishes the compiled campaign
 - Duel roster / reward unlock ids for Wren and Bram
 - Plateau hub fixtures cover sealed Ch VIII (Apotheosis invite), pending Ch IX, and sealed Ch IX mastery plateau
-- Playwright: Chapter IX drills (`e2-e6`, `e4-d6`, `a1-a8`) and post-VIII / post-IX hub copy
+- Playwright: Chapter IX drills (`e2-e6`, `e4-d6`, `a1-a8`) and first Wren match on desktop and 390×844; Bram from a mid-age resume (`d2–d4`, scripted `Nf6`); post-VIII / post-IX hub copy

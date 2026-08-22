@@ -255,6 +255,7 @@ describe('campaign story beats', () => {
     const bram = matches.find((scene) => scene.id === 'c9-match-bram')
     expect(wren?.type === 'match' && wren.scriptedBlackSans?.[0]).toBe('e5')
     expect(bram?.type === 'match' && bram.scriptedBlackSans?.[0]).toBe('Nf6')
+    expect(ch9?.scenes.findIndex((scene) => scene.id === 'c9-before-bram')).toBe(9)
     const puzzles = ch9?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
     expect(puzzles.map((scene) => scene.id)).toEqual(
       expect.arrayContaining(['c9-puzzle-census', 'c9-puzzle-compile', 'c9-puzzle-last-rank']),

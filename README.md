@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.88)
+## What's new in this release (v0.5.89)
+
+**Pass 97 — Chapter IX Bram match** — the Apotheosis Engine second examiner stays board-first on a 390×844 instrument from a mid-age resume, with queen-pawn `d2–d4` and the authored Indian `Nf6` reply. See [`docs/PASS97_PHONE_CH9_BRAM.md`](docs/PASS97_PHONE_CH9_BRAM.md).
+
+## Previous release (v0.5.88)
 
 **Pass 96 — Chapter VIII Elara match** — the Alexandrine Board second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored Sicilian `c5` reply. See [`docs/PASS96_PHONE_CH8_ELARA.md`](docs/PASS96_PHONE_CH8_ELARA.md).
 
