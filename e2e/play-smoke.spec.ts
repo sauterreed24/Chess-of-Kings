@@ -352,6 +352,49 @@ function seedChapterIOrnateAfterAmara() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+/** Mid-age Chapter I save: after Amara, every set unlocked, parked on classic-royal. */
+function seedChapterISkinPickerAfterAmara() {
+  const save = {
+    version: 3,
+    chapterIndex: 1,
+    sceneIndex: 10,
+    highestUnlockedChapter: 1,
+    lastScreen: 'title',
+    chapter1Complete: false,
+    chapter2Complete: false,
+    completedSceneIds: [
+      'c1-intro',
+      'c1-codex-principles',
+      'c1-tutorial-hanging',
+      'c1-after-hanging',
+      'c1-tutorial-castle',
+      'c1-after-castle',
+      'c1-puzzle-mate',
+      'c1-before-amara',
+      'c1-match-amara',
+      'c1-after-amara',
+    ],
+    completedPuzzleIds: ['c1-tutorial-hanging', 'c1-tutorial-castle', 'c1-puzzle-mate'],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion', 'amara'],
+    unlockedDuelVariantIds: ['alexion-mentor'],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 20,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal', 'high-contrast', 'alexandrine-ornate', 'obsidian-neon'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1120, peak: 1120, rated: 1 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 /** Mid-age Chapter I save: after Lukas, parked on `c1-before-edred` (scene 13). */
 function seedChapterIAfterLukas() {
   const save = {
@@ -2677,6 +2720,35 @@ test('alexandrine-ornate set reads on the phone instrument', { timeout: 120_000 
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+e5/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+  await expect(page.locator('#btn-reset')).toBeVisible()
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
+test('title piece-skin picker paints the phone instrument', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterISkinPickerAfterAmara)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#title-skin-field')).toBeVisible()
+  await expect(page.locator('#title-skin')).toBeVisible()
+  expect(await page.locator('#title-skin').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await expect(page.locator('#title-skin')).toHaveValue('classic-royal')
+  await page.locator('#title-skin').selectOption('high-contrast')
+  await expect(page.locator('#title-skin')).toHaveValue('high-contrast')
+  await enterChapterI(page)
+  await advanceToLukasMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Lukas')
+  await expect(page.locator('#chess-root')).toHaveAttribute('data-skin', 'high-contrast')
+  await expect(page.locator('#chess-root .piece-carve')).toHaveCount(0)
+  expect(
+    await page.locator('[data-square="e2"] .piece').evaluate((el) => getComputedStyle(el).getPropertyValue('--piece-fill').trim()),
+  ).toMatch(/^#fff(?:fff)?$/i)
+  expect(await page.locator('[data-square="e2"] svg g').first().getAttribute('stroke-width')).toBe('2.4')
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+e5/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
 })

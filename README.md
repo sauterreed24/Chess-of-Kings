@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.99)
+## What's new in this release (v0.5.100)
+
+**Pass 108 — phone skin picker** — the title Piece skin control is a 44px hit target on a 390×844 instrument, and switching sets paints the next match. See [`docs/PASS108_PHONE_SKIN_PICK.md`](docs/PASS108_PHONE_SKIN_PICK.md).
+
+## Previous release (v0.5.99)
 
 **Pass 107 — Alexandrine Ornate** — Demetrios’s reward set stays carved and thick-stroked on a 390×844 instrument, so cream/gold and sapphire/gold still read. See [`docs/PASS107_PHONE_ORNATE.md`](docs/PASS107_PHONE_ORNATE.md).
 
