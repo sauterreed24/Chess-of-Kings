@@ -2335,6 +2335,8 @@ test('first Chapter I match stays board-first on the phone instrument', { timeou
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+\S+/, { timeout: 25_000 })
+  expect(await page.locator('#move-ledger-label').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('.ledger-row').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.78rem')
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')

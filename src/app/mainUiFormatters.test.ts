@@ -57,6 +57,7 @@ describe('mainUiFormatters', () => {
     expect(html).toContain('e4')
     expect(html).toContain('e5')
     expect(html).toContain('ledger-row--latest')
+    expect(html).toContain('font-size:0.78rem')
     expect(html).not.toContain('<script')
   })
 

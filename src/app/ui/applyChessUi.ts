@@ -209,6 +209,8 @@ export function applyChessUi(
     const ledgerHtml = formatMoveLedger(p.sanLog, p.sanQuality)
     dom.moveLedger.innerHTML = ledgerHtml
     dom.moveLedger.scrollTop = dom.moveLedger.scrollHeight
+    const heading = dom.moveLedger.previousElementSibling
+    if (heading instanceof HTMLElement) heading.style.fontSize = '0.7rem'
   }
 
   if (calibration) {
