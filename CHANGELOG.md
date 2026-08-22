@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.16] — 2026-08-22
+
+Pass 24 — First live match:
+
+- Playwright walks Chapter I teaching through hanging knight, castle, and mate, then opens **Amara** on a full 32-piece lamp-lit board and plays `1. e4 d5`.
+- Docs: [`docs/PASS24_FIRST_MATCH.md`](docs/PASS24_FIRST_MATCH.md).
+
 ## [0.5.15] — 2026-08-22
 
 Pass 23 — Goal stays while you choose:

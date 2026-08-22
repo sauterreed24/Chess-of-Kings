@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test
 
 test('calibration board registers a pawn move from skip-ahead', async ({ page }) => {
   await page.goto('./')
@@ -78,6 +78,68 @@ function seedChapterIUnlocked() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+async function enterChapterI(page: Page) {
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn[data-idx="1"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+}
+
+async function skipToHangingKnight(page: Page) {
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Develop your pieces|opening theory|Ancient Laws/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="d4"]')).toBeVisible()
+}
+
+async function playBxd4(page: Page) {
+  await page.locator('[data-square="c3"]').click()
+  await page.locator('[data-square="d4"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+}
+
+async function advanceToCastlePuzzle(page: Page) {
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/You saw it|forcing moves|tempo/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e1"]')).toBeVisible()
+}
+
+async function playCastleKingside(page: Page) {
+  await page.locator('[data-square="e1"]').click()
+  await page.locator('[data-square="g1"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+}
+
+async function advanceToMatePuzzle(page: Page) {
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/rooks are now connected|two things at once|tempo matters/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e5"]')).toBeVisible()
+}
+
+async function playQh8Mate(page: Page) {
+  await page.locator('[data-square="e5"]').click()
+  await page.locator('[data-square="h8"]').click()
+  await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+}
+
+async function walkChapterITeachingToMate(page: Page) {
+  await enterChapterI(page)
+  await skipToHangingKnight(page)
+  await playBxd4(page)
+  await advanceToCastlePuzzle(page)
+  await playCastleKingside(page)
+  await advanceToMatePuzzle(page)
+}
+
+async function advanceToAmaraMatch(page: Page) {
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Amara|Egyptian symmetry|initiate/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+}
+
 test('calibration prove completes after four developing white moves', async ({ page }) => {
   await page.goto('./')
   await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
@@ -150,13 +212,8 @@ test('hanging knight goal stays short on the phone instrument', async ({ page })
   await page.addInitScript(seedChapterIUnlocked)
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
-  await page.locator('#btn-chapters').click({ timeout: 15_000 })
-  await page.locator('.chapter-btn[data-idx="1"]').click()
-  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('#narrative-body')).toContainText(/Develop your pieces|opening theory|Ancient Laws/i)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="d4"]')).toBeVisible()
+  await enterChapterI(page)
+  await skipToHangingKnight(page)
   const guide = page.locator('#board-guide')
   await expect(guide).toBeVisible()
   await expect(guide).toBeInViewport()
@@ -177,20 +234,10 @@ test('castle puzzle marks kingside as a castle destination', async ({ page }) =>
   await page.addInitScript(seedChapterIUnlocked)
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('./')
-  await page.locator('#btn-chapters').click({ timeout: 15_000 })
-  await page.locator('.chapter-btn[data-idx="1"]').click()
-  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('#narrative-body')).toContainText(/Develop your pieces|opening theory|Ancient Laws/i)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="d4"]')).toBeVisible()
-  await page.locator('[data-square="c3"]').click()
-  await page.locator('[data-square="d4"]').click()
-  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
-  await page.locator('#btn-next').click()
-  await expect(page.locator('#narrative-body')).toContainText(/You saw it|forcing moves|tempo/i)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="e1"]')).toBeVisible()
+  await enterChapterI(page)
+  await skipToHangingKnight(page)
+  await playBxd4(page)
+  await advanceToCastlePuzzle(page)
   await expect(page.locator('#board-guide')).toContainText(/Castle kingside/i)
   await page.locator('[data-square="e1"]').click()
   await expect(page.locator('[data-square="g1"]')).toHaveClass(/sq-legal-castle/)
@@ -203,27 +250,7 @@ test('mate-in-one puzzle seals with queen to h8', { timeout: 90_000 }, async ({ 
   await page.addInitScript(seedChapterIUnlocked)
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('./')
-  await page.locator('#btn-chapters').click({ timeout: 15_000 })
-  await page.locator('.chapter-btn[data-idx="1"]').click()
-  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('#narrative-body')).toContainText(/Develop your pieces|opening theory|Ancient Laws/i)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="d4"]')).toBeVisible()
-  await page.locator('[data-square="c3"]').click()
-  await page.locator('[data-square="d4"]').click()
-  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
-  await page.locator('#btn-next').click()
-  await expect(page.locator('#narrative-body')).toContainText(/You saw it|forcing moves|tempo/i)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="e1"]')).toBeVisible()
-  await page.locator('[data-square="e1"]').click()
-  await page.locator('[data-square="g1"]').click()
-  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
-  await page.locator('#btn-next').click()
-  await expect(page.locator('#narrative-body')).toContainText(/rooks are now connected|two things at once|tempo matters/i)
-  await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="e5"]')).toBeVisible()
+  await walkChapterITeachingToMate(page)
   await expect(page.locator('[data-square="e5"] .piece-lit')).toBeVisible()
   await expect(page.locator('#board-guide')).toContainText(/Checkmate in one/i)
   await page.locator('[data-square="e5"]').click()
@@ -233,6 +260,25 @@ test('mate-in-one puzzle seals with queen to h8', { timeout: 90_000 }, async ({ 
   await page.locator('[data-square="h8"]').click()
   await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+})
+
+test('first Chapter I match lets Reed open against Amara', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIUnlocked)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await walkChapterITeachingToMate(page)
+  await playQh8Mate(page)
+  await advanceToAmaraMatch(page)
+  await expect(page.locator('.match-card__name')).toContainText('Amara')
+  await expect(page.locator('[data-square="e2"] .piece-lit')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .piece-lit')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+d5/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
 })
 
 test('title honor guard shows carved ivory and lapis', async ({ page }) => {

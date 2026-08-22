@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.15)
+## What's new in this release (v0.5.16)
+
+**Pass 24 — First live match** — Chapter I teaching walks into Amara on a full lamp-lit board, and `1. e4 d5` is locked in Playwright. See [`docs/PASS24_FIRST_MATCH.md`](docs/PASS24_FIRST_MATCH.md).
+
+## Previous release (v0.5.15)
 
 **Pass 23 — Goal stays while you choose** — selecting a piece no longer hides the teaching command, and ivory/lapis get a carved waist collar. See [`docs/PASS23_GOAL_STAYS.md`](docs/PASS23_GOAL_STAYS.md).
 
