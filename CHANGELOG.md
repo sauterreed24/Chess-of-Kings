@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.28] — 2026-08-22
+
+Pass 36 — Crown cup:
+
+- **Ivory/lapis** pawns, bishops, rooks, queens, and kings get a turned hollow in the head so the mitre, crown, and battlement read as carved bowls. Knights skip. Forced **Visual: Lean** keeps the cup.
+- Playwright asserts `.piece-cup` on the calibration pawn, hanging-knight bishop, and title honor.
+- Docs: [`docs/PASS36_CROWN_CUP.md`](docs/PASS36_CROWN_CUP.md).
+
 ## [0.5.27] — 2026-08-22
 
 Pass 35 — Stem umbra:

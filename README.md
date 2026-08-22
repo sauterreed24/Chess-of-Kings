@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.27)
+## What's new in this release (v0.5.28)
+
+**Pass 36 — Crown cup** — ivory and lapis heads get a turned hollow so mitre, crown, and battlement read as carved bowls. See [`docs/PASS36_CROWN_CUP.md`](docs/PASS36_CROWN_CUP.md).
+
+## Previous release (v0.5.27)
 
 **Pass 35 — Stem umbra** — ivory and lapis get a shadow-side core opposite the lamp flute so the stem reads as a cylinder. See [`docs/PASS35_STEM_UMBRA.md`](docs/PASS35_STEM_UMBRA.md).
 
