@@ -134,7 +134,7 @@ const CUP: Record<PieceSymbol, { cy: number; rx: number; ry: number } | null> = 
   b: { cy: 11.4, rx: 2.35, ry: 2.2 },
   r: { cy: 11.4, rx: 7.35, ry: 2.38 },
   q: { cy: 15.1, rx: 5.1, ry: 1.85 },
-  k: { cy: 16.4, rx: 3.15, ry: 1.65 },
+  k: { cy: 15.2, rx: 3.45, ry: 2.38 },
 }
 
 /** Molded plinth just above the foot. */

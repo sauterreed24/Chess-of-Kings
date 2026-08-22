@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.57] — 2026-08-22
+
+Pass 65 — King crown cup:
+
+- **Ivory/lapis kings** deepen the lathe cup so calibration e1 is not a 3.2px dish under a readable plus. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration e1 and hanging-knight d1 cups are at least 3.5 CSS pixels tall.
+- Docs: [`docs/PASS65_KING_BOWL.md`](docs/PASS65_KING_BOWL.md).
+
 ## [0.5.56] — 2026-08-22
 
 Pass 64 — Knight eye:
