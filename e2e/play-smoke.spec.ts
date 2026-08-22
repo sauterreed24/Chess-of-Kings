@@ -3255,6 +3255,21 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-band-status')).toBeVisible()
 })
 
+test('skip ahead stays 44px on the phone instrument', { timeout: 90_000 }, async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  const skip = page.locator('#btn-skip-ahead')
+  await expect(skip).toBeVisible()
+  expect(await skip.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  const box = await skip.boundingBox()
+  expect(box).toBeTruthy()
+  expect(Math.round(box!.height)).toBeGreaterThanOrEqual(44)
+})
+
 test('title enter archive stays 44px on the phone instrument', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
