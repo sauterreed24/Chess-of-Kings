@@ -40,6 +40,9 @@ describe('campaign story beats', () => {
     expect(hunt?.type === 'puzzle' && hunt.teaching.goalBrief).toMatch(/eighth rank/i)
     expect(rowan?.type === 'match' && rowan.scriptedBlackSans?.[0]).toBe('exf4')
     expect(rowan?.type === 'match' && rowan.fen).toContain('4PP2')
+    const vega = ch2?.scenes.find((scene) => scene.id === 'c2-match-vega')
+    expect(vega?.type === 'match' && vega.scriptedBlackSans?.[0]).toBe('Bc5')
+    expect(ch2?.scenes.findIndex((scene) => scene.id === 'c2-before-vega')).toBe(7)
     if (rowan?.type !== 'match' || !rowan.fen) return
     const board = new Chess(rowan.fen)
     expect(board.move('Nf3')).toBeTruthy()
