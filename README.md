@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.82)
+## What's new in this release (v0.5.83)
+
+**Pass 91 — Chapter V Gage match** — the first Machine of Discipline match stays board-first on a 390×844 instrument, with the authored `d6` reply. See [`docs/PASS91_PHONE_CH5_MATCH.md`](docs/PASS91_PHONE_CH5_MATCH.md).
+
+## Previous release (v0.5.82)
 
 **Pass 90 — Chapter IV Nysa match** — the first Paradox Masters match stays board-first on a 390×844 instrument, with the authored `g6` reply. See [`docs/PASS90_PHONE_CH4_MATCH.md`](docs/PASS90_PHONE_CH4_MATCH.md).
 
