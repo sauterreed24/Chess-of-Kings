@@ -90,8 +90,9 @@ export function renderScene(
     dom.chapterRail.innerHTML = ''
   }
   
-  /* Teaching puzzles keep command + marble + take-back. The chapter crawl,
-     empty ledger, sound row, and duplicate lesson line are match chrome. */
+  /* Teaching puzzles keep command + marble + take-back. Phone calibration
+     docks Prove the same way. The chapter crawl, empty ledger, sound row,
+     and duplicate lesson line are match chrome. */
   const teachingPuzzle = scene.type === 'puzzle'
   dom.app.querySelector('.play-crawl')?.classList.toggle('hidden', teachingPuzzle)
   dom.moveLedger.closest('.move-ledger-wrap')?.classList.toggle('hidden', teachingPuzzle)
@@ -101,6 +102,11 @@ export function renderScene(
     dom.narrativeBody.setAttribute('data-puzzle-lesson', '')
   } else {
     dom.narrativeBody.removeAttribute('data-puzzle-lesson')
+  }
+  if (scene.type === 'calibration') {
+    dom.narrativeBody.setAttribute('data-calibration-lesson', '')
+  } else {
+    dom.narrativeBody.removeAttribute('data-calibration-lesson')
   }
 
   /* Hide eval bar and captured rows outside rated / rehearsal boards */
@@ -239,8 +245,8 @@ export function renderScene(
     dom.btnNextHint.textContent = 'Leave when ready'
   }
   
-  /* Dock/restore Prove on every scene so leaving a phone puzzle unhides
-     the manuscript and puts Advance back in .narrative-actions. */
+  /* Dock/restore Prove on every scene so leaving a phone puzzle or the
+     opening calibration unhides the manuscript and puts Advance back. */
   syncPhonePuzzleLesson(dom.narrativeBody)
   callbacks.updateAdvance(flow)
   window.requestAnimationFrame(callbacks.syncNarrativeFade)

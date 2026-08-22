@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.42] — 2026-08-22
+
+Pass 50 — Phone calibration Prove dock:
+
+- **Phone calibration** hides the duplicate manuscript, empty ledger, sound row, and lesson note. Prove docks next to Hint so the first board does not bury Advance below the fold. Wide labs keep the teaching card.
+- Playwright keeps Hint|Prove on one row at 390×844 and hides the ledger after e4.
+- Docs: [`docs/PASS50_PHONE_CAL_PROVE.md`](docs/PASS50_PHONE_CAL_PROVE.md).
+
 ## [0.5.41] — 2026-08-22
 
 Pass 49 — Pawn globe orb:
