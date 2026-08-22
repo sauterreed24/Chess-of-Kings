@@ -2320,6 +2320,8 @@ test('first Chapter I match stays board-first on the phone instrument', { timeou
   expect(await page.locator('.tier-badge').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   expect(await page.locator('.match-num').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   expect(await page.locator('.ltrack-dot').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('.story-beat__label').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('.ai-traits .teach-label').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   await expect(page.locator('[data-square="e2"] .pawn-silhouette')).toBeVisible()
   await expect(page.locator('[data-square="e1"] .king-silhouette')).toBeVisible()
   await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()

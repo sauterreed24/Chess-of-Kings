@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.126] — 2026-08-22
+
+Pass 134 — story and dossier kickers:
+
+- **Graphics** — story-beat labels and teaching / Court Dossier kickers render at 0.7rem so Pressure / Court Dossier still read on phone (CSS was 0.5rem). No new CSS.
+- **Playwright** — 390×844 Amara asserts `.story-beat__label` and `.ai-traits .teach-label`.
+- Docs: [`docs/PASS134_BEAT_LABEL.md`](docs/PASS134_BEAT_LABEL.md).
+
 ## [0.5.125] — 2026-08-22
 
 Pass 133 — match briefing readability:

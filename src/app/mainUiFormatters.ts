@@ -95,11 +95,11 @@ export function teachingBlock(teaching: NonNullable<PuzzleScene['teaching']>) {
   return `
     <div class="teaching">
       <div class="teaching-card">
-        <span class="teach-label">Threat</span>
+        <span class="teach-label" style="font-size:0.7rem">Threat</span>
         <p class="teach-body">${escapeHtml(teaching.threat)}</p>
       </div>
       <div class="teaching-card">
-        <span class="teach-label">Your goal</span>
+        <span class="teach-label" style="font-size:0.7rem">Your goal</span>
         <p class="teach-body">${escapeHtml(teaching.goalPlain)}</p>
       </div>
     </div>
@@ -108,11 +108,11 @@ export function teachingBlock(teaching: NonNullable<PuzzleScene['teaching']>) {
       <div class="dossier-fold__body">
         <div class="teaching">
           <div class="teaching-card">
-            <span class="teach-label">Why it works</span>
+            <span class="teach-label" style="font-size:0.7rem">Why it works</span>
             <p class="teach-body">${escapeHtml(teaching.whyItWorks)}</p>
           </div>
           <div class="teaching-card">
-            <span class="teach-label">Concept</span>
+            <span class="teach-label" style="font-size:0.7rem">Concept</span>
             <p class="teach-body">${escapeHtml(teaching.concept)}</p>
           </div>
         </div>
@@ -125,7 +125,7 @@ export function storyBeatBlock(storyBeat: StoryBeat | undefined): string {
   const tone = storyBeat.tone ?? 'quiet'
   return `
     <aside class="story-beat story-beat--${escapeHtml(tone)}">
-      <span class="story-beat__label">${escapeHtml(storyBeat.label)}</span>
+      <span class="story-beat__label" style="font-size:0.7rem">${escapeHtml(storyBeat.label)}</span>
       <strong class="story-beat__title">${escapeHtml(storyBeat.title)}</strong>
       <p class="story-beat__body">${escapeHtml(storyBeat.body)}</p>
     </aside>`
@@ -269,7 +269,7 @@ export function aiTraitBars(profile: AiProfile): string {
   const school = CONVERSION_SCHOOL[profile.conversionPersona] ?? 'Finishes by any road'
   return `<div class="ai-traits" aria-label="${escapeHtml(profile.label)} court dossier">
     <div class="ai-traits__title">
-      <span class="teach-label">Court Dossier</span>
+      <span class="teach-label" style="font-size:0.7rem">Court Dossier</span>
       <strong>${escapeHtml(profile.label)}</strong>
       <small>${escapeHtml(school)}</small>
     </div>
