@@ -1,7 +1,8 @@
-import type { Chess } from 'chess.js'
+import type { Chess, Color, PieceSymbol } from 'chess.js'
 import type { MoveQuality } from './gameFlow'
 import { escapeHtml } from './htmlEscape'
-import type { AiProfile, MatchHistoryEntry, MatchScene, PuzzleScene, Scene, StoryBeat } from '../types'
+import { glyphForSkin } from '../chess/skins'
+import type { AiProfile, MatchHistoryEntry, MatchScene, PieceSkinId, PuzzleScene, Scene, StoryBeat } from '../types'
 
 /** Compiled once — applied on every chess HUD tick when AI persona is present. */
 export const BOSS_PROFILE_RE = /(Apex|Advisor|Counterpart|Strategos|Boss)/i
@@ -343,19 +344,24 @@ export function performanceDeltaLines(history: MatchHistoryEntry[], latest: Matc
   return lines.slice(0, 3)
 }
 
-const PIECE_GLYPH: Record<string, [string, string]> = {
-  q: ['♕', '♛'],
-  r: ['♖', '♜'],
-  b: ['♗', '♝'],
-  n: ['♘', '♞'],
-  p: ['♙', '♟'],
+const CAPTURE_TYPES: readonly PieceSymbol[] = ['q', 'r', 'b', 'n', 'p']
+
+/** Match, freeplay, and duel surfaces share the same eval / capture HUD. */
+export function showsEvalHud(sceneType: Scene['type']): boolean {
+  return sceneType === 'match' || sceneType === 'freeplay'
 }
 
-export function capturedRow(types: string[], color: 'w' | 'b'): string {
+export function capturedRow(
+  types: string[],
+  color: Color,
+  skin: PieceSkinId = 'classic-royal',
+): string {
   if (!types.length) return '<span class="captured-empty">—</span>'
-  const gi = color === 'w' ? 0 : 1
   return types
-    .map((t) => `<span class="cap-piece" aria-hidden="true">${(PIECE_GLYPH[t] ?? ['?', '?'])[gi]}</span>`)
+    .map((t) => {
+      const piece = (CAPTURE_TYPES.includes(t as PieceSymbol) ? t : 'p') as PieceSymbol
+      return `<span class="cap-piece piece piece--${color}" aria-hidden="true">${glyphForSkin(skin, color, piece)}</span>`
+    })
     .join('')
 }
 

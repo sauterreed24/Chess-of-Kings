@@ -1,5 +1,39 @@
 import { test, expect } from '@playwright/test'
 
+test('calibration board registers a pawn move from skip-ahead', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText('e4')
+  await expect(page.locator('#move-counter')).toContainText('1/4')
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4\s+\S+/, { timeout: 20_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i)
+})
+
+test('compact calibration stacks the board above the manuscript', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  const boardBox = await page.locator('#board-panel').boundingBox()
+  const manuscriptBox = await page.locator('#manuscript-panel').boundingBox()
+  expect(boardBox).toBeTruthy()
+  expect(manuscriptBox).toBeTruthy()
+  expect(boardBox!.y).toBeLessThan(manuscriptBox!.y)
+  expect(boardBox!.width).toBeGreaterThan(300)
+})
+
 test('title → chapter → advance opens the lab simulation', async ({ page }) => {
   await page.goto('./')
   await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })

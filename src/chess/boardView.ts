@@ -36,7 +36,7 @@ export interface BoardViewOptions {
 }
 
 /** Carry duration: long enough to read as weight, short enough to stay snappy. */
-const FLY_MS = 240
+const FLY_MS = 280
 /** Captured piece dissolve — overlaps the incoming carry so it reads as a strike. */
 const CAPTURE_MS = 230
 /** Settle squash when the carried piece is set down on its square. */

@@ -130,9 +130,16 @@ describe('Alexandrine Imperial state polish', () => {
   })
 
   it('keeps the last move legible as an origin-to-destination route cue', () => {
-    expect(CSS).toMatch(/\.sq-last\s*\{[^}]*linear-gradient\(135deg,\s*rgba\(42,96,148,0\.72\)/s)
-    expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*rgba\(26,58,92,0\.72\)/s)
-    expect(CSS).toMatch(/\.sq-last-to\s*\{[^}]*radial-gradient\(circle at 54% 46%/s)
+    expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*box-shadow:\s*inset 0 0 0 3px #a8d88acc/s)
+    expect(CSS).toMatch(/\.sq-last-from::before\s*\{[^}]*#1a3a5c4d/s)
+    expect(CSS).toMatch(/\.sq-last-to\s*\{[^}]*#e8c97ef0/s)
+    expect(CSS).toMatch(/\.sq-last-to::before\s*\{[^}]*radial-gradient\(circle at 54% 46%, #e8c97e73/s)
+    expect(CSS).not.toMatch(/\.sq-last-from \{[^}]*!important/)
+  })
+
+  it('keeps legal-move dots large enough to read on marble and lapis', () => {
+    expect(CSS).toMatch(/\.sq-light\.sq-legal-dot::after,\s*\n\.sq-dark\.sq-legal-dot::after\s*\{[^}]*width:\s*36%/s)
+    expect(CSS).toMatch(/\.sq-light\.sq-legal-dot::after,\s*\n\.sq-dark\.sq-legal-dot::after\s*\{[^}]*max-width:\s*22px/s)
   })
 
   it('keeps the shared Long Reign atlas inlay lightweight and perf-aware', () => {

@@ -12,6 +12,7 @@ import {
   storyBeatBlock,
   teachingBlock,
   tierLabel,
+  showsEvalHud,
 } from '../mainUiFormatters'
 import { buildChapterRail, buildLadderTrack } from '../play/chapterRail'
 import { prosePeekSkipIndex } from '../play/skipAhead'
@@ -89,8 +90,8 @@ export function renderScene(
     dom.chapterRail.innerHTML = ''
   }
   
-  /* Hide eval bar and captured rows outside match mode */
-  play.showEvalBar = scene.type === 'match'
+  /* Hide eval bar and captured rows outside rated / rehearsal boards */
+  play.showEvalBar = showsEvalHud(scene.type)
   dom.evalBarWrap.classList.toggle('hidden', !play.showEvalBar)
   dom.capturedTop.classList.toggle('hidden', !play.showEvalBar)
   dom.capturedBot.classList.toggle('hidden', !play.showEvalBar)
