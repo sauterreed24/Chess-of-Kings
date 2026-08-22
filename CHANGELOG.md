@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.37] — 2026-08-22
+
+Pass 45 — King cross inlay:
+
+- **Ivory/lapis kings** get a gold/lapis cross inlay so the hanging-knight king is not a blank crown after the bishop cleft. Forced **Visual: Lean** keeps the cross.
+- Playwright asserts `.piece-cross` on hanging-knight d1 and four crosses on the title honor.
+- Docs: [`docs/PASS45_KING_CROSS.md`](docs/PASS45_KING_CROSS.md).
+
 ## [0.5.36] — 2026-08-22
 
 Pass 44 — Bishop mitre cleft:
