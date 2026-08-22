@@ -75,6 +75,12 @@ const ROOK_MERLONS: ReadonlyArray<{ x: number; y: number; w: number; h: number }
   { x: 25.3, y: 9.15, w: 4.4, h: 2.15 },
 ]
 
+/** Mitre cleft — vertical cut and crossbar on the bishop head. */
+const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
+  { x: 22.0, y: 8.05, w: 1.0, h: 12.7 },
+  { x: 20.05, y: 17.55, w: 4.9, h: 0.95 },
+]
+
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
 const COLLAR_CY: Record<PieceSymbol, number> = {
   p: 31.8,
@@ -257,6 +263,14 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
             `<rect class="piece-merlon" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.35" fill="${merlonFill}"/>`,
         ).join('')
       : ''
+  const cleftFill = merlonFill
+  const cleft =
+    piece === 'b'
+      ? BISHOP_CLEFT.map(
+          (m) =>
+            `<rect class="piece-cleft" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.35" fill="${cleftFill}"/>`,
+        ).join('')
+      : ''
   return svg
     .replace(
       /<svg([^>]*)>/,
@@ -265,7 +279,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
     .replace(
       '</svg>',
-      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${pearls}${merlons}${highlight}</svg>`,
+      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${pearls}${merlons}${cleft}${highlight}</svg>`,
     )
 }
 

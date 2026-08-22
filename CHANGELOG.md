@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.36] — 2026-08-22
+
+Pass 44 — Bishop mitre cleft:
+
+- **Ivory/lapis bishops** get a carved mitre cleft (vertical cut and crossbar) so the hanging-knight bishop is not a smooth mitre blob. Forced **Visual: Lean** keeps the cleft.
+- Playwright asserts `.piece-cleft` on hanging-knight c3 and four clefts on the title honor.
+- Docs: [`docs/PASS44_BISHOP_CLEFT.md`](docs/PASS44_BISHOP_CLEFT.md).
+
 ## [0.5.35] — 2026-08-22
 
 Pass 43 — Phone puzzle manuscript body:

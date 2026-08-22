@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.35)
+## What's new in this release (v0.5.36)
+
+**Pass 44 — Bishop mitre cleft** — ivory and lapis bishops get a carved mitre cleft so the hanging-knight bishop is not a smooth blob. See [`docs/PASS44_BISHOP_CLEFT.md`](docs/PASS44_BISHOP_CLEFT.md).
+
+## Previous release (v0.5.35)
 
 **Pass 43 — Phone puzzle manuscript body** — hanging-knight phones hide the empty manuscript body and the desktop keyboard hint so Prove sits under the title. See [`docs/PASS43_PHONE_PUZZLE_BODY.md`](docs/PASS43_PHONE_PUZZLE_BODY.md).
 
