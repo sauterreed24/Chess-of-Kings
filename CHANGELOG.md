@@ -15,8 +15,8 @@ level (the save format has its own version field — see
 
 Pass 14 — Teaching clarity:
 
-- **Threat and Your goal** stay fully readable on the live lab. Why it works / Concept fold away.
-- Teaching cards no longer sit in a two-column grid that clipped the calibration brief.
+- **Threat and Your goal** lead the calibration manuscript and stay on screen. Why it works / Concept fold away.
+- Teaching cards no longer sit in a two-column grid that clipped the brief.
 - Docs: [`docs/PASS14_TEACHING_CLARITY.md`](docs/PASS14_TEACHING_CLARITY.md).
 
 ## [0.5.5] — 2026-08-22

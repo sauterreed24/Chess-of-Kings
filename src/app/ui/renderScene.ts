@@ -208,9 +208,9 @@ export function renderScene(
   } else if (scene.type === 'calibration') {
     dom.sceneTag.textContent = scene.title
     dom.narrativeBody.classList.remove('narrative-body--interlude')
-    dom.narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
+    dom.narrativeBody.innerHTML = `${
       scene.teaching ? teachingBlock(scene.teaching) : ''
-    }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The Archive answers at random.</p>`
+    }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The Archive answers at random.</p><p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${storyBeatBlock(scene.storyBeat)}`
     dom.lessonNote.textContent = 'White moves are tallied on the rail; the Lab is listening.'
     dom.btnReset.disabled = false
     const left = scene.minMovesByPlayer
