@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.50] — 2026-08-22
+
+Pass 58 — Rook merlon wells:
+
+- **Ivory/lapis rooks** deepen the crenel wells so calibration a1 is not a 1.8px roof scratch after the bishop cleft grew. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration a1 and castle-puzzle h1 wells are at least 3.5 CSS pixels tall.
+- Docs: [`docs/PASS58_ROOK_MERLON.md`](docs/PASS58_ROOK_MERLON.md).
+
 ## [0.5.49] — 2026-08-22
 
 Pass 57 — Bishop mitre cleft:

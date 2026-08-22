@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.49)
+## What's new in this release (v0.5.50)
+
+**Pass 58 — Rook merlon wells** — ivory and lapis rooks get deeper crenel wells, instead of a 1.8px roof scratch. See [`docs/PASS58_ROOK_MERLON.md`](docs/PASS58_ROOK_MERLON.md).
+
+## Previous release (v0.5.49)
 
 **Pass 57 — Bishop mitre cleft** — ivory and lapis bishops get a thicker mitre cut, instead of a 0.9px hairline. See [`docs/PASS57_BISHOP_MITRE.md`](docs/PASS57_BISHOP_MITRE.md).
 
