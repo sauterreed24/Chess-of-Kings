@@ -949,6 +949,34 @@ describe('GameFlow depth systems', () => {
     root.remove()
   })
 
+  it('keeps Kallistos\'s break-naming aim when a pawn is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 3
+    const ch3 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch3')
+    const matchIdx = PLAYABLE_CHAPTERS[ch3]!.scenes.findIndex((s) => s.id === 'c3-match-kallistos')
+    expect(matchIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch3, matchIdx)
+    expect(latest?.boardGuide).toMatch(/Name your break|weak square/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+    flow.board?.showLegalFrom(flow.chess, 'e2')
+    expect(latest?.boardGuide).toMatch(/Name your break|weak square/i)
+    expect(latest?.boardGuide).not.toMatch(/e2 pawn selected/)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    root.remove()
+  })
+
   it('keeps the Chapter II king-hunt command when the queen is selected', () => {
     let latest: { boardGuide: string } | null = null
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
