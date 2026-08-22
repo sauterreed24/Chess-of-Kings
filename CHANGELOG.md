@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.66] — 2026-08-22
+
+Pass 74 — Chapter IX phone lab:
+
+- **390×844 Apotheosis drills** prove pin-census / compiled-fork / last-rank on the phone instrument: manuscript hidden, Prove docked beside Hint, `#turn-pulse` stays hidden, overlay caption is `Chapter IX`.
+- After the last-rank seal, Wren’s briefing restores the manuscript. Theme untouched (CSS gzip locked). Docs: [`docs/PASS74_PHONE_CH9_LAB.md`](docs/PASS74_PHONE_CH9_LAB.md).
+
 ## [0.5.65] — 2026-08-22
 
 Pass 73 — Knight horse-head silhouette:
