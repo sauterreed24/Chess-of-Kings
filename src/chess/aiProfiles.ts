@@ -322,6 +322,38 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.72, positional: 0.9, sacrificial: 0.38, prophylactic: 0.74 },
     motifBias: { fork: 0.58, pin: 0.8, skewer: 0.76, kingHunt: 0.36 },
   },
+  voss_exchange: {
+    id: 'voss_exchange',
+    label: 'Voss Exchange Clerk',
+    style: 'alexandrine',
+    searchDepth: 4,
+    thinkTimeMs: 1320,
+    blunderRate: 0.022,
+    riskAppetite: 0.28,
+    tacticalAlertness: 0.82,
+    openingDiscipline: 0.94,
+    kingSafetyUrgency: 0.86,
+    conversionStrictness: 0.94,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.7, positional: 0.94, sacrificial: 0.22, prophylactic: 0.9 },
+    motifBias: { fork: 0.52, pin: 0.88, skewer: 0.86, kingHunt: 0.32 },
+  },
+  elara_fork: {
+    id: 'elara_fork',
+    label: 'Elara Fork Registrar',
+    style: 'alexandrine',
+    searchDepth: 4,
+    thinkTimeMs: 1400,
+    blunderRate: 0.02,
+    riskAppetite: 0.34,
+    tacticalAlertness: 0.92,
+    openingDiscipline: 0.9,
+    kingSafetyUrgency: 0.88,
+    conversionStrictness: 0.92,
+    conversionPersona: 'tactical',
+    weights: { tactical: 0.88, positional: 0.86, sacrificial: 0.3, prophylactic: 0.84 },
+    motifBias: { fork: 0.96, pin: 0.7, skewer: 0.78, kingHunt: 0.38 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -350,6 +382,8 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('iota')) return AI_PROFILES.iota_threshold
   if (matchId.includes('mira')) return AI_PROFILES.mira_practical
   if (matchId.includes('soren')) return AI_PROFILES.soren_answer
+  if (matchId.includes('voss')) return AI_PROFILES.voss_exchange
+  if (matchId.includes('elara')) return AI_PROFILES.elara_fork
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
   return AI_PROFILES.apprentice_court
@@ -371,6 +405,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('iota')) return AI_PROFILES.iota_threshold
   if (variantId.includes('mira')) return AI_PROFILES.mira_practical
   if (variantId.includes('soren')) return AI_PROFILES.soren_answer
+  if (variantId.includes('voss')) return AI_PROFILES.voss_exchange
+  if (variantId.includes('elara')) return AI_PROFILES.elara_fork
   return AI_PROFILES.apprentice_court
 }
 

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.62)
+## What's new in this release (v0.5.63)
+
+**Pass 71 — Chapter VIII playable** — The Alexandrine Board is a full campaign age after the Human Synthesis: sovereign exchange, temporal forks, Voss, and Elara. See [`docs/PASS71_CHAPTER_VIII.md`](docs/PASS71_CHAPTER_VIII.md).
+
+## Previous release (v0.5.62)
 
 **Pass 70 — Chapter VII playable** — The Human Synthesis is a full campaign age after the Silicon Threshold: school switches, safer-wing castling, Mira, and Soren. See [`docs/PASS70_CHAPTER_VII.md`](docs/PASS70_CHAPTER_VII.md).
 

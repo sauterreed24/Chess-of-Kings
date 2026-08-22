@@ -233,6 +233,38 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       titleId: 'synthesis-analyst',
     },
   ],
+  'c8-match-voss': [
+    {
+      id: 'rw-variant-voss-exchange',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Voss Exchange Clerk',
+      description: "Replay Voss's sovereign-exchange doctrine from Chapter VIII in Duel mode.",
+      duelVariantId: 'voss-exchange',
+    },
+    {
+      id: 'rw-codex-voss-office',
+      kind: 'codex',
+      label: 'Archive Note: The Vacant Office',
+      description: 'Voss files that a hanging queen is a court already closed, and that you took it.',
+      codexId: 'codex-voss-office',
+    },
+  ],
+  'c8-match-elara': [
+    {
+      id: 'rw-variant-elara-fork',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Elara Fork Registrar',
+      description: "Replay Elara's temporal-fork doctrine from Chapter VIII in Duel mode.",
+      duelVariantId: 'elara-fork',
+    },
+    {
+      id: 'rw-title-alexandrine',
+      kind: 'title',
+      label: 'Title Earned: Alexandrine Analyst',
+      description: 'Recognized for closing vacant offices, filing two futures on one square, and notarizing the mate.',
+      titleId: 'alexandrine-analyst',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
@@ -339,6 +371,21 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       kind: 'chronicle',
       label: 'Chronicle Echo Unlocked',
       description: 'A seventh echo joins your archive: school switches, safer-wing castling, and smothered finishes.',
+    },
+  ],
+  ch8: [
+    {
+      id: 'rw-title-alexandrine-seal',
+      kind: 'title',
+      label: 'Title Earned: Seal of the Alexandrine Board',
+      description: 'Chapter VIII completed. Your chronicle carries succession without civil war as a civic virtue.',
+      titleId: 'seal-alexandrine-board',
+    },
+    {
+      id: 'rw-chronicle-echo-ch8',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'An eighth echo joins your archive: sovereign exchanges, temporal forks, and notarized finishes.',
     },
   ],
 }

@@ -29,6 +29,10 @@ describe('AI profile resolver', () => {
     expect(resolveProfileByDuelVariant('soren-answer').id).toBe('soren_answer')
     expect(resolveProfileByMatchId('c7-match-mira').style).toBe('universal')
     expect(resolveProfileByMatchId('c7-match-soren').style).toBe('universal')
+    expect(resolveProfileByMatchId('c8-match-voss').id).toBe('voss_exchange')
+    expect(resolveProfileByDuelVariant('elara-fork').id).toBe('elara_fork')
+    expect(resolveProfileByMatchId('c8-match-voss').style).toBe('alexandrine')
+    expect(resolveProfileByMatchId('c8-match-elara').style).toBe('alexandrine')
   })
 
   it('detects game phase and adapts conversion/endgame values', () => {

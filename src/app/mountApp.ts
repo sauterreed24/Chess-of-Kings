@@ -32,9 +32,11 @@ import {
   PLATEAU_PENDING_CH5_COPY,
   PLATEAU_PENDING_CH6_COPY,
   PLATEAU_PENDING_CH7_COPY,
+  PLATEAU_PENDING_CH8_COPY,
   PLATEAU_PENDING_COPY,
   SILICON_OPENED_COPY,
   SYNTHESIS_OPENED_COPY,
+  ALEXANDRINE_OPENED_COPY,
   RIBBON_LABELS,
   STORAGE_FAILURE_MESSAGE,
 } from '../data/strings'
@@ -387,9 +389,11 @@ export function mountApp(app: HTMLDivElement) {
     },
     onCampaignFinished() {
       const pending = flow.consumePendingRewards()
-      const msg = flow.chapter7Complete
-        ? 'Chapters I–VII are sealed. Daily Calculus and the Duel Archive remain open — mastery is the plateau, not a wall. Later ages stay locked for now.'
-        : flow.chapter6Complete
+      const msg = flow.chapter8Complete
+        ? 'Chapters I–VIII are sealed. Daily Calculus and the Duel Archive remain open — mastery is the plateau, not a wall. Later ages stay locked for now.'
+        : flow.chapter7Complete
+          ? 'Chapters I–VII are sealed. The Alexandrine Board should have opened — resume the chronicle if the vestibule stalled.'
+          : flow.chapter6Complete
           ? 'Chapters I–VI are sealed. The Human Synthesis should have opened — resume the chronicle if the vestibule stalled.'
           : flow.chapter5Complete
           ? 'Chapters I–V are sealed. The Silicon Threshold should have opened — resume the chronicle if the vestibule stalled.'
@@ -425,9 +429,13 @@ export function mountApp(app: HTMLDivElement) {
   }
 
   function syncMvpFlag() {
-    mvpFlag.textContent = flow.chapter7Complete
-      ? 'Chapters I–VII are inscribed. Daily Calculus and the Duel Archive remain open.'
-      : flow.chapter7ReflectionComplete
+    mvpFlag.textContent = flow.chapter8Complete
+      ? 'Chapters I–VIII are inscribed. Daily Calculus and the Duel Archive remain open.'
+      : flow.chapter8ReflectionComplete
+        ? 'Chapter VIII reflection is inscribed. Finish the rehearsal to claim the stratarchic seal.'
+        : flow.chapter7Complete
+          ? 'Chapters I–VII are inscribed. Chapter VIII — The Alexandrine Board — is open.'
+          : flow.chapter7ReflectionComplete
         ? 'Chapter VII reflection is inscribed. Finish the rehearsal to claim the synthesis seal.'
         : flow.chapter6Complete
           ? 'Chapters I–VI are inscribed. Chapter VII — The Human Synthesis — is open.'
@@ -650,17 +658,19 @@ export function mountApp(app: HTMLDivElement) {
     chapterProgressSlot.innerHTML = renderChapterProgressHtml(flow.highestUnlockedChapter)
     chapterList.innerHTML = ''
 
-    const plateau = flow.chapter7Complete
+    const plateau = flow.chapter8Complete
     const plateauPendingCh3 = !flow.chapter3Complete && flow.chapter3ReflectionComplete
     const plateauPendingCh4 = flow.chapter3Complete && !flow.chapter4Complete && flow.chapter4ReflectionComplete
     const plateauPendingCh5 = flow.chapter4Complete && !flow.chapter5Complete && flow.chapter5ReflectionComplete
     const plateauPendingCh6 = flow.chapter5Complete && !flow.chapter6Complete && flow.chapter6ReflectionComplete
-    const plateauPendingCh7 = flow.chapter6Complete && !plateau && flow.chapter7ReflectionComplete
+    const plateauPendingCh7 = flow.chapter6Complete && !flow.chapter7Complete && flow.chapter7ReflectionComplete
+    const plateauPendingCh8 = flow.chapter7Complete && !plateau && flow.chapter8ReflectionComplete
     const paradoxOpened = flow.chapter3Complete && !flow.chapter4Complete && !flow.chapter4ReflectionComplete
     const machineOpened = flow.chapter4Complete && !flow.chapter5Complete && !flow.chapter5ReflectionComplete
     const siliconOpened = flow.chapter5Complete && !flow.chapter6Complete && !flow.chapter6ReflectionComplete
-    const synthesisOpened = flow.chapter6Complete && !plateau && !flow.chapter7ReflectionComplete
-    const plateauPending = plateauPendingCh3 || plateauPendingCh4 || plateauPendingCh5 || plateauPendingCh6 || plateauPendingCh7
+    const synthesisOpened = flow.chapter6Complete && !flow.chapter7Complete && !flow.chapter7ReflectionComplete
+    const alexandrineOpened = flow.chapter7Complete && !plateau && !flow.chapter8ReflectionComplete
+    const plateauPending = plateauPendingCh3 || plateauPendingCh4 || plateauPendingCh5 || plateauPendingCh6 || plateauPendingCh7 || plateauPendingCh8
     const recoverable = flow.hasRecoverableSession()
     const dailyRaw = pickDailyCalculus(PLAYABLE_CHAPTERS)
     const daily =
@@ -669,14 +679,17 @@ export function mountApp(app: HTMLDivElement) {
     const ch5Index = PLAYABLE_CHAPTERS.findIndex((chapter) => chapter.id === 'ch5')
     const ch6Index = PLAYABLE_CHAPTERS.findIndex((chapter) => chapter.id === 'ch6')
     const ch7Index = PLAYABLE_CHAPTERS.findIndex((chapter) => chapter.id === 'ch7')
+    const ch8Index = PLAYABLE_CHAPTERS.findIndex((chapter) => chapter.id === 'ch8')
 
-    if (plateau || plateauPending || paradoxOpened || machineOpened || siliconOpened || synthesisOpened || recoverable) {
+    if (plateau || plateauPending || paradoxOpened || machineOpened || siliconOpened || synthesisOpened || alexandrineOpened || recoverable) {
       const resumeBtn = recoverable
         ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-resume-recovered">
             ${escapeHtml(PLATEAU_COPY.resumeCta)}
           </button>`
         : ''
-      const pendingCopy = plateauPendingCh7
+      const pendingCopy = plateauPendingCh8
+        ? PLATEAU_PENDING_CH8_COPY
+        : plateauPendingCh7
         ? PLATEAU_PENDING_CH7_COPY
         : plateauPendingCh6
           ? PLATEAU_PENDING_CH6_COPY
@@ -687,7 +700,9 @@ export function mountApp(app: HTMLDivElement) {
             : PLATEAU_PENDING_COPY
       const hubHeading = plateau
         ? PLATEAU_COPY.heading
-        : synthesisOpened
+        : alexandrineOpened
+          ? ALEXANDRINE_OPENED_COPY.heading
+          : synthesisOpened
           ? SYNTHESIS_OPENED_COPY.heading
           : siliconOpened
           ? SILICON_OPENED_COPY.heading
@@ -698,7 +713,9 @@ export function mountApp(app: HTMLDivElement) {
               : pendingCopy.heading
       const hubLede = plateau
         ? PLATEAU_COPY.lede
-        : synthesisOpened
+        : alexandrineOpened
+          ? ALEXANDRINE_OPENED_COPY.lede
+          : synthesisOpened
           ? SYNTHESIS_OPENED_COPY.lede
           : siliconOpened
           ? SILICON_OPENED_COPY.lede
@@ -727,7 +744,12 @@ export function mountApp(app: HTMLDivElement) {
             ${escapeHtml(SYNTHESIS_OPENED_COPY.enterCta)}
           </button>`
         : ''
-      const plateauBlock = (plateau || plateauPending || paradoxOpened || machineOpened || siliconOpened || synthesisOpened)
+      const alexandrineBtn = alexandrineOpened && ch8Index >= 0
+        ? `<button type="button" class="primary chapter-quick-actions__btn" id="btn-plateau-alexandrine">
+            ${escapeHtml(ALEXANDRINE_OPENED_COPY.enterCta)}
+          </button>`
+        : ''
+      const plateauBlock = (plateau || plateauPending || paradoxOpened || machineOpened || siliconOpened || synthesisOpened || alexandrineOpened)
         ? `<div class="plateau-hub" role="region" aria-label="${escapeHtml(hubHeading)}">
             <p class="plateau-hub__eyebrow">${escapeHtml(hubHeading)}</p>
             <p class="plateau-hub__lede">${escapeHtml(hubLede)}</p>
@@ -736,6 +758,7 @@ export function mountApp(app: HTMLDivElement) {
               ${machineBtn}
               ${siliconBtn}
               ${synthesisBtn}
+              ${alexandrineBtn}
               ${daily
                 ? `<button type="button" class="secondary chapter-quick-actions__btn" id="btn-plateau-daily"
                     aria-label="${escapeHtml(PLATEAU_COPY.dailyCta)}: ${escapeHtml(daily.title)}">
@@ -809,6 +832,16 @@ export function mountApp(app: HTMLDivElement) {
           if (!ok) return
         }
         flow.jumpToChapter(ch7Index)
+        openLab()
+      })
+      chapterQuickActions.querySelector<HTMLButtonElement>('#btn-plateau-alexandrine')?.addEventListener('click', async () => {
+        if (ch8Index < 0) return
+        const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
+        if (mustConfirm) {
+          const ok = await confirmDialogCtl.open(CONFIRM_COPY.replaceRecoveredSession)
+          if (!ok) return
+        }
+        flow.jumpToChapter(ch8Index)
         openLab()
       })
     } else {

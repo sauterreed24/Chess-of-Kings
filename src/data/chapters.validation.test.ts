@@ -163,6 +163,43 @@ describe('campaign story beats', () => {
     }
   })
 
+  it('authors Chapter VIII as a playable Alexandrine Board arc', () => {
+    const ch8 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch8')
+    expect(ch8).toBeTruthy()
+    expect(ch8?.subtitle).toMatch(/Alexandrine Board/)
+    expect(ch8?.themeClass).toBe('theme-classical')
+    const matches = ch8?.scenes.filter((scene) => scene.type === 'match') ?? []
+    expect(matches.map((scene) => scene.id)).toEqual(['c8-match-voss', 'c8-match-elara'])
+    expect(matches.every((scene) => scene.type === 'match' && scene.aiStyle === 'alexandrine')).toBe(true)
+    const voss = matches.find((scene) => scene.id === 'c8-match-voss')
+    const elara = matches.find((scene) => scene.id === 'c8-match-elara')
+    expect(voss?.type === 'match' && voss.scriptedBlackSans?.[0]).toBe('d5')
+    expect(elara?.type === 'match' && elara.scriptedBlackSans?.[0]).toBe('c5')
+    const puzzles = ch8?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
+    expect(puzzles.map((scene) => scene.id)).toEqual(
+      expect.arrayContaining(['c8-puzzle-exchange', 'c8-puzzle-fork', 'c8-puzzle-file']),
+    )
+    const intro = ch8?.scenes.find((scene) => scene.id === 'c8-intro')
+    const codex = ch8?.scenes.find((scene) => scene.id === 'c8-codex-board')
+    const reflection = ch8?.scenes.find((scene) => scene.id === 'c8-reflection')
+    expect(intro?.type).toBe('dialogue')
+    expect(codex?.type).toBe('codex')
+    expect(reflection?.type).toBe('dialogue')
+    if (intro?.type === 'dialogue') {
+      const spoken = intro.lines.map((line) => line.text).join(' ')
+      expect(spoken).toContain('Voss')
+      expect(spoken).toContain('Elara')
+      expect(intro.lines.some((line) => line.speaker === 'soren')).toBe(true)
+    }
+    if (codex?.type === 'codex') {
+      expect(codex.entries.map((entry) => entry.term)).toContain('Sovereign exchange')
+      expect(codex.entries.map((entry) => entry.term)).toContain('Alexandrine Board')
+    }
+    if (reflection?.type === 'dialogue') {
+      expect(reflection.lines.map((line) => line.text).join(' ')).toContain('without starting a war')
+    }
+  })
+
   it('anchors the Prologue in the Long Reign modern commonwealth', () => {
     const prologue = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'prologue')
     const codex = prologue?.scenes.find((scene) => scene.id === 'pr-codex-long-reign')

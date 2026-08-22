@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.63] — 2026-08-22
+
+Pass 71 — Chapter VIII playable:
+
+- **Chapter VIII — The Alexandrine Board** is playable: stratarchic lore, Voss + Elara matches with exchange/fork scripts, hanging-queen / knight-fork / notarized-mate drills, and a seal that moves the mastery plateau to I–VIII.
+- **Successor unlock backfill** opens Chapter VIII for chronicles that sealed Chapter VII when it was the last compiled age.
+- Hub copy: Chapter VII survivors are invited into the Alexandrine Board; the mastery plateau now keys off Chapter VIII freeplay.
+- Theme reuses `theme-classical` (CSS gzip locked). Docs: [`docs/PASS71_CHAPTER_VIII.md`](docs/PASS71_CHAPTER_VIII.md).
+
 ## [0.5.62] — 2026-08-22
 
 Pass 70 — Chapter VII playable:

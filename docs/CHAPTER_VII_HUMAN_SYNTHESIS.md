@@ -2,7 +2,7 @@
 
 ## Summary
 
-Playable synthesis chapter after Chapter VI. Sealing the Silicon Threshold opens the Human Synthesis. The mastery plateau moves to Chapter VII freeplay completion. Existing chronicles that already sealed Chapter VI receive the new age through a successor-unlock backfill.
+Playable synthesis chapter after Chapter VI. Sealing the Silicon Threshold opens the Human Synthesis. Sealing Chapter VII opens the Alexandrine Board; the mastery plateau moves to Chapter VIII freeplay completion. Existing chronicles that already sealed Chapter VI receive the new age through a successor-unlock backfill.
 
 ## Lore
 
@@ -35,5 +35,5 @@ Sealing the chapter amends the committee file again: Reed can switch schools wit
 - Chapter FEN/goal validation covers hanging-knight advantage, queenside castle `pieceOn c1`, and smothered mate
 - Orchestrator: Ch VI seal opens Ch VII; pre-Ch-VII saves that sealed the ledger age unlock Ch VII on load
 - Duel roster / reward unlock ids for Mira and Soren
-- Plateau hub fixtures cover sealed Ch VI (synthesis invite), pending Ch VII, and sealed Ch VII mastery plateau
-- Playwright: Chapter VII drills (`e4-d5`, `e1-c1`, `e5-f7`) and post-VI / post-VII hub copy
+- Plateau hub fixtures cover sealed Ch VI (synthesis invite) and pending Ch VII
+- Playwright: Chapter VII drills (`e4-d5`, `e1-c1`, `e5-f7`) and post-VI hub copy
