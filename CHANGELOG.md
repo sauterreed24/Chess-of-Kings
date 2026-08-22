@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.24] — 2026-08-22
+
+Pass 32 — Phone lab nav:
+
+- **Narrow phones** hide the duplicate Title / Chapters / Duel bar while the lab is open. The overlay sheet fills to the top; ← Chapters stays the way out. Wide and short-landscape labs keep the top nav.
+- Playwright hides `.top-bar` on the hanging-knight phone and still shows Title / Chapters / Duel on a 1280×500 lab.
+- Docs: [`docs/PASS32_PHONE_LAB_NAV.md`](docs/PASS32_PHONE_LAB_NAV.md).
+
 ## [0.5.23] — 2026-08-22
 
 Pass 31 — Idle board tools:
