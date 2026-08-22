@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.84)
+## What's new in this release (v0.5.85)
+
+**Pass 93 — Chapter IV Cassian match** — the Paradox Masters second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored `Nf6` reply. See [`docs/PASS93_PHONE_CH4_CASSIAN.md`](docs/PASS93_PHONE_CH4_CASSIAN.md).
+
+## Previous release (v0.5.84)
 
 **Pass 92 — Resume current age; Helia match** — the current chapter button resumes the saved scene, and the first Helia match stays board-first on a 390×844 instrument, with the authored `e6` reply. See [`docs/PASS92_PHONE_CH5_HELIA.md`](docs/PASS92_PHONE_CH5_HELIA.md).
 

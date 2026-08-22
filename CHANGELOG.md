@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.85] — 2026-08-22
+
+Pass 93 — Chapter IV Cassian match on the phone instrument:
+
+- **Playwright** — a post-Nysa Chapter IV seed resumes `c4-before-cassian` (Pass 92 current-age resume). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `Nf6` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing hypermodern piece CSS (gzip locked). Docs: [`docs/PASS93_PHONE_CH4_CASSIAN.md`](docs/PASS93_PHONE_CH4_CASSIAN.md).
+
 ## [0.5.84] — 2026-08-22
 
 Pass 92 — Resume the current age; Chapter V Helia match on the phone instrument:

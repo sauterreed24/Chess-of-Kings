@@ -725,6 +725,34 @@ describe('GameFlow depth systems', () => {
     root.remove()
   })
 
+  it('keeps Cassian\'s paradox aim when a pawn is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 4
+    const ch4 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch4')
+    const matchIdx = PLAYABLE_CHAPTERS[ch4]!.scenes.findIndex((s) => s.id === 'c4-match-cassian')
+    expect(matchIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch4, matchIdx)
+    expect(latest?.boardGuide).toMatch(/Hold the center|long diagonal/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+    flow.board?.showLegalFrom(flow.chess, 'e2')
+    expect(latest?.boardGuide).toMatch(/Hold the center|long diagonal/i)
+    expect(latest?.boardGuide).not.toMatch(/e2 pawn selected/)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    root.remove()
+  })
+
   it('keeps Gage\'s pause aim when a pawn is selected', () => {
     let latest: { boardGuide: string } | null = null
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
