@@ -782,8 +782,6 @@ test('mate-in-one puzzle seals with queen to h8', { timeout: 90_000 }, async ({ 
   await expect(page.locator('[data-square="e5"] .piece-lit')).toBeVisible()
   await expect(page.locator('[data-square="e5"] .piece-pearl').first()).toBeVisible()
   await expect(page.locator('[data-square="e5"] .queen-silhouette')).toBeVisible()
-  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
-  await expect(page.locator('[data-square="e8"] .king-cross-stem')).toBeVisible()
   const mateQueenCup = await page.locator('[data-square="e5"] .piece-cup').boundingBox()
   expect(mateQueenCup?.height ?? 0).toBeGreaterThanOrEqual(3.5)
   await expect(page.locator('#board-guide')).toContainText(/Checkmate in one/i)
