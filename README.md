@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.38)
+## What's new in this release (v0.5.39)
+
+**Pass 47 — Quiet puzzle draw** — hanging-knight capture no longer unhides a Draw. pill over the marble seal. See [`docs/PASS47_QUIET_PUZZLE_DRAW.md`](docs/PASS47_QUIET_PUZZLE_DRAW.md).
+
+## Previous release (v0.5.38)
 
 **Pass 46 — Phone puzzle Prove dock** — hanging-knight phones hide the empty tutorial card and dock Prove beside Hint. See [`docs/PASS46_PHONE_PROVE_DOCK.md`](docs/PASS46_PHONE_PROVE_DOCK.md).
 

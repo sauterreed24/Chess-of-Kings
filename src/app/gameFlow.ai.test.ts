@@ -70,6 +70,27 @@ describe('GameFlow AI / puzzles', () => {
     expect(latest?.aiPersona).toBeNull()
   })
 
+  it('does not announce Draw or a king-hunt pulse after the hanging-knight capture', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    flow.jumpToScene(1, 2)
+    expect(flow.currentScene().id).toBe('c1-tutorial-hanging')
+    onChessUpdate.mockClear()
+    flow.tryPlayerMove('c3', 'd4')
+    const latest = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(latest?.status ?? '').not.toMatch(/draw/i)
+    expect(latest?.matchOutcome).toBeNull()
+    expect(latest?.tacticalPulse).toBeNull()
+    expect(latest?.boardGuide).toMatch(/proof sealed/i)
+  })
+
   it('undo in puzzle removes both player move and opponent reply', async () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),
