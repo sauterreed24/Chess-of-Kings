@@ -2702,7 +2702,7 @@ test('alexandrine-ornate set reads on the phone instrument', { timeout: 120_000 
   ).toMatch(/^(#12213a|rgb\(\s*18,\s*33,\s*58\s*\))$/i)
   expect(
     await page.locator('[data-square="e2"] .piece').evaluate((el) => getComputedStyle(el).getPropertyValue('--piece-stroke').trim()),
-  ).toMatch(/^(#b38f36|rgb\(\s*179,\s*143,\s*54\s*\))$/i)
+  ).toMatch(/^(#6b4e14|rgb\(\s*107,\s*78,\s*20\s*\))$/i)
   expect(
     await page.locator('[data-square="e7"] .piece').evaluate((el) => getComputedStyle(el).getPropertyValue('--piece-stroke').trim()),
   ).toMatch(/^(#dcae43|rgb\(\s*220,\s*174,\s*67\s*\))$/i)

@@ -1,7 +1,7 @@
 import type { Chess, Color, PieceSymbol } from 'chess.js'
 import type { MoveQuality } from './gameFlow'
 import { escapeHtml } from './htmlEscape'
-import { glyphForSkin } from '../chess/skins'
+import { glyphForSkin, pieceStrokeStyleAttr } from '../chess/skins'
 import type { AiProfile, MatchHistoryEntry, MatchScene, PieceSkinId, PuzzleScene, Scene, StoryBeat } from '../types'
 
 /** Compiled once — applied on every chess HUD tick when AI persona is present. */
@@ -379,7 +379,7 @@ export function capturedRow(
   return types
     .map((t) => {
       const piece = (CAPTURE_TYPES.includes(t as PieceSymbol) ? t : 'p') as PieceSymbol
-      return `<span class="cap-piece piece piece--${color}" aria-hidden="true">${glyphForSkin(skin, color, piece)}</span>`
+      return `<span class="cap-piece piece piece--${color}"${pieceStrokeStyleAttr(skin, color)} aria-hidden="true">${glyphForSkin(skin, color, piece)}</span>`
     })
     .join('')
 }

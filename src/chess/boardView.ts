@@ -1,7 +1,7 @@
 import { Chess } from 'chess.js'
 import type { Color, Move, PieceSymbol, Square } from 'chess.js'
 import type { PieceSkinId } from '../types'
-import { glyphForSkin } from './skins'
+import { applyPieceStrokeTone, glyphForSkin, pieceStrokeStyleAttr } from './skins'
 import {
   buildFlyKeyframes,
   capturedSquareFor,
@@ -347,7 +347,7 @@ export class BoardView {
       btn.type = 'button'
       btn.className = 'promo-btn'
       btn.setAttribute('aria-label', PROMO_NAMES[p])
-      btn.innerHTML = `<span class="piece piece--${color}" aria-hidden="true">${glyphForSkin(this.skin, color, p)}</span>`
+      btn.innerHTML = `<span class="piece piece--${color}"${pieceStrokeStyleAttr(this.skin, color)} aria-hidden="true">${glyphForSkin(this.skin, color, p)}</span>`
       btn.addEventListener('click', () => {
         this.dismissPromo()
         this.onMove(from, to, p)
@@ -452,7 +452,7 @@ export class BoardView {
   /* ─── Draw board ───────────────────────────────────────────────────── */
   private pieceSpanHtml(p: { color: Color; type: PieceSymbol }) {
     const glyph = glyphForSkin(this.skin, p.color, p.type)
-    return `<span class="piece piece--${p.color}" aria-hidden="true">${glyph}</span>`
+    return `<span class="piece piece--${p.color}"${pieceStrokeStyleAttr(this.skin, p.color)} aria-hidden="true">${glyph}</span>`
   }
 
   private squareAriaLabel(sq: Square, p: { color: Color; type: PieceSymbol } | null): string {
@@ -589,6 +589,7 @@ export class BoardView {
     const fly = document.createElement('div')
     fly.className = `piece-fly piece piece--${flight.colorClass}`
     fly.dataset.skin = this.skin
+    applyPieceStrokeTone(fly, this.skin, flight.colorClass)
     fly.innerHTML = flight.glyph
     fly.style.width = `${flight.size}px`
     fly.style.height = `${flight.size}px`
@@ -635,6 +636,7 @@ export class BoardView {
     const el = document.createElement('div')
     el.className = `piece-fly piece-capture piece piece--${snap.colorClass}`
     el.dataset.skin = this.skin
+    applyPieceStrokeTone(el, this.skin, snap.colorClass)
     el.innerHTML = snap.glyph
     el.style.width = `${rect.width}px`
     el.style.height = `${rect.height}px`
