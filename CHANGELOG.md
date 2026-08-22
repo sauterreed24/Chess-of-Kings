@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.105] — 2026-08-22
+
+Pass 113 — phone top nav:
+
+- **Playability** — Title / Chapters / Duel and Return to title keep a 44px hit target on `max-width: 700px`. The 50px phone bar is restored to 56px inline so the 44px pills do not clip. No new CSS.
+- **Playwright** — 390×844 asserts those four controls are 44px.
+- No CSS budget change. Docs: [`docs/PASS113_PHONE_TOP_NAV.md`](docs/PASS113_PHONE_TOP_NAV.md).
+
 ## [0.5.104] — 2026-08-22
 
 Pass 112 — phone title privacy links:

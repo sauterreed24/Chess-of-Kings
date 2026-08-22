@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
-import { applyLabOverlayCaption, clearPhoneLessonMarkers, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneHitTarget, syncPhoneInlineHitTarget, syncPhonePuzzleLesson } from './labModal'
+import { applyLabOverlayCaption, clearPhoneLessonMarkers, isPhoneLabNav, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneHitTarget, syncPhoneInlineHitTarget, syncPhonePuzzleLesson } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -343,6 +343,21 @@ export function mountApp(app: HTMLDivElement) {
     syncPhoneHitTarget(btnTitleAiWorker, true)
     syncPhoneHitTarget(btnTitleVisual, true)
     for (const el of titlePrivacyHits) syncPhoneInlineHitTarget(el, true)
+    syncPhoneTopNav()
+  }
+
+  function syncPhoneTopNav() {
+    if (isPhoneLabNav()) {
+      topBar.style.height = '56px'
+      topBar.style.minHeight = '56px'
+    } else {
+      topBar.style.height = ''
+      topBar.style.minHeight = ''
+    }
+    syncPhoneHitTarget(btnTitle, true)
+    syncPhoneHitTarget(btnChapters, true)
+    syncPhoneHitTarget(btnDuel, true)
+    syncPhoneHitTarget(btnChaptersBack, !btnChaptersBack.classList.contains('hidden'))
   }
 
   function applyMotionPreference() {
@@ -672,6 +687,7 @@ export function mountApp(app: HTMLDivElement) {
     setNavActive('chapters')
     btnChaptersBack.classList.remove('hidden')
     btnChaptersBack.textContent = '← Return to title'
+    syncPhoneTopNav()
     chapterProgressSlot.innerHTML = renderChapterProgressHtml(flow.highestUnlockedChapter)
     chapterList.innerHTML = ''
 
