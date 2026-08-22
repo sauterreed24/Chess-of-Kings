@@ -10,12 +10,20 @@ export type MobileBoardFitElements = {
   playScreen: HTMLElement
   boardStage: HTMLElement
   labOverlay: HTMLElement
+  /** Re-apply phone lab nav when the overlay opens or the viewport rotates. */
+  syncLabNav?: (labOpen: boolean) => void
 }
 
 /** Measures non-board chrome and sets `--mobile-board-max` so the grid fits the viewport. */
-export function applyMobileBoardFit({ playScreen, boardStage, labOverlay }: MobileBoardFitElements): void {
+export function applyMobileBoardFit({
+  playScreen,
+  boardStage,
+  labOverlay,
+  syncLabNav,
+}: MobileBoardFitElements): void {
   const isBoardScene = playScreen.classList.contains('screen-play--board-scene')
   const labOpen = labOverlay.classList.contains('lab-overlay--active')
+  syncLabNav?.(labOpen)
 
   if (!isCompactViewport() || !isBoardScene || !labOpen) {
     playScreen.style.removeProperty('--mobile-board-max')

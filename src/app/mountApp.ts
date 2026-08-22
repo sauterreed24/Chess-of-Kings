@@ -11,6 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
+import { setTopBarInertForLab } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -178,7 +179,12 @@ export function mountApp(app: HTMLDivElement) {
       screenCtl.setShellBackdropInert(confirmInertRestore, open, [confirmOverlay, liveAnnouncer])
     },
   })
-  const mobileBoardFit = createMobileBoardFitController({ playScreen, boardStage, labOverlay })
+  const mobileBoardFit = createMobileBoardFitController({
+    playScreen,
+    boardStage,
+    labOverlay,
+    syncLabNav: (open) => setTopBarInertForLab(topBar, open),
+  })
   mobileBoardFit.attach()
   let storageFailureAnnounced = false
   function showStorageFailureBanner() {
