@@ -74,7 +74,7 @@ export function easeInOut(t: number): number {
  */
 export function flightLift(from: FlyPoint, to: FlyPoint, cellSize: number): number {
   const dist = Math.hypot(to.x - from.x, to.y - from.y)
-  return Math.min(Math.max(dist * 0.16, 6), Math.max(cellSize, 1) * 0.85)
+  return Math.min(Math.max(dist * 0.22, 8), Math.max(cellSize, 1) * 0.9)
 }
 
 /**

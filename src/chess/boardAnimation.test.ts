@@ -95,19 +95,19 @@ describe('easeInOut', () => {
 
 describe('flightLift', () => {
   it('clamps tiny moves to a minimum hop', () => {
-    expect(flightLift({ x: 0, y: 0 }, { x: 1, y: 0 }, 80)).toBe(6)
+    expect(flightLift({ x: 0, y: 0 }, { x: 1, y: 0 }, 80)).toBe(8)
   })
 
   it('grows with distance', () => {
     const near = flightLift({ x: 0, y: 0 }, { x: 200, y: 0 }, 80)
     const far = flightLift({ x: 0, y: 0 }, { x: 360, y: 0 }, 80)
     expect(far).toBeGreaterThan(near)
-    expect(near).toBeCloseTo(200 * 0.16, 6)
+    expect(near).toBeCloseTo(200 * 0.22, 6)
   })
 
   it('clamps to the cell-size ceiling for long slides', () => {
     const lift = flightLift({ x: 0, y: 0 }, { x: 1000, y: 0 }, 80)
-    expect(lift).toBe(80 * 0.85)
+    expect(lift).toBe(80 * 0.9)
   })
 })
 

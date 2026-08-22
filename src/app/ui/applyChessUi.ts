@@ -207,8 +207,9 @@ export function applyChessUi(
     if (fen !== play.lastCapturedFen) {
       play.lastCapturedFen = fen
       const { byWhite, byBlack } = getCaptured(p.chess)
-      dom.capturedTop.innerHTML = capturedRow(byWhite, 'b')
-      dom.capturedBot.innerHTML = capturedRow(byBlack, 'w')
+      const skin = flowRef?.getSelectedPieceSkin() ?? 'classic-royal'
+      dom.capturedTop.innerHTML = capturedRow(byWhite, 'b', skin)
+      dom.capturedBot.innerHTML = capturedRow(byBlack, 'w', skin)
     }
   }
 

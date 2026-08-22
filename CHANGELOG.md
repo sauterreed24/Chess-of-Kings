@@ -11,6 +11,19 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.1] — 2026-08-22
+
+Pass 9 — Board presence (playable graphics on the surface you stare at):
+
+- **Legal-move dots** are large enough to read on marble and lapis (36% / 22px gold core + dark ring).
+- **Last-move cue** keeps the square materials — inset rings and a wash instead of overwriting the board with `!important` fills.
+- **Pieces** sit larger on the square with ivory/lapis fills and a carved highlight shadow.
+- **Captured material** uses the active piece-skin SVGs; eval + captures also show on freeplay rehearsal boards.
+- **Compact play** puts the live board above the manuscript under 960px and lets the instrument column grow past the old 420px cap.
+- **Piece flight** is 280ms with a slightly higher arc.
+- Playwright smoke: skip-ahead calibration registers e2→e4.
+- Docs: [`docs/PASS9_BOARD_PRESENCE.md`](docs/PASS9_BOARD_PRESENCE.md).
+
 ## [0.5.0] — 2026-08-16
 
 The Paradox age, finished as a living chapter rather than a locked teaser:

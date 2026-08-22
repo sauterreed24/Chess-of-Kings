@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { Chess } from 'chess.js'
 import {
   capturedRow,
+  showsEvalHud,
   diffStars,
   formatMoveLedger,
   getCaptured,
@@ -110,6 +111,22 @@ describe('mainUiFormatters', () => {
     expect(byWhite).toEqual([])
     expect(byBlack).toEqual([])
     expect(capturedRow([], 'w')).toContain('captured-empty')
+  })
+
+  it('capturedRow paints board-skin SVGs instead of unicode glyphs', () => {
+    const html = capturedRow(['q', 'p'], 'b', 'classic-royal')
+    expect(html).toContain('class="svg-piece"')
+    expect(html).toContain('piece--b')
+    expect(html).not.toMatch(/[♕♛♙♟]/)
+    expect(html).toContain('viewBox="0 0 45 45"')
+  })
+
+  it('shows eval HUD on rated and rehearsal boards only', () => {
+    expect(showsEvalHud('match')).toBe(true)
+    expect(showsEvalHud('freeplay')).toBe(true)
+    expect(showsEvalHud('calibration')).toBe(false)
+    expect(showsEvalHud('puzzle')).toBe(false)
+    expect(showsEvalHud('dialogue')).toBe(false)
   })
 
   it('diffStars renders five stars', () => {

@@ -235,4 +235,41 @@ describe('renderScene', () => {
     expect(dom.narrativeBody.textContent).toContain('The Archive answers')
     expect(dom.narrativeBody.textContent).not.toContain('adaptive trainer')
   })
+
+  it('shows the eval HUD on freeplay and hides it on calibration', () => {
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const chapter = PLAYABLE_CHAPTERS[0]!
+    const calibIdx = chapter.scenes.findIndex((scene) => scene.type === 'calibration')
+    renderScene(chapter, chapter.scenes[calibIdx]!, calibIdx, dom, play, flow, {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    })
+    expect(play.showEvalBar).toBe(false)
+    expect(dom.evalBarWrap.classList.contains('hidden')).toBe(true)
+
+    const freeIdx = PLAYABLE_CHAPTERS[1]!.scenes.findIndex((scene) => scene.type === 'freeplay')
+    const freeChapter = freeIdx >= 0 ? PLAYABLE_CHAPTERS[1]! : PLAYABLE_CHAPTERS.find((ch) => ch.scenes.some((s) => s.type === 'freeplay'))!
+    const freeSceneIdx = freeChapter.scenes.findIndex((scene) => scene.type === 'freeplay')
+    flow.highestUnlockedChapter = freeChapter.index
+    flow.jumpToChapter(freeChapter.index)
+    renderScene(freeChapter, freeChapter.scenes[freeSceneIdx]!, freeSceneIdx, dom, play, flow, {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    })
+    expect(play.showEvalBar).toBe(true)
+    expect(dom.evalBarWrap.classList.contains('hidden')).toBe(false)
+    expect(dom.capturedTop.classList.contains('hidden')).toBe(false)
+  })
 })

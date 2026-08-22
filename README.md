@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.2.22)
+## What's new in this release (v0.5.1)
+
+**Pass 9 — Board presence** — the live board is the surface you stare at. Legal-move dots are larger, last-move cues sit on the marble instead of painting over it, captured pieces use the board SVGs, and compact viewports put the board above the manuscript. See [`docs/PASS9_BOARD_PRESENCE.md`](docs/PASS9_BOARD_PRESENCE.md) and [`CHANGELOG.md`](./CHANGELOG.md).
+
+## Previous release (v0.2.22)
 
 **Pass 3 (maximum-effort wave)** — five PRs merged; see [`CHANGELOG.md`](./CHANGELOG.md) and [release v0.2.22](https://github.com/sauterreed24/Chess-of-Kings/releases/tag/v0.2.22).
 
