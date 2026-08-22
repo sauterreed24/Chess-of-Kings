@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.95] — 2026-08-22
+
+Pass 103 — Chapter I Demetrios match on the phone instrument:
+
+- **Playwright** — a post-Marius Chapter I seed resumes `c1-before-demetrios` (Pass 92 current-age resume, scene 19). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted Giuoco `e5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS103_PHONE_CH1_DEMETRIOS.md`](docs/PASS103_PHONE_CH1_DEMETRIOS.md).
+
 ## [0.5.94] — 2026-08-22
 
 Pass 102 — Chapter I Marius match on the phone instrument:

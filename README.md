@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.94)
+## What's new in this release (v0.5.95)
+
+**Pass 103 — Chapter I Demetrios match** — the Ancient Board fifth examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored Giuoco `e5` reply. See [`docs/PASS103_PHONE_CH1_DEMETRIOS.md`](docs/PASS103_PHONE_CH1_DEMETRIOS.md).
+
+## Previous release (v0.5.94)
 
 **Pass 102 — Chapter I Marius match** — the Ancient Board fourth examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored classical `e5` reply. See [`docs/PASS102_PHONE_CH1_MARIUS.md`](docs/PASS102_PHONE_CH1_MARIUS.md).
 
