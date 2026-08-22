@@ -1208,7 +1208,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   letter-spacing: 0.24em; text-transform: uppercase;
   color: var(--gold); display: block; margin-bottom: 0.22rem;
 }
-.teach-body { margin: 0; font-size: 0.94rem; color: var(--muted); line-height: 1.45; }
+.teach-body { margin: 0; font-size: 0.94rem; color: var(--ivory-dim); line-height: 1.45; }
 
 .mastery-trial-hint {
   margin: 0.35rem 0 0.65rem;
@@ -2763,9 +2763,9 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 
 .board-guide {
   margin: 0.2rem 0 0.45rem;
-  font-size: 0.67rem;
-  line-height: 1.35;
-  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--ivory);
 }
 
 .screen-play--board-scene .board-guide {
