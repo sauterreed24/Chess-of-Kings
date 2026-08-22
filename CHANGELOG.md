@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.94] — 2026-08-22
+
+Pass 102 — Chapter I Marius match on the phone instrument:
+
+- **Playwright** — a post-Edred Chapter I seed resumes `c1-before-marius` (Pass 92 current-age resume, scene 16). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted classical `e5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS102_PHONE_CH1_MARIUS.md`](docs/PASS102_PHONE_CH1_MARIUS.md).
+
 ## [0.5.93] — 2026-08-22
 
 Pass 101 — Chapter I Edred match on the phone instrument:
