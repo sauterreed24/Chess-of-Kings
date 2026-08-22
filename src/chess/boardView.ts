@@ -29,7 +29,19 @@ const SQ_AIM_STYLE =
 const SQ_AIM_HTML = `<span class="sq-aim" aria-hidden="true" style="${SQ_AIM_STYLE}"></span>`
 
 /** Corner file/rank marks beat the 0.4rem CSS floor so phone marble still reads. */
-const SQ_LABEL_SIZE = '0.7rem'
+export const SQ_LABEL_SIZE = '0.7rem'
+
+export function squareEdgeLabelHtml(fileIndex: number, rank: number): string {
+  const size = `font-size:${SQ_LABEL_SIZE}`
+  let html = ''
+  if (fileIndex === 0) {
+    html += `<span class="sq-label sq-label--rank" aria-hidden="true" style="${size}">${rank}</span>`
+  }
+  if (rank === 1) {
+    html += `<span class="sq-label sq-label--file" aria-hidden="true" style="${size}">${FILES[fileIndex] ?? ''}</span>`
+  }
+  return html
+}
 
 function syncLegalAim(btn: HTMLButtonElement, on: boolean): void {
   const mark = btn.querySelector(':scope > .sq-aim') as HTMLElement | null

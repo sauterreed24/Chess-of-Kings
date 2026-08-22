@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.118] — 2026-08-22
+
+Pass 126 — echo board labels:
+
+- **Graphics** — chronicle echo boards plant the same 0.7rem file/rank corner marks as the live marble. No new CSS.
+- **Playwright** — 390×844 Alexion echo asserts eight file and eight rank marks.
+- No CSS budget change. Docs: [`docs/PASS126_ECHO_LABELS.md`](docs/PASS126_ECHO_LABELS.md).
+
 ## [0.5.117] — 2026-08-22
 
 Pass 125 — square label readability:

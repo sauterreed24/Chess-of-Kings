@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.117)
+## What's new in this release (v0.5.118)
+
+**Pass 126 — echo board labels** — chronicle replay boards name their file and rank edges at 0.7rem, matching the live marble on a 390×844 instrument. See [`docs/PASS126_ECHO_LABELS.md`](docs/PASS126_ECHO_LABELS.md).
+
+## Previous release (v0.5.117)
 
 **Pass 125 — square labels** — file and rank corner marks render at 0.7rem so the marble still names its edges on a 390×844 instrument. See [`docs/PASS125_SQUARE_LABELS.md`](docs/PASS125_SQUARE_LABELS.md).
 
