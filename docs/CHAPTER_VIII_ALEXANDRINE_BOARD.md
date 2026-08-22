@@ -38,4 +38,4 @@ Sealing the chapter amends the committee file again: Reed can exchange an office
 - Orchestrator: Ch VII seal opens Ch VIII; pre-Ch-VIII saves that sealed the synthesis age unlock Ch VIII on load
 - Duel roster / reward unlock ids for Voss and Elara
 - Plateau hub fixtures cover sealed Ch VII (Alexandrine invite) and pending Ch VIII
-- Playwright: Chapter VIII drills (`d2-a5`, `d5-c7`, `c3-g7`) and post-VII Alexandrine invite copy
+- Playwright: Chapter VIII drills (`d2-a5`, `d5-c7`, `c3-g7`) and first Voss match on desktop and 390×844; Elara from a mid-age resume (`e2–e4`, scripted `c5`); post-VII hub copy

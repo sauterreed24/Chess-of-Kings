@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.87)
+## What's new in this release (v0.5.88)
+
+**Pass 96 — Chapter VIII Elara match** — the Alexandrine Board second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored Sicilian `c5` reply. See [`docs/PASS96_PHONE_CH8_ELARA.md`](docs/PASS96_PHONE_CH8_ELARA.md).
+
+## Previous release (v0.5.87)
 
 **Pass 95 — Chapter VII Soren match** — the Human Synthesis second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored `g6` reply. See [`docs/PASS95_PHONE_CH7_SOREN.md`](docs/PASS95_PHONE_CH7_SOREN.md).
 

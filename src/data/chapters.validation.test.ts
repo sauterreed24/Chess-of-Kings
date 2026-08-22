@@ -217,6 +217,7 @@ describe('campaign story beats', () => {
     const elara = matches.find((scene) => scene.id === 'c8-match-elara')
     expect(voss?.type === 'match' && voss.scriptedBlackSans?.[0]).toBe('d5')
     expect(elara?.type === 'match' && elara.scriptedBlackSans?.[0]).toBe('c5')
+    expect(ch8?.scenes.findIndex((scene) => scene.id === 'c8-before-elara')).toBe(9)
     const puzzles = ch8?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
     expect(puzzles.map((scene) => scene.id)).toEqual(
       expect.arrayContaining(['c8-puzzle-exchange', 'c8-puzzle-fork', 'c8-puzzle-file']),
