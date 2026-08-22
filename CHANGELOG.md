@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.78] — 2026-08-22
+
+Pass 86 — Chapter VIII Voss match on the phone instrument:
+
+- **Playwright** — Chapter VIII walks the Alexandrine Board drills into the first Voss match. Desktop and 390×844: civic silhouettes, board-first, queen-pawn `d2–d4`, scripted `d5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS86_PHONE_CH8_MATCH.md`](docs/PASS86_PHONE_CH8_MATCH.md).
+
 ## [0.5.77] — 2026-08-22
 
 Pass 85 — Chapter VII Mira match on the phone instrument:
