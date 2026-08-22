@@ -483,7 +483,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     )
 }
 
-/** Phone squares need a thicker outline than the shared 1.5 civic stroke. Cups stay 0.45. */
+/** Phone squares need a thicker outline than the shared 1.5 civic stroke. Cups stay 0.45. Classic-royal uses this too. */
 export function thickenOutline(svg: string): string {
   return svg.replace(/stroke-width="1.5"/g, 'stroke-width="2.4"')
 }
@@ -519,8 +519,5 @@ export function glyphForSkin(
     return thickenOutline(raw)
   }
   const carved = carveGlyph(raw, color, piece)
-  if (skin === 'obsidian-neon' || skin === 'alexandrine-ornate') {
-    return thickenOutline(carved)
-  }
-  return carved
+  return thickenOutline(carved)
 }

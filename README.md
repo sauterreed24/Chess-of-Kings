@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.109)
+## What's new in this release (v0.5.110)
+
+**Pass 118 — classic-royal outline** — default ivory/lapis pieces use the 2.4 civic outline so carved edges still read on a 390×844 instrument. See [`docs/PASS118_CLASSIC_OUTLINE.md`](docs/PASS118_CLASSIC_OUTLINE.md).
+
+## Previous release (v0.5.109)
 
 **Pass 117 — phone skip-ahead** — the prologue “I know the rules” control keeps a 44px hit target on a 390×844 instrument. See [`docs/PASS117_PHONE_SKIP_AHEAD.md`](docs/PASS117_PHONE_SKIP_AHEAD.md).
 
