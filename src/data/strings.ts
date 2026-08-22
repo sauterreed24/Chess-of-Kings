@@ -70,7 +70,7 @@ export const ARCHIVE_RATING_BAND_LABELS = {
 
 export const PLATEAU_COPY = {
   heading: 'Mastery plateau',
-  lede: 'Chapters I–VI are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
+  lede: 'Chapters I–VII are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
   dailyCta: 'Daily Calculus',
   duelCta: 'Duel Archive',
   resumeCta: 'Resume Recovered Session',
@@ -97,7 +97,13 @@ export const PLATEAU_PENDING_CH5_COPY = {
 /** Hub after Chapter VI reflection while freeplay / clear rewards are still outstanding. */
 export const PLATEAU_PENDING_CH6_COPY = {
   heading: 'Almost sealed',
-  lede: 'The Silicon Threshold reflection is inscribed. Finish the Chapter VI rehearsal to claim the ledger seal, then the mastery plateau opens fully.',
+  lede: 'The Silicon Threshold reflection is inscribed. Finish the Chapter VI rehearsal to claim the ledger seal, then the Human Synthesis opens.',
+} as const
+
+/** Hub after Chapter VII reflection while freeplay / clear rewards are still outstanding. */
+export const PLATEAU_PENDING_CH7_COPY = {
+  heading: 'Almost sealed',
+  lede: 'The Human Synthesis reflection is inscribed. Finish the Chapter VII rehearsal to claim the synthesis seal, then the mastery plateau opens fully.',
 } as const
 
 /** Shown when Chapter III is sealed and Chapter IV is waiting, including migrated saves. */
@@ -119,6 +125,13 @@ export const SILICON_OPENED_COPY = {
   heading: 'A new age is open',
   lede: 'The Machine of Discipline is sealed. The Silicon Threshold waits in the vestibule — occupy the hole, take what hangs, finish the file.',
   enterCta: 'Enter the Silicon Threshold',
+} as const
+
+/** Shown when Chapter VI is sealed and Chapter VII is waiting, including migrated saves. */
+export const SYNTHESIS_OPENED_COPY = {
+  heading: 'A new age is open',
+  lede: 'The Silicon Threshold is sealed. The Human Synthesis waits in the vestibule — switch schools, castle the safer wing, finish the tactic.',
+  enterCta: 'Enter the Human Synthesis',
 } as const
 
 export const ECHO_OUTCOME_LABELS = {

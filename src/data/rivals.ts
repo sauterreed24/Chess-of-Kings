@@ -615,6 +615,80 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  mira: {
+    opponentId: 'mira',
+    displayName: 'Mira',
+    blend: {
+      primary: { school: 'Macedonian Phalanx', weight: 55 },
+      secondary: { school: 'Achaemenid Patience', weight: 45 },
+    },
+    counterPrep: [
+      'Play the board in front of you — Mira files last week\'s school as a costume and taxes the delay.',
+      'If a piece hangs, take it even when a check looks prettier; her practical tool is the cheaper fact.',
+      'Castle the wing that still has pawns. Short-castle loyalty is how she files you as inflexible.',
+    ],
+    whiteOpenings: ['Italian and Two Knights pressure', 'Quiet king-pawn with a tool switch', 'Safer-wing castling drills'],
+    blackOpenings: ['Open-game e5 systems', 'Italian Bc5 practical lines', 'Tool-first development'],
+    signature: 'Drop the beloved check for the hanging piece, then castle the palace that still has walls.',
+    talk: {
+      opening: [
+        'The school that fits this board is the only loyalty I file.',
+        'Show me the tool you were about to keep wearing.',
+      ],
+      punished: [
+        'You changed tools. Correct.',
+        'My costume lost its lawsuit. Earned.',
+      ],
+      rattled: [
+        'You are treating schools like weather. Rare, and irritating.',
+        'I filed you as loyal. Amend the file.',
+      ],
+      audacious: [
+        'You replayed last week. I collect loyalty as tax.',
+        'A beloved check is still a leak. Watch.',
+      ],
+      draw: [
+        'A draw can be two tools that refused to finish the job.',
+      ],
+    },
+  },
+  soren: {
+    opponentId: 'soren',
+    displayName: 'Soren',
+    blend: {
+      primary: { school: 'Bactrian Frontier', weight: 60 },
+      secondary: { school: 'Indic Combinatorics', weight: 40 },
+    },
+    counterPrep: [
+      'When he answers your school with another, switch with him — staying in the first costume is how the other wing burns.',
+      'Meet g6 with development and castle before the fianchetto bites; Soren files undeveloped kings as announced doctrine.',
+      'If the wing changes, change with it. His favorite finish is the smother you donated while narrating flexibility.',
+    ],
+    whiteOpenings: ['Modern structures as White pressure', 'Hypermodern answers to e4', 'Wing-switch middle games'],
+    blackOpenings: ['Modern g6-Bg7', 'Pirc-quiet walls', 'Reply-school c5 breaks'],
+    signature: 'Answer the named school with another, then finish if the opponent keeps the first costume.',
+    talk: {
+      opening: [
+        'Play a school. I will answer it with another.',
+        'If you keep the first costume, you lose.',
+      ],
+      punished: [
+        'You noticed the reply. The halls notice.',
+        'My second school never landed. Well seen.',
+      ],
+      rattled: [
+        'You treated my answer as weather, then changed the weather. Rare.',
+        'I filed you as loyal. Loyalty is a leak. Amend the file.',
+      ],
+      audacious: [
+        'You announced a doctrine and wore it into the fire. Watch.',
+        'A costume is not a plan. I will demonstrate the difference.',
+      ],
+      draw: [
+        'A draw can be two answering schools that refused to finish.',
+      ],
+    },
+  },
 }
 
 /**

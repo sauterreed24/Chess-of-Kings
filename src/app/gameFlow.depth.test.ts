@@ -94,6 +94,8 @@ describe('GameFlow depth systems', () => {
       'helia',
       'prax',
       'iota',
+      'mira',
+      'soren',
     ])
     expect(archive.find((entry) => entry.rival.opponentId === 'alexion')?.isOpen).toBe(true)
     expect(archive.find((entry) => entry.rival.opponentId === 'lukas')?.isOpen).toBe(false)
@@ -104,6 +106,8 @@ describe('GameFlow depth systems', () => {
     expect(archive.find((entry) => entry.rival.opponentId === 'helia')?.isOpen).toBe(false)
     expect(archive.find((entry) => entry.rival.opponentId === 'prax')?.isOpen).toBe(false)
     expect(archive.find((entry) => entry.rival.opponentId === 'iota')?.isOpen).toBe(false)
+    expect(archive.find((entry) => entry.rival.opponentId === 'mira')?.isOpen).toBe(false)
+    expect(archive.find((entry) => entry.rival.opponentId === 'soren')?.isOpen).toBe(false)
     const rowan = archive.find((entry) => entry.rival.opponentId === 'rowan')
     expect(rowan?.isOpen).toBe(false)
     expect(rowan?.unlockHint).toContain('Defeat Rowan Vale in Chapter II')

@@ -25,6 +25,10 @@ describe('AI profile resolver', () => {
     expect(resolveProfileByDuelVariant('iota-threshold').id).toBe('iota_threshold')
     expect(resolveProfileByMatchId('c6-match-prax').style).toBe('engine')
     expect(resolveProfileByMatchId('c6-match-iota').style).toBe('engine')
+    expect(resolveProfileByMatchId('c7-match-mira').id).toBe('mira_practical')
+    expect(resolveProfileByDuelVariant('soren-answer').id).toBe('soren_answer')
+    expect(resolveProfileByMatchId('c7-match-mira').style).toBe('universal')
+    expect(resolveProfileByMatchId('c7-match-soren').style).toBe('universal')
   })
 
   it('detects game phase and adapts conversion/endgame values', () => {

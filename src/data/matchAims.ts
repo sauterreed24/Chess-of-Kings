@@ -21,6 +21,8 @@ export const MATCH_AIM_BY_SCENE_ID: Record<string, string> = {
   'c5-match-helia': 'Cash what you win; do not donate counterplay.',
   'c6-match-prax': 'Occupy the hole; take what hangs.',
   'c6-match-iota': 'Finish the plus; do not donate a back rank.',
+  'c7-match-mira': 'Take what hangs; castle the wing that still has walls.',
+  'c7-match-soren': 'Meet the reply school; do not keep the first costume.',
 }
 
 export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
@@ -38,6 +40,8 @@ export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
   helia: MATCH_AIM_BY_SCENE_ID['c5-match-helia']!,
   prax: MATCH_AIM_BY_SCENE_ID['c6-match-prax']!,
   iota: MATCH_AIM_BY_SCENE_ID['c6-match-iota']!,
+  mira: MATCH_AIM_BY_SCENE_ID['c7-match-mira']!,
+  soren: MATCH_AIM_BY_SCENE_ID['c7-match-soren']!,
 }
 
 export function matchAimForSceneId(sceneId: string): string {

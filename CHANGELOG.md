@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.62] — 2026-08-22
+
+Pass 70 — Chapter VII playable:
+
+- **Chapter VII — The Human Synthesis** is playable: school-switch lore, Mira + Soren matches with practical/reply scripts, hanging-piece / safer-wing castle / smothered-mate drills, and a seal that moves the mastery plateau to I–VII.
+- **Successor unlock backfill** opens Chapter VII for chronicles that sealed Chapter VI when it was the last compiled age.
+- Hub copy: Chapter VI survivors are invited into the Human Synthesis; the mastery plateau now keys off Chapter VII freeplay.
+- Theme reuses `theme-classical` (CSS gzip locked). Docs: [`docs/PASS70_CHAPTER_VII.md`](docs/PASS70_CHAPTER_VII.md).
+
 ## [0.5.61] — 2026-08-22
 
 Pass 69 — Chapter VI playable:

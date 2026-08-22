@@ -140,7 +140,7 @@ describe('CampaignOrchestrator', () => {
     }
   })
 
-  it('grants Chapter VI clear rewards when the final chapter seals', () => {
+  it('opens Chapter VII when Chapter VI seals', () => {
     const ch6Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch6')
     expect(ch6Index).toBeGreaterThanOrEqual(0)
     const ch6 = PLAYABLE_CHAPTERS[ch6Index]!
@@ -157,10 +157,35 @@ describe('CampaignOrchestrator', () => {
     const result = campaign.advanceAfterLeaving(last)
     expect(result.kind).toBe('chapter-complete')
     if (result.kind === 'chapter-complete') {
-      expect(result.campaignFinished).toBe(true)
+      expect(result.campaignFinished).toBeFalsy()
       expect(result.chapter.id).toBe('ch6')
       expect(result.rewards.some((r) => r.id === 'rw-title-ledger-seal')).toBe(true)
-      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch6')).toBe(true)
+      expect(campaign.progress.chapterIndex).toBe(ch6Index + 1)
+      expect(PLAYABLE_CHAPTERS[campaign.progress.chapterIndex]?.id).toBe('ch7')
+    }
+  })
+
+  it('grants Chapter VII clear rewards when the final chapter seals', () => {
+    const ch7Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch7')
+    expect(ch7Index).toBeGreaterThanOrEqual(0)
+    const ch7 = PLAYABLE_CHAPTERS[ch7Index]!
+    const campaign = new CampaignOrchestrator(PLAYABLE_CHAPTERS, {
+      ...defaultCampaignProgress(),
+      chapterIndex: ch7Index,
+      sceneIndex: ch7.scenes.length - 1,
+      highestUnlockedChapter: ch7Index,
+      chapter1Complete: true,
+      chapter2Complete: true,
+    })
+    const last = campaign.currentScene()
+    expect(last.id).toBe('c7-freeplay')
+    const result = campaign.advanceAfterLeaving(last)
+    expect(result.kind).toBe('chapter-complete')
+    if (result.kind === 'chapter-complete') {
+      expect(result.campaignFinished).toBe(true)
+      expect(result.chapter.id).toBe('ch7')
+      expect(result.rewards.some((r) => r.id === 'rw-title-synthesis-seal')).toBe(true)
+      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch7')).toBe(true)
     }
   })
 
@@ -294,6 +319,47 @@ describe('CampaignOrchestrator', () => {
     }
     backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
     expect(progress.highestUnlockedChapter).toBe(5)
+  })
+
+  it('unlocks Chapter VII for chronicles that sealed Chapter VI before the synthesis age existed', () => {
+    const ch7Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch7')
+    expect(ch7Index).toBeGreaterThanOrEqual(0)
+    const campaign = CampaignOrchestrator.hydrateFromSave(PLAYABLE_CHAPTERS, {
+      version: 3,
+      chapterIndex: 6,
+      sceneIndex: 0,
+      highestUnlockedChapter: 6,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c6-reflection', 'c6-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: [],
+      unlockedDuelVariantIds: [],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 0,
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: defaultLadderRating(),
+      inProgress: null,
+    })
+    expect(campaign.progress.highestUnlockedChapter).toBe(ch7Index)
+    expect(campaign.canJumpToChapter(ch7Index)).toBe(true)
+  })
+
+  it('does not invent a synthesis unlock from an unfinished ledger chapter', () => {
+    const progress = {
+      ...defaultCampaignProgress(),
+      highestUnlockedChapter: 6,
+      completedSceneIds: ['c6-intro'],
+    }
+    backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
+    expect(progress.highestUnlockedChapter).toBe(6)
   })
 
   it('gates chapter jumps by highest unlocked chapter', () => {
