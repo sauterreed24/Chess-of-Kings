@@ -15,7 +15,7 @@ level (the save format has its own version field — see
 
 Pass 22 — Lamp-lit ivory and the first mate:
 
-- **Ivory/lapis glyphs** take brass-lamp lighting on the real Staunton silhouette (gradient fill + specular), not overlay shade blobs. Lean mode keeps the gradient without the filter.
+- **Ivory/lapis glyphs** take brass-lamp lighting on the real Staunton silhouette (gradient fill + specular), not overlay shade blobs. Forced **Visual: Lean** keeps the gradient without the filter.
 - Playwright seals Chapter I's mate-in-one with queen to h8, and the live duel plays e4, Nf3, and d4 against archive replies.
 - Docs: [`docs/PASS22_LAMP_LIT.md`](docs/PASS22_LAMP_LIT.md).
 

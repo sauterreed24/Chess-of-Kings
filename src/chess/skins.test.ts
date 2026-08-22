@@ -41,8 +41,9 @@ describe('carveGlyph', () => {
     expect(idA).not.toBe(idB)
   })
 
-  it('skips specular lighting in lean performance mode', () => {
-    document.documentElement.classList.add('perf-lean')
+  it('skips specular lighting when visual quality is forced lean', () => {
+    const prev = globalThis.localStorage?.getItem('cok-visual-quality')
+    globalThis.localStorage?.setItem('cok-visual-quality', 'lean')
     try {
       const carved = carveGlyph('<svg><path fill="var(--piece-fill)" d="M1"/></svg>', 'w', 'p')
       expect(carved).toContain('class="piece-lit"')
@@ -50,7 +51,8 @@ describe('carveGlyph', () => {
       expect(carved).not.toContain('feSpecularLighting')
       expect(carved).not.toContain(' filter=')
     } finally {
-      document.documentElement.classList.remove('perf-lean')
+      if (prev == null) globalThis.localStorage?.removeItem('cok-visual-quality')
+      else globalThis.localStorage?.setItem('cok-visual-quality', prev)
     }
   })
 })

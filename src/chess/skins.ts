@@ -65,6 +65,14 @@ const LAMP = {
 
 let carveSeq = 0
 
+function preferLeanGlyphs(): boolean {
+  try {
+    return globalThis.localStorage?.getItem('cok-visual-quality') === 'lean'
+  } catch {
+    return false
+  }
+}
+
 /** Foot shadow + lamp-lit body so Staunton glyphs read as carved ivory/lapis, not flat cutouts. */
 export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'): string {
   if (svg.includes('piece-lit') || svg.includes('piece-carve')) return svg
@@ -72,8 +80,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const lamp = LAMP[color]
   const sheen = color === 'w' ? 'rgba(255,255,255,0.32)' : 'rgba(232,201,126,0.28)'
   const rx = FOOT_RX[piece] ?? 10.6
-  const lean =
-    typeof document !== 'undefined' && document.documentElement.classList.contains('perf-lean')
+  const lean = preferLeanGlyphs()
   const gradient =
     `<linearGradient id="${id}g" x1=".16" y1=".04" x2=".88" y2=".96">` +
     `<stop offset="0" stop-color="${lamp.hi}"/><stop offset=".4" stop-color="var(--piece-fill)"/>` +
