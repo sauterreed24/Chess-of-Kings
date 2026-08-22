@@ -37,7 +37,8 @@ export function syncLabOverlayCaption(el: HTMLElement | null | undefined): void 
 const PHONE_PUZZLE_DEPTH = '.story-beat, .teaching, .teaching-more, .hint-block, .lesson-lead'
 
 /** Phone puzzles already put the command on the marble; hiding the whole body
- *  also collapses the empty min-height hole the duplicate cards left behind. */
+ *  also collapses the empty min-height hole the duplicate cards left behind.
+ *  Prove docks next to Hint so the empty manuscript card can hide. */
 export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefined): void {
   if (!narrativeBody) return
   const hide = isPhoneLabNav() && narrativeBody.hasAttribute('data-puzzle-lesson')
@@ -45,6 +46,21 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
   narrativeBody.querySelectorAll(PHONE_PUZZLE_DEPTH).forEach((node) => {
     node.classList.toggle('hidden', hide)
   })
+  const scope: ParentNode = narrativeBody.closest('#app') ?? narrativeBody.ownerDocument ?? narrativeBody
+  const next = scope.querySelector<HTMLButtonElement>('#btn-next')
+  const tools = scope.querySelector('.board-tools')
+  const actions = scope.querySelector('.narrative-actions')
+  const manuscript = scope.querySelector('#manuscript-panel')
+  if (!next || !tools || !actions || !manuscript) return
+  if (hide) {
+    const hint = tools.querySelector('#btn-hint')
+    if (hint) hint.after(next)
+    else tools.prepend(next)
+    manuscript.classList.add('hidden')
+  } else {
+    actions.prepend(next)
+    manuscript.classList.remove('hidden')
+  }
 }
 
 export function setTopBarInertForLab(topBar: HTMLElement, labActive: boolean): void {
