@@ -940,18 +940,18 @@ export function mountApp(app: HTMLDivElement) {
       li.className = `chapter-row ${locked ? 'chapter-row--locked' : ''}`
       li.innerHTML = locked
         ? `<div class="chapter-locked">
-            <span class="ch-idx">${escapeHtml(ch.title)}</span>
+            <span class="ch-idx" style="font-size:0.7rem">${escapeHtml(ch.title)}</span>
             <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
             <span class="ch-era">${escapeHtml(ch.era)}</span>
-            <span class="lock-badge">Sealed passage</span>
+            <span class="lock-badge" style="font-size:0.7rem">Sealed passage</span>
           </div>`
         : `<button type="button" class="chapter-btn" data-idx="${i}" aria-label="${i === flow.chapterIndex && flow.sceneIndex > 0 ? 'Resume' : 'Enter'} ${escapeHtml(ch.title)}: ${escapeHtml(ch.subtitle)}">
             <span class="chapter-btn__main">
-              <span class="ch-idx">${escapeHtml(ch.title)}</span>
+              <span class="ch-idx" style="font-size:0.7rem">${escapeHtml(ch.title)}</span>
               <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
               <span class="ch-era">${escapeHtml(ch.era)}</span>
             </span>
-            <span class="chapter-btn__state">${i === flow.chapterIndex && flow.sceneIndex > 0 ? 'Resume' : i === flow.chapterIndex ? 'Current' : 'Open'}</span>
+            <span class="chapter-btn__state" style="font-size:0.7rem">${i === flow.chapterIndex && flow.sceneIndex > 0 ? 'Resume' : i === flow.chapterIndex ? 'Current' : 'Open'}</span>
             <span class="chapter-btn__arrow" aria-hidden="true">→</span>
           </button>`
       if (!locked) {

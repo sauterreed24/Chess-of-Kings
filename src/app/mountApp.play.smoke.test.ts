@@ -616,6 +616,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     const current = app.querySelector<HTMLButtonElement>('.chapter-btn[data-idx="5"]')
     expect(current).toBeTruthy()
     expect(current?.querySelector('.chapter-btn__state')?.textContent).toBe('Resume')
+    expect((current?.querySelector('.chapter-btn__state') as HTMLElement | null)?.style.fontSize).toBe('0.7rem')
     expect(current?.getAttribute('aria-label')).toMatch(/^Resume Chapter V/)
     current!.click()
     expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)

@@ -3454,6 +3454,8 @@ test('title top nav stays 44px on the phone instrument', async ({ page }) => {
   await page.locator('#btn-chapters').click()
   await expect(page.locator('#btn-chapters-back')).toBeVisible()
   expect(await page.locator('#btn-chapters-back').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  expect(await page.locator('.chapter-btn__state').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('.chapter-btn .ch-idx').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
 })
 
 test('title privacy links stay 44px on the phone instrument', async ({ page }) => {
