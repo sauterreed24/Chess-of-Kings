@@ -19,6 +19,8 @@ describe('RIVAL_PROFILES data', () => {
     'helia',
     'prax',
     'iota',
+    'mira',
+    'soren',
   ]
 
   it('contains every named campaign and Duel Archive rival', () => {
@@ -116,6 +118,8 @@ describe('inferRivalIdFromSceneId', () => {
     expect(inferRivalIdFromSceneId('c5-match-helia')).toBe('helia')
     expect(inferRivalIdFromSceneId('c6-match-prax')).toBe('prax')
     expect(inferRivalIdFromSceneId('c6-match-iota')).toBe('iota')
+    expect(inferRivalIdFromSceneId('c7-match-mira')).toBe('mira')
+    expect(inferRivalIdFromSceneId('c7-match-soren')).toBe('soren')
     expect(inferRivalIdFromSceneId('c3-match-demetrios-return')).toBe('demetrios')
   })
 

@@ -1,13 +1,14 @@
 import type { Chapter } from '../types'
 
 /**
- * Playable campaign: Prologue + Chapters I–VI.
+ * Playable campaign: Prologue + Chapters I–VII.
  * Chapter I: six-rung ladder (Initiate → … → Counterpart).
  * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
  * Chapter III: compact Classical arc — Demetrios return + Kallistos + rehearsal.
  * Chapter IV: Hypermodern / Paradox Masters — Nysa + Cassian + rehearsal.
  * Chapter V: Discipline colleges — Gage + Helia + rehearsal.
  * Chapter VI: Silicon Threshold — Prax + Iota + rehearsal.
+ * Chapter VII: Human Synthesis — Mira + Soren + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -2512,11 +2513,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'iota',
-            text: 'Remember the finish. Later ages will mix schools faster than your fear — but they still punish courtesy toward a plus.',
+            text: 'Remember the finish. The next door will ask you to switch schools without dropping the plus you already earned.',
           },
           {
             speaker: 'narrator',
-            text: 'Chapter VI is sealed. Upstairs, the brief is rewritten again: Reed can follow a public line without vanishing into it. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, human synthesis and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+            text: 'Chapter VI is sealed. Upstairs, the brief is rewritten again: Reed can follow a public line without vanishing into it. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Human Synthesis waits — style as a tool, not a loyalty. The chronicle has another age to inscribe.',
           },
         ],
       },
@@ -2539,6 +2540,338 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Ledger skill is recognizing the public line early enough to follow it cheaply, then finishing what the follow won.',
           concept: 'Precision becomes instinct only through quiet repetition.',
+        },
+      },
+    ],
+  },
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER VII — The Human Synthesis (compact ladder)
+     Switch schools mid-game. Mira + Soren.
+     Reuses theme-classical (CSS gzip locked).
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch7',
+    index: 7,
+    title: 'Chapter VII',
+    subtitle: 'The Human Synthesis',
+    era: 'Modern universal play — style as a tool',
+    themeClass: 'theme-classical',
+    philosophy:
+      'A school is a tool, not a loyalty. Take the hanging piece instead of the speech, castle the safer wing, and finish with the tactic the last school made legal.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c7-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'The ledger meets a human who can switch',
+          body: 'Precision taught Reed to follow a public line. The synthesis rooms ask whether he can change schools without dropping the plus — and whether a human still chooses when every doctrine is already on file.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The vestibule is a practice hall, not a counting room. Boards are already mid-game: one Italian, one Modern, one wrecked kingside. Clerks have labeled none of them. The lesson is the switch.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'They filed you as precise. That is not a compliment here. It is a warrant to test whether you can abandon a school the moment the board stops paying it.',
+          },
+          {
+            speaker: 'iota',
+            text: 'I asked whether your plus was a fact. Mira will ask whether you take the piece instead of the check. Soren will answer your doctrine with another and wait to see if you notice. Neither is a villain. Drought taught the halls that loyalty to one school is how cities drown on a Tuesday.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So I become everyone?',
+          },
+          {
+            speaker: 'prax',
+            text: 'You become the person who can sit on a hole, then castle the other way, then finish. The line is still there. It just changes clothes.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c7-codex-synthesis',
+        heading: 'Synthesis doctrine — switch, answer, finish',
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'Style is a tool',
+          body: 'Civic practice halls under the Long Reign treat schools as instruments: occupy when the hole is named, castle the safer wing when one is wrecked, and finish with the tactic the last tool made legal.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'School switch',
+            body: 'The romantic check is not always the move. If a piece hangs, take it. Synthesis begins when you drop a beloved idea for a cheaper fact.',
+          },
+          {
+            term: 'Safer wing',
+            body: 'Castling is not a loyalty to the kingside. When that cover is gone, go the other way. Universal play is the habit of asking which palace still has walls.',
+          },
+          {
+            term: 'Answered doctrine',
+            body: 'If you pause, the rival occupies. If you occupy, the rival switches wings. Synthesis is noticing the reply school before it names you.',
+          },
+          {
+            term: 'Smothered finish',
+            body: 'A knight mate against a king boxed by his own men. After the switch, finish with the tactic the last structure made legal — not with a speech about flexibility.',
+          },
+          {
+            term: 'Human Synthesis',
+            body: 'The civic argument of this age: if every school is already on file, what is a stratarch for? Mira answers choose the tool. Soren answers survive the reply. Reed has to answer without becoming a costume trunk.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c7-puzzle-switch',
+        title: 'Puzzle — take, do not check',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The other school would check',
+          body: 'A rook check looks like fire. The hanging knight is a fact. Switch: take it.',
+          tone: 'pressure',
+        },
+        fen: 'r5k1/5ppp/8/3n4/4B3/8/5PPP/4R1K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'advantage', minCp: 250 },
+        lesson:
+          'Re8+ is a speech. Bxd5 is the school that fits this board. Synthesis is dropping the check for the piece.',
+        teaching: {
+          threat: 'If you check instead of taking, the knight walks and the plus stays a rumor.',
+          goalPlain: 'Win the hanging knight on d5 with the bishop.',
+          whyItWorks:
+            'The bishop already attacks the undefended knight. Taking it is not greed. It is changing tools.',
+          concept: 'Switch schools: take the hanging piece instead of the check.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c7-puzzle-wing',
+        title: 'Puzzle — castle the safer wing',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The kingside has no walls',
+          body: 'Kingside pawns are gone. Castling short is a loyalty. Castling long is the tool.',
+          tone: 'pressure',
+        },
+        fen: 'r3k2r/ppp2ppp/8/8/8/8/PPP5/R3K2R w KQkq - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'pieceOn', square: 'c1', color: 'w', pieceType: 'k' },
+        lesson:
+          'O-O lands in a wreck. O-O-O puts the king behind a2-b2-c2. Synthesis asks which palace still has walls.',
+        teaching: {
+          threat: 'If you castle short, the open kingside files you as loyal to a school that already drowned.',
+          goalPlain: 'Castle queenside so the king sits on c1.',
+          whyItWorks:
+            'Queenside still has a pawn wall. The other wing does not. Universal play is the cheaper palace.',
+          concept: 'Castle the safer wing, not the familiar one.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c7-puzzle-smother',
+        title: 'Puzzle — smothered finish',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The last tool made this legal',
+          body: 'King boxed by his own rook and pawns. The knight owns f7. Finish; do not narrate flexibility.',
+          tone: 'fire',
+        },
+        fen: '6rk/6pp/8/4N3/8/8/8/6K1 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'Nf7 is mate. The king has no luft because his own men stole it. Synthesis finishes with the tactic the structure already paid for.',
+        teaching: {
+          threat: 'If you check from elsewhere, the king wriggles and the plus becomes a lecture.',
+          goalPlain: 'Deliver smothered mate with the knight on f7.',
+          whyItWorks:
+            'Nf7# seals a king trapped by g7, h7, and the rook on g8 — a forced finish after the switch, not a new school speech.',
+          concept: 'When the last tool made mate legal, take it.',
+        },
+      },
+      {
+        type: 'dialogue',
+        id: 'c7-after-puzzles',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'Habits before the practice hall',
+          body: 'Reed has the take, the safer wing, and the smother. Mira will ask whether he can choose a tool when his pulse wants last week\'s school.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'Three receipts: a knight taken instead of a check, a king sent the long way, a smother the structure had already bought. Mira does not applaud. She changes the opening.',
+          },
+          {
+            speaker: 'mira',
+            text: 'You can switch on a diagram. Now switch while I am still talking.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c7-before-mira',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The practical tool',
+          body: 'Mira thrives when you replay yesterday\'s school. Play the board in front of you, or become the costume.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'mira',
+            text: 'The school that fits this board is the only loyalty I file. Begin.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I loved the last one?',
+          },
+          {
+            speaker: 'mira',
+            text: 'Then drop it cheaper than drought. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c7-match-mira',
+        title: 'Encounter 1 of 2 — The Practical Tool',
+        opponentName: 'Mira',
+        opponentNote:
+          'Synthesis examiner — open-game structures that change tools without a speech. Take what hangs; castle the wing that still has walls.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Do not replay last week',
+          body: 'Mira wins when you stay loyal to a school the board stopped paying. Develop, castle the safer side, and ask which tool this position actually buys.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'universal',
+        scriptedBlackSans: ['e5', 'Nf6', 'Nc6', 'Bc5', 'd6', 'O-O'],
+        ladderTier: 'veteran',
+        difficulty: 3,
+      },
+      {
+        type: 'dialogue',
+        id: 'c7-after-mira',
+        storyBeat: {
+          label: 'After-action quiet',
+          title: 'A tool, not a costume',
+          body: 'Mira files whether Reed chose the board in front of him. Soren is waiting to answer whatever school that was.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'mira',
+            text: 'You changed tools. That is the only medal this hall issues.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Soren is already setting a different opening. He will answer whatever Reed just played with a school Reed did not pack.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c7-before-soren',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The answering school',
+          body: 'Soren is strongest when you announce a doctrine. He replies with another and waits to see if you notice the wing has changed.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'soren',
+            text: 'Play a school. I will answer it with another. If you keep the first costume, you lose.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I switch when you switch?',
+          },
+          {
+            speaker: 'soren',
+            text: 'Then you are still in the room. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c7-match-soren',
+        title: 'Encounter 2 of 2 — The Answering School',
+        opponentName: 'Soren',
+        opponentNote:
+          'Synthesis specialist — Modern and hypermodern walls that answer your last doctrine. Castle, occupy, and do not donate the other wing.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Survive the reply school',
+          body: 'Soren is strongest when you stay in the opening you named. Meet g6 with development, castle before the fianchetto bites, and switch when the wing changes.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'universal',
+        scriptedBlackSans: ['g6', 'Bg7', 'd6', 'Nf6', 'O-O', 'c5'],
+        ladderTier: 'boss',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c7-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Judgment after the switch',
+          body: 'Synthesis does not erase precision — it decides whether a human can still choose a tool once every school is on file.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You learned to take instead of checking, to castle the safer wing, and to finish the smother. That is the Human Synthesis seal: a player who can change clothes without vanishing.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Mira asked whether I would drop last week\'s school. Soren asked whether I would notice the reply.',
+          },
+          {
+            speaker: 'iota',
+            text: 'You kept the plus. Synthesis does not cancel it. It only punishes the plus you narrated while the other wing burned.',
+          },
+          {
+            speaker: 'soren',
+            text: 'Remember the answer. Later ages will fork time faster than your fear — but they still punish loyalty to a dead school.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter VII is sealed. Upstairs, the brief is rewritten again: Reed can switch schools without becoming a costume trunk. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Alexandrine Board and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c7-freeplay',
+        title: 'Free board — Synthesis rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice the switch',
+          body: 'Rehearse taking hanging pieces instead of checks, castling the safer wing, and smothered finishes until style feels like a tool.',
+          tone: 'quiet',
+        },
+        lesson:
+          'Set up a simple structure and alternate sides. Practice dropping a beloved check for a capture, castling long when short is wrecked, and finishing mates the structure already bought.',
+        teaching: {
+          threat: 'None — this is a sandbox after the synthesis ladder.',
+          goalPlain:
+            'Rehearse school switches without a story timer. Return to the vestibule when finished.',
+          whyItWorks:
+            'Synthesis is recognizing which school the board is paying, then changing tools before loyalty names you.',
+          concept: 'Style becomes a tool only through quiet repetition.',
         },
       },
     ],

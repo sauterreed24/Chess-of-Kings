@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.61)
+## What's new in this release (v0.5.62)
+
+**Pass 70 — Chapter VII playable** — The Human Synthesis is a full campaign age after the Silicon Threshold: school switches, safer-wing castling, Mira, and Soren. See [`docs/PASS70_CHAPTER_VII.md`](docs/PASS70_CHAPTER_VII.md).
+
+## Previous release (v0.5.61)
 
 **Pass 69 — Chapter VI playable** — The Silicon Threshold is a full campaign age after the Machine of Discipline: outposts, hanging captures, Prax, and Iota. See [`docs/PASS69_CHAPTER_VI.md`](docs/PASS69_CHAPTER_VI.md).
 

@@ -121,6 +121,20 @@ const BOOKS: Record<string, OpeningBook> = {
     7: [{ san: 'e6', weight: 8 }, { san: 'Be7', weight: 4 }],
     9: [{ san: 'Be7', weight: 7 }, { san: 'O-O', weight: 5 }],
   },
+  mira_practical: {
+    1: [{ san: 'e5', weight: 9 }, { san: 'c5', weight: 3 }, { san: 'e6', weight: 2 }],
+    3: [{ san: 'Nf6', weight: 9 }, { san: 'Nc6', weight: 4 }],
+    5: [{ san: 'Nc6', weight: 8 }, { san: 'Bc5', weight: 5 }],
+    7: [{ san: 'Bc5', weight: 8 }, { san: 'd6', weight: 4 }],
+    9: [{ san: 'd6', weight: 7 }, { san: 'O-O', weight: 5 }],
+  },
+  soren_answer: {
+    1: [{ san: 'g6', weight: 9 }, { san: 'd6', weight: 4 }, { san: 'c5', weight: 2 }],
+    3: [{ san: 'Bg7', weight: 9 }, { san: 'Nf6', weight: 3 }],
+    5: [{ san: 'd6', weight: 8 }, { san: 'Nf6', weight: 4 }],
+    7: [{ san: 'Nf6', weight: 8 }, { san: 'O-O', weight: 4 }],
+    9: [{ san: 'O-O', weight: 7 }, { san: 'c5', weight: 5 }],
+  },
 }
 
 export function getBookTopLines(

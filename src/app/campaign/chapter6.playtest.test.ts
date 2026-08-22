@@ -99,7 +99,7 @@ describe('Chapter VI playtest', () => {
     expect(flow.currentScene().type === 'match' && flow.currentScene().scriptedBlackSans?.[0]).toBe('c6')
   })
 
-  it('seals the ledger age and finishes the compiled campaign', () => {
+  it('seals the ledger age and opens the Human Synthesis', () => {
     const { flow, ch6, onChapterComplete, onCampaignFinished } = chapterSixFlow()
     const freeIdx = PLAYABLE_CHAPTERS[ch6]!.scenes.findIndex((scene) => scene.id === 'c6-freeplay')
     flow.jumpToScene(ch6, freeIdx)
@@ -107,7 +107,8 @@ describe('Chapter VI playtest', () => {
     expect(flow.canAdvance()).toBe(true)
     flow.advanceScene()
     expect(onChapterComplete).toHaveBeenCalled()
-    expect(onCampaignFinished).toHaveBeenCalled()
+    expect(onCampaignFinished).not.toHaveBeenCalled()
     expect(flow.chapter6Complete).toBe(true)
+    expect(flow.currentScene().id).toBe('c7-intro')
   })
 })

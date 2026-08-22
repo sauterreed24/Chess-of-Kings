@@ -2,7 +2,7 @@
 
 ## Summary
 
-Playable ledger chapter after Chapter V. Sealing the Machine of Discipline opens the Silicon Threshold. The mastery plateau moves to Chapter VI freeplay completion. Existing chronicles that already sealed Chapter V receive the new age through a successor-unlock backfill.
+Playable ledger chapter after Chapter V. Sealing the Machine of Discipline opens the Silicon Threshold. Sealing Chapter VI opens the Human Synthesis; the mastery plateau moves to Chapter VII freeplay completion. Existing chronicles that already sealed Chapter V receive the new age through a successor-unlock backfill.
 
 ## Lore
 
@@ -37,5 +37,5 @@ Sealing the chapter amends the committee file again: Reed can follow a public li
 - Chapter FEN/goal validation covers outpost (`pieceOn d5`), hanging-queen advantage, and back-rank mate
 - Orchestrator: Ch V seal opens Ch VI; pre-Ch-VI saves that sealed the discipline age unlock Ch VI on load
 - Duel roster / reward unlock ids for Prax and Iota
-- Plateau hub fixtures cover sealed Ch V (silicon invite), pending Ch VI, and sealed Ch VI mastery plateau
+- Plateau hub fixtures cover sealed Ch V (silicon invite), pending Ch VI, and sealed Ch VI synthesis invite
 - Playwright: Chapter VI drills (`c3-d5`, `e3-d5`, `e1-e8`) and post-V / post-VI hub copy

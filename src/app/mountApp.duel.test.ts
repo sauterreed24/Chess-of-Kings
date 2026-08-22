@@ -259,7 +259,7 @@ describe('mounted duel dossier', () => {
     expect(hub?.textContent).toMatch(/Machine of Discipline/)
     expect(app.querySelector('#btn-plateau-machine')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Switch schools|Human Synthesis/i)
+    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Sovereign exchange|Alexandrine/i)
     expect(app.textContent).toMatch(/The Paradox Masters/)
     expect(app.textContent).toMatch(/The Machine of Discipline/)
     expect(app.textContent).toMatch(/The Silicon Threshold/)
@@ -310,7 +310,7 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#btn-plateau-silicon')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-machine')).toBeNull()
     expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Switch schools|Human Synthesis/i)
+    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Sovereign exchange|Alexandrine/i)
     expect(app.textContent).toMatch(/The Machine of Discipline/)
     expect(app.textContent).toMatch(/The Silicon Threshold/)
 
@@ -319,7 +319,7 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#play-chapter-label')?.textContent).toMatch(/Chapter VI|Silicon/)
   })
 
-  it('shows a mastery plateau hub after Chapter VI is sealed', () => {
+  it('shows a Human Synthesis hub after Chapter VI is sealed', () => {
     localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
       version: 3,
       chapterIndex: 6,
@@ -359,11 +359,69 @@ describe('mounted duel dossier', () => {
     app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
     const hub = app.querySelector('.plateau-hub')
     expect(hub).not.toBeNull()
-    expect(hub?.textContent).toMatch(/Mastery plateau/)
-    expect(hub?.textContent).toMatch(/I–VI are sealed/)
-    expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
+    expect(hub?.textContent).toMatch(/A new age is open/)
+    expect(hub?.textContent).toMatch(/Human Synthesis/)
+    expect(app.querySelector('#btn-plateau-synthesis')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-silicon')).toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Switch schools|Human Synthesis/i)
+    expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
+    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Sovereign exchange|Alexandrine/i)
+    expect(app.textContent).toMatch(/The Silicon Threshold/)
+    expect(app.textContent).toMatch(/The Human Synthesis/)
+
+    app.querySelector<HTMLButtonElement>('#btn-plateau-synthesis')?.click()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(app.querySelector('#play-chapter-label')?.textContent).toMatch(/Chapter VII|Synthesis/)
+  })
+
+  it('shows a mastery plateau hub after Chapter VII is sealed', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 7,
+      sceneIndex: 0,
+      highestUnlockedChapter: 7,
+      lastScreen: 'chapters',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: [
+        'c3-reflection',
+        'c3-freeplay',
+        'c4-reflection',
+        'c4-freeplay',
+        'c5-reflection',
+        'c5-freeplay',
+        'c6-reflection',
+        'c6-freeplay',
+        'c7-reflection',
+        'c7-match-soren',
+        'c7-freeplay',
+      ],
+      completedPuzzleIds: [],
+      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax', 'iota', 'mira', 'soren'],
+      unlockedDuelVariantIds: [
+        'alexion-mentor',
+        'kallistos-law',
+        'nysa-frontier',
+        'cassian-paradox',
+        'gage-discipline',
+        'helia-machine',
+        'prax-precision',
+        'iota-threshold',
+        'mira-practical',
+        'soren-answer',
+      ],
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    const hub = app.querySelector('.plateau-hub')
+    expect(hub).not.toBeNull()
+    expect(hub?.textContent).toMatch(/Mastery plateau/)
+    expect(hub?.textContent).toMatch(/I–VII are sealed/)
+    expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
+    expect(app.querySelector('#btn-plateau-synthesis')).toBeNull()
+    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Sovereign exchange|Alexandrine/i)
 
     app.querySelector<HTMLButtonElement>('#btn-plateau-duel')?.click()
     expect(app.querySelector('#screen-duel')?.classList.contains('hidden')).toBe(false)

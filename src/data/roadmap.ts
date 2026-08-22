@@ -3,14 +3,6 @@ import type { RoadmapChapter } from '../types'
 /** Post-MVP chapters — visible on Chapters screen, not playable. */
 export const LOCKED_ROADMAP: RoadmapChapter[] = [
   {
-    id: 'ch7',
-    listTitle: 'Chapter VII',
-    subtitle: 'The Human Synthesis',
-    era: 'Modern universal play',
-    teaser:
-      'Switch schools mid-game: practical mastery, style as a tool, and the rival who answers every doctrine with another.',
-  },
-  {
     id: 'ch8',
     listTitle: 'Chapter VIII',
     subtitle: 'The Alexandrine Board',

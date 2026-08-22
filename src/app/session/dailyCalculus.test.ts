@@ -54,7 +54,7 @@ describe('collectPuzzlePool', () => {
     expect(collectPuzzlePool([chapter('z', 'Z', [])])).toEqual([])
   })
 
-  it('includes Chapter V and VI drills in the live campaign pool', () => {
+  it('includes Chapter V–VII drills in the live campaign pool', () => {
     const ids = collectPuzzlePool(PLAYABLE_CHAPTERS).map((p) => p.scene.id)
     expect(ids).toEqual(expect.arrayContaining([
       'c4-puzzle-fianchetto',
@@ -66,8 +66,11 @@ describe('collectPuzzlePool', () => {
       'c6-puzzle-outpost',
       'c6-puzzle-precision',
       'c6-puzzle-backrank',
+      'c7-puzzle-switch',
+      'c7-puzzle-wing',
+      'c7-puzzle-smother',
     ]))
-    expect(ids.length).toBeGreaterThanOrEqual(14)
+    expect(ids.length).toBeGreaterThanOrEqual(17)
   })
 })
 

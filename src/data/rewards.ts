@@ -201,6 +201,38 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       titleId: 'ledger-analyst',
     },
   ],
+  'c7-match-mira': [
+    {
+      id: 'rw-variant-mira-practical',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Mira Practical Tool',
+      description: "Replay Mira's synthesis-practical doctrine from Chapter VII in Duel mode.",
+      duelVariantId: 'mira-practical',
+    },
+    {
+      id: 'rw-codex-mira-tool',
+      kind: 'codex',
+      label: 'Archive Note: The Practical Tool',
+      description: 'Mira files that last week\'s school is a costume, and that you changed tools.',
+      codexId: 'codex-mira-tool',
+    },
+  ],
+  'c7-match-soren': [
+    {
+      id: 'rw-variant-soren-answer',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Soren Answering School',
+      description: "Replay Soren's reply-school doctrine from Chapter VII in Duel mode.",
+      duelVariantId: 'soren-answer',
+    },
+    {
+      id: 'rw-title-synthesis',
+      kind: 'title',
+      label: 'Title Earned: Synthesis Analyst',
+      description: 'Recognized for switching schools, castling the safer wing, and finishing the tactic the last tool made legal.',
+      titleId: 'synthesis-analyst',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
@@ -292,6 +324,21 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       kind: 'chronicle',
       label: 'Chronicle Echo Unlocked',
       description: 'A sixth echo joins your archive: outposts, hanging captures, and forced finishes.',
+    },
+  ],
+  ch7: [
+    {
+      id: 'rw-title-synthesis-seal',
+      kind: 'title',
+      label: 'Title Earned: Seal of the Human Synthesis',
+      description: 'Chapter VII completed. Your chronicle carries style as a tool, not a loyalty, as a civic virtue.',
+      titleId: 'seal-human-synthesis',
+    },
+    {
+      id: 'rw-chronicle-echo-ch7',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'A seventh echo joins your archive: school switches, safer-wing castling, and smothered finishes.',
     },
   ],
 }

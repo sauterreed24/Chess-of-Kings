@@ -290,6 +290,38 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.7, positional: 0.97, sacrificial: 0.16, prophylactic: 0.94 },
     motifBias: { fork: 0.5, pin: 0.94, skewer: 0.8, kingHunt: 0.28 },
   },
+  mira_practical: {
+    id: 'mira_practical',
+    label: 'Mira Practical Tool',
+    style: 'universal',
+    searchDepth: 4,
+    thinkTimeMs: 1140,
+    blunderRate: 0.03,
+    riskAppetite: 0.36,
+    tacticalAlertness: 0.88,
+    openingDiscipline: 0.86,
+    kingSafetyUrgency: 0.88,
+    conversionStrictness: 0.9,
+    conversionPersona: 'universal',
+    weights: { tactical: 0.78, positional: 0.88, sacrificial: 0.34, prophylactic: 0.78 },
+    motifBias: { fork: 0.64, pin: 0.72, skewer: 0.7, kingHunt: 0.4 },
+  },
+  soren_answer: {
+    id: 'soren_answer',
+    label: 'Soren Answering School',
+    style: 'universal',
+    searchDepth: 4,
+    thinkTimeMs: 1380,
+    blunderRate: 0.024,
+    riskAppetite: 0.42,
+    tacticalAlertness: 0.86,
+    openingDiscipline: 0.84,
+    kingSafetyUrgency: 0.82,
+    conversionStrictness: 0.88,
+    conversionPersona: 'universal',
+    weights: { tactical: 0.72, positional: 0.9, sacrificial: 0.38, prophylactic: 0.74 },
+    motifBias: { fork: 0.58, pin: 0.8, skewer: 0.76, kingHunt: 0.36 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -316,6 +348,8 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('helia')) return AI_PROFILES.helia_machine
   if (matchId.includes('prax')) return AI_PROFILES.prax_precision
   if (matchId.includes('iota')) return AI_PROFILES.iota_threshold
+  if (matchId.includes('mira')) return AI_PROFILES.mira_practical
+  if (matchId.includes('soren')) return AI_PROFILES.soren_answer
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
   return AI_PROFILES.apprentice_court
@@ -335,6 +369,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('helia')) return AI_PROFILES.helia_machine
   if (variantId.includes('prax')) return AI_PROFILES.prax_precision
   if (variantId.includes('iota')) return AI_PROFILES.iota_threshold
+  if (variantId.includes('mira')) return AI_PROFILES.mira_practical
+  if (variantId.includes('soren')) return AI_PROFILES.soren_answer
   return AI_PROFILES.apprentice_court
 }
 
