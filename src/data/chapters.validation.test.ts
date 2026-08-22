@@ -19,6 +19,13 @@ describe('campaign story beats', () => {
     expect(overlong).toEqual([])
   })
 
+  it('authors Chapter I Lukas after Amara on scene 10', () => {
+    const ch1 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch1')
+    expect(ch1?.scenes.findIndex((scene) => scene.id === 'c1-before-lukas')).toBe(10)
+    const lukas = ch1?.scenes.find((scene) => scene.id === 'c1-match-lukas')
+    expect(lukas?.type === 'match' && lukas.scriptedBlackSans?.[0]).toBe('e5')
+  })
+
   it('authors Chapter III Demetrios return with a classical e5 reply', () => {
     const ch3 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch3')
     const drill = ch3?.scenes.find((scene) => scene.id === 'c3-puzzle-prophylaxis')

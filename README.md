@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.91)
+## What's new in this release (v0.5.92)
+
+**Pass 100 — Chapter I Lukas match** — the Ancient Board second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored Italian `e5` reply. See [`docs/PASS100_PHONE_CH1_LUKAS.md`](docs/PASS100_PHONE_CH1_LUKAS.md).
+
+## Previous release (v0.5.91)
 
 **Pass 99 — Chapter III Kallistos match** — the Professor’s Law second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored classical `e5` reply. See [`docs/PASS99_PHONE_CH3_KALLISTOS.md`](docs/PASS99_PHONE_CH3_KALLISTOS.md).
 
