@@ -36,4 +36,4 @@ Sealing the chapter amends the committee file again: Reed can wait without becom
 - Orchestrator: Ch IV seal opens Ch V; pre-Ch-V saves that sealed the paradox age unlock Ch V on load
 - Duel roster / reward unlock ids for Gage and Helia
 - Plateau hub fixtures cover sealed Ch IV (machine invite), pending Ch V, and sealed Ch V silicon invite
-- Playwright: Chapter V drills (`h2-h3`, `d1-d5`, `a1-a8`) on desktop and 390×844; first Gage match (`e2–e4`, scripted `d6`); post-IV / post-V hub copy
+- Playwright: Chapter V drills (`h2-h3`, `d1-d5`, `a1-a8`) on desktop and 390×844; first Gage match (`e2–e4`, scripted `d6`); Helia match from a mid-age resume (`e2–e4`, scripted `e6`); post-IV / post-V hub copy

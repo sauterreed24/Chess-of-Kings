@@ -102,6 +102,7 @@ describe('campaign story beats', () => {
     const helia = matches.find((scene) => scene.id === 'c5-match-helia')
     expect(gage?.type === 'match' && gage.scriptedBlackSans?.[0]).toBe('d6')
     expect(helia?.type === 'match' && helia.scriptedBlackSans?.[0]).toBe('e6')
+    expect(ch5?.scenes.findIndex((scene) => scene.id === 'c5-before-helia')).toBe(9)
     const puzzles = ch5?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
     expect(puzzles.map((scene) => scene.id)).toEqual(
       expect.arrayContaining(['c5-puzzle-luft', 'c5-puzzle-conversion', 'c5-puzzle-squeeze']),
