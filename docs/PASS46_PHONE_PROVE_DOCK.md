@@ -9,7 +9,7 @@ After collapsing the manuscript body, hanging-knight phones still showed a 174px
 
 ## Shipped
 
-1. **Phone puzzles hide `#manuscript-panel`** and move `#btn-next` to `.board-tools` after Hint. The tool row stays open while Prove is docked.
+1. **Phone puzzles hide `#manuscript-panel`** and move `#btn-next` to `.board-tools` after Hint. Inline flex overrides sit Prove beside Hint (CSS gzip stays put). The tool row stays open while Prove is docked.
 2. **Wide labs keep the manuscript** — 1280 castle still has Prove in the panel.
 3. **Resize restores** — rotating off phone width puts Prove back in `.narrative-actions`.
 4. **Playwright** — hanging-knight phone hides the manuscript and shows `.board-tools #btn-next`; castle 1280 keeps `#manuscript-panel #btn-next`.

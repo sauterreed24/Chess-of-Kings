@@ -111,7 +111,7 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ## What's new in this release (v0.5.38)
 
-**Pass 46 — Phone puzzle Prove dock** — hanging-knight phones hide the empty tutorial card and dock Prove next to Hint. See [`docs/PASS46_PHONE_PROVE_DOCK.md`](docs/PASS46_PHONE_PROVE_DOCK.md).
+**Pass 46 — Phone puzzle Prove dock** — hanging-knight phones hide the empty tutorial card and dock Prove beside Hint. See [`docs/PASS46_PHONE_PROVE_DOCK.md`](docs/PASS46_PHONE_PROVE_DOCK.md).
 
 ## Previous release (v0.5.37)
 
