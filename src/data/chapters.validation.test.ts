@@ -40,6 +40,13 @@ describe('campaign story beats', () => {
     expect(marius?.type === 'match' && marius.scriptedBlackSans?.[0]).toBe('e5')
   })
 
+  it('authors Chapter I Demetrios after Marius on scene 19', () => {
+    const ch1 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch1')
+    expect(ch1?.scenes.findIndex((scene) => scene.id === 'c1-before-demetrios')).toBe(19)
+    const demetrios = ch1?.scenes.find((scene) => scene.id === 'c1-match-demetrios')
+    expect(demetrios?.type === 'match' && demetrios.scriptedBlackSans?.[0]).toBe('e5')
+  })
+
   it('authors Chapter III Demetrios return with a classical e5 reply', () => {
     const ch3 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch3')
     const drill = ch3?.scenes.find((scene) => scene.id === 'c3-puzzle-prophylaxis')
