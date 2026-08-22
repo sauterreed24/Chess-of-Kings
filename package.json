@@ -1,7 +1,7 @@
 {
   "name": "chess-of-kings",
   "private": true,
-  "version": "0.5.34",
+  "version": "0.5.35",
   "description": "The Calculus of Kings — alt-history narrative chess RPG (TypeScript, Vite, PWA).",
   "homepage": "https://sauterreed24.github.io/Chess-of-Kings/",
   "repository": {

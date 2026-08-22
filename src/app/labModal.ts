@@ -36,10 +36,12 @@ export function syncLabOverlayCaption(el: HTMLElement | null | undefined): void 
 
 const PHONE_PUZZLE_DEPTH = '.story-beat, .teaching, .teaching-more, .hint-block, .lesson-lead'
 
-/** Phone puzzles already put the command on the marble; story-beat, lesson lead, and Threat / Goal / Hint cards duplicate it. */
+/** Phone puzzles already put the command on the marble; hiding the whole body
+ *  also collapses the empty min-height hole the duplicate cards left behind. */
 export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefined): void {
   if (!narrativeBody) return
   const hide = isPhoneLabNav() && narrativeBody.hasAttribute('data-puzzle-lesson')
+  narrativeBody.classList.toggle('hidden', hide)
   narrativeBody.querySelectorAll(PHONE_PUZZLE_DEPTH).forEach((node) => {
     node.classList.toggle('hidden', hide)
   })
@@ -52,6 +54,7 @@ export function setTopBarInertForLab(topBar: HTMLElement, labActive: boolean): v
   topBar.classList.toggle('hidden', phoneLab)
   topBar.setAttribute('aria-hidden', phoneLab ? 'true' : 'false')
   topBar.classList.toggle('top-bar--over-lab', labActive && !phoneLab)
+  topBar.ownerDocument.getElementById('narrative-kbd-hint')?.classList.toggle('hidden', phoneLab)
 
   const sheet = topBar.ownerDocument.querySelector<HTMLElement>('.lab-overlay__sheet')
   if (!sheet) return

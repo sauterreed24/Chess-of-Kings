@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.34)
+## What's new in this release (v0.5.35)
+
+**Pass 43 — Phone puzzle manuscript body** — hanging-knight phones hide the empty manuscript body and the desktop keyboard hint so Prove sits under the title. See [`docs/PASS43_PHONE_PUZZLE_BODY.md`](docs/PASS43_PHONE_PUZZLE_BODY.md).
+
+## Previous release (v0.5.34)
 
 **Pass 42 — Coronet pearls and rook merlons** — ivory and lapis queens get coronet catch-lights; rooks get carved battlement wells. See [`docs/PASS42_CORONET_MERLON.md`](docs/PASS42_CORONET_MERLON.md).
 
