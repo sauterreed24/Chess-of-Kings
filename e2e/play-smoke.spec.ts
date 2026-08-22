@@ -3555,6 +3555,7 @@ test('file and rank labels stay readable on the phone marble', { timeout: 90_000
 test('last-move route rings stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
+  await page.addStyleTag({ content: '.sq { transition: none !important; }' })
   await page.locator('#btn-enter-archive').click({ timeout: 15_000 })
   await page.locator('.chapter-btn').first().click()
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
@@ -3565,10 +3566,10 @@ test('last-move route rings stay readable on the phone marble', { timeout: 90_00
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('[data-square="e2"]')).toHaveClass(/sq-last-from/)
   await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-last-to/)
-  const ringPx = async (square: string) =>
-    page.locator(`[data-square="${square}"]`).evaluate((el) => getComputedStyle(el).boxShadow.replace(/\s/g, ''))
-  await expect.poll(() => ringPx('e4')).toMatch(/0px0px0px5px/)
-  await expect.poll(() => ringPx('e2')).toMatch(/0px0px0px5px/)
+  const destShadow = await page.locator('[data-square="e4"]').evaluate((el) => getComputedStyle(el).boxShadow)
+  expect(destShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
+  const originShadow = await page.locator('[data-square="e2"]').evaluate((el) => getComputedStyle(el).boxShadow)
+  expect(originShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
 })
 
 test('legal aim pearls stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {
