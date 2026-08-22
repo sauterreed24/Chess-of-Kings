@@ -81,6 +81,12 @@ const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }
   { x: 20.05, y: 17.55, w: 4.9, h: 0.95 },
 ]
 
+/** Gold/lapis inlay on the king’s cross. */
+const KING_CROSS: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
+  { x: 21.7, y: 6.05, w: 1.6, h: 5.7 },
+  { x: 19.85, y: 7.85, w: 5.3, h: 1.45 },
+]
+
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
 const COLLAR_CY: Record<PieceSymbol, number> = {
   p: 31.8,
@@ -271,6 +277,14 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
             `<rect class="piece-cleft" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.35" fill="${cleftFill}"/>`,
         ).join('')
       : ''
+  const crossFill = color === 'w' ? 'rgba(232,201,126,0.72)' : 'rgba(232,201,126,0.5)'
+  const cross =
+    piece === 'k'
+      ? KING_CROSS.map(
+          (m) =>
+            `<rect class="piece-cross" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.28" fill="${crossFill}"/>`,
+        ).join('')
+      : ''
   return svg
     .replace(
       /<svg([^>]*)>/,
@@ -279,7 +293,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
     .replace(
       '</svg>',
-      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${pearls}${merlons}${cleft}${highlight}</svg>`,
+      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${pearls}${merlons}${cleft}${cross}${highlight}</svg>`,
     )
 }
 
