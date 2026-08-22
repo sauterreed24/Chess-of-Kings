@@ -180,6 +180,15 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const ringFill = color === 'w' ? 'rgba(160,110,40,0.4)' : 'rgba(6,16,28,0.6)'
   const ringStroke = color === 'w' ? 'rgba(255,255,255,0.46)' : 'rgba(232,201,126,0.4)'
   const plinth = latheRing('piece-plinth', PLINTH_CY[piece] ?? 38.4, rx * 0.92, 1.35, ringFill, ringStroke)
+  const ferruleFill = color === 'w' ? 'rgba(232,201,126,0.58)' : 'rgba(140,186,220,0.32)'
+  const ferrule = latheRing(
+    'piece-ferrule',
+    (PLINTH_CY[piece] ?? 38.4) + 1.55,
+    rx * 0.97,
+    0.82,
+    ferruleFill,
+    ringStroke,
+  )
   const rimFill = color === 'w' ? 'rgba(255,248,232,0.52)' : 'rgba(232,201,126,0.3)'
   const rim = latheRing(
     'piece-rim',
@@ -217,7 +226,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${highlight}</svg>`)
+    .replace('</svg>', `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${highlight}</svg>`)
 }
 
 export function glyphForSkin(
