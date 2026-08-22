@@ -44,11 +44,14 @@ describe('setTopBarInertForLab', () => {
 
   it('hides the duplicate top nav on phone labs and lets the overlay sheet fill the screen', () => {
     stubPhoneLabNav(true)
-    document.body.innerHTML = '<div class="lab-overlay"><div class="lab-overlay__sheet"></div></div>'
+    document.body.innerHTML =
+      '<div class="lab-overlay"><div class="lab-overlay__sheet"></div></div>' +
+      '<p id="narrative-kbd-hint">Enter or Space advances</p>'
     const topBar = document.createElement('header')
     topBar.className = 'top-bar'
     document.body.append(topBar)
     const sheet = document.querySelector<HTMLElement>('.lab-overlay__sheet')!
+    const kbd = document.getElementById('narrative-kbd-hint')!
 
     setTopBarInertForLab(topBar, true)
     expect(topBar.classList.contains('hidden')).toBe(true)
@@ -56,12 +59,14 @@ describe('setTopBarInertForLab', () => {
     expect(topBar.classList.contains('top-bar--over-lab')).toBe(false)
     expect(sheet.style.top).toBe('0px')
     expect(sheet.style.maxHeight).toBe('100svh')
+    expect(kbd.classList.contains('hidden')).toBe(true)
 
     setTopBarInertForLab(topBar, false)
     expect(topBar.classList.contains('hidden')).toBe(false)
     expect(topBar.getAttribute('aria-hidden')).toBe('false')
     expect(sheet.style.top).toBe('')
     expect(sheet.style.maxHeight).toBe('')
+    expect(kbd.classList.contains('hidden')).toBe(false)
   })
 
   it('shortens the overlay caption on phone labs and keeps the era in aria-label', () => {
@@ -100,7 +105,7 @@ describe('setTopBarInertForLab', () => {
     expect(el.getAttribute('aria-label')).toBe('Duel Archive · Ancient Court · Egyptian symmetry')
   })
 
-  it('hides puzzle story-beat, teaching cards, and lesson lead on phone labs', () => {
+  it('hides the puzzle manuscript body on phone labs so the empty hole collapses', () => {
     stubPhoneLabNav(true)
     const body = document.createElement('div')
     body.setAttribute('data-puzzle-lesson', '')
@@ -109,6 +114,7 @@ describe('setTopBarInertForLab', () => {
       '<div class="teaching"><div class="teaching-card">goal</div></div>' +
       '<p class="hint-block">hint</p><p class="lesson-lead">lead</p>'
     syncPhonePuzzleLesson(body)
+    expect(body.classList.contains('hidden')).toBe(true)
     expect(body.querySelector('.story-beat')?.classList.contains('hidden')).toBe(true)
     expect(body.querySelector('.teaching')?.classList.contains('hidden')).toBe(true)
     expect(body.querySelector('.hint-block')?.classList.contains('hidden')).toBe(true)
@@ -122,6 +128,7 @@ describe('setTopBarInertForLab', () => {
     body.innerHTML =
       '<div class="teaching"><div class="teaching-card">goal</div></div><p class="lesson-lead">lead</p>'
     syncPhonePuzzleLesson(body)
+    expect(body.classList.contains('hidden')).toBe(false)
     expect(body.querySelector('.teaching')?.classList.contains('hidden')).toBe(false)
     expect(body.querySelector('.lesson-lead')?.classList.contains('hidden')).toBe(false)
   })
