@@ -181,6 +181,53 @@ function seedChapterIUnlocked() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+/** Archive echo so the dossier replay board can be opened from title. */
+function seedAlexionEcho() {
+  const save = {
+    version: 3,
+    chapterIndex: 1,
+    sceneIndex: 0,
+    highestUnlockedChapter: 1,
+    lastScreen: 'title',
+    chapter1Complete: false,
+    chapter2Complete: false,
+    completedSceneIds: [],
+    completedPuzzleIds: [],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion'],
+    unlockedDuelVariantIds: ['alexion-mentor'],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 0,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [
+      {
+        id: 'echo-alexion-1',
+        timestamp: 1_700_000_000_000,
+        mode: 'duel',
+        sourceId: 'alexion-mentor',
+        opponentId: 'alexion',
+        opponentLabel: 'Alexion',
+        outcome: 'win',
+        moves: 4,
+        styleGrade: 'A',
+        turningPointSan: 'e4',
+        replaySans: ['e4', 'e5'],
+        replayStartFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      },
+    ],
+    rivalMemory: {},
+    ladder: { rating: 1100, peak: 1100, rated: 1 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 /** Mid-age Chapter I save: after Amara, parked on `c1-before-lukas` (scene 10). */
 function seedChapterIAfterAmara() {
   const save = {
@@ -3390,6 +3437,26 @@ test('eval bar stays readable on the phone instrument', { timeout: 90_000 }, asy
   const barBox = await page.locator('#eval-bar-wrap').boundingBox()
   expect(barBox).toBeTruthy()
   expect(barBox!.width).toBeGreaterThanOrEqual(16)
+})
+
+test('echo board keeps carved facets on the phone instrument', { timeout: 90_000 }, async ({ page }) => {
+  await page.addInitScript(seedAlexionEcho)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-duel').click({ timeout: 15_000 })
+  await expect(page.locator('.duel-row').first()).toBeVisible()
+  await page.locator('.duel-row').first().click()
+  const echo = page.locator('.duel-echo-btn').first()
+  await expect(echo).toBeVisible()
+  expect(await echo.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  const echoBox = await echo.boundingBox()
+  expect(echoBox).toBeTruthy()
+  expect(Math.round(echoBox!.height)).toBeGreaterThanOrEqual(44)
+  await echo.click()
+  await expect(page.locator('.echo-board')).toBeVisible()
+  await expect(page.locator('.echo-sq .sq-facet')).toHaveCount(64)
+  await expect(page.locator('.echo-sq .piece-carve').first()).toBeVisible()
+  expect(await page.locator('.echo-sq svg g[stroke-width="2.4"]').count()).toBeGreaterThan(0)
 })
 
 test('starting a duel registers e2-e4 and an archive reply', { timeout: 90_000 }, async ({ page }) => {

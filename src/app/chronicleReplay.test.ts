@@ -50,6 +50,11 @@ describe('chronicleReplay', () => {
     const html = renderEchoBoardFen(new Chess().fen(), 'classic-royal')
     const cells = html.match(/class="echo-sq echo-sq--/g)
     expect(cells?.length).toBe(64)
+    expect(html.match(/class="sq-facet"/g)?.length).toBe(64)
+    expect(html).toContain('piece-carve')
+    expect(html).toContain('class="piece piece--w"')
+    expect(html).toContain('stroke-width="2.4"')
+    expect(renderEchoBoardFen(new Chess().fen(), 'alexandrine-ornate')).toContain('--piece-stroke:#6b4e14')
   })
 
   it('renderEchoBoardFen recovers from invalid FEN', () => {
