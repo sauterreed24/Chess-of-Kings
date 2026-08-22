@@ -1,6 +1,7 @@
 import type { ChessUiPayload } from '../gameFlow'
 import type { RewardBundle } from '../../types'
 import { ANNOUNCE_TEMPLATES, STATUS_LABELS } from '../../data/strings'
+import { syncPhoneHitTarget } from '../labModal'
 import {
   BOSS_PROFILE_RE,
   capturedRow,
@@ -185,6 +186,8 @@ export function applyChessUi(
   dom.btnHint.disabled = !p.canHint
   dom.btnHint.hidden = !p.canHint || (nextDocked && !!calibration)
   dom.btnReset.hidden = idleTools || puzzleDocked
+  syncPhoneHitTarget(dom.btnHint, !dom.btnHint.hidden)
+  syncPhoneHitTarget(dom.btnReset, !dom.btnReset.hidden)
   if (tools instanceof HTMLElement) {
     tools.classList.toggle(
       'hidden',

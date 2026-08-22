@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.75] — 2026-08-22
+
+Pass 83 — Phone Reset restyle-on-unhide:
+
+- **Phone calibration / matches** restyle Reset to a 44px hit target when `applyChessUi` unhides it after the first ply, without waiting for a resize.
+- **Playwright** — compact calibration asserts Reset `min-height: 44px` after e2–e4. First Chapter I match against Amara proves on 390×844: civic silhouettes, board-first, opening ply, Archive reply.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS83_PHONE_RESET_UNHIDE.md`](docs/PASS83_PHONE_RESET_UNHIDE.md).
+
 ## [0.5.74] — 2026-08-22
 
 Pass 82 — King crown silhouette:

@@ -61,6 +61,11 @@ function stylePhoneHitTarget(el: HTMLElement | null | undefined, on: boolean): v
   }
 }
 
+/** applyChessUi unhides Reset after the first ply; restyle without waiting for a resize. */
+export function syncPhoneHitTarget(el: HTMLElement | null | undefined, visible: boolean): void {
+  stylePhoneHitTarget(el, isPhoneLabNav() && visible)
+}
+
 /** `.primary--advance` is width:100% / column so it can sit under the manuscript.
  *  Inline overrides keep CSS gzip untouched while Prove shares the Hint row. */
 function styleDockedProve(next: HTMLButtonElement, docked: boolean): void {
