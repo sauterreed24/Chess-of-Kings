@@ -66,6 +66,9 @@ const SHEEN_PATH: Record<PieceSymbol, string> = {
 /** Crest shade on the horse — knights skip the lathe cup, so the mane carries the volume. */
 const MANE_PATH = 'M21.4 10.2c5.2 1.1 9.6 5.6 10.8 14.8-4-4.8-7.8-9.8-10.8-14.8z'
 
+/** Staunton horse eye — sized to read on a ~40px phone square. */
+const KNIGHT_EYE = { cx: 9.15, cy: 25.35, r: 1.72 }
+
 /** Lamp-side catch-lights on the five coronet orbs — sized to read on a phone square. */
 const QUEEN_PEARL_R = 2.18
 const QUEEN_PEARLS: ReadonlyArray<{ cx: number; cy: number }> = [
@@ -264,6 +267,11 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const maneFill = color === 'w' ? 'rgba(62,32,10,0.3)' : 'rgba(0,4,12,0.42)'
   const mane =
     piece === 'n' ? `<path class="piece-mane" d="${MANE_PATH}" fill="${maneFill}"/>` : ''
+  const eyeFill = color === 'w' ? 'rgba(36,18,6,0.72)' : 'rgba(0,2,8,0.78)'
+  const eye =
+    piece === 'n'
+      ? `<circle class="piece-eye" cx="${KNIGHT_EYE.cx}" cy="${KNIGHT_EYE.cy}" r="${KNIGHT_EYE.r}" fill="${eyeFill}"/>`
+      : ''
   const pearlFill = color === 'w' ? 'rgba(255,255,255,0.55)' : 'rgba(232,201,126,0.42)'
   const pearls =
     piece === 'q'
@@ -313,7 +321,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
     .replace(
       '</svg>',
-      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${orb}${spark}${pearls}${merlons}${cleft}${cross}${highlight}</svg>`,
+      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${eye}${orb}${spark}${pearls}${merlons}${cleft}${cross}${highlight}</svg>`,
     )
 }
 
