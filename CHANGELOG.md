@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.91] — 2026-08-22
+
+Pass 99 — Chapter III Kallistos match on the phone instrument:
+
+- **Authored `e5`** — `c3-match-kallistos` now scripts her classical first reply (book ply 1), so opening-discipline dice cannot skip it.
+- **Playwright** — a post-Demetrios Chapter III seed resumes `c3-before-kallistos` (Pass 92 current-age resume, scene 7). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `e5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS99_PHONE_CH3_KALLISTOS.md`](docs/PASS99_PHONE_CH3_KALLISTOS.md).
+
 ## [0.5.90] — 2026-08-22
 
 Pass 98 — Chapter II Vega match on the phone instrument:

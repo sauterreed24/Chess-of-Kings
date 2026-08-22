@@ -1489,6 +1489,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         playerColor: 'w',
         aiDepth: 4,
         aiStyle: 'classical',
+        scriptedBlackSans: ['e5', 'Nf6', 'Be7', 'O-O', 'd6'],
         ladderTier: 'boss',
         difficulty: 4,
       },
