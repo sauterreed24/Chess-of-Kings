@@ -168,8 +168,19 @@ export function applyChessUi(
   syncIdleInstrumentHeader(dom)
 
   dom.btnUndo.disabled = !p.canUndo
+  dom.btnUndo.hidden = !p.canUndo
   dom.btnRunBack.hidden = !p.canRetry
   dom.btnHint.hidden = !p.canHint
+  /* Take back / Reset occupy a second phone row before any ply exists. */
+  const idleTools = p.sanLog.length === 0
+  dom.btnReset.hidden = idleTools
+  const tools = dom.btnUndo.closest('.board-tools')
+  if (tools instanceof HTMLElement) {
+    tools.classList.toggle(
+      'hidden',
+      dom.btnHint.hidden && dom.btnUndo.hidden && dom.btnRunBack.hidden && dom.btnReset.hidden,
+    )
+  }
   const ledgerKey = `${p.sanLog.length}|${p.ledgerFp}`
   if (ledgerKey !== play.lastLedgerKey) {
     play.lastLedgerKey = ledgerKey

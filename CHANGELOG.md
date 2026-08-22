@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.23] — 2026-08-22
+
+Pass 31 — Idle board tools:
+
+- **Take back and Reset** stay off the instrument until a ply exists, so hanging-knight phones keep Hint on one row instead of wrapping a dead Take back above Reset. After Bxd4 both return.
+- Playwright hides them on the first hanging-knight frame and shows them after the capture.
+- Docs: [`docs/PASS31_IDLE_TOOLS.md`](docs/PASS31_IDLE_TOOLS.md).
+
 ## [0.5.22] — 2026-08-22
 
 Pass 30 — Turned waist:

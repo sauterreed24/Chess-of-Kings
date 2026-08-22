@@ -207,4 +207,59 @@ describe('applyChessUi', () => {
     applyChessUi({ ...payload(chess), aiPersona: null }, rt, cbs)
     expect(dom.aiPersonaEl.classList.contains('hidden')).toBe(true)
   })
+
+  it('hides Take back and Reset until a ply exists', () => {
+    const chess = new Chess()
+    const tools = document.createElement('div')
+    tools.className = 'board-tools'
+    const dom = refs()
+    tools.append(dom.btnHint, dom.btnUndo, dom.btnRunBack, dom.btnReset)
+    const rt = {
+      dom,
+      play: createMountPlayState(),
+      getFlow: () => null,
+      sfx: createSfxController({ enabled: false }),
+      announcer: createAnnouncer(node()),
+    }
+    const cbs = {
+      showRewardBundles: vi.fn(),
+      maybeShowPendingChapterPrompt: vi.fn(),
+      revealBoardScene: vi.fn(),
+    }
+
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: undefined,
+        status: 'White to move.',
+        canUndo: false,
+        sanLog: [],
+        sanQuality: [],
+        canHint: true,
+      },
+      rt,
+      cbs,
+    )
+    expect(dom.btnUndo.hidden).toBe(true)
+    expect(dom.btnReset.hidden).toBe(true)
+    expect(dom.btnHint.hidden).toBe(false)
+    expect(tools.classList.contains('hidden')).toBe(false)
+
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: undefined,
+        status: 'White to move.',
+        canUndo: true,
+        sanLog: ['Bxd4'],
+        sanQuality: [null],
+        canHint: true,
+      },
+      rt,
+      cbs,
+    )
+    expect(dom.btnUndo.hidden).toBe(false)
+    expect(dom.btnUndo.disabled).toBe(false)
+    expect(dom.btnReset.hidden).toBe(false)
+  })
 })
