@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.118)
+## What's new in this release (v0.5.119)
+
+**Pass 127 — echo timeline chips** — chronicle echo SAN chips render at 0.7rem so the replay line still reads next to the labeled board on a 390×844 instrument. See [`docs/PASS127_ECHO_LINE.md`](docs/PASS127_ECHO_LINE.md).
+
+## Previous release (v0.5.118)
 
 **Pass 126 — echo board labels** — chronicle replay boards name their file and rank edges at 0.7rem, matching the live marble on a 390×844 instrument. See [`docs/PASS126_ECHO_LABELS.md`](docs/PASS126_ECHO_LABELS.md).
 
