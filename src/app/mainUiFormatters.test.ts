@@ -143,7 +143,7 @@ describe('mainUiFormatters', () => {
     syncEvalBarScale(wrap, score, true)
     expect(wrap.style.width).toBe(EVAL_BAR_WIDTH)
     expect(score.style.fontSize).toBe(EVAL_BAR_SCORE_SIZE)
-    expect(score.style.color).toBe(EVAL_BAR_SCORE_COLOR)
+    expect(score.style.color.replace(/\s/g, '')).toBe(EVAL_BAR_SCORE_COLOR.replace(/\s/g, ''))
     syncEvalBarScale(wrap, score, false)
     expect(wrap.style.width).toBe('')
     expect(score.style.fontSize).toBe('')
