@@ -20,6 +20,8 @@ import { pickDailyCalculus } from './session/dailyCalculus'
 import { createAnnouncer } from './a11y/announcer'
 import {
   CONFIRM_COPY,
+  confirmCopyForLabExit,
+  type LabExitDest,
   KEYBOARD_HELP_HEADING,
   PARADOX_OPENED_COPY,
   PLATEAU_COPY,
@@ -516,20 +518,18 @@ export function mountApp(app: HTMLDivElement) {
    * Returns a boolean immediately when no dialog is needed so top-nav / vestibule
    * stay synchronous. Only returns a Promise when a confirm dialog is open.
    */
-  function confirmLeaveLabIfNeeded(): boolean | Promise<boolean> {
+  function confirmLeaveLabIfNeeded(dest: LabExitDest): boolean | Promise<boolean> {
     const labOpen = labOverlay.classList.contains('lab-overlay--active')
     if (!labOpen) return true
     const mustConfirm =
       flow.isInDuelMode() || flow.hasUnsavedPassageProgress() || flow.hasRecoverableSession()
     if (!mustConfirm) return true
-    return confirmDialogCtl.open(
-      flow.isInDuelMode() ? CONFIRM_COPY.replaceRecoveredSession : CONFIRM_COPY.leaveLabSession,
-    )
+    return confirmDialogCtl.open(confirmCopyForLabExit(dest, flow.isInDuelMode()))
   }
 
-  function closeLabIfActive(): boolean | Promise<boolean> {
+  function closeLabIfActive(dest: LabExitDest): boolean | Promise<boolean> {
     if (!labOverlay.classList.contains('lab-overlay--active')) return true
-    const ok = confirmLeaveLabIfNeeded()
+    const ok = confirmLeaveLabIfNeeded(dest)
     if (ok === false) return false
     if (ok === true) {
       closeLab()
@@ -542,8 +542,8 @@ export function mountApp(app: HTMLDivElement) {
     })
   }
 
-  function afterLeaveLab(next: () => void): void {
-    const result = closeLabIfActive()
+  function afterLeaveLab(next: () => void, dest: LabExitDest = 'chapters'): void {
+    const result = closeLabIfActive(dest)
     if (typeof result === 'boolean') {
       if (result) next()
       return
@@ -1170,7 +1170,7 @@ export function mountApp(app: HTMLDivElement) {
     isLabActive: () => labOverlay.classList.contains('lab-overlay--active'),
     closeRewardOverlay,
     exitLab: () => {
-      afterLeaveLab(showChapters)
+      afterLeaveLab(showChapters, 'chapters')
     },
     canAdvance: () => flow.canAdvance(),
     advance: advanceOrReveal,
@@ -1195,19 +1195,19 @@ export function mountApp(app: HTMLDivElement) {
     showChapters()
   })
   btnTitle.addEventListener('click', () => {
-    afterLeaveLab(showTitle)
+    afterLeaveLab(showTitle, 'title')
   })
   btnChapters.addEventListener('click', () => {
-    afterLeaveLab(showChapters)
+    afterLeaveLab(showChapters, 'chapters')
   })
   btnDuel.addEventListener('click', () => {
-    afterLeaveLab(showDuel)
+    afterLeaveLab(showDuel, 'duel')
   })
   btnChaptersBack.addEventListener('click', () => {
     showTitle()
   })
   btnVestibule.addEventListener('click', () => {
-    afterLeaveLab(showChapters)
+    afterLeaveLab(showChapters, 'chapters')
   })
   btnSfx.addEventListener('click', () => {
     sfx.setEnabled(!sfx.enabled)

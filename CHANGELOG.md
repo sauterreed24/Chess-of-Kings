@@ -11,6 +11,17 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.2] — 2026-08-22
+
+Pass 10 — First-session play feel:
+
+- **Top nav works over the lab.** Title / Chapters / Duel were visible above the board but `inert`, so they looked enabled and did nothing. They now leave the simulation (with a confirm when the board has progress).
+- **Leave confirms name the destination** — "Open the Duel Archive?" / "Return to Title?" / "Return to Chapters?"
+- **Title and Chronicle lore** start collapsed so Enter the Archive and the first chapter are the first things you see.
+- **Calibration Prove hint** says "N remaining" after the first ply.
+- Confirm plaque sits above the lab (`z-index: 80`) with 44px actions.
+- Docs: [`docs/PASS10_PLAY_FEEL.md`](docs/PASS10_PLAY_FEEL.md).
+
 ## [0.5.1] — 2026-08-22
 
 Pass 9 — Board presence (playable graphics on the surface you stare at):

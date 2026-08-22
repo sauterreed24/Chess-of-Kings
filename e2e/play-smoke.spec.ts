@@ -15,6 +15,11 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   await expect(page.locator('#move-counter')).toContainText('1/4')
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4\s+\S+/, { timeout: 20_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i)
+  await page.locator('#btn-duel').click()
+  await expect(page.locator('#confirm-title')).toContainText('Open the Duel Archive?')
+  await page.locator('#btn-confirm-ok').click()
+  await expect(page.locator('#screen-duel')).toBeVisible()
+  await expect(page.locator('.duel-row').first()).toBeVisible()
 })
 
 test('compact calibration stacks the board above the manuscript', async ({ page }) => {

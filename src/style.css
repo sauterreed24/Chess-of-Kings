@@ -4053,9 +4053,11 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
 }
 .storage-failure-banner__dismiss { flex-shrink: 0; }
 
+.confirm-overlay { z-index: 80; }
 .confirm-overlay .confirm-dialog__actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
+.confirm-dialog__actions :is(.primary,.ghost) { min-height: 2.75rem; }

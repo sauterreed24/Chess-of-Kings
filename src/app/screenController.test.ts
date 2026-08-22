@@ -84,7 +84,7 @@ describe('createScreenController', () => {
     })
     ctl.setLabOpen(true)
     expect(ctl.isLabOpen()).toBe(true)
-    expect(topBar.inert).toBe(true)
+    expect(topBar.inert).toBe(false)
     expect(title.inert).toBe(true)
     expect(chapters.inert).toBe(true)
     expect(duel.inert).toBe(true)

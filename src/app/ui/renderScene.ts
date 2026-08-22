@@ -213,7 +213,8 @@ export function renderScene(
     }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The Archive answers at random.</p>`
     dom.lessonNote.textContent = 'White moves are tallied at the right; the Lab is listening.'
     dom.btnReset.disabled = false
-    dom.btnNextHint.textContent = `${scene.minMovesByPlayer} White moves`
+    const left = scene.minMovesByPlayer
+    dom.btnNextHint.textContent = left === 1 ? '1 remaining' : `${left} remaining`
   } else if (scene.type === 'freeplay') {
     dom.sceneTag.textContent = scene.title
     dom.narrativeBody.classList.remove('narrative-body--interlude')
