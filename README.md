@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.44)
+## What's new in this release (v0.5.45)
+
+**Pass 53 — Pawn globe catch-light** — ivory and lapis pawns get a readable globe bloom and spark on the first board, instead of a 2px speck. See [`docs/PASS53_PAWN_GLOBE.md`](docs/PASS53_PAWN_GLOBE.md).
+
+## Previous release (v0.5.44)
 
 **Pass 52 — Quiet calibration chrome** — the opening board keeps Archive-reply pulse and auto-coach off the marble, and phone calibration parks Prove beside Reset after the first ply. See [`docs/PASS52_QUIET_CAL_CHROME.md`](docs/PASS52_QUIET_CAL_CHROME.md).
 
