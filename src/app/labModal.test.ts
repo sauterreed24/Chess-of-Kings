@@ -2,6 +2,7 @@ import { describe, expect, it, vi, afterEach } from 'vitest'
 import {
   PHONE_LAB_NAV_QUERY,
   applyLabOverlayCaption,
+  clearPhoneLessonMarkers,
   setTopBarInertForLab,
   syncLabOverlayCaption,
   syncPhonePuzzleLesson,
@@ -190,6 +191,35 @@ describe('setTopBarInertForLab', () => {
 
     stubPhoneLabNav(false)
     syncPhonePuzzleLesson(body)
+    expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(false)
+    expect(document.querySelector('.move-ledger-wrap')?.classList.contains('hidden')).toBe(false)
+    expect(document.querySelector('.instrument-toggles')?.classList.contains('hidden')).toBe(false)
+    expect(document.querySelector('#lesson-note')?.classList.contains('hidden')).toBe(false)
+    expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
+  })
+
+  it('clears leftover calibration markers so a later sync cannot hide duel chrome', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body" data-calibration-lesson></div>
+          <div class="narrative-actions"><button id="btn-next">Prove<span id="btn-next-hint">4 remaining</span></button></div>
+        </article>
+        <div class="move-ledger-wrap"></div>
+        <div class="board-tools"><button id="btn-hint">Hint</button></div>
+        <div class="instrument-toggles"></div>
+        <p id="lesson-note">note</p>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const next = document.querySelector('#btn-next')!
+    syncPhonePuzzleLesson(body)
+    expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(true)
+    expect(next.parentElement?.classList.contains('board-tools')).toBe(true)
+
+    clearPhoneLessonMarkers(body)
+    syncPhonePuzzleLesson(body)
+    expect(body.hasAttribute('data-calibration-lesson')).toBe(false)
     expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(false)
     expect(document.querySelector('.move-ledger-wrap')?.classList.contains('hidden')).toBe(false)
     expect(document.querySelector('.instrument-toggles')?.classList.contains('hidden')).toBe(false)

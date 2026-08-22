@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
-import { applyLabOverlayCaption, setTopBarInertForLab, syncLabOverlayCaption, syncPhonePuzzleLesson } from './labModal'
+import { applyLabOverlayCaption, clearPhoneLessonMarkers, setTopBarInertForLab, syncLabOverlayCaption, syncPhonePuzzleLesson } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -891,6 +891,8 @@ export function mountApp(app: HTMLDivElement) {
 
     narrativeBody.classList.remove('narrative-body--dialogue', 'narrative-body--interlude', 'narrative-body--no-fade')
     narrativeBody.scrollTop = 0
+    clearPhoneLessonMarkers(narrativeBody)
+    syncPhonePuzzleLesson(narrativeBody)
     chapterRail.classList.add('hidden')
     chapterRail.innerHTML = ''
     manuscriptPanel.classList.remove('manuscript-panel--with-rail')

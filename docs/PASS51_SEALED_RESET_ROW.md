@@ -13,6 +13,7 @@ After hanging-knight Bxd4 on a 390×844 phone, Hint hid and Advance|Take back sa
 2. **Phone calibration keeps Reset** — four White moves are worth a restart control.
 3. **Wide labs unchanged** — Prove stays in the manuscript, so Reset still files under the marble.
 4. **Playwright** — hanging-knight phone after Bxd4 hides Reset and keeps Advance|Take back on one row (tool row shorter than 52px).
+5. **Phone Duel after calibration** clears leftover `data-calibration-lesson` / `data-puzzle-lesson` markers so the dossier, ledger, and sound row stay visible.
 
 ## Out of scope
 
