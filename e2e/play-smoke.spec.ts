@@ -112,6 +112,29 @@ test('compact calibration stacks the board above the manuscript', async ({ page 
   expect(crawlBox?.height ?? 99).toBeLessThan(72)
 })
 
+test('title honor guard shows carved ivory and lapis', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await expect(page.locator('#title-honor .title-honor__piece')).toHaveCount(10)
+  await expect(page.locator('#title-honor .piece-carve').first()).toBeVisible()
+  await expect(page.locator('#title-honor .piece--w')).toHaveCount(5)
+  await expect(page.locator('#title-honor .piece--b')).toHaveCount(5)
+})
+
+test('short lab keeps title chapters duel nav', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 500 })
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await expect(page.locator('#btn-title')).toBeVisible()
+  await expect(page.locator('#btn-chapters')).toBeVisible()
+  await expect(page.locator('#btn-duel')).toBeVisible()
+})
+
 test('title → chapter → advance opens the lab simulation', async ({ page }) => {
   await page.goto('./')
   await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })

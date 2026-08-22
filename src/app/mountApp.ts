@@ -5,6 +5,7 @@ import type { ChessUiPayload } from './gameFlow'
 import { clearSave, hasSave } from './storage'
 import type { Chapter, DuelRosterEntry, DuelVariant, Scene, PieceSkinId, RewardBundle } from '../types'
 import { PIECE_SKIN_LABEL } from '../chess/skins'
+import { paintTitleHonor } from './ui/titleHonor'
 import { AI_PROFILES } from '../chess/aiProfiles'
 import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
@@ -69,6 +70,7 @@ function writePreference(key: string, value: string) {
 
 export function mountApp(app: HTMLDivElement) {
   app.innerHTML = getShellMarkup()
+  paintTitleHonor(app.querySelector('#title-honor'))
 
   const shell = app.querySelector<HTMLElement>('#shell')!
   const topBar = app.querySelector<HTMLElement>('.top-bar')!

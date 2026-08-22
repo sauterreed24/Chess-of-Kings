@@ -71,6 +71,7 @@ const REQUIRED_IDS = [
   'chapter-progress-slot',
   'mobile-board-guide',
   'mobile-tips',
+  'title-honor',
   'title-settings',
   'btn-title-sfx',
   'btn-title-move-guard',
@@ -144,7 +145,7 @@ describe('shell markup structural integrity', () => {
   it('declares Long Reign world markers on the title and Chronicle Index', () => {
     const host = document.createElement('div')
     host.innerHTML = getShellMarkup()
-    expect(host.querySelector('.title-ornament__map')).not.toBeNull()
+    expect(host.querySelector('#title-honor')).not.toBeNull()
     expect(host.querySelector('.title-world-panel')?.textContent).toContain('Alexandrine Reckoning')
     expect(host.querySelector('.chronicle-index-codex')?.textContent).toContain('Civic Chess')
     expect(host.querySelector('.title-lore-fold')?.querySelector('summary')?.textContent).toContain('World of the Long Reign')

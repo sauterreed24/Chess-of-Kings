@@ -26,16 +26,7 @@ export function getShellMarkup(): string {
       <section id="screen-title" class="screen screen--title">
         <div class="title-hero">
           <div class="title-hero__plate">
-            <div class="title-ornament" aria-hidden="true">
-              <svg class="title-ornament__map" viewBox="0 0 220 34" focusable="false" style="width:min(100%,15.5rem);height:1.85rem;color:#c9a96a">
-                <path d="M4 17h46l22-12 36 25 34-22 28 12h46" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".62"/>
-                <path d="M72 5l36 25 34-22" fill="none" stroke="#2a6094" stroke-width="1" opacity=".5"/>
-                <g fill="currentColor">
-                  <circle cx="4" cy="17" r="2.5"/><circle cx="50" cy="17" r="3"/><circle cx="72" cy="5" r="3.4"/><circle cx="108" cy="30" r="3.4"/><circle cx="142" cy="8" r="3.4"/><circle cx="170" cy="20" r="3"/><circle cx="216" cy="17" r="2.5"/>
-                </g>
-                <path d="M110 11l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#e8c97e" opacity=".78"/>
-              </svg>
-            </div>
+            <div class="title-ornament title-honor" id="title-honor" aria-hidden="true"></div>
             <p class="kicker">A civic proof from the Long Reign</p>
             <h1 class="display-title">The Calculus of Kings</h1>
             <p class="title-tagline">In Reed's modern commonwealth, chess proves who can rule.</p>

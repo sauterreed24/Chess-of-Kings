@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.8] — 2026-08-22
+
+Pass 16 — Title honor + short nav:
+
+- **Honor guard** — ten carved classic-royal glyphs stand on the title plate before you enter the Archive.
+- **Short labs keep nav** — Title / Chapters / Duel stay reachable when the window is under 560px tall.
+- Docs: [`docs/PASS16_TITLE_HONOR.md`](docs/PASS16_TITLE_HONOR.md).
+
 ## [0.5.7] — 2026-08-22
 
 Pass 15 — Phone goal + carved types:
