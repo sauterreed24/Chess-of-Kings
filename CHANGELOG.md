@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.56] — 2026-08-22
+
+Pass 64 — Knight eye:
+
+- **Ivory/lapis knights** get a carved eye so calibration b1 is not a blank horse head after the other unique marks grew. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration b1 and hanging-knight d4 eyes are at least 2.4 CSS pixels across.
+- Docs: [`docs/PASS64_KNIGHT_EYE.md`](docs/PASS64_KNIGHT_EYE.md).
+
 ## [0.5.55] — 2026-08-22
 
 Pass 63 — Rook battlement cup:

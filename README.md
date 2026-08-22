@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.55)
+## What's new in this release (v0.5.56)
+
+**Pass 64 — Knight eye** — ivory and lapis knights get a carved eye, so the horse head reads on a phone square. See [`docs/PASS64_KNIGHT_EYE.md`](docs/PASS64_KNIGHT_EYE.md).
+
+## Previous release (v0.5.55)
 
 **Pass 63 — Rook battlement cup** — ivory and lapis rooks get a deeper lathe bowl in the battlement, instead of a 2.4px dish. See [`docs/PASS63_ROOK_CUP.md`](docs/PASS63_ROOK_CUP.md).
 
