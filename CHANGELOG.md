@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.125] — 2026-08-22
+
+Pass 133 — match briefing readability:
+
+- **Graphics** — the encounter tier badge, "Encounter N of M" line, and ladder dots render at 0.7rem so the briefing still reads on phone (CSS was 0.46–0.56rem). No new CSS.
+- **Playwright** — 390×844 Amara asserts the badge, encounter line, and first ladder dot.
+- Docs: [`docs/PASS133_MATCH_BRIEF.md`](docs/PASS133_MATCH_BRIEF.md).
+
 ## [0.5.124] — 2026-08-22
 
 Pass 132 — ledger quality marks:

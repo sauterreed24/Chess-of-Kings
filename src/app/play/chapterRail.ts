@@ -46,7 +46,7 @@ export function buildLadderTrack(
           ? 'ltrack-dot ltrack-dot--done'
           : 'ltrack-dot'
       const abbr = tierAbbreviation(m, i)
-      return `<span class="${cls}" title="${escapeHtml(m.opponentName)}">${abbr}</span>`
+      return `<span class="${cls}" title="${escapeHtml(m.opponentName)}" style="font-size:0.7rem">${abbr}</span>`
     })
     .join('<span class="ltrack-line" aria-hidden="true"></span>')
   return `<div class="ladder-track">${dots}</div>`

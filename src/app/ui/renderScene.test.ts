@@ -336,6 +336,9 @@ describe('renderScene', () => {
 
     const amaraIdx = chapterI.scenes.findIndex((scene) => scene.id === 'c1-match-amara')
     renderScene(chapterI, chapterI.scenes[amaraIdx]!, amaraIdx, dom, play, flow, cbs)
+    expect(dom.narrativeBody.querySelector<HTMLElement>('.tier-badge')?.style.fontSize).toBe('0.7rem')
+    expect(dom.narrativeBody.querySelector<HTMLElement>('.match-num')?.style.fontSize).toBe('0.7rem')
+    expect(dom.narrativeBody.querySelector<HTMLElement>('.ltrack-dot')?.style.fontSize).toBe('0.7rem')
     expect(crawl()?.classList.contains('hidden')).toBe(false)
     expect(ledgerWrap()?.classList.contains('hidden')).toBe(false)
     expect(toggles()?.classList.contains('hidden')).toBe(false)

@@ -205,11 +205,11 @@ export function renderScene(
           <div class="match-card__header">
             <span class="match-card__vs">vs.</span>
             <strong class="match-card__name">${escapeHtml(scene.opponentName)}</strong>
-            ${tier ? `<span class="tier-badge tier-badge--${tierClass}">${escapeHtml(tier)}</span>` : ''}
+            ${tier ? `<span class="tier-badge tier-badge--${tierClass}" style="font-size:0.7rem">${escapeHtml(tier)}</span>` : ''}
           </div>
           <div class="match-card__meta">
             <span class="diff-stars" aria-label="Difficulty ${scene.difficulty ?? '?'} of 5">${diffStars(scene.difficulty)}</span>
-            <span class="match-num">Encounter ${matchNum} of ${matchTotal}</span>
+            <span class="match-num" style="font-size:0.7rem">Encounter ${matchNum} of ${matchTotal}</span>
           </div>
         </div>
         ${ladderTrack}
