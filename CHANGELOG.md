@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.19] — 2026-08-22
+
+Pass 27 — Quiet turn pill:
+
+- **Ordinary White/Black-to-move** no longer occupies the instrument. Check, thinking, seals, and outcomes still take the chip. The hanging-knight command sits next to the marble.
+- Playwright hides the pill on hanging knight and Amara, and still shows Checkmate after queen to h8.
+- Docs: [`docs/PASS27_QUIET_TURN.md`](docs/PASS27_QUIET_TURN.md).
+
 ## [0.5.18] — 2026-08-22
 
 Pass 26 — Turned lathe rings:

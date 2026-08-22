@@ -54,7 +54,16 @@ export function applyChessUi(
     ? `${Math.min(calibration.current, calibration.target)}/${calibration.target} White moves`
     : `Move ${fullMove} · ${p.sanLog.length} ply`
 
-  /* Status pill */
+  /* Status pill — ordinary "White to move." is already implied by the
+     instrument command. Keep Check, thinking, seals, and outcomes. */
+  const routineTurn = p.status === '' || /^(White|Black) to move\.$/.test(p.status)
+  const hideRoutinePill =
+    !p.aiThinking &&
+    !p.matchOutcome &&
+    !calibrationComplete &&
+    !p.inCheck &&
+    !p.sessionRecovered &&
+    routineTurn
   if (p.aiThinking) {
     dom.boardStatus.textContent = STATUS_LABELS.thinking
     dom.boardStatus.classList.remove(
@@ -84,6 +93,8 @@ export function applyChessUi(
     dom.boardStatus.classList.toggle('status-pill--check', p.inCheck)
     dom.boardStatus.classList.remove('status-pill--thinking', 'status-pill--win', 'status-pill--loss', 'status-pill--draw')
   }
+  dom.boardStatus.classList.toggle('hidden', hideRoutinePill)
+  dom.boardStatus.parentElement?.classList.toggle('hidden', hideRoutinePill)
 
   /* Board-stage outcome flash */
   dom.boardStage.classList.toggle(

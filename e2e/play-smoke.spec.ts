@@ -124,6 +124,7 @@ async function playQh8Mate(page: Page) {
   await page.locator('[data-square="e5"]').click()
   await page.locator('[data-square="h8"]').click()
   await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#board-status')).toBeVisible()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
 }
 
@@ -222,6 +223,7 @@ test('hanging knight goal stays short on the phone instrument', async ({ page })
   await expect(guide).toBeInViewport()
   await expect(guide).toContainText(/loose knight on d4/i)
   expect((await guide.innerText()).trim().length).toBeLessThan(80)
+  await expect(page.locator('#board-status')).toBeHidden()
   await expect(page.locator('#ai-persona')).toBeHidden()
   await expect(page.locator('#ai-persona')).not.toContainText(/Counterplay Engine|Court dossier/)
   await expect(page.locator('[data-square="c3"] .piece-lit')).toBeVisible()
@@ -265,6 +267,7 @@ test('mate-in-one puzzle seals with queen to h8', { timeout: 90_000 }, async ({ 
   await expect(page.locator('[data-square="h8"]')).toHaveClass(/sq-legal/)
   await page.locator('[data-square="h8"]').click()
   await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#board-status')).toBeVisible()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
 })
 
@@ -280,6 +283,7 @@ test('first Chapter I match lets Reed open against Amara', { timeout: 120_000 },
   await expect(page.locator('[data-square="e8"] .piece-lit')).toBeVisible()
   await expect(page.locator('#chess-root .piece')).toHaveCount(32)
   await expect(page.locator('#board-guide')).toContainText(/Open the center/)
+  await expect(page.locator('#board-status')).toBeHidden()
   await page.locator('[data-square="e2"]').click()
   await expect(page.locator('#board-guide')).toContainText(/Open the center/)
   await expect(page.locator('#board-guide')).not.toContainText(/legal targets/i)
