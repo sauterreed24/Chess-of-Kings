@@ -34,6 +34,17 @@ export function syncLabOverlayCaption(el: HTMLElement | null | undefined): void 
   }
 }
 
+const PHONE_PUZZLE_DEPTH = '.teaching, .teaching-more, .hint-block'
+
+/** Phone puzzles already put the command on the marble; Threat / Goal / Hint cards duplicate it. */
+export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefined): void {
+  if (!narrativeBody) return
+  const hide = isPhoneLabNav() && narrativeBody.hasAttribute('data-puzzle-lesson')
+  narrativeBody.querySelectorAll(PHONE_PUZZLE_DEPTH).forEach((node) => {
+    node.classList.toggle('hidden', hide)
+  })
+}
+
 export function setTopBarInertForLab(topBar: HTMLElement, labActive: boolean): void {
   topBar.inert = false
   topBar.removeAttribute('inert')

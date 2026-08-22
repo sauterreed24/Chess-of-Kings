@@ -4,6 +4,7 @@ import {
   applyLabOverlayCaption,
   setTopBarInertForLab,
   syncLabOverlayCaption,
+  syncPhonePuzzleLesson,
 } from './labModal'
 
 function stubPhoneLabNav(phone: boolean) {
@@ -97,5 +98,27 @@ describe('setTopBarInertForLab', () => {
     syncLabOverlayCaption(el)
     expect(el.textContent).toBe('Duel Archive')
     expect(el.getAttribute('aria-label')).toBe('Duel Archive · Ancient Court · Egyptian symmetry')
+  })
+
+  it('hides puzzle teaching cards on phone labs and keeps the lesson lead', () => {
+    stubPhoneLabNav(true)
+    const body = document.createElement('div')
+    body.setAttribute('data-puzzle-lesson', '')
+    body.innerHTML =
+      '<div class="teaching"><div class="teaching-card">goal</div></div>' +
+      '<p class="hint-block">hint</p><p class="lesson-lead">lead</p>'
+    syncPhonePuzzleLesson(body)
+    expect(body.querySelector('.teaching')?.classList.contains('hidden')).toBe(true)
+    expect(body.querySelector('.hint-block')?.classList.contains('hidden')).toBe(true)
+    expect(body.querySelector('.lesson-lead')?.classList.contains('hidden')).toBe(false)
+  })
+
+  it('keeps puzzle teaching cards on wide labs', () => {
+    stubPhoneLabNav(false)
+    const body = document.createElement('div')
+    body.setAttribute('data-puzzle-lesson', '')
+    body.innerHTML = '<div class="teaching"><div class="teaching-card">goal</div></div>'
+    syncPhonePuzzleLesson(body)
+    expect(body.querySelector('.teaching')?.classList.contains('hidden')).toBe(false)
   })
 })

@@ -1,4 +1,4 @@
-import type { Chapter, Scene } from '../../types'
+import type { Chapter, MatchScene, Scene } from '../../types'
 import { escapeHtml } from '../htmlEscape'
 import {
   aiTraitBars,
@@ -19,7 +19,7 @@ import { prosePeekSkipIndex } from '../play/skipAhead'
 import { resolveProfileByMatchId } from '../../chess/aiProfiles'
 import type { GameFlow } from '../gameFlow'
 import type { MountDomRefs, MountPlayState } from '../mountContext'
-import type { MatchScene } from '../../types'
+import { syncPhonePuzzleLesson } from '../labModal'
 
 export type RenderSceneCallbacks = {
   setBoardVisible: (on: boolean) => void
@@ -97,6 +97,11 @@ export function renderScene(
   dom.moveLedger.closest('.move-ledger-wrap')?.classList.toggle('hidden', teachingPuzzle)
   dom.app.querySelector('.instrument-toggles')?.classList.toggle('hidden', teachingPuzzle)
   dom.lessonNote.classList.toggle('hidden', teachingPuzzle)
+  if (teachingPuzzle) {
+    dom.narrativeBody.setAttribute('data-puzzle-lesson', '')
+  } else {
+    dom.narrativeBody.removeAttribute('data-puzzle-lesson')
+  }
 
   /* Hide eval bar and captured rows outside rated / rehearsal boards */
   play.showEvalBar = showsEvalHud(scene.type)
@@ -166,6 +171,7 @@ export function renderScene(
       scene.teaching ? teachingBlock(scene.teaching) : ''
     }${scene.hint ? `<p class="hint-block"><span class="hint-label">Hint</span> ${escapeHtml(scene.hint)}</p>` : ''}`
     dom.lessonNote.textContent = 'Solve the board objective. Take back to retry; Advance unlocks when the proof is clean.'
+    syncPhonePuzzleLesson(dom.narrativeBody)
     dom.btnReset.disabled = false
     dom.btnNextHint.textContent = 'Requires objective met'
   } else if (scene.type === 'match') {

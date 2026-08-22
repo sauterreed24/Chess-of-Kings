@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.30)
+## What's new in this release (v0.5.31)
+
+**Pass 39 — Phone puzzle lesson** — hanging-knight phones hide the Threat / Goal cards that duplicate the marble command. See [`docs/PASS39_PHONE_PUZZLE_LESSON.md`](docs/PASS39_PHONE_PUZZLE_LESSON.md).
+
+## Previous release (v0.5.30)
 
 **Pass 38 — Knight mane** — ivory and lapis knights get a carved mane crest so the hanging knight is not the flat leftover. See [`docs/PASS38_KNIGHT_MANE.md`](docs/PASS38_KNIGHT_MANE.md).
 

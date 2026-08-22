@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
-import { applyLabOverlayCaption, setTopBarInertForLab, syncLabOverlayCaption } from './labModal'
+import { applyLabOverlayCaption, setTopBarInertForLab, syncLabOverlayCaption, syncPhonePuzzleLesson } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -186,6 +186,7 @@ export function mountApp(app: HTMLDivElement) {
     syncLabNav: (open) => {
       setTopBarInertForLab(topBar, open)
       syncLabOverlayCaption(labEraLabel)
+      syncPhonePuzzleLesson(narrativeBody)
     },
   })
   mobileBoardFit.attach()
