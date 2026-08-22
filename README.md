@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.14)
+## What's new in this release (v0.5.15)
+
+**Pass 23 — Goal stays while you choose** — selecting a piece no longer hides the teaching command, and ivory/lapis get a carved waist collar. See [`docs/PASS23_GOAL_STAYS.md`](docs/PASS23_GOAL_STAYS.md).
+
+## Previous release (v0.5.14)
 
 **Pass 22 — Lamp-lit ivory and the first mate** — pieces catch the brass lamp on their real outlines, and Chapter I's mate-in-one is playtested through queen to h8. See [`docs/PASS22_LAMP_LIT.md`](docs/PASS22_LAMP_LIT.md).
 

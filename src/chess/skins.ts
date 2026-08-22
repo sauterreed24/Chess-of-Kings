@@ -58,9 +58,18 @@ const SHEEN_PATH: Record<PieceSymbol, string> = {
 }
 
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
+const COLLAR_CY: Record<PieceSymbol, number> = {
+  p: 31.8,
+  n: 33.4,
+  b: 32.2,
+  r: 34.6,
+  q: 32.8,
+  k: 32.4,
+}
+
 const LAMP = {
-  w: { hi: '#fffef8', lo: '#7a5424', spec: '#fff4dc' },
-  b: { hi: '#4a7aa8', lo: '#01040a', spec: '#e8c97e' },
+  w: { hi: '#ffffff', lo: '#5c3a14', spec: '#fff6e0' },
+  b: { hi: '#6a98c4', lo: '#000208', spec: '#f0d28a' },
 } as const
 
 let carveSeq = 0
@@ -98,13 +107,19 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const ground = `<ellipse class="piece-ground" cx="22.5" cy="42.15" rx="${(rx + 2.3).toFixed(1)}" ry="2.6" fill="rgba(0,0,0,0.28)"/>`
   const foot = `<ellipse class="piece-foot" cx="22.5" cy="41.3" rx="${rx}" ry="1.65" fill="rgba(0,0,0,0.55)"/>`
   const highlight = `<path class="piece-carve" d="${SHEEN_PATH[piece]}" fill="${sheen}"/>`
+  const cy = COLLAR_CY[piece] ?? 32.8
+  const collarFill = color === 'w' ? 'rgba(160,110,40,0.38)' : 'rgba(6,16,28,0.58)'
+  const collarStroke = color === 'w' ? 'rgba(255,255,255,0.42)' : 'rgba(232,201,126,0.38)'
+  const collar =
+    `<ellipse class="piece-collar" cx="22.5" cy="${cy}" rx="${(rx * 0.78).toFixed(1)}" ry="1.25" ` +
+    `fill="${collarFill}" stroke="${collarStroke}" stroke-width="0.55"/>`
   return svg
     .replace(
       /<svg([^>]*)>/,
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${highlight}</svg>`)
+    .replace('</svg>', `</g>${collar}${highlight}</svg>`)
 }
 
 export function glyphForSkin(
