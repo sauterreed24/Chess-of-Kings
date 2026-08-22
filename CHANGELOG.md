@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.87] — 2026-08-22
+
+Pass 95 — Chapter VII Soren match on the phone instrument:
+
+- **Playwright** — a post-Mira Chapter VII seed resumes `c7-before-soren` (Pass 92 current-age resume). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `g6` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS95_PHONE_CH7_SOREN.md`](docs/PASS95_PHONE_CH7_SOREN.md).
+
 ## [0.5.86] — 2026-08-22
 
 Pass 94 — Chapter VI Iota match on the phone instrument:
