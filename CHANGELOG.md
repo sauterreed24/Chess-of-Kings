@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.89] — 2026-08-22
+
+Pass 97 — Chapter IX Bram match on the phone instrument:
+
+- **Playwright** — a post-Wren Chapter IX seed resumes `c9-before-bram` (Pass 92 current-age resume). Desktop and 390×844: civic silhouettes, board-first, `d2–d4` (Indian, not Wren’s `e4`), scripted `Nf6` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS97_PHONE_CH9_BRAM.md`](docs/PASS97_PHONE_CH9_BRAM.md).
+
 ## [0.5.88] — 2026-08-22
 
 Pass 96 — Chapter VIII Elara match on the phone instrument:

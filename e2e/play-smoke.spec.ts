@@ -799,6 +799,88 @@ function seedChapterIXUnlocked() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+/** Mid-age Chapter IX save: after Wren, parked on `c9-before-bram` (scene 9). */
+function seedChapterIXAfterWren() {
+  const save = {
+    version: 3,
+    chapterIndex: 9,
+    sceneIndex: 9,
+    highestUnlockedChapter: 9,
+    lastScreen: 'title',
+    chapter1Complete: true,
+    chapter2Complete: true,
+    completedSceneIds: [
+      'c3-reflection',
+      'c3-freeplay',
+      'c4-reflection',
+      'c4-freeplay',
+      'c5-reflection',
+      'c5-freeplay',
+      'c6-reflection',
+      'c6-freeplay',
+      'c7-reflection',
+      'c7-freeplay',
+      'c8-reflection',
+      'c8-freeplay',
+      'c9-intro',
+      'c9-codex-engine',
+      'c9-puzzle-census',
+      'c9-puzzle-compile',
+      'c9-puzzle-last-rank',
+      'c9-after-puzzles',
+      'c9-before-wren',
+      'c9-match-wren',
+      'c9-after-wren',
+    ],
+    completedPuzzleIds: ['c9-puzzle-census', 'c9-puzzle-compile', 'c9-puzzle-last-rank'],
+    stratarchiaUnlocked: true,
+    duelUnlockedOpponentIds: [
+      'alexion',
+      'kallistos',
+      'nysa',
+      'cassian',
+      'gage',
+      'helia',
+      'prax',
+      'iota',
+      'mira',
+      'soren',
+      'voss',
+      'elara',
+      'wren',
+    ],
+    unlockedDuelVariantIds: [
+      'alexion-mentor',
+      'kallistos-law',
+      'nysa-frontier',
+      'cassian-paradox',
+      'gage-discipline',
+      'helia-machine',
+      'prax-precision',
+      'iota-threshold',
+      'mira-practical',
+      'soren-answer',
+      'voss-exchange',
+      'elara-fork',
+      'wren-census',
+    ],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 225,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1380, peak: 1380, rated: 8 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 async function enterChapterI(page: Page) {
   await page.locator('#btn-chapters').click({ timeout: 15_000 })
   await page.locator('.chapter-btn[data-idx="1"]').click()
@@ -1183,6 +1265,12 @@ async function advanceToWrenMatch(page: Page) {
   await expect(page.locator('#narrative-body')).toContainText(/Wren|census/i)
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/captures you delay|file is wrong|underlined/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+}
+
+async function advanceToBramMatch(page: Page) {
+  await expect(page.locator('#narrative-body')).toContainText(/Every school you sealed|still a person|Begin/i)
   await page.locator('#btn-next').click()
   await expect(page.locator('[data-square="e2"]')).toBeVisible()
 }
@@ -3656,6 +3744,79 @@ test('first Chapter IX match stays board-first on the phone instrument', { timeo
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+e5/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+  await expect(page.locator('#btn-reset')).toBeVisible()
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('resize'))
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
+  })
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
+test('second Chapter IX match lets Reed open against Bram', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIXAfterWren)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await expect(page.locator('.chapter-btn[data-idx="9"] .chapter-btn__state')).toHaveText('Resume')
+  await page.locator('.chapter-btn[data-idx="9"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toHaveText(/Chapter IX\b/)
+  await advanceToBramMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Bram')
+  await expect(page.locator('[data-square="d2"] .piece-lit')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  await expect(page.locator('#board-guide')).toContainText(/Meet the compiled school|first costume/i)
+  await expect(page.locator('#board-status')).toBeHidden()
+  await expect(page.locator('.play-crawl')).toBeVisible()
+  await expect(page.locator('.move-ledger-wrap')).toBeVisible()
+  await expect(page.locator('.instrument-toggles')).toBeVisible()
+  await page.locator('[data-square="d2"]').click()
+  await expect(page.locator('#board-guide')).toContainText(/Meet the compiled school|first costume/i)
+  await expect(page.locator('#board-guide')).not.toContainText(/legal targets/i)
+  await expect(page.locator('[data-square="d4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="d4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*d4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*d4[!?]*\s+Nf6/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+})
+
+test('second Chapter IX match stays board-first on the phone instrument', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIXAfterWren)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await enterChapterIX(page)
+  await advanceToBramMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Bram')
+  await expect(page.locator('[data-square="d2"] .pawn-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e1"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  const boardBox = await page.locator('#board-panel').boundingBox()
+  expect(boardBox).toBeTruthy()
+  expect(boardBox!.width).toBeGreaterThan(300)
+  expect(boardBox!.y).toBeLessThan(220)
+  await expect(page.locator('#board-panel')).toBeInViewport()
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#board-guide')).toContainText(/Meet the compiled school|first costume/i)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  expect(
+    await page.locator('#board-guide').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.locator('[data-square="d2"]').click()
+  await expect(page.locator('[data-square="d4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="d4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*d4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*d4[!?]*\s+Nf6/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
