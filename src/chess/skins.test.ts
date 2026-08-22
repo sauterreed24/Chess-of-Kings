@@ -384,5 +384,8 @@ describe('glyphForSkin', () => {
     expect(glyphForSkin('high-contrast', 'w', 'p')).not.toContain('7.41 13.47h23')
     expect(glyphForSkin('high-contrast', 'b', 'p')).toContain('pawn-silhouette')
     expect(glyphForSkin('high-contrast', 'b', 'p')).not.toContain('M22.5 9a4 4 0 0 0-3.22 6.38')
+    expect(glyphForSkin('high-contrast', 'w', 'q')).toContain('stroke-width="2.4"')
+    expect(glyphForSkin('high-contrast', 'w', 'q')).not.toContain('stroke-width="1.5"')
+    expect(glyphForSkin('classic-royal', 'w', 'q')).toContain('stroke-width="1.5"')
   })
 })

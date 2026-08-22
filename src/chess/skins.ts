@@ -489,6 +489,8 @@ export function glyphForSkin(
   piece: PieceSymbol,
 ): string {
   const raw = PIECE_SKIN_MAP[skin]?.[color]?.[piece] ?? PIECE_SKIN_MAP['classic-royal'][color][piece]
-  if (skin === 'high-contrast') return raw
+  if (skin === 'high-contrast') {
+    return raw.replace(/stroke-width="1.5"/g, 'stroke-width="2.4"')
+  }
   return carveGlyph(raw, color, piece)
 }

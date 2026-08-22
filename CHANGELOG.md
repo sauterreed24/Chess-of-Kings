@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.97] — 2026-08-22
+
+Pass 105 — High Contrast Tournament set on the phone instrument:
+
+- **Graphics** — tournament glyphs keep a 2.4 stroke so uncarved ivory and ink read on 390×844 squares. Civic carve overlays stay off.
+- **Playwright** — a post-Amara Chapter I seed with the tournament set selected resumes Lukas: `data-skin="high-contrast"`, ink/ivory fills, civic silhouettes, `e2–e4` / `e5`, and 44px Hint/Reset.
+- No CSS budget change. Docs: [`docs/PASS105_PHONE_HC_TOURNEY.md`](docs/PASS105_PHONE_HC_TOURNEY.md).
+
 ## [0.5.96] — 2026-08-22
 
 Pass 104 — Chapter I Counterpart match on the phone instrument:
