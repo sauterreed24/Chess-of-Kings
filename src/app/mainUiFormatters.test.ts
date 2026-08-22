@@ -17,6 +17,7 @@ import {
   spokenLineDurationMs,
   spokenLineText,
   storyBeatBlock,
+  teachingBlock,
   tierLabel,
   aiTraitBars,
 } from './mainUiFormatters'
@@ -209,5 +210,19 @@ describe('mainUiFormatters', () => {
       'Quality rose: calculation and conversion are carrying more weight.',
       'Rival trend: the file is yours. Raise pressure for a sharper archive.',
     ])
+  })
+
+  it('keeps threat and goal visible and folds the deeper brief', () => {
+    const html = teachingBlock({
+      threat: 'A loose knight hangs.',
+      goalPlain: 'Complete four moves as White — wait for the Archive reply.',
+      whyItWorks: 'Tempo punishes drift.',
+      concept: 'Every move needs a reason.',
+    })
+    expect(html).toContain('A loose knight hangs.')
+    expect(html).toContain('Complete four moves as White')
+    expect(html).toContain('teaching-more')
+    expect(html).toContain('Why it works · Concept')
+    expect(html).not.toMatch(/<details[^>]*open/)
   })
 })
