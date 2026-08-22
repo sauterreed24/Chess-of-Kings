@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.122)
+## What's new in this release (v0.5.123)
+
+**Pass 131 — lab caption** — the overlay era label renders at 0.7rem so Prologue and Chapter I still read on a 390×844 instrument bar. See [`docs/PASS131_LAB_CAPTION.md`](docs/PASS131_LAB_CAPTION.md).
+
+## Previous release (v0.5.122)
 
 **Pass 130 — move ledger** — the match ledger heading renders at 0.7rem and SAN rows at 0.78rem so the file still reads on a 390×844 instrument. See [`docs/PASS130_LEDGER_READ.md`](docs/PASS130_LEDGER_READ.md).
 

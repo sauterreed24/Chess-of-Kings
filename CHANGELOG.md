@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.123] — 2026-08-22
+
+Pass 131 — lab overlay caption:
+
+- **Graphics** — the overlay era label renders at 0.7rem so Prologue / Chapter I still read on the phone bar (CSS was 0.46rem). No new CSS.
+- **Playwright** — 390×844 skip-ahead calibration asserts `#lab-era-label`.
+- Docs: [`docs/PASS131_LAB_CAPTION.md`](docs/PASS131_LAB_CAPTION.md).
+
 ## [0.5.122] — 2026-08-22
 
 Pass 130 — move ledger readability:
