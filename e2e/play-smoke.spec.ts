@@ -96,15 +96,20 @@ async function playIfLegal(
   from: string,
   to: string,
 ): Promise<boolean> {
-  await page.locator(`[data-square="${from}"]`).click()
-  const dest = page.locator(`[data-square="${to}"]`)
-  const cls = (await dest.getAttribute('class')) ?? ''
-  if (!/sq-legal-dot|sq-legal-capture/.test(cls)) {
+  const tryPlay = async (): Promise<boolean> => {
+    await expect(page.locator('.chess-grid')).not.toHaveClass(/chess-grid--locked/, { timeout: 20_000 })
     await page.locator(`[data-square="${from}"]`).click()
-    return false
+    const dest = page.locator(`[data-square="${to}"]`)
+    const cls = (await dest.getAttribute('class')) ?? ''
+    if (!/sq-legal-dot|sq-legal-capture/.test(cls)) {
+      await page.locator(`[data-square="${from}"]`).click()
+      return false
+    }
+    await dest.click()
+    return true
   }
-  await dest.click()
-  return true
+  if (await tryPlay()) return true
+  return tryPlay()
 }
 
 async function overlayBoxes(page: Page, square: string, sel: string): Promise<Array<{ w: number; h: number }>> {
