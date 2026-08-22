@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.69)
+## What's new in this release (v0.5.70)
+
+**Pass 78 — Bishop mitre head** — ivory and lapis bishops are a carved mitre silhouette, not a Wikipedia teardrop with a ball finial. See [`docs/PASS78_BISHOP_MITRE_HEAD.md`](docs/PASS78_BISHOP_MITRE_HEAD.md).
+
+## Previous release (v0.5.69)
 
 **Pass 77 — Chapter VI phone lab** — the Silicon Threshold drills now prove on a 390×844 instrument with 44px Hint|Prove hit targets. See [`docs/PASS77_PHONE_CH6_LAB.md`](docs/PASS77_PHONE_CH6_LAB.md).
 
@@ -629,7 +633,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 - **Pass 6 (shipped v0.4.0)** — see [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md). Continuity (Lukas/Marius rematches, loss recaps), calibration honesty, settings toggles, compact **Chapter III**, playtest checklist.
 - **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening.
 - **Pass 5 (shipped v0.3.1)** — `RewardGrantService`, `aiTurnController`, and `aiSearch.worker` (title **AI Thread** setting, or `localStorage` `cok-ai-worker`).
-- **Piece silhouettes** — the knight is a civic horse head (Pass 73). Pawn, bishop, rook, queen, and king still use Wikipedia Staunton paths plus carve overlays.
+- **Piece silhouettes** — knight (Pass 73) and bishop (Pass 78) are civic silhouettes. Pawn, rook, queen, and king still use Wikipedia Staunton paths plus carve overlays.
 - **Phone labs** — Chapters VI–IX drills are proven at 390×844. Hint and Prove keep a 44px hit target on the phone instrument.
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 

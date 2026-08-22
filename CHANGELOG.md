@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.70] — 2026-08-22
+
+Pass 78 — Bishop mitre silhouette:
+
+- **Ivory and lapis bishops** replace the Wikipedia Staunton teardrop-plus-ball with a civic mitre: pointed hat, stem, and a plus-cut in the glyph. Carved cleft, sheen, and neck follow the new brim.
+- **High-contrast** keeps the same silhouette (no carve overlays), so tournament bishops still read as mitres.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS78_BISHOP_MITRE_HEAD.md`](docs/PASS78_BISHOP_MITRE_HEAD.md).
+
 ## [0.5.69] — 2026-08-22
 
 Pass 77 — Chapter VI phone lab:

@@ -24,6 +24,30 @@ function knightGlyph(crestHighlight: boolean): string {
   )
 }
 
+/**
+ * Civic Staunton mitre — pointed hat, plus-cut, and a 45×45 footprint that
+ * still seats the carved plinth. Wikipedia's teardrop-plus-ball read as a
+ * blob at phone size; this silhouette has to read even in high-contrast
+ * (no overlays).
+ */
+const BISHOP_BODY =
+  'M12 40C11.2 37.6 11.6 36 13.6 35.4C16.8 34.2 16.8 32.8 17.2 31.2L17.6 22.8C13.2 21 12.2 17.6 13.4 14.4C15.2 9.2 19.2 5.4 22.5 4.8C25.8 5.4 29.8 9.2 31.6 14.4C32.8 17.6 31.8 21 27.4 22.8L27.8 31.2C28.2 32.8 28.2 34.2 31.4 35.4C33.4 36 33.8 37.6 33 40z'
+
+function bishopGlyph(facetHighlight: boolean): string {
+  const facet = facetHighlight
+    ? '<path fill="var(--piece-stroke)" stroke="none" d="M22.5 5.2c-2.6 1.4-6 5.2-8 10.8 3-4.6 6-9 8-10.8z"/>'
+    : ''
+  return (
+    `<svg class="svg-piece" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">` +
+    `<g fill="none" fill-rule="evenodd" stroke="var(--piece-stroke)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">` +
+    `<path class="bishop-silhouette" fill="var(--piece-fill)" d="${BISHOP_BODY}"/>` +
+    facet +
+    `<rect class="bishop-cleft-stem" fill="var(--piece-stroke)" stroke="none" x="21.3" y="6.8" width="2.4" height="12.8" rx="0.5"/>` +
+    `<rect class="bishop-cleft-bar" fill="var(--piece-stroke)" stroke="none" x="19.2" y="15.4" width="6.6" height="3.4" rx="0.5"/>` +
+    `</g></svg>`
+  )
+}
+
 // SVGs processed to support dynamic CSS variables:
 // --piece-fill (body color)
 // --piece-stroke (outlines and details)
@@ -31,7 +55,7 @@ const SVGS: Record<Color, Record<PieceSymbol, string>> = {
   "w": {
     "p": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-width=\"1.5\" d=\"M22.5 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38C17.33 16.5 16 18.59 16 21c0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z\"/></svg>",
     "n": knightGlyph(false),
-    "b": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"none\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><g fill=\"var(--piece-fill)\" stroke-linecap=\"butt\"><path d=\"M9 36c3.39-.97 10.11.43 13.5-2 3.39 2.43 10.11 1.03 13.5 2 0 0 1.65.54 3 2-.68.97-1.65.99-3 .5-3.39-.97-10.11.46-13.5-1-3.39 1.46-10.11.03-13.5 1-1.35.49-2.32.47-3-.5 1.35-1.94 3-2 3-2z\"/><path d=\"M15 32c2.5 2.5 12.5 2.5 15 0 .5-1.5 0-2 0-2 0-2.5-2.5-4-2.5-4 5.5-1.5 6-11.5-5-15.5-11 4-10.5 14-5 15.5 0 0-2.5 1.5-2.5 4 0 0-.5.5 0 2z\"/><path d=\"M25 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 1 1 5 0z\"/></g><path stroke-linejoin=\"miter\" d=\"M17.5 26h10M15 30h15m-7.5-14.5v5M20 18h5\"/></g></svg>",
+    "b": bishopGlyph(false),
     "r": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"var(--piece-fill)\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path stroke-linecap=\"butt\" d=\"M9 39h27v-3H9zm3-3v-4h21v4zm-1-22V9h4v2h5V9h5v2h5V9h4v5\"/><path d=\"m34 14-3 3H14l-3-3\"/><path stroke-linecap=\"butt\" stroke-linejoin=\"miter\" d=\"M31 17v12.5H14V17\"/><path d=\"m31 29.5 1.5 2.5h-20l1.5-2.5\"/><path fill=\"none\" stroke-linejoin=\"miter\" d=\"M11 14h23\"/></g></svg>",
     "q": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"var(--piece-fill)\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path d=\"M8 12a2 2 0 1 1-4 0 2 2 0 1 1 4 0m16.5-4.5a2 2 0 1 1-4 0 2 2 0 1 1 4 0M41 12a2 2 0 1 1-4 0 2 2 0 1 1 4 0M16 8.5a2 2 0 1 1-4 0 2 2 0 1 1 4 0M33 9a2 2 0 1 1-4 0 2 2 0 1 1 4 0\"/><path stroke-linecap=\"butt\" d=\"M9 26c8.5-1.5 21-1.5 27 0l2-12-7 11V11l-5.5 13.5-3-15-3 15-5.5-14V25L7 14z\"/><path stroke-linecap=\"butt\" d=\"M9 26c0 2 1.5 2 2.5 4 1 1.5 1 1 .5 3.5-1.5 1-1.5 2.5-1.5 2.5-1.5 1.5.5 2.5.5 2.5 6.5 1 16.5 1 23 0 0 0 1.5-1 0-2.5 0 0 .5-1.5-1-2.5-.5-2.5-.5-2 .5-3.5 1-2 2.5-2 2.5-4-8.5-1.5-18.5-1.5-27 0z\"/><path fill=\"none\" d=\"M11.5 30c3.5-1 18.5-1 22 0M12 33.5c6-1 15-1 21 0\"/></g></svg>",
     "k": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"none\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path stroke-linejoin=\"miter\" d=\"M22.5 11.63V6M20 8h5\"/><path fill=\"var(--piece-fill)\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" d=\"M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5\"/><path fill=\"var(--piece-fill)\" d=\"M11.5 37c5.5 3.5 15.5 3.5 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10z\"/><path d=\"M11.5 30c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0\"/></g></svg>"
@@ -39,7 +63,7 @@ const SVGS: Record<Color, Record<PieceSymbol, string>> = {
   "b": {
     "p": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-width=\"1.5\" d=\"M22.5 9a4 4 0 0 0-3.22 6.38 6.48 6.48 0 0 0-.87 10.65c-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47a6.46 6.46 0 0 0-.87-10.65A4.01 4.01 0 0 0 22.5 9z\"/></svg>",
     "n": knightGlyph(true),
-    "b": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"none\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><g fill=\"var(--piece-stroke)\" stroke-linecap=\"butt\"><path fill=\"var(--piece-fill)\" d=\"M9 36c3.4-1 10.1.4 13.5-2 3.4 2.4 10.1 1 13.5 2 0 0 1.6.5 3 2-.7 1-1.6 1-3 .5-3.4-1-10.1.5-13.5-1-3.4 1.5-10.1 0-13.5 1-1.4.5-2.3.5-3-.5 1.4-2 3-2 3-2z\"/><path fill=\"var(--piece-fill)\" d=\"M15 32c2.5 2.5 12.5 2.5 15 0 .5-1.5 0-2 0-2 0-2.5-2.5-4-2.5-4 5.5-1.5 6-11.5-5-15.5-11 4-10.5 14-5 15.5 0 0-2.5 1.5-2.5 4 0 0-.5.5 0 2z\"/><path fill=\"var(--piece-fill)\" d=\"M25 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 1 1 5 0z\"/></g><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" stroke-linejoin=\"miter\" d=\"M17.5 26h10M15 30h15m-7.5-14.5v5M20 18h5\"/></g></svg>",
+    "b": bishopGlyph(true),
     "r": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"var(--piece-fill)\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path stroke-linecap=\"butt\" d=\"M9 39h27v-3H9zm3.5-7 1.5-2.5h17l1.5 2.5zm-.5 4v-4h21v4z\"/><path stroke-linecap=\"butt\" stroke-linejoin=\"miter\" d=\"M14 29.5v-13h17v13z\"/><path stroke-linecap=\"butt\" d=\"M14 16.5 11 14h23l-3 2.5zM11 14V9h4v2h5V9h5v2h5V9h4v5z\"/><path fill=\"none\" stroke=\"var(--piece-stroke)\" stroke-linejoin=\"miter\" stroke-width=\"1\" d=\"M12 35.5h21m-20-4h19m-18-2h17m-17-13h17M11 14h23\"/></g></svg>",
     "q": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"var(--piece-fill)\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><g fill=\"var(--piece-fill)\" stroke=\"none\"><circle cx=\"6\" cy=\"12\" r=\"2.75\"/><circle cx=\"14\" cy=\"9\" r=\"2.75\"/><circle cx=\"22.5\" cy=\"8\" r=\"2.75\"/><circle cx=\"31\" cy=\"9\" r=\"2.75\"/><circle cx=\"39\" cy=\"12\" r=\"2.75\"/></g><path stroke-linecap=\"butt\" d=\"M9 26c8.5-1.5 21-1.5 27 0l2.5-12.5L31 25l-.3-14.1-5.2 13.6-3-14.5-3 14.5-5.2-13.6L14 25 6.5 13.5z\"/><path stroke-linecap=\"butt\" d=\"M9 26c0 2 1.5 2 2.5 4 1 1.5 1 1 .5 3.5-1.5 1-1.5 2.5-1.5 2.5-1.5 1.5.5 2.5.5 2.5 6.5 1 16.5 1 23 0 0 0 1.5-1 0-2.5 0 0 .5-1.5-1-2.5-.5-2.5-.5-2 .5-3.5 1-2 2.5-2 2.5-4-8.5-1.5-18.5-1.5-27 0z\"/><path fill=\"none\" stroke-linecap=\"butt\" d=\"M11 38.5a35 35 1 0 0 23 0\"/><path fill=\"none\" stroke=\"var(--piece-stroke)\" d=\"M11 29a35 35 1 0 1 23 0m-21.5 2.5h20m-21 3a35 35 1 0 0 22 0m-23 3a35 35 1 0 0 24 0\"/></g></svg>",
     "k": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"none\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path fill=\"var(--piece-fill)\" stroke-linejoin=\"miter\" d=\"M22.5 11.6V6\"/><path fill=\"var(--piece-fill)\" fill=\"var(--piece-stroke)\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" d=\"M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5\"/><path fill=\"var(--piece-fill)\" fill=\"var(--piece-stroke)\" d=\"M11.5 37a22.3 22.3 0 0 0 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10z\"/><path fill=\"var(--piece-fill)\" stroke-linejoin=\"miter\" d=\"M20 8h5\"/><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" d=\"M32 29.5s8.5-4 6-9.7C34.1 14 25 18 22.5 24.6v2.1-2.1C20 18 9.9 14 7 19.9c-2.5 5.6 4.8 9 4.8 9\"/><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" d=\"M11.5 30c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0\"/></g></svg>"
@@ -80,7 +104,7 @@ const PAWN_SPARK = { cx: 19.95, cy: 10.45, r: 1.55 }
 const SHEEN_PATH: Record<PieceSymbol, string> = {
   p: 'M17.8 11c2.8-3.6 6.6-3.6 9.4 0-3.2 1.15-6.2 1.15-9.4 0z',
   n: 'M17.6 8.8c3.4-3.6 9-4 13 0.2-4.6 1.1-9 1.8-13-0.2z',
-  b: 'M19 9.2c2.2-3 4.8-3 7 0-2.4.95-4.6.95-7 0z',
+  b: 'M19.6 6.4c2-2.2 4.8-2.2 6.8 0-2.3.8-4.5.8-6.8 0z',
   r: 'M12.2 10.4h20.6v2.15H12.2z',
   q: 'M9.6 11.4c5.2-3.6 20.6-3.6 25.8 0-8 1.55-17.8 1.55-25.8 0z',
   k: 'M20.4 6.4h4.2v1.7h2.1v2.2h-2.1v2.4h-4.2v-2.4h-2.1V8.1h2.1z',
@@ -110,8 +134,8 @@ const ROOK_MERLONS: ReadonlyArray<{ x: number; y: number; w: number; h: number }
 
 /** Mitre cleft — vertical cut and crossbar, thick enough to read on a ~40px phone square. */
 const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
-  { x: 21.3, y: 8.0, w: 2.4, h: 12.7 },
-  { x: 19.3, y: 16.25, w: 6.4, h: 3.4 },
+  { x: 21.3, y: 6.8, w: 2.4, h: 12.8 },
+  { x: 19.2, y: 15.4, w: 6.6, h: 3.4 },
 ]
 
 /** Gold/lapis inlay on the king’s cross — thick enough to read on a ~40px phone square. */
@@ -134,7 +158,7 @@ const COLLAR_CY: Record<PieceSymbol, number> = {
 const NECK_CY: Record<PieceSymbol, number> = {
   p: 21.2,
   n: 24.6,
-  b: 18.4,
+  b: 22.8,
   r: 15.8,
   q: 19.6,
   k: 18.4,
@@ -144,7 +168,7 @@ const NECK_CY: Record<PieceSymbol, number> = {
 const FLUTE: Record<PieceSymbol, { cx: number; cy: number; rx: number; ry: number }> = {
   p: { cx: 18.2, cy: 26.4, rx: 1.35, ry: 5.8 },
   n: { cx: 16.8, cy: 18.0, rx: 1.2, ry: 3.15 },
-  b: { cx: 18.0, cy: 24.2, rx: 1.4, ry: 7.1 },
+  b: { cx: 18.2, cy: 27.4, rx: 1.35, ry: 5.6 },
   r: { cx: 17.6, cy: 23.8, rx: 1.5, ry: 6.3 },
   q: { cx: 17.8, cy: 24.8, rx: 1.45, ry: 7.0 },
   k: { cx: 17.8, cy: 24.1, rx: 1.45, ry: 6.7 },
@@ -154,7 +178,7 @@ const FLUTE: Record<PieceSymbol, { cx: number; cy: number; rx: number; ry: numbe
 const CUP: Record<PieceSymbol, { cy: number; rx: number; ry: number } | null> = {
   p: { cy: 13.4, rx: 3.2, ry: 2.15 },
   n: null,
-  b: { cy: 11.4, rx: 2.35, ry: 2.2 },
+  b: { cy: 10.6, rx: 2.55, ry: 2.25 },
   r: { cy: 11.4, rx: 7.35, ry: 2.38 },
   q: { cy: 15.8, rx: 5.35, ry: 2.38 },
   k: { cy: 15.2, rx: 3.45, ry: 2.38 },
