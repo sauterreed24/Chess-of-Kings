@@ -102,7 +102,17 @@ describe('Alexandrine Imperial state polish', () => {
 
   it('collapses the chapter crawl on compact live boards', () => {
     expect(CSS).toMatch(
-      /@media \(max-width: 960px\), \(max-height: 620px\)[\s\S]*?\.screen-play--board-scene \.play-crawl \.chapter-label,/,
+      /@media \(max-width: 960px\)[\s\S]*?\.screen-play--board-scene \.play-crawl \.chapter-label,/,
+    )
+  })
+
+  it('keeps two columns on wide short labs', () => {
+    expect(CSS).not.toMatch(/@media \(max-width: 960px\), \(max-height: 620px\)/)
+    expect(CSS).toMatch(
+      /@media \(max-height: 620px\)[\s\S]*?@media \(min-width: 961px\)[\s\S]*?--mobile-board-max, 72vh/,
+    )
+    expect(CSS).toMatch(
+      /@media \(max-height: 620px\)[\s\S]*?@media \(min-width: 961px\)[\s\S]*?\.board-stage \{ order: -1; \}/,
     )
   })
 
