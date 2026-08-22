@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.74)
+## What's new in this release (v0.5.75)
+
+**Pass 83 — Phone Reset unhide** — Reset keeps a 44px hit target after the first phone ply, and the first Amara match proves on a 390×844 instrument. See [`docs/PASS83_PHONE_RESET_UNHIDE.md`](docs/PASS83_PHONE_RESET_UNHIDE.md).
+
+## Previous release (v0.5.74)
 
 **Pass 82 — King crown head** — ivory and lapis kings are a carved crown silhouette, not a Wikipedia stroke-plus with overlay inlay. See [`docs/PASS82_KING_CROWN_HEAD.md`](docs/PASS82_KING_CROWN_HEAD.md).
 

@@ -82,6 +82,7 @@ See the shipped **Pass 6** plan: [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](do
 
 Current focus (next content / polish):
 - Contrast / accessibility hardening and mobile viewport sweeps
+- Later-chapter campaign matches on phone (Chapter I Amara is proven at 390×844)
 - Native TestFlight / Play Internal pipeline (environment-dependent)
 
 Earlier architecture waves (Pass 4–5 GameFlow seams + AI worker) are complete — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md).

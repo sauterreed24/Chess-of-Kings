@@ -1,8 +1,9 @@
 import { Chess } from 'chess.js'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createAnnouncer } from '../a11y/announcer'
 import { createSfxController } from '../audio/sfx'
 import type { ChessUiPayload } from '../gameFlow'
+import { PHONE_LAB_NAV_QUERY } from '../labModal'
 import { createMountPlayState, type MountDomRefs } from '../mountContext'
 import { applyChessUi } from './applyChessUi'
 
@@ -99,6 +100,10 @@ function payload(chess: Chess): ChessUiPayload {
 }
 
 describe('applyChessUi', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('prioritizes a sealed calibration proof over the raw side to move', () => {
     const chess = new Chess()
     chess.move('e4')
@@ -370,6 +375,16 @@ describe('applyChessUi', () => {
     expect(dom.btnReset.hidden).toBe(true)
     expect(dom.btnUndo.hidden).toBe(false)
 
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === PHONE_LAB_NAV_QUERY,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      onchange: null,
+    }))
     applyChessUi(
       {
         ...payload(chess),
@@ -386,5 +401,7 @@ describe('applyChessUi', () => {
     expect(dom.btnReset.hidden).toBe(false)
     expect(dom.btnHint.hidden).toBe(true)
     expect(dom.btnHint.disabled).toBe(false)
+    expect(dom.btnReset.style.minHeight).toBe('44px')
+    expect(dom.btnReset.style.minWidth).toBe('44px')
   })
 })
