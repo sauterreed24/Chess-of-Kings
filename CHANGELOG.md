@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.93] — 2026-08-22
+
+Pass 101 — Chapter I Edred match on the phone instrument:
+
+- **Playwright** — a post-Lukas Chapter I seed resumes `c1-before-edred` (Pass 92 current-age resume, scene 13). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted Sicilian `c5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS101_PHONE_CH1_EDRED.md`](docs/PASS101_PHONE_CH1_EDRED.md).
+
 ## [0.5.92] — 2026-08-22
 
 Pass 100 — Chapter I Lukas match on the phone instrument:
