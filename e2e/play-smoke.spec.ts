@@ -2483,10 +2483,10 @@ test('high-contrast tournament set reads on the phone instrument', { timeout: 12
   await expect(page.locator('#chess-root .piece')).toHaveCount(32)
   expect(
     await page.locator('[data-square="e2"] .piece').evaluate((el) => getComputedStyle(el).getPropertyValue('--piece-fill').trim()),
-  ).toBe('#ffffff')
+  ).toMatch(/^#fff(?:fff)?$/i)
   expect(
     await page.locator('[data-square="e7"] .piece').evaluate((el) => getComputedStyle(el).getPropertyValue('--piece-fill').trim()),
-  ).toBe('#000000')
+  ).toMatch(/^#000(?:000)?$/i)
   expect(await page.locator('[data-square="e2"] svg g').first().getAttribute('stroke-width')).toBe('2.4')
   const boardBox = await page.locator('#board-panel').boundingBox()
   expect(boardBox).toBeTruthy()
