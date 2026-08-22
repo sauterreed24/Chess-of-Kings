@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.56)
+## What's new in this release (v0.5.57)
+
+**Pass 65 — King crown cup** — ivory and lapis kings get a deeper lathe bowl under the plus, instead of a 3.2px dish. See [`docs/PASS65_KING_BOWL.md`](docs/PASS65_KING_BOWL.md).
+
+## Previous release (v0.5.56)
 
 **Pass 64 — Knight eye** — ivory and lapis knights get a carved eye, so the horse head reads on a phone square. See [`docs/PASS64_KNIGHT_EYE.md`](docs/PASS64_KNIGHT_EYE.md).
 
