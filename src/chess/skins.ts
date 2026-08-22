@@ -47,6 +47,9 @@ const FOOT_RX: Record<PieceSymbol, number> = {
   k: 11.8,
 }
 
+/** Lamp-side catch-light on the Staunton pawn globe. */
+const PAWN_ORB = { cx: 20.15, cy: 10.75, r: 1.42 }
+
 /** Crown / mitre / battlement highlights keyed to Staunton silhouettes. */
 const SHEEN_PATH: Record<PieceSymbol, string> = {
   p: 'M17.8 11c2.8-3.6 6.6-3.6 9.4 0-3.2 1.15-6.2 1.15-9.4 0z',
@@ -261,6 +264,10 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
             `<circle class="piece-pearl" cx="${(p.cx - 0.55).toFixed(2)}" cy="${(p.cy - 0.7).toFixed(2)}" r="1.05" fill="${pearlFill}"/>`,
         ).join('')
       : ''
+  const orb =
+    piece === 'p'
+      ? `<circle class="piece-orb" cx="${PAWN_ORB.cx}" cy="${PAWN_ORB.cy}" r="${PAWN_ORB.r}" fill="${pearlFill}"/>`
+      : ''
   const merlonFill = color === 'w' ? 'rgba(36,18,6,0.4)' : 'rgba(0,2,8,0.52)'
   const merlons =
     piece === 'r'
@@ -293,7 +300,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
     .replace(
       '</svg>',
-      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${pearls}${merlons}${cleft}${cross}${highlight}</svg>`,
+      `</g>${ferrule}${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${mane}${orb}${pearls}${merlons}${cleft}${cross}${highlight}</svg>`,
     )
 }
 

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.40)
+## What's new in this release (v0.5.41)
+
+**Pass 49 — Pawn globe orb** — ivory and lapis pawns get a lamp-side catch-light on the globe. See [`docs/PASS49_PAWN_ORB.md`](docs/PASS49_PAWN_ORB.md).
+
+## Previous release (v0.5.40)
 
 **Pass 48 — Quiet puzzle coach** — hanging-knight capture no longer prints Material won under the marble seal. See [`docs/PASS48_QUIET_PUZZLE_COACH.md`](docs/PASS48_QUIET_PUZZLE_COACH.md).
 
