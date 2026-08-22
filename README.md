@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.65)
+## What's new in this release (v0.5.66)
+
+**Pass 74 — Chapter IX phone lab** — the Apotheosis Engine drills now prove on a 390×844 instrument: manuscript hidden, Prove docked beside Hint, no turn-pulse wait. See [`docs/PASS74_PHONE_CH9_LAB.md`](docs/PASS74_PHONE_CH9_LAB.md).
+
+## Previous release (v0.5.65)
 
 **Pass 73 — Knight horse head** — ivory and lapis knights are a carved horse silhouette, not a Wikipedia scribble with an eye on the snout. See [`docs/PASS73_KNIGHT_HEAD.md`](docs/PASS73_KNIGHT_HEAD.md).
 
@@ -613,7 +617,8 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 - **Pass 6 (shipped v0.4.0)** — see [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md). Continuity (Lukas/Marius rematches, loss recaps), calibration honesty, settings toggles, compact **Chapter III**, playtest checklist.
 - **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening.
 - **Pass 5 (shipped v0.3.1)** — `RewardGrantService`, `aiTurnController`, and `aiSearch.worker` (title **AI Thread** setting, or `localStorage` `cok-ai-worker`).
-- **Piece silhouettes** — Staunton Wikipedia glyphs still carry the knight; carved overlays help, but a true knight-head rewrite is the next graphics wave.
+- **Piece silhouettes** — the knight is a civic horse head (Pass 73). Pawn, bishop, rook, queen, and king still use Wikipedia Staunton paths plus carve overlays.
+- **Phone labs** — Chapter IX drills are proven at 390×844. Chapters VI–VIII still lack a phone e2e pass.
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
 ---
