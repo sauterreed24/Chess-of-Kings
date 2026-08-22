@@ -125,6 +125,23 @@ export function computeAiPaceDelay(lossPressure: number): number {
   return lossPressure >= 2 ? Math.min(540, 300 + lossPressure * 70) : 300
 }
 
+/** First authored SAN is the examiner's public line. Later scripted book
+ *  moves may drift by openingDiscipline so the match is not a recitation. */
+export function shouldHonorMatchScript(opts: {
+  scriptLength: number
+  scriptIndex: number
+  plyCount: number
+  openingDiscipline: number
+  roll: number
+}): boolean {
+  if (opts.scriptLength <= 0) return false
+  if (opts.scriptIndex < 0 || opts.scriptIndex >= opts.scriptLength) return false
+  if (opts.plyCount >= 14) return false
+  if (opts.scriptIndex === 0) return true
+  const chance = Math.max(0.2, Math.min(0.9, opts.openingDiscipline))
+  return opts.roll < chance
+}
+
 export async function runAiTurn(host: AiTurnHost): Promise<void> {
   const sc = host.currentScene()
   if (host.isSceneTerminal()) {
@@ -226,11 +243,13 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
     const profile = host.tuneProfileForMatch(adapted, m)
 
     const script = m.scriptedBlackSans
-    const shouldUseScript =
-      Boolean(script?.length) &&
-      host.getScriptedMoveIndex() < (script?.length ?? 0) &&
-      host.sanLog.length < 14 &&
-      Math.random() < Math.max(0.2, Math.min(0.9, profile.openingDiscipline))
+    const shouldUseScript = shouldHonorMatchScript({
+      scriptLength: script?.length ?? 0,
+      scriptIndex: host.getScriptedMoveIndex(),
+      plyCount: host.sanLog.length,
+      openingDiscipline: profile.openingDiscipline,
+      roll: Math.random(),
+    })
     if (shouldUseScript && script) {
       const san = script[host.getScriptedMoveIndex()]!
       try {

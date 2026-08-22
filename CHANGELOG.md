@@ -15,6 +15,7 @@ level (the save format has its own version field — see
 
 Pass 85 — Chapter VII Mira match on the phone instrument:
 
+- **First authored reply** — campaign matches always play the first `scriptedBlackSans` ply (Mira’s `e5` after `e4`). Later book moves may still drift by opening discipline.
 - **Playwright** — Chapter VII walks the Human Synthesis drills into the first Mira match. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `e5` reply, board-guide fit, Hint/Reset floors after resize.
 - Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS85_PHONE_CH7_MATCH.md`](docs/PASS85_PHONE_CH7_MATCH.md).
 

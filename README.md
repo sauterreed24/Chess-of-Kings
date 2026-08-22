@@ -111,7 +111,7 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ## What's new in this release (v0.5.77)
 
-**Pass 85 — Chapter VII Mira match** — the first Human Synthesis match stays board-first on a 390×844 instrument, with Hint/Reset at 44px after undock or resize. See [`docs/PASS85_PHONE_CH7_MATCH.md`](docs/PASS85_PHONE_CH7_MATCH.md).
+**Pass 85 — Chapter VII Mira match** — the first Human Synthesis match stays board-first on a 390×844 instrument, and the first authored reply (`e5`) is no longer skipped by opening-discipline dice. See [`docs/PASS85_PHONE_CH7_MATCH.md`](docs/PASS85_PHONE_CH7_MATCH.md).
 
 ## Previous release (v0.5.76)
 
