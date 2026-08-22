@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.110] — 2026-08-22
+
+Pass 118 — classic-royal outline:
+
+- **Graphics** — default ivory/lapis glyphs use the same 2.4 civic outline as neon and ornate, so carved edges still read on ~40px phone squares. Cups stay 0.45. No new CSS.
+- **Playwright** — calibration and a 390×844 skip-ahead assert `stroke-width="2.4"` on e2.
+- No CSS budget change. Docs: [`docs/PASS118_CLASSIC_OUTLINE.md`](docs/PASS118_CLASSIC_OUTLINE.md).
+
 ## [0.5.109] — 2026-08-22
 
 Pass 117 — phone skip-ahead:

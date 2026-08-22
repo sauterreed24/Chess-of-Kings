@@ -26,6 +26,7 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   await expect(page.locator('[data-square="e2"] .pawn-silhouette')).toBeVisible()
   await expect(page.locator('[data-square="e2"] .pawn-globe')).toBeVisible()
   await expect(page.locator('[data-square="e2"] .pawn-ring')).toBeVisible()
+  expect(await page.locator('[data-square="e2"] svg g[stroke-width="2.4"]').count()).toBe(1)
   const calOrb = await page.locator('[data-square="e2"] .piece-orb').boundingBox()
   expect(calOrb?.width ?? 0).toBeGreaterThanOrEqual(4)
   expect(calOrb?.height ?? 0).toBeGreaterThanOrEqual(4)
@@ -3253,6 +3254,18 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-panel .duel-launch')).toBeVisible()
   await expect(page.locator('#duel-panel')).toContainText('Archive rating:')
   await expect(page.locator('#duel-band-status')).toBeVisible()
+})
+
+test('classic royal outline stays 2.4 on the phone instrument', { timeout: 90_000 }, async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"] .piece-carve')).toBeVisible()
+  expect(await page.locator('[data-square="e2"] svg g[stroke-width="2.4"]').count()).toBe(1)
 })
 
 test('skip ahead stays 44px on the phone instrument', { timeout: 90_000 }, async ({ page }) => {
