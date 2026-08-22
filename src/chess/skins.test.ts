@@ -64,6 +64,7 @@ describe('carveGlyph', () => {
     expect(pawn).toContain('class="piece-umbra"')
     expect(pawn).toContain('class="piece-cup"')
     expect(pawn).toContain('class="piece-ferrule"')
+    expect(pawn).not.toContain('class="piece-mane"')
     expect(pawn).toContain('cx="26.8"')
     expect(pawn).toContain('cy="35.1"')
     const knight = carveGlyph('<svg></svg>', 'w', 'n')
@@ -74,6 +75,7 @@ describe('carveGlyph', () => {
     expect(knight).not.toContain('class="piece-neck"')
     expect(knight).not.toContain('class="piece-cup"')
     expect(knight).toContain('class="piece-ferrule"')
+    expect(knight).toContain('class="piece-mane"')
   })
 
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {
@@ -101,6 +103,7 @@ describe('carveGlyph', () => {
       expect(carved).toContain('class="piece-umbra"')
       expect(carved).toContain('class="piece-cup"')
       expect(carved).toContain('class="piece-ferrule"')
+      expect(carved).not.toContain('class="piece-mane"')
       expect(carved).not.toContain(' filter=')
     } finally {
       if (prev == null) globalThis.localStorage?.removeItem('cok-visual-quality')
@@ -126,6 +129,7 @@ describe('glyphForSkin', () => {
     expect(pawn).toContain('piece-umbra')
     expect(pawn).toContain('piece-cup')
     expect(pawn).toContain('piece-ferrule')
+    expect(pawn).not.toContain('piece-mane')
     expect(pawn).toContain('feSpecularLighting')
     expect(pawn).toContain('feDiffuseLighting')
     expect(glyphForSkin('alexandrine-ornate', 'b', 'k')).toContain('piece-carve')
@@ -137,5 +141,6 @@ describe('glyphForSkin', () => {
     expect(glyphForSkin('high-contrast', 'w', 'q')).not.toContain('piece-umbra')
     expect(glyphForSkin('high-contrast', 'w', 'q')).not.toContain('piece-cup')
     expect(glyphForSkin('high-contrast', 'w', 'q')).not.toContain('piece-ferrule')
+    expect(glyphForSkin('high-contrast', 'w', 'n')).not.toContain('piece-mane')
   })
 })
