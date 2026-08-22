@@ -11,6 +11,16 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.3] — 2026-08-22
+
+Pass 11 — Play-surface clarity:
+
+- **Live instrument is quieter.** Turn / ply chips no longer sit beside the status pill; calibration progress lives on the rail (`1 / 4 inscribed`).
+- **Board guide** keeps the coaching line instead of repeating the remaining-move count.
+- **Sound and Move Guard** sit under the board tools.
+- **Carved presence** — larger glyphs, stronger ivory/lapis highlights, brighter last-move landing, tighter brass rim.
+- Docs: [`docs/PASS11_PLAY_SURFACE.md`](docs/PASS11_PLAY_SURFACE.md).
+
 ## [0.5.2] — 2026-08-22
 
 Pass 10 — First-session play feel:

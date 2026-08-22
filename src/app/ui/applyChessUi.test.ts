@@ -14,6 +14,10 @@ function refs(): MountDomRefs {
   const app = node<HTMLDivElement>()
   const calibrationRail = node<HTMLDivElement>()
   calibrationRail.classList.add('hidden')
+  const calibrationLabel = document.createElement('span')
+  calibrationLabel.className = 'calibration-rail__label'
+  calibrationLabel.textContent = 'White moves inscribed'
+  calibrationRail.appendChild(calibrationLabel)
   return {
     app,
     playScreen: node(),
@@ -112,6 +116,7 @@ describe('applyChessUi', () => {
     expect(dom.boardStage.classList.contains('board-stage--black-turn')).toBe(false)
     expect(dom.moveCounterEl.textContent).toBe('4/4 White moves')
     expect(dom.calibrationRail.classList.contains('hidden')).toBe(false)
+    expect(dom.calibrationRail.querySelector('.calibration-rail__label')?.textContent).toBe('4 / 4 inscribed')
     expect(dom.calibrationTrack.querySelectorAll('.cal-dot--on')).toHaveLength(4)
   })
 })

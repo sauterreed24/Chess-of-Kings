@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.2)
+## What's new in this release (v0.5.3)
+
+**Pass 11 — Play-surface clarity** — the live board is the hero. Redundant turn chips hide, calibration progress lives on the rail, and carved pieces plus the brass rim read richer. See [`docs/PASS11_PLAY_SURFACE.md`](docs/PASS11_PLAY_SURFACE.md).
+
+## Previous release (v0.5.2)
 
 **Pass 10 — First-session play feel** — Title / Chapters / Duel now work from a live board (they used to look enabled while `inert` swallowed clicks). Leave confirms name the destination. Long Reign lore on title and Chapters starts collapsed. See [`docs/PASS10_PLAY_FEEL.md`](docs/PASS10_PLAY_FEEL.md).
 

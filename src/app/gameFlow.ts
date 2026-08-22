@@ -1751,8 +1751,7 @@ export class GameFlow {
     const selectionGuide = this.boardSelectionGuide()
     if (selectionGuide) return selectionGuide
     if (scene.type === 'calibration' && this.calibrationScene) {
-      const remaining = Math.max(0, this.calibrationScene.minMovesByPlayer - this.calibrationMoves)
-      return `Archive proof: ${remaining} White move(s). Develop center; guard king.`
+      return 'Develop center; guard king.'
     }
     if (scene.type === 'puzzle') return 'Goal: solve proof. Advance when sealed.'
     if (scene.type === 'freeplay') {

@@ -100,6 +100,12 @@ describe('Alexandrine Imperial state polish', () => {
     expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*linear-gradient\(140deg, #3a2a17/s)
   })
 
+  it('hides redundant turn chips and crawl philosophy on the live board', () => {
+    expect(CSS).toMatch(
+      /\.screen-play--board-scene \.play-state-readouts,\s*\n\.screen-play--board-scene \.play-crawl \.philosophy\s*\{[^}]*display:\s*none/s,
+    )
+  })
+
   it('keeps the static museum-surface polish on repeated play surfaces', () => {
     expect(cssRule('.play-atelier--solo')).toMatch(/max-width:\s*60rem/)
     expect(CSS).toMatch(/\.chapter-btn::before,\s*\n\.chapter-locked::before\s*\{[^}]*radial-gradient\(circle at 6% 50%, #e8c97e3f/s)
@@ -132,7 +138,7 @@ describe('Alexandrine Imperial state polish', () => {
   it('keeps the last move legible as an origin-to-destination route cue', () => {
     expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*box-shadow:\s*inset 0 0 0 3px #a8d88acc/s)
     expect(CSS).toMatch(/\.sq-last-from::before\s*\{[^}]*#1a3a5c4d/s)
-    expect(CSS).toMatch(/\.sq-last-to\s*\{[^}]*#e8c97ef0/s)
+    expect(CSS).toMatch(/\.sq-last-to\s*\{[^}]*#f0d28af5/s)
     expect(CSS).toMatch(/\.sq-last-to::before\s*\{[^}]*radial-gradient\(circle at 54% 46%, #e8c97e73/s)
     expect(CSS).not.toMatch(/\.sq-last-from \{[^}]*!important/)
   })

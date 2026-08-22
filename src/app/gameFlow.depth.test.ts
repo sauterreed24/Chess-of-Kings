@@ -572,7 +572,7 @@ describe('GameFlow depth systems', () => {
     expect(calibrationIdx).toBeGreaterThanOrEqual(0)
     flow.jumpToScene(0, calibrationIdx)
 
-    expect(latest?.boardGuide).toContain('Archive proof: 4 White move(s)')
+    expect(latest?.boardGuide).toContain('Develop center')
     expect(latest?.boardGuide).toContain('guard king')
 
     flow.board?.showLegalFrom(flow.chess, 'e2')

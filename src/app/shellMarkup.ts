@@ -186,10 +186,6 @@ export function getShellMarkup(): string {
                       <button type="button" class="ghost ghost--sound" id="btn-recovery-restore">Restore Stable</button>
                       <button type="button" class="ghost ghost--sound" id="btn-recovery-dismiss">Dismiss</button>
                     </div>
-                    <div class="instrument-toggles">
-                      <button type="button" class="ghost ghost--sound" id="btn-sfx" aria-pressed="true">Sound: On</button>
-                      <button type="button" class="ghost ghost--sound" id="btn-move-guard" aria-pressed="false">Move Guard: Off</button>
-                    </div>
                   </div>
                   <div class="calibration-rail hidden" id="calibration-rail" aria-label="Calibration progress">
                     <span class="calibration-rail__label">White moves inscribed</span>
@@ -228,6 +224,10 @@ export function getShellMarkup(): string {
                     <button type="button" class="ghost ghost--tool" id="btn-undo" disabled>Take back</button>
                     <button type="button" class="ghost ghost--tool" id="btn-run-back" hidden>Run it back</button>
                     <button type="button" class="ghost ghost--tool" id="btn-reset" disabled>Reset</button>
+                  </div>
+                  <div class="instrument-toggles">
+                    <button type="button" class="ghost ghost--sound" id="btn-sfx" aria-pressed="true">Sound: On</button>
+                    <button type="button" class="ghost ghost--sound" id="btn-move-guard" aria-pressed="false">Move Guard: Off</button>
                   </div>
                   <p class="lesson-note" id="lesson-note"></p>
                   <p class="coach-tip hidden" id="coach-tip" aria-live="polite"></p>
