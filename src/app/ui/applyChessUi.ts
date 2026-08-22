@@ -172,12 +172,18 @@ export function applyChessUi(
   dom.btnUndo.hidden = !p.canUndo
   dom.btnRunBack.hidden = !p.canRetry
   dom.btnHint.hidden = !p.canHint
-  /* Take back / Reset occupy a second phone row before any ply exists. */
-  const idleTools = p.sanLog.length === 0
-  dom.btnReset.hidden = idleTools
+  /* Take back / Reset occupy a second phone row before any ply exists.
+     Phone puzzles already dock Prove; Reset wraps full-width under Advance
+     after a seal. Take back retries the one-move proof. */
   const tools = dom.btnUndo.closest('.board-tools')
+  const nextDocked =
+    tools instanceof HTMLElement &&
+    tools.contains(dom.btnNext) &&
+    !dom.btnNext.classList.contains('hidden')
+  const idleTools = p.sanLog.length === 0
+  const puzzleDocked = nextDocked && !calibration
+  dom.btnReset.hidden = idleTools || puzzleDocked
   if (tools instanceof HTMLElement) {
-    const nextDocked = tools.contains(dom.btnNext) && !dom.btnNext.classList.contains('hidden')
     tools.classList.toggle(
       'hidden',
       !nextDocked &&

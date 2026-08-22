@@ -36,6 +36,15 @@ export function syncLabOverlayCaption(el: HTMLElement | null | undefined): void 
 
 const PHONE_PUZZLE_DEPTH = '.story-beat, .teaching, .teaching-more, .hint-block, .lesson-lead'
 
+/** Duel (and other non-chronicle lab modes) reuse `#narrative-body` without
+ *  `renderScene`. Leftover puzzle/calibration markers would keep hiding the
+ *  dossier, ledger, and sound row on phones. */
+export function clearPhoneLessonMarkers(narrativeBody: HTMLElement | null | undefined): void {
+  if (!narrativeBody) return
+  narrativeBody.removeAttribute('data-puzzle-lesson')
+  narrativeBody.removeAttribute('data-calibration-lesson')
+}
+
 /** `.primary--advance` is width:100% / column so it can sit under the manuscript.
  *  Inline overrides keep CSS gzip untouched while Prove shares the Hint row. */
 function styleDockedProve(next: HTMLButtonElement, docked: boolean): void {
@@ -80,6 +89,10 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
   scope.querySelector('.instrument-toggles')?.classList.toggle('hidden', hideMatchChrome)
   const lessonNote = scope.querySelector('#lesson-note')
   if (lessonNote) lessonNote.classList.toggle('hidden', hideMatchChrome)
+  /* Resize docks Prove without a chess update; keep Reset in lockstep. */
+  const reset = scope.querySelector<HTMLButtonElement>('#btn-reset')
+  const idleTools = !scope.querySelector('#move-ledger .ledger-row')
+  if (reset) reset.hidden = idleTools || (phone && puzzle)
   if (!next || !tools || !actions || !manuscript) return
   if (hide) {
     const hint = tools.querySelector('#btn-hint')

@@ -332,4 +332,55 @@ describe('applyChessUi', () => {
     expect(dom.btnHint.hidden).toBe(true)
     expect(tools.classList.contains('hidden')).toBe(false)
   })
+
+  it('hides Reset on a docked puzzle so Advance and Take back share one row', () => {
+    const chess = new Chess()
+    const tools = document.createElement('div')
+    tools.className = 'board-tools'
+    const dom = refs()
+    tools.append(dom.btnHint, dom.btnNext, dom.btnUndo, dom.btnRunBack, dom.btnReset)
+    const rt = {
+      dom,
+      play: createMountPlayState(),
+      getFlow: () => null,
+      sfx: createSfxController({ enabled: false }),
+      announcer: createAnnouncer(node()),
+    }
+    const cbs = {
+      showRewardBundles: vi.fn(),
+      maybeShowPendingChapterPrompt: vi.fn(),
+      revealBoardScene: vi.fn(),
+    }
+
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: undefined,
+        status: '',
+        canUndo: true,
+        sanLog: ['Bxd4'],
+        sanQuality: [null],
+        canHint: false,
+      },
+      rt,
+      cbs,
+    )
+    expect(dom.btnReset.hidden).toBe(true)
+    expect(dom.btnUndo.hidden).toBe(false)
+
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: { current: 1, target: 4 },
+        status: 'White to move.',
+        canUndo: true,
+        sanLog: ['e4'],
+        sanQuality: [null],
+        canHint: true,
+      },
+      rt,
+      cbs,
+    )
+    expect(dom.btnReset.hidden).toBe(false)
+  })
 })
