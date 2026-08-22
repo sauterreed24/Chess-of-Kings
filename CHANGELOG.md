@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.41] — 2026-08-22
+
+Pass 49 — Pawn globe orb:
+
+- **Ivory/lapis pawns** get a lamp-side catch-light on the Staunton globe so calibration e2 is not a blank cup after the other types gained unique heads. Forced **Visual: Lean** keeps the orb.
+- Playwright asserts `.piece-orb` on calibration e2.
+- Docs: [`docs/PASS49_PAWN_ORB.md`](docs/PASS49_PAWN_ORB.md).
+
 ## [0.5.40] — 2026-08-22
 
 Pass 48 — Quiet puzzle coach:
