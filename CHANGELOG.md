@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.71] — 2026-08-22
+
+Pass 79 — Queen coronet silhouette:
+
+- **Ivory and lapis queens** replace the Wikipedia Staunton spike scribble with a civic coronet: flared circlet, diadem, and five orbs in the glyph. Carved pearls, sheen, and neck follow the new brim.
+- **High-contrast** keeps the same silhouette (no carve overlays), so tournament queens still read as coronets.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS79_QUEEN_CORONET_HEAD.md`](docs/PASS79_QUEEN_CORONET_HEAD.md).
+
 ## [0.5.70] — 2026-08-22
 
 Pass 78 — Bishop mitre silhouette:

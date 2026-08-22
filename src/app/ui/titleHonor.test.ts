@@ -22,6 +22,8 @@ describe('paintTitleHonor', () => {
     expect(root.querySelectorAll('.piece-merlon')).toHaveLength(4)
     expect(root.querySelectorAll('.knight-silhouette')).toHaveLength(2)
     expect(root.querySelectorAll('.bishop-silhouette')).toHaveLength(2)
+    expect(root.querySelectorAll('.queen-silhouette')).toHaveLength(2)
+    expect(root.querySelectorAll('.queen-orb')).toHaveLength(10)
     expect(root.querySelectorAll('.bishop-cleft-stem')).toHaveLength(2)
     expect(root.querySelectorAll('.piece-cleft')).toHaveLength(4)
     expect(root.querySelectorAll('.piece-cross')).toHaveLength(4)
