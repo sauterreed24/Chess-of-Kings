@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.114)
+## What's new in this release (v0.5.115)
+
+**Pass 123 — legal aim pearls** — quiet legal targets plant a 20px-min ivory pearl on the marble so phone aim still reads on a 390×844 instrument. See [`docs/PASS123_LEGAL_AIM.md`](docs/PASS123_LEGAL_AIM.md).
+
+## Previous release (v0.5.114)
 
 **Pass 122 — echo board facets** — chronicle replay boards use carved lamp/shade squares and 44px echo buttons on a 390×844 instrument. See [`docs/PASS122_ECHO_BOARD.md`](docs/PASS122_ECHO_BOARD.md).
 

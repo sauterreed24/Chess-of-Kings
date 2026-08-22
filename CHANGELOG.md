@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.115] — 2026-08-22
+
+Pass 123 — legal aim pearls:
+
+- **Graphics** — quiet legal targets plant an inline 58% / 20px-min pearl above the CSS `::after` so phone squares (~40px) still read. Captures and castle destinations stay class-only. No new CSS.
+- **Playwright** — 390×844 calibration skip-ahead selects e2 and asserts the e4 pearl is at least 20px.
+- No CSS budget change. Docs: [`docs/PASS123_LEGAL_AIM.md`](docs/PASS123_LEGAL_AIM.md).
+
 ## [0.5.114] — 2026-08-22
 
 Pass 122 — echo board facets:

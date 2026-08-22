@@ -3439,6 +3439,26 @@ test('eval bar stays readable on the phone instrument', { timeout: 90_000 }, asy
   expect(barBox!.width).toBeGreaterThanOrEqual(16)
 })
 
+test('legal aim pearls stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-enter-archive').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn').first().click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  const aim = page.locator('[data-square="e4"] > .sq-aim')
+  await expect(aim).toBeVisible()
+  expect(await aim.evaluate((el) => (el as HTMLElement).style.minWidth)).toBe('20px')
+  expect(await aim.evaluate((el) => (el as HTMLElement).style.width)).toBe('58%')
+  const box = await aim.boundingBox()
+  expect(box).toBeTruthy()
+  expect(box!.width).toBeGreaterThanOrEqual(20)
+  expect(box!.height).toBeGreaterThanOrEqual(20)
+})
+
 test('echo board keeps carved facets on the phone instrument', { timeout: 90_000 }, async ({ page }) => {
   await page.addInitScript(seedAlexionEcho)
   await page.setViewportSize({ width: 390, height: 844 })
