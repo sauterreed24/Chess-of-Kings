@@ -147,7 +147,7 @@ describe('carveGlyph', () => {
     const orbR = Number(pawn.match(/class="piece-orb"[^/]*r="([\d.]+)"/)?.[1])
     const sparkR = Number(pawn.match(/class="piece-spark"[^/]*r="([\d.]+)"/)?.[1])
     expect(orbR).toBeGreaterThanOrEqual(2.6)
-    expect(sparkR).toBeGreaterThan(0.8)
+    expect(sparkR).toBeGreaterThanOrEqual(1.45)
     expect(sparkR).toBeLessThan(orbR)
   })
 

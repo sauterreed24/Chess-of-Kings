@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.53)
+## What's new in this release (v0.5.54)
+
+**Pass 62 — Pawn spark** — ivory and lapis pawns get a larger globe spark, instead of a 1.8px speck. See [`docs/PASS62_PAWN_SPARK.md`](docs/PASS62_PAWN_SPARK.md).
+
+## Previous release (v0.5.53)
 
 **Pass 61 — Foot ferrule band** — ivory and lapis pieces get a thicker gold/lapis band at the foot, instead of a 1.4px hairline. See [`docs/PASS61_FERRULE_BAND.md`](docs/PASS61_FERRULE_BAND.md).
 

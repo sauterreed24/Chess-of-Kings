@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.54] — 2026-08-22
+
+Pass 62 — Pawn spark:
+
+- **Ivory/lapis pawns** enlarge the globe spark so calibration e2 is not a 1.8px speck after the ferrule grew. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration e2 spark is at least 2.4 CSS pixels across.
+- Docs: [`docs/PASS62_PAWN_SPARK.md`](docs/PASS62_PAWN_SPARK.md).
+
 ## [0.5.53] — 2026-08-22
 
 Pass 61 — Foot ferrule band:

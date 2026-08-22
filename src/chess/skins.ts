@@ -51,7 +51,7 @@ const FOOT_RX: Record<PieceSymbol, number> = {
 const PAWN_ORB = { cx: 20.85, cy: 11.35, r: 2.72 }
 
 /** Hot core inside the pawn bloom — a glass-globe spark, not a second cup. */
-const PAWN_SPARK = { cx: 19.95, cy: 10.45, r: 1.05 }
+const PAWN_SPARK = { cx: 19.95, cy: 10.45, r: 1.55 }
 
 /** Crown / mitre / battlement highlights keyed to Staunton silhouettes. */
 const SHEEN_PATH: Record<PieceSymbol, string> = {
