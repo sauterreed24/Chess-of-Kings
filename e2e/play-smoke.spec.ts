@@ -30,6 +30,8 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   expect(calCross.w).toBeGreaterThanOrEqual(2)
   const calCleft = await tallestOverlayBox(page, 'c1', '.piece-cleft')
   expect(calCleft.w).toBeGreaterThanOrEqual(2)
+  const calCleftBar = await widestOverlayBox(page, 'c1', '.piece-cleft')
+  expect(calCleftBar.h).toBeGreaterThanOrEqual(2.6)
   const calMerlon = await deepestOverlayBox(page, 'a1', '.piece-merlon')
   expect(calMerlon.h).toBeGreaterThanOrEqual(3.5)
   await expect(page.locator('[data-square="e2"] .piece-ferrule')).toBeVisible()
@@ -88,6 +90,11 @@ async function tallestOverlayBox(page: Page, square: string, sel: string): Promi
 async function deepestOverlayBox(page: Page, square: string, sel: string): Promise<{ w: number; h: number }> {
   const boxes = await overlayBoxes(page, square, sel)
   return [...boxes].sort((a, b) => b.h - a.h)[0] ?? { w: 0, h: 0 }
+}
+
+async function widestOverlayBox(page: Page, square: string, sel: string): Promise<{ w: number; h: number }> {
+  const boxes = await overlayBoxes(page, square, sel)
+  return [...boxes].sort((a, b) => b.w - a.w)[0] ?? { w: 0, h: 0 }
 }
 
 async function tallestCrossBox(page: Page, square: string): Promise<{ w: number; h: number }> {
@@ -283,6 +290,8 @@ test('compact calibration docks Prove and hides the duplicate manuscript', async
   expect(phoneCross.w).toBeGreaterThanOrEqual(2)
   const phoneCleft = await tallestOverlayBox(page, 'c1', '.piece-cleft')
   expect(phoneCleft.w).toBeGreaterThanOrEqual(2)
+  const phoneCleftBar = await widestOverlayBox(page, 'c1', '.piece-cleft')
+  expect(phoneCleftBar.h).toBeGreaterThanOrEqual(2.6)
   const phoneMerlon = await deepestOverlayBox(page, 'a1', '.piece-merlon')
   expect(phoneMerlon.h).toBeGreaterThanOrEqual(3.5)
   await expect(page.locator('[data-square="e2"] .piece-spark')).toBeVisible()
@@ -413,6 +422,8 @@ test('hanging knight goal stays short on the phone instrument', async ({ page })
   await expect(page.locator('[data-square="c3"] .piece-cleft').first()).toBeVisible()
   const hkCleft = await tallestOverlayBox(page, 'c3', '.piece-cleft')
   expect(hkCleft.w).toBeGreaterThanOrEqual(2)
+  const hkCleftBar = await widestOverlayBox(page, 'c3', '.piece-cleft')
+  expect(hkCleftBar.h).toBeGreaterThanOrEqual(2.6)
   await expect(page.locator('[data-square="d1"] .piece-cross').first()).toBeVisible()
   const hkCross = await tallestCrossBox(page, 'd1')
   expect(hkCross.w).toBeGreaterThanOrEqual(2)

@@ -85,7 +85,7 @@ const ROOK_MERLONS: ReadonlyArray<{ x: number; y: number; w: number; h: number }
 /** Mitre cleft — vertical cut and crossbar, thick enough to read on a ~40px phone square. */
 const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
   { x: 21.3, y: 8.0, w: 2.4, h: 12.7 },
-  { x: 19.85, y: 17.05, w: 5.3, h: 1.95 },
+  { x: 19.3, y: 16.25, w: 6.4, h: 3.4 },
 ]
 
 /** Gold/lapis inlay on the king’s cross — thick enough to read on a ~40px phone square. */
