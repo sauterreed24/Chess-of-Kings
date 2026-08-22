@@ -27,6 +27,7 @@ export function syncLabOverlayCaption(el: HTMLElement | null | undefined): void 
   const phone = isPhoneLabNav()
   const text = phone && short ? short : full
   el.textContent = text
+  el.style.fontSize = '0.7rem'
   if (phone && short && short !== full) {
     el.setAttribute('aria-label', full)
   } else {

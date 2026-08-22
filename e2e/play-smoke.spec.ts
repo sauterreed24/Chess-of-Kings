@@ -2058,6 +2058,7 @@ test('compact calibration docks Prove and hides the duplicate manuscript', async
   await expect(page.locator('#board-guide')).toContainText('four White moves')
   await expect(page.locator('#lab-era-label')).toHaveText(/prologue/i)
   await expect(page.locator('#lab-era-label')).not.toContainText(/alexandrine/i)
+  expect(await page.locator('#lab-era-label').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   await expect(page.locator('#mobile-tips')).toBeHidden()
   await expect(page.locator('#manuscript-panel')).toBeHidden()
   await expect(page.locator('.move-ledger-wrap')).toBeHidden()

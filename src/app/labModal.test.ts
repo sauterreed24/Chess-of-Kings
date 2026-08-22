@@ -81,6 +81,7 @@ describe('setTopBarInertForLab', () => {
       'Chapter I',
     )
     expect(el.textContent).toBe('Chapter I')
+    expect(el.style.fontSize).toBe('0.7rem')
     expect(el.getAttribute('aria-label')).toBe('Chapter I · Early chess — scholarly court')
     expect(el.getAttribute('title')).toBe('Chapter I · Early chess — scholarly court')
   })
