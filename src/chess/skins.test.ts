@@ -7,12 +7,23 @@ describe('carveGlyph', () => {
     const carved = carveGlyph(raw, 'w')
     expect(carved).toContain('class="piece-foot"')
     expect(carved).toContain('class="piece-carve"')
-    expect(carved).toContain('rgba(255,255,255,0.32)')
+    expect(carved).toContain('class="piece-shade"')
+    expect(carved).toContain('rgba(255,255,255,0.36)')
     expect(carveGlyph(carved, 'w')).toBe(carved)
   })
 
   it('uses a gold sheen on black pieces', () => {
-    expect(carveGlyph('<svg></svg>', 'b')).toContain('rgba(232,201,126,0.22)')
+    expect(carveGlyph('<svg></svg>', 'b')).toContain('rgba(232,201,126,0.26)')
+  })
+
+  it('gives each piece type a distinct sheen path', () => {
+    const pawn = carveGlyph('<svg></svg>', 'w', 'p')
+    const king = carveGlyph('<svg></svg>', 'w', 'k')
+    const rook = carveGlyph('<svg></svg>', 'w', 'r')
+    expect(pawn).not.toBe(king)
+    expect(king).not.toBe(rook)
+    expect(pawn).toContain('rx="8.4"')
+    expect(rook).toContain('rx="11.4"')
   })
 })
 
@@ -22,6 +33,7 @@ describe('glyphForSkin', () => {
     expect(pawn).toContain('class="svg-piece"')
     expect(pawn).toContain('piece-carve')
     expect(pawn).toContain('piece-foot')
+    expect(pawn).toContain('piece-shade')
     expect(glyphForSkin('alexandrine-ornate', 'b', 'k')).toContain('piece-carve')
   })
 

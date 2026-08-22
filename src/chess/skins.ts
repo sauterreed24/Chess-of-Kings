@@ -38,14 +38,45 @@ export const PIECE_SKIN_MAP: Record<PieceSkinId, Record<Color, Record<PieceSymbo
   'obsidian-neon': SVGS,
 }
 
-/** Foot shadow + crown sheen so Staunton glyphs read as carved ivory/lapis. */
-export function carveGlyph(svg: string, color: Color): string {
+const FOOT_RX: Record<PieceSymbol, number> = {
+  p: 8.4,
+  n: 10.2,
+  b: 10.4,
+  r: 11.4,
+  q: 11.6,
+  k: 11.8,
+}
+
+/** Crown / mitre / battlement highlights keyed to Staunton silhouettes. */
+const SHEEN_PATH: Record<PieceSymbol, string> = {
+  p: 'M17.8 11c2.8-3.6 6.6-3.6 9.4 0-3.2 1.15-6.2 1.15-9.4 0z',
+  n: 'M14.2 11.6c3.6-4.2 9.8-5 14.4-1.8-5 1.2-9.8 2-14.4 1.8z',
+  b: 'M19 9.2c2.2-3 4.8-3 7 0-2.4.95-4.6.95-7 0z',
+  r: 'M12.2 10.4h20.6v2.15H12.2z',
+  q: 'M9.6 11.4c5.2-3.6 20.6-3.6 25.8 0-8 1.55-17.8 1.55-25.8 0z',
+  k: 'M20.4 6.4h4.2v1.7h2.1v2.2h-2.1v2.4h-4.2v-2.4h-2.1V8.1h2.1z',
+}
+
+/** Left-rim shade so the glyph reads as a carved volume, not a flat cutout. */
+const SHADE_PATH: Record<PieceSymbol, string> = {
+  p: 'M16.6 18.5c.9 5.8 1 12.2.6 16.4-2.4-1.8-3.8-6.4-4-11.6.9-1.8 2.2-3.5 3.4-4.8z',
+  n: 'M13.2 16c1.2 6.4 2.4 14.2 2.8 20.2-3.6-2-5.6-8.4-6.2-14.8 1-2 2.2-3.8 3.4-5.4z',
+  b: 'M16.8 16.8c1.1 6.2 1.4 13 .8 17.6-2.6-1.6-4.2-7-4.4-12.6 1-1.8 2.3-3.6 3.6-5z',
+  r: 'M13.6 17.2c.4 5.8.4 11.2 0 14.8-2.2-1.2-3.2-6.4-3.2-11.8 1-1.2 2.1-2.2 3.2-3z',
+  q: 'M13.8 18c1 6.4 1.2 13.2.6 17.8-2.8-1.8-4.4-7.4-4.6-13.2 1.1-1.7 2.5-3.4 4-4.6z',
+  k: 'M14.4 18.6c1.1 6.2 1.3 12.6.7 16.8-2.8-1.6-4.6-7.2-4.8-12.8 1.2-1.6 2.6-3.2 4.1-4z',
+}
+
+/** Foot shadow + type-specific sheen so Staunton glyphs read as carved ivory/lapis. */
+export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'): string {
   if (svg.includes('piece-carve')) return svg
-  const sheen = color === 'w' ? 'rgba(255,255,255,0.32)' : 'rgba(232,201,126,0.22)'
-  const foot =
-    '<ellipse class="piece-foot" cx="22.5" cy="41.4" rx="10.6" ry="1.9" fill="rgba(0,0,0,0.34)"/>'
-  const highlight = `<path class="piece-carve" d="M13.5 12.5c4.2-4.6 13.8-4.6 18 0-6.2 2.1-11.8 2.1-18 0z" fill="${sheen}"/>`
-  return svg.replace(/<svg([^>]*)>/, `<svg$1>${foot}`).replace('</svg>', `${highlight}</svg>`)
+  const sheen = color === 'w' ? 'rgba(255,255,255,0.36)' : 'rgba(232,201,126,0.26)'
+  const shade = color === 'w' ? 'rgba(72,48,16,0.2)' : 'rgba(0,0,0,0.34)'
+  const rx = FOOT_RX[piece] ?? 10.6
+  const foot = `<ellipse class="piece-foot" cx="22.5" cy="41.45" rx="${rx}" ry="2.05" fill="rgba(0,0,0,0.42)"/>`
+  const shadeEl = `<path class="piece-shade" d="${SHADE_PATH[piece]}" fill="${shade}"/>`
+  const highlight = `<path class="piece-carve" d="${SHEEN_PATH[piece]}" fill="${sheen}"/>`
+  return svg.replace(/<svg([^>]*)>/, `<svg$1>${foot}`).replace('</svg>', `${shadeEl}${highlight}</svg>`)
 }
 
 export function glyphForSkin(
@@ -55,5 +86,5 @@ export function glyphForSkin(
 ): string {
   const raw = PIECE_SKIN_MAP[skin]?.[color]?.[piece] ?? PIECE_SKIN_MAP['classic-royal'][color][piece]
   if (skin === 'high-contrast') return raw
-  return carveGlyph(raw, color)
+  return carveGlyph(raw, color, piece)
 }

@@ -3398,7 +3398,6 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
   .instrument-frame { padding: 0.75rem 0.75rem 1rem; }
 
   .board-brass { padding: 7px; }
-  .board-guide { display: none; }
   .dossier-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .duel-launch {
     padding: 0.62rem;
@@ -3973,34 +3972,7 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
 .doctrine-atlas__mark--sealed { color: var(--gold-dim); }
 .doctrine-atlas__mark--current { color: var(--ivory); font-weight: 600; }
 
-.mobile-tips {
-  display: none;
-  margin: 0.2rem 0 0.38rem;
-  border: 1px solid rgba(201, 169, 98, 0.25);
-  border-radius: 5px;
-  background: rgba(19, 17, 9, 0.72);
-}
-.mobile-tips__summary {
-  cursor: pointer;
-  padding: 0.28rem 0.55rem;
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gold);
-  list-style: none;
-}
-.mobile-tips__summary::-webkit-details-marker { display: none; }
-.mobile-tips__body {
-  margin: 0;
-  padding: 0 0.65rem 0.55rem;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: var(--ivory-dim);
-}
-@media (max-width: 700px) {
-  .mobile-tips { display: block; }
-}
+.mobile-tips { display: none; }
 
 .lab-overlay__kbd {
   margin-left: auto;

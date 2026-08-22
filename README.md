@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.6)
+## What's new in this release (v0.5.7)
+
+**Pass 15 — Phone goal + carved types** — the live goal sits on the instrument on phones, and each piece type gets its own ivory/lapis carve. See [`docs/PASS15_PHONE_GOAL_CARVE.md`](docs/PASS15_PHONE_GOAL_CARVE.md).
+
+## Previous release (v0.5.6)
 
 **Pass 14 — Teaching clarity** — Threat and Your goal stay fully readable on the live lab; the deeper brief folds away. See [`docs/PASS14_TEACHING_CLARITY.md`](docs/PASS14_TEACHING_CLARITY.md).
 

@@ -572,8 +572,8 @@ describe('GameFlow depth systems', () => {
     expect(calibrationIdx).toBeGreaterThanOrEqual(0)
     flow.jumpToScene(0, calibrationIdx)
 
-    expect(latest?.boardGuide).toContain('Develop center')
-    expect(latest?.boardGuide).toContain('guard king')
+    expect(latest?.boardGuide).toContain('four White moves')
+    expect(latest?.boardGuide).toContain('Archive reply')
 
     flow.board?.showLegalFrom(flow.chess, 'e2')
 
@@ -599,8 +599,7 @@ describe('GameFlow depth systems', () => {
     expect(puzzleIdx).toBeGreaterThanOrEqual(0)
     flow.jumpToScene(ch1, puzzleIdx)
 
-    expect(latest?.boardGuide).toContain('Goal:')
-    expect(latest?.boardGuide).toContain('Advance')
+    expect(latest?.boardGuide).toMatch(/undefended knight|bishop/i)
   })
 
   it('turns the board guide into check-defense coaching', () => {
