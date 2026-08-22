@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.47] — 2026-08-22
+
+Pass 55 — Queen coronet pearls:
+
+- **Ivory/lapis queens** enlarge the five coronet catch-lights so calibration d1 is not a 2.8px speck after the pawn globe grew. Forced **Visual: Lean** keeps the pearls.
+- Playwright asserts the calibration d1 pearl is at least 3.5×3.5 CSS pixels.
+- Docs: [`docs/PASS55_QUEEN_PEARL.md`](docs/PASS55_QUEEN_PEARL.md).
+
 ## [0.5.46] — 2026-08-22
 
 Pass 54 — Wide calibration Hint:

@@ -113,7 +113,7 @@ describe('carveGlyph', () => {
     expect(queen).not.toContain('class="piece-orb"')
     expect(queen).not.toContain('class="piece-spark"')
     expect(queen.match(/class="piece-pearl"/g)).toHaveLength(5)
-    expect(queen).toContain('r="1.62"')
+    expect(queen).toContain('r="2.18"')
     expect(rook).toContain('class="piece-merlon"')
     expect(rook).not.toContain('class="piece-pearl"')
     expect(rook).not.toContain('class="piece-cleft"')
@@ -149,6 +149,12 @@ describe('carveGlyph', () => {
     expect(orbR).toBeGreaterThanOrEqual(2.6)
     expect(sparkR).toBeGreaterThan(0.8)
     expect(sparkR).toBeLessThan(orbR)
+  })
+
+  it('sizes queen coronet pearls to read on a phone square', () => {
+    const queen = carveGlyph('<svg></svg>', 'w', 'q')
+    const pearlR = Number(queen.match(/class="piece-pearl"[^/]*r="([\d.]+)"/)?.[1])
+    expect(pearlR).toBeGreaterThanOrEqual(2.1)
   })
 
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {

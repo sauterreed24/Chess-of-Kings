@@ -66,7 +66,8 @@ const SHEEN_PATH: Record<PieceSymbol, string> = {
 /** Crest shade on the horse — knights skip the lathe cup, so the mane carries the volume. */
 const MANE_PATH = 'M21.4 10.2c5.2 1.1 9.6 5.6 10.8 14.8-4-4.8-7.8-9.8-10.8-14.8z'
 
-/** Lamp-side catch-lights on the five coronet orbs. */
+/** Lamp-side catch-lights on the five coronet orbs — sized to read on a phone square. */
+const QUEEN_PEARL_R = 2.18
 const QUEEN_PEARLS: ReadonlyArray<{ cx: number; cy: number }> = [
   { cx: 6, cy: 12 },
   { cx: 14, cy: 9 },
@@ -264,7 +265,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     piece === 'q'
       ? QUEEN_PEARLS.map(
           (p) =>
-            `<circle class="piece-pearl" cx="${(p.cx - 0.55).toFixed(2)}" cy="${(p.cy - 0.7).toFixed(2)}" r="1.62" fill="${pearlFill}"/>`,
+            `<circle class="piece-pearl" cx="${(p.cx - 0.55).toFixed(2)}" cy="${(p.cy - 0.7).toFixed(2)}" r="${QUEEN_PEARL_R}" fill="${pearlFill}"/>`,
         ).join('')
       : ''
   const orb =
