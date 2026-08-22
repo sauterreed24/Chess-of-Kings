@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.25)
+## What's new in this release (v0.5.26)
+
+**Pass 34 — Phone lab caption** — hanging-knight phones show **Chapter I** on the overlay bar instead of a clipped era. See [`docs/PASS34_LAB_CAPTION.md`](docs/PASS34_LAB_CAPTION.md).
+
+## Previous release (v0.5.25)
 
 **Pass 33 — Lamp fill and stem flute** — ivory and lapis catch a second lamp and a turned-stem flute so the body reads as a cylinder. See [`docs/PASS33_LAMP_FLUTE.md`](docs/PASS33_LAMP_FLUTE.md).
 

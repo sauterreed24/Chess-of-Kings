@@ -1,5 +1,23 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
-import { PHONE_LAB_NAV_QUERY, setTopBarInertForLab } from './labModal'
+import {
+  PHONE_LAB_NAV_QUERY,
+  applyLabOverlayCaption,
+  setTopBarInertForLab,
+  syncLabOverlayCaption,
+} from './labModal'
+
+function stubPhoneLabNav(phone: boolean) {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: phone && query === PHONE_LAB_NAV_QUERY,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+    onchange: null,
+  }))
+}
 
 describe('setTopBarInertForLab', () => {
   afterEach(() => {
@@ -24,16 +42,7 @@ describe('setTopBarInertForLab', () => {
   })
 
   it('hides the duplicate top nav on phone labs and lets the overlay sheet fill the screen', () => {
-    vi.stubGlobal('matchMedia', (query: string) => ({
-      matches: query === PHONE_LAB_NAV_QUERY,
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-      onchange: null,
-    }))
+    stubPhoneLabNav(true)
     document.body.innerHTML = '<div class="lab-overlay"><div class="lab-overlay__sheet"></div></div>'
     const topBar = document.createElement('header')
     topBar.className = 'top-bar'
@@ -52,5 +61,41 @@ describe('setTopBarInertForLab', () => {
     expect(topBar.getAttribute('aria-hidden')).toBe('false')
     expect(sheet.style.top).toBe('')
     expect(sheet.style.maxHeight).toBe('')
+  })
+
+  it('shortens the overlay caption on phone labs and keeps the era in aria-label', () => {
+    stubPhoneLabNav(true)
+    const el = document.createElement('span')
+    applyLabOverlayCaption(
+      el,
+      'Chapter I · Early chess — scholarly court',
+      'Chapter I',
+    )
+    expect(el.textContent).toBe('Chapter I')
+    expect(el.getAttribute('aria-label')).toBe('Chapter I · Early chess — scholarly court')
+    expect(el.getAttribute('title')).toBe('Chapter I · Early chess — scholarly court')
+  })
+
+  it('keeps the full overlay caption on wide labs', () => {
+    stubPhoneLabNav(false)
+    const el = document.createElement('span')
+    applyLabOverlayCaption(
+      el,
+      'Chapter I · Early chess — scholarly court',
+      'Chapter I',
+    )
+    expect(el.textContent).toBe('Chapter I · Early chess — scholarly court')
+    expect(el.hasAttribute('aria-label')).toBe(false)
+  })
+
+  it('re-applies the short caption when a phone lab rotates into view', () => {
+    stubPhoneLabNav(false)
+    const el = document.createElement('span')
+    applyLabOverlayCaption(el, 'Duel Archive · Ancient Court · Egyptian symmetry', 'Duel Archive')
+    expect(el.textContent).toBe('Duel Archive · Ancient Court · Egyptian symmetry')
+    stubPhoneLabNav(true)
+    syncLabOverlayCaption(el)
+    expect(el.textContent).toBe('Duel Archive')
+    expect(el.getAttribute('aria-label')).toBe('Duel Archive · Ancient Court · Egyptian symmetry')
   })
 })

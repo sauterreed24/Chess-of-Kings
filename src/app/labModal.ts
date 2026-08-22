@@ -11,6 +11,29 @@ export function isPhoneLabNav(): boolean {
   return window.matchMedia?.(PHONE_LAB_NAV_QUERY)?.matches ?? false
 }
 
+/** Phone overlay bars are too narrow for `Chapter I · Early chess — scholarly court`. */
+export function applyLabOverlayCaption(el: HTMLElement, full: string, short: string): void {
+  el.dataset.labFull = full
+  el.dataset.labShort = short
+  el.setAttribute('title', full)
+  syncLabOverlayCaption(el)
+}
+
+export function syncLabOverlayCaption(el: HTMLElement | null | undefined): void {
+  if (!el) return
+  const full = el.dataset.labFull
+  const short = el.dataset.labShort
+  if (!full) return
+  const phone = isPhoneLabNav()
+  const text = phone && short ? short : full
+  el.textContent = text
+  if (phone && short && short !== full) {
+    el.setAttribute('aria-label', full)
+  } else {
+    el.removeAttribute('aria-label')
+  }
+}
+
 export function setTopBarInertForLab(topBar: HTMLElement, labActive: boolean): void {
   topBar.inert = false
   topBar.removeAttribute('inert')
