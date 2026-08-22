@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.7] — 2026-08-22
+
+Pass 15 — Phone goal + carved types:
+
+- **Instrument brief** shows the live goal on phones (board-guide is no longer hidden). The empty Board tips drawer stays closed.
+- **Per-piece carve** — pawn, knight, bishop, rook, queen, and king each get their own sheen, shade, and foot so the set reads as carved ivory/lapis.
+- Docs: [`docs/PASS15_PHONE_GOAL_CARVE.md`](docs/PASS15_PHONE_GOAL_CARVE.md).
+
 ## [0.5.6] — 2026-08-22
 
 Pass 14 — Teaching clarity:
