@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.39] — 2026-08-22
+
+Pass 47 — Quiet puzzle draw:
+
+- **Teaching puzzles** keep Draw. and king-hunt pulse off the instrument after a sealing capture. The marble already names the proof. Checkmate puzzles still show Checkmate.
+- Playwright keeps the hanging-knight phone header quiet after Bxd4.
+- Docs: [`docs/PASS47_QUIET_PUZZLE_DRAW.md`](docs/PASS47_QUIET_PUZZLE_DRAW.md).
+
 ## [0.5.38] — 2026-08-22
 
 Pass 46 — Phone puzzle Prove dock:

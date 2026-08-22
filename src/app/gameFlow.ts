@@ -917,7 +917,7 @@ export class GameFlow {
       mentorInsight: this.computeMentorInsight(),
       aiPersona: this.currentAiPersona(),
       aiFlavor: this.currentAiFlavor(),
-      tacticalPulse: this.lastTacticalPulse,
+      tacticalPulse: this.mode === 'puzzle' ? null : this.lastTacticalPulse,
       sessionRecovered: this.sessionRecoveredNotice,
       canRestoreStable: this.history.length > 1 && !this.aiThinking,
       canRetry:
@@ -1705,6 +1705,11 @@ export class GameFlow {
       if (this.chess.isInsufficientMaterial()) return 'Stalemate — insufficient force to mate.'
       if (this.chess.isStalemate()) return 'Stalemate — a dead lock.'
       if (this.chess.isDraw()) return 'No move cap — continue until mate or dead draw.'
+    }
+    if (this.mode === 'puzzle' || this.mode === 'calibration') {
+      /* Marble already says Proof sealed. Draw. after Bxd4 is a rules
+         footnote that unhides the idle header on teaching phones. */
+      if (this.chess.isStalemate() || this.chess.isDraw()) return ''
     }
     if (this.chess.isStalemate()) return 'Stalemate.'
     if (this.chess.isDraw()) return 'Draw.'
