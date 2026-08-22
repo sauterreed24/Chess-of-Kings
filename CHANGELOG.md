@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.116] — 2026-08-22
+
+Pass 124 — phone run-back and recovery:
+
+- **Playability** — Run it back, Restore Stable, and Dismiss keep a 44px hit target on `max-width: 700px`. Resize keeps the floor. No new CSS.
+- **Playwright** — 390×844 restores a checkmated Amara board and asserts the three buttons.
+- No CSS budget change. Docs: [`docs/PASS124_PHONE_RUN_BACK.md`](docs/PASS124_PHONE_RUN_BACK.md).
+
 ## [0.5.115] — 2026-08-22
 
 Pass 123 — legal aim pearls:

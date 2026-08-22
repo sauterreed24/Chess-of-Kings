@@ -167,6 +167,9 @@ export function applyChessUi(
   } else {
     dom.recoveryControls.classList.add('hidden')
   }
+  const recoveryDismiss = dom.recoveryControls.querySelector<HTMLElement>('#btn-recovery-dismiss')
+  syncPhoneHitTarget(dom.btnRecoveryRestore, p.sessionRecovered)
+  syncPhoneHitTarget(recoveryDismiss, p.sessionRecovered)
   syncIdleInstrumentHeader(dom)
 
   dom.btnUndo.disabled = !p.canUndo
@@ -189,6 +192,7 @@ export function applyChessUi(
   syncPhoneHitTarget(dom.btnHint, !dom.btnHint.hidden)
   syncPhoneHitTarget(dom.btnReset, !dom.btnReset.hidden)
   syncPhoneHitTarget(dom.btnUndo, !dom.btnUndo.hidden)
+  syncPhoneHitTarget(dom.btnRunBack, !dom.btnRunBack.hidden)
   if (tools instanceof HTMLElement) {
     tools.classList.toggle(
       'hidden',
