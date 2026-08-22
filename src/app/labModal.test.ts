@@ -161,4 +161,39 @@ describe('setTopBarInertForLab', () => {
     expect(next.style.width).toBe('')
     expect(document.querySelector('#btn-next-hint')?.classList.contains('hidden')).toBe(false)
   })
+
+  it('docks Prove and hides the empty ledger on phone calibration', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body" data-calibration-lesson>
+            <div class="teaching"><div class="teaching-card">goal</div></div>
+            <p class="lesson-lead">lead</p>
+          </div>
+          <div class="narrative-actions"><button id="btn-next">Prove<span id="btn-next-hint">4 remaining</span></button></div>
+        </article>
+        <div class="move-ledger-wrap"><div id="move-ledger">No moves yet.</div></div>
+        <div class="board-tools"><button id="btn-hint">Hint</button></div>
+        <div class="instrument-toggles"></div>
+        <p id="lesson-note">White moves are tallied on the rail; the Lab is listening.</p>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const next = document.querySelector('#btn-next')!
+    syncPhonePuzzleLesson(body)
+    expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(true)
+    expect(document.querySelector('.move-ledger-wrap')?.classList.contains('hidden')).toBe(true)
+    expect(document.querySelector('.instrument-toggles')?.classList.contains('hidden')).toBe(true)
+    expect(document.querySelector('#lesson-note')?.classList.contains('hidden')).toBe(true)
+    expect(next.parentElement?.classList.contains('board-tools')).toBe(true)
+    expect(next.previousElementSibling?.id).toBe('btn-hint')
+
+    stubPhoneLabNav(false)
+    syncPhonePuzzleLesson(body)
+    expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(false)
+    expect(document.querySelector('.move-ledger-wrap')?.classList.contains('hidden')).toBe(false)
+    expect(document.querySelector('.instrument-toggles')?.classList.contains('hidden')).toBe(false)
+    expect(document.querySelector('#lesson-note')?.classList.contains('hidden')).toBe(false)
+    expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
+  })
 })

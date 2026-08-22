@@ -109,9 +109,9 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.41)
+## What's new in this release (v0.5.42)
 
-**Pass 49 — Pawn globe orb** — ivory and lapis pawns get a lamp-side catch-light on the globe. See [`docs/PASS49_PAWN_ORB.md`](docs/PASS49_PAWN_ORB.md).
+**Pass 50 — Phone calibration Prove dock** — the opening board hides the duplicate manuscript on phones and parks Prove next to Hint. See [`docs/PASS50_PHONE_CAL_PROVE.md`](docs/PASS50_PHONE_CAL_PROVE.md).
 
 ## Previous release (v0.5.40)
 

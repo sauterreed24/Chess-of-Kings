@@ -346,6 +346,7 @@ describe('renderScene', () => {
     expect(crawl()?.classList.contains('hidden')).toBe(false)
     expect(ledgerWrap()?.classList.contains('hidden')).toBe(false)
     expect(toggles()?.classList.contains('hidden')).toBe(false)
+    expect(dom.narrativeBody.hasAttribute('data-calibration-lesson')).toBe(true)
   })
 
   it('restores Advance into the manuscript after a phone puzzle', () => {
@@ -380,5 +381,38 @@ describe('renderScene', () => {
     expect(dom.manuscriptPanel.classList.contains('hidden')).toBe(false)
     expect(dom.btnNext.parentElement?.classList.contains('narrative-actions')).toBe(true)
     expect(dom.btnNext.style.width).toBe('')
+  })
+
+  it('restores Advance into the manuscript after phone calibration', () => {
+    stubPhoneLabNav(true)
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const cbs = {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    }
+    const prologue = PLAYABLE_CHAPTERS[0]!
+    const calibIdx = prologue.scenes.findIndex((scene) => scene.type === 'calibration')
+    renderScene(prologue, prologue.scenes[calibIdx]!, calibIdx, dom, play, flow, cbs)
+    expect(dom.narrativeBody.hasAttribute('data-calibration-lesson')).toBe(true)
+    expect(dom.manuscriptPanel.classList.contains('hidden')).toBe(true)
+    expect(dom.moveLedger.closest('.move-ledger-wrap')?.classList.contains('hidden')).toBe(true)
+    expect(dom.btnNext.parentElement?.classList.contains('board-tools')).toBe(true)
+
+    const afterIdx = prologue.scenes.findIndex((scene) => scene.id === 'pr-glitch')
+    renderScene(prologue, prologue.scenes[afterIdx]!, afterIdx, dom, play, flow, cbs)
+    expect(dom.narrativeBody.hasAttribute('data-calibration-lesson')).toBe(false)
+    expect(dom.narrativeBody.classList.contains('hidden')).toBe(false)
+    expect(dom.manuscriptPanel.classList.contains('hidden')).toBe(false)
+    expect(dom.btnNext.parentElement?.classList.contains('narrative-actions')).toBe(true)
   })
 })

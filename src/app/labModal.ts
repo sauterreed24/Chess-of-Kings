@@ -57,12 +57,15 @@ function styleDockedProve(next: HTMLButtonElement, docked: boolean): void {
   }
 }
 
-/** Phone puzzles already put the command on the marble; hiding the whole body
- *  also collapses the empty min-height hole the duplicate cards left behind.
- *  Prove docks next to Hint so the empty manuscript card can hide. */
+/** Phone puzzles and the opening calibration already put the command on the
+ *  marble; hiding the whole body also collapses the duplicate teaching card
+ *  and docks Prove next to Hint so it stays on screen. */
 export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefined): void {
   if (!narrativeBody) return
-  const hide = isPhoneLabNav() && narrativeBody.hasAttribute('data-puzzle-lesson')
+  const phone = isPhoneLabNav()
+  const puzzle = narrativeBody.hasAttribute('data-puzzle-lesson')
+  const calibration = narrativeBody.hasAttribute('data-calibration-lesson')
+  const hide = phone && (puzzle || calibration)
   narrativeBody.classList.toggle('hidden', hide)
   narrativeBody.querySelectorAll(PHONE_PUZZLE_DEPTH).forEach((node) => {
     node.classList.toggle('hidden', hide)
@@ -72,6 +75,11 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
   const tools = scope.querySelector('.board-tools')
   const actions = scope.querySelector('.narrative-actions')
   const manuscript = scope.querySelector('#manuscript-panel')
+  const hideMatchChrome = puzzle || (phone && calibration)
+  scope.querySelector('.move-ledger-wrap')?.classList.toggle('hidden', hideMatchChrome)
+  scope.querySelector('.instrument-toggles')?.classList.toggle('hidden', hideMatchChrome)
+  const lessonNote = scope.querySelector('#lesson-note')
+  if (lessonNote) lessonNote.classList.toggle('hidden', hideMatchChrome)
   if (!next || !tools || !actions || !manuscript) return
   if (hide) {
     const hint = tools.querySelector('#btn-hint')
