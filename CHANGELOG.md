@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.43] — 2026-08-22
+
+Pass 51 — Sealed puzzle tool row:
+
+- **Phone puzzles** hide Reset once Prove is docked. After Bxd4, Advance and Take back share one row instead of Reset wrapping full-width. Take back still retries. Phone calibration keeps Reset (four-move restart).
+- Playwright keeps hanging-knight Advance|Take back on one row after the seal.
+- Docs: [`docs/PASS51_SEALED_RESET_ROW.md`](docs/PASS51_SEALED_RESET_ROW.md).
+
 ## [0.5.42] — 2026-08-22
 
 Pass 50 — Phone calibration Prove dock:

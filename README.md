@@ -109,9 +109,9 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.42)
+## What's new in this release (v0.5.43)
 
-**Pass 50 — Phone calibration Prove dock** — the opening board hides the duplicate manuscript on phones and parks Prove next to Hint. See [`docs/PASS50_PHONE_CAL_PROVE.md`](docs/PASS50_PHONE_CAL_PROVE.md).
+**Pass 51 — Sealed puzzle tool row** — phone puzzles keep Advance and Take back on one row after a proof; Reset no longer wraps full-width. See [`docs/PASS51_SEALED_RESET_ROW.md`](docs/PASS51_SEALED_RESET_ROW.md).
 
 ## Previous release (v0.5.40)
 
