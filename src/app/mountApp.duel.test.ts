@@ -479,7 +479,7 @@ describe('mounted duel dossier', () => {
     // Mid-board or recoverable: confirm should appear; fresh dialogue-only may not.
     const overlay = app.querySelector('#confirm-overlay')
     if (overlay && !overlay.classList.contains('hidden')) {
-      expect(overlay.textContent).toMatch(/Leave the simulation|Replace the recovered/)
+      expect(overlay.textContent).toMatch(/Return to Chapters|Replace the recovered/)
       app.querySelector<HTMLButtonElement>('#btn-confirm-cancel')?.click()
       await Promise.resolve()
       expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
