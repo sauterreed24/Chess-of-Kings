@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.83)
+## What's new in this release (v0.5.84)
+
+**Pass 92 — Resume current age; Helia match** — the current chapter button resumes the saved scene, and the first Helia match stays board-first on a 390×844 instrument, with the authored `e6` reply. See [`docs/PASS92_PHONE_CH5_HELIA.md`](docs/PASS92_PHONE_CH5_HELIA.md).
+
+## Previous release (v0.5.83)
 
 **Pass 91 — Chapter V Gage match** — the first Machine of Discipline match stays board-first on a 390×844 instrument, with the authored `d6` reply. See [`docs/PASS91_PHONE_CH5_MATCH.md`](docs/PASS91_PHONE_CH5_MATCH.md).
 

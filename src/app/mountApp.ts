@@ -893,17 +893,21 @@ export function mountApp(app: HTMLDivElement) {
             <span class="ch-era">${escapeHtml(ch.era)}</span>
             <span class="lock-badge">Sealed passage</span>
           </div>`
-        : `<button type="button" class="chapter-btn" data-idx="${i}" aria-label="Enter ${escapeHtml(ch.title)}: ${escapeHtml(ch.subtitle)}">
+        : `<button type="button" class="chapter-btn" data-idx="${i}" aria-label="${i === flow.chapterIndex && flow.sceneIndex > 0 ? 'Resume' : 'Enter'} ${escapeHtml(ch.title)}: ${escapeHtml(ch.subtitle)}">
             <span class="chapter-btn__main">
               <span class="ch-idx">${escapeHtml(ch.title)}</span>
               <span class="ch-name">${escapeHtml(ch.subtitle)}</span>
               <span class="ch-era">${escapeHtml(ch.era)}</span>
             </span>
-            <span class="chapter-btn__state">${i === flow.chapterIndex ? 'Current' : 'Open'}</span>
+            <span class="chapter-btn__state">${i === flow.chapterIndex && flow.sceneIndex > 0 ? 'Resume' : i === flow.chapterIndex ? 'Current' : 'Open'}</span>
             <span class="chapter-btn__arrow" aria-hidden="true">→</span>
           </button>`
       if (!locked) {
         li.querySelector('button')?.addEventListener('click', async () => {
+          if (i === flow.chapterIndex) {
+            openLab()
+            return
+          }
           const mustConfirm = flow.hasRecoverableSession() || flow.hasUnsavedPassageProgress()
           if (mustConfirm) {
             const ok = await confirmDialogCtl.open(CONFIRM_COPY.replaceRecoveredSession)

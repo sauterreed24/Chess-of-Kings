@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.84] — 2026-08-22
+
+Pass 92 — Resume the current age; Chapter V Helia match on the phone instrument:
+
+- **Chapters** — the current-age button resumes the saved scene instead of `jumpToChapter` (which always rewound to scene 0). Mid-age players can reach Helia from the vestibule without replaying Gage.
+- **Playwright** — seeded post-Gage Chapter V walks one briefing into Helia. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `e6` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS92_PHONE_CH5_HELIA.md`](docs/PASS92_PHONE_CH5_HELIA.md).
+
 ## [0.5.83] — 2026-08-22
 
 Pass 91 — Chapter V Gage match on the phone instrument:

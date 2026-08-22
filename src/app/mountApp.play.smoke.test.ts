@@ -576,4 +576,53 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(loadSave()?.ladder).toEqual({ rating: 800, peak: 800, rated: 0 })
     expect(app.querySelector('#title-rating')?.classList.contains('hidden')).toBe(true)
   })
+
+  it('resumes the current chapter instead of restarting the age', () => {
+    const ch5 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch5')
+    const beforeHelia = PLAYABLE_CHAPTERS[ch5]!.scenes.findIndex((s) => s.id === 'c5-before-helia')
+    expect(beforeHelia).toBeGreaterThan(0)
+    localStorage.setItem(
+      'calculus-of-kings-progress-v3',
+      JSON.stringify({
+        version: 3,
+        chapterIndex: ch5,
+        sceneIndex: beforeHelia,
+        highestUnlockedChapter: ch5,
+        lastScreen: 'title',
+        chapter1Complete: true,
+        chapter2Complete: true,
+        completedSceneIds: ['c4-reflection', 'c4-freeplay', 'c5-match-gage', 'c5-after-gage'],
+        completedPuzzleIds: [],
+        stratarchiaUnlocked: false,
+        duelUnlockedOpponentIds: ['alexion', 'gage'],
+        unlockedDuelVariantIds: ['alexion-mentor', 'gage-discipline'],
+        codexUnlocks: [],
+        titleUnlocks: [],
+        chronicleEchoes: [],
+        rankPoints: 150,
+        cosmetics: {
+          unlockedPieceSkins: ['classic-royal'],
+          selectedPieceSkin: 'classic-royal',
+        },
+        tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+        matchHistory: [],
+        rivalMemory: {},
+        ladder: { rating: 1260, peak: 1260, rated: 4 },
+        inProgress: null,
+      }),
+    )
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    const current = app.querySelector<HTMLButtonElement>('.chapter-btn[data-idx="5"]')
+    expect(current).toBeTruthy()
+    expect(current?.querySelector('.chapter-btn__state')?.textContent).toBe('Resume')
+    expect(current?.getAttribute('aria-label')).toMatch(/^Resume Chapter V/)
+    current!.click()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(app.querySelector('#play-chapter-label')?.textContent).toMatch(/Chapter V/)
+    expect(app.querySelector('#narrative-body')?.textContent).toMatch(
+      /Advantage that is not converted|ugly facts|Begin/i,
+    )
+    expect(loadSave()?.sceneIndex).toBe(beforeHelia)
+  })
 })
