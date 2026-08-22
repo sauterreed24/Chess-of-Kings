@@ -228,6 +228,61 @@ function seedAlexionEcho() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+/** Restored Amara board already checkmated so Run it back and recovery unhide. */
+function seedAmaraFoolMateLoss() {
+  const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+  const fen = 'rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3'
+  const save = {
+    version: 3,
+    chapterIndex: 1,
+    sceneIndex: 8,
+    highestUnlockedChapter: 1,
+    lastScreen: 'play',
+    chapter1Complete: false,
+    chapter2Complete: false,
+    completedSceneIds: [
+      'c1-intro',
+      'c1-codex-principles',
+      'c1-tutorial-hanging',
+      'c1-after-hanging',
+      'c1-tutorial-castle',
+      'c1-after-castle',
+      'c1-puzzle-mate',
+      'c1-before-amara',
+    ],
+    completedPuzzleIds: ['c1-tutorial-hanging', 'c1-tutorial-castle', 'c1-puzzle-mate'],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion', 'amara'],
+    unlockedDuelVariantIds: ['alexion-mentor'],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 0,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 1, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1100, peak: 1100, rated: 0 },
+    inProgress: {
+      mode: 'match',
+      chapterIndex: 1,
+      sceneIndex: 8,
+      fen,
+      history: [startFen, fen],
+      sanLog: ['f3', 'e5', 'g4', 'Qh4'],
+      sanQuality: ['ok', 'ok', 'blunder', 'good'],
+      playerColor: 'w',
+      calibrationMoves: 0,
+      scriptedMoveIndex: 4,
+      sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 1, repeatedChecksWithoutGain: 0 },
+    },
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 /** Mid-age Chapter I save: after Amara, parked on `c1-before-lukas` (scene 10). */
 function seedChapterIAfterAmara() {
   const save = {
@@ -3437,6 +3492,31 @@ test('eval bar stays readable on the phone instrument', { timeout: 90_000 }, asy
   const barBox = await page.locator('#eval-bar-wrap').boundingBox()
   expect(barBox).toBeTruthy()
   expect(barBox!.width).toBeGreaterThanOrEqual(16)
+})
+
+test('run-back and recovery stay tappable on the phone instrument', { timeout: 90_000 }, async ({ page }) => {
+  await page.addInitScript(seedAmaraFoolMateLoss)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/, { timeout: 15_000 })
+  const close = page.locator('#btn-reward-close')
+  const runBack = page.locator('#btn-run-back')
+  await expect(close).toBeVisible({ timeout: 15_000 })
+  await close.click()
+  await expect(runBack).toBeVisible()
+  expect(await runBack.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  const runBox = await runBack.boundingBox()
+  expect(runBox).toBeTruthy()
+  expect(Math.round(runBox!.height)).toBeGreaterThanOrEqual(44)
+  await expect(page.locator('#recovery-controls')).toBeVisible()
+  for (const id of ['#btn-recovery-restore', '#btn-recovery-dismiss']) {
+    const btn = page.locator(id)
+    await expect(btn).toBeVisible()
+    expect(await btn.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+    const box = await btn.boundingBox()
+    expect(box).toBeTruthy()
+    expect(Math.round(box!.height)).toBeGreaterThanOrEqual(44)
+  }
 })
 
 test('legal aim pearls stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {

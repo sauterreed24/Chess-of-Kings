@@ -403,5 +403,30 @@ describe('applyChessUi', () => {
     expect(dom.btnHint.disabled).toBe(false)
     expect(dom.btnReset.style.minHeight).toBe('44px')
     expect(dom.btnReset.style.minWidth).toBe('44px')
+
+    const dismiss = node<HTMLButtonElement>('button')
+    dismiss.id = 'btn-recovery-dismiss'
+    dom.recoveryControls.append(dismiss)
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: undefined,
+        status: 'Checkmate.',
+        canUndo: false,
+        canRetry: true,
+        sessionRecovered: true,
+        canRestoreStable: true,
+        sanLog: ['f3', 'e5', 'g4', 'Qh4'],
+        sanQuality: [null, null, null, null],
+        canHint: false,
+      },
+      rt,
+      cbs,
+    )
+    expect(dom.btnRunBack.hidden).toBe(false)
+    expect(dom.btnRunBack.style.minHeight).toBe('44px')
+    expect(dom.btnRecoveryRestore.style.minHeight).toBe('44px')
+    expect(dismiss.style.minHeight).toBe('44px')
+    expect(dom.recoveryControls.classList.contains('hidden')).toBe(false)
   })
 })

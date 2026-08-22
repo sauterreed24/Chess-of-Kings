@@ -352,6 +352,10 @@ export function mountApp(app: HTMLDivElement) {
     syncPhoneHitTarget(btnSfx, matchTogglesOn)
     syncPhoneHitTarget(btnMoveGuard, matchTogglesOn)
     syncPhoneHitTarget(btnUndo, !btnUndo.hidden)
+    syncPhoneHitTarget(btnRunBack, !btnRunBack.hidden)
+    const recoveryOn = !recoveryControls.classList.contains('hidden')
+    syncPhoneHitTarget(btnRecoveryRestore, recoveryOn)
+    syncPhoneHitTarget(btnRecoveryDismiss, recoveryOn)
     for (const el of chapterQuickActions.querySelectorAll<HTMLElement>('.chapter-quick-actions__btn')) {
       syncPhoneHitTarget(el, !chapterQuickActions.classList.contains('hidden'))
     }

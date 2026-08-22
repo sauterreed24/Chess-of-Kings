@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.115)
+## What's new in this release (v0.5.116)
+
+**Pass 124 — phone run-back** — Run it back and recovered-session Restore / Dismiss keep a 44px hit target on a 390×844 instrument. See [`docs/PASS124_PHONE_RUN_BACK.md`](docs/PASS124_PHONE_RUN_BACK.md).
+
+## Previous release (v0.5.115)
 
 **Pass 123 — legal aim pearls** — quiet legal targets plant a 20px-min ivory pearl on the marble so phone aim still reads on a 390×844 instrument. See [`docs/PASS123_LEGAL_AIM.md`](docs/PASS123_LEGAL_AIM.md).
 
