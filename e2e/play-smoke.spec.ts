@@ -3243,6 +3243,22 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-band-status')).toBeVisible()
 })
 
+test('title top nav stays 44px on the phone instrument', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#btn-title')).toBeVisible({ timeout: 15_000 })
+  for (const id of ['#btn-title', '#btn-chapters', '#btn-duel']) {
+    await expect(page.locator(id)).toBeVisible()
+    expect(await page.locator(id).evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+    const box = await page.locator(id).boundingBox()
+    expect(box).toBeTruthy()
+    expect(box!.height).toBeGreaterThanOrEqual(44)
+  }
+  await page.locator('#btn-chapters').click()
+  await expect(page.locator('#btn-chapters-back')).toBeVisible()
+  expect(await page.locator('#btn-chapters-back').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
 test('title privacy links stay 44px on the phone instrument', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')

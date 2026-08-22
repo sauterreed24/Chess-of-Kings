@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.104)
+## What's new in this release (v0.5.105)
+
+**Pass 113 — phone top nav** — Title / Chapters / Duel and Return to title keep a 44px hit target on a 390×844 instrument. See [`docs/PASS113_PHONE_TOP_NAV.md`](docs/PASS113_PHONE_TOP_NAV.md).
+
+## Previous release (v0.5.104)
 
 **Pass 112 — phone title privacy links** — Privacy policy, Accessibility, and Keyboard atlas keep a 44px hit target on a 390×844 instrument. See [`docs/PASS112_PHONE_TITLE_PRIVACY.md`](docs/PASS112_PHONE_TITLE_PRIVACY.md).
 
