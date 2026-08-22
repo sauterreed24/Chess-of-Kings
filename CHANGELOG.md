@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.45] — 2026-08-22
+
+Pass 53 — Pawn globe catch-light:
+
+- **Ivory/lapis pawns** enlarge the globe catch-light and add a hot spark so calibration e2 is not a 2px speck on the phone. Forced **Visual: Lean** keeps orb and spark.
+- **Queen pearls** grow with the same catch-light language.
+- Playwright asserts the calibration e2 orb is at least 4×4 CSS pixels.
+- Docs: [`docs/PASS53_PAWN_GLOBE.md`](docs/PASS53_PAWN_GLOBE.md).
+
 ## [0.5.44] — 2026-08-22
 
 Pass 52 — Quiet calibration chrome:
