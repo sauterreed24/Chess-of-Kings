@@ -100,7 +100,7 @@ describe('setTopBarInertForLab', () => {
     expect(el.getAttribute('aria-label')).toBe('Duel Archive · Ancient Court · Egyptian symmetry')
   })
 
-  it('hides puzzle story-beat and teaching cards on phone labs and keeps the lesson lead', () => {
+  it('hides puzzle story-beat, teaching cards, and lesson lead on phone labs', () => {
     stubPhoneLabNav(true)
     const body = document.createElement('div')
     body.setAttribute('data-puzzle-lesson', '')
@@ -112,15 +112,17 @@ describe('setTopBarInertForLab', () => {
     expect(body.querySelector('.story-beat')?.classList.contains('hidden')).toBe(true)
     expect(body.querySelector('.teaching')?.classList.contains('hidden')).toBe(true)
     expect(body.querySelector('.hint-block')?.classList.contains('hidden')).toBe(true)
-    expect(body.querySelector('.lesson-lead')?.classList.contains('hidden')).toBe(false)
+    expect(body.querySelector('.lesson-lead')?.classList.contains('hidden')).toBe(true)
   })
 
   it('keeps puzzle teaching cards on wide labs', () => {
     stubPhoneLabNav(false)
     const body = document.createElement('div')
     body.setAttribute('data-puzzle-lesson', '')
-    body.innerHTML = '<div class="teaching"><div class="teaching-card">goal</div></div>'
+    body.innerHTML =
+      '<div class="teaching"><div class="teaching-card">goal</div></div><p class="lesson-lead">lead</p>'
     syncPhonePuzzleLesson(body)
     expect(body.querySelector('.teaching')?.classList.contains('hidden')).toBe(false)
+    expect(body.querySelector('.lesson-lead')?.classList.contains('hidden')).toBe(false)
   })
 })

@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.33] — 2026-08-22
+
+Pass 41 — Phone puzzle lesson-lead:
+
+- **Narrow phones** hide the lesson-lead paragraph on teaching puzzles so the marble command is the only copy of the capture. Wide labs keep the lead.
+- Playwright hides `.lesson-lead` on the hanging-knight phone and still shows it on the 1280 castle puzzle.
+- Docs: [`docs/PASS41_PHONE_LESSON_LEAD.md`](docs/PASS41_PHONE_LESSON_LEAD.md).
+
 ## [0.5.32] — 2026-08-22
 
 Pass 40 — Phone puzzle story-beat:

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.32)
+## What's new in this release (v0.5.33)
+
+**Pass 41 — Phone puzzle lesson-lead** — hanging-knight phones hide the lesson-lead paragraph that duplicates the marble command. See [`docs/PASS41_PHONE_LESSON_LEAD.md`](docs/PASS41_PHONE_LESSON_LEAD.md).
+
+## Previous release (v0.5.32)
 
 **Pass 40 — Phone puzzle story-beat** — hanging-knight phones hide the FIRST LESSON box so the lesson lead is the only manuscript copy. See [`docs/PASS40_PHONE_STORY_BEAT.md`](docs/PASS40_PHONE_STORY_BEAT.md).
 
