@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.16)
+## What's new in this release (v0.5.17)
+
+**Pass 25 — Match aim stays** — the first live game keeps a short command on the instrument after you select a piece, instead of counting legal targets. See [`docs/PASS25_MATCH_AIM.md`](docs/PASS25_MATCH_AIM.md).
+
+## Previous release (v0.5.16)
 
 **Pass 24 — First live match** — Chapter I teaching walks into Amara on a full lamp-lit board, and `1. e4` plus her reply is locked in Playwright. See [`docs/PASS24_FIRST_MATCH.md`](docs/PASS24_FIRST_MATCH.md).
 

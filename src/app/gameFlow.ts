@@ -73,6 +73,12 @@ import type { LadderRating } from '../types'
 import { lossRecoveryMentorLine } from '../game/trainingTips'
 import { getRivalProfile, inferRivalIdFromSceneId, postGameTalkLine, selectTalkLine } from '../data/rivals'
 import {
+  DEFAULT_MATCH_AIM,
+  MATCH_AIM_PLY_LIMIT,
+  duelAimForOpponentId,
+  matchAimForSceneId,
+} from '../data/matchAims'
+import {
   DEFAULT_RIVAL_CALIBRATION,
   formatRivalCalibrationLabel,
   sanitizeRivalCalibrationRating,
@@ -1707,22 +1713,15 @@ export class GameFlow {
     return `${t} to move.`
   }
 
-  private openingAimGuide(): string {
-    if ((this.mode !== 'match' && this.mode !== 'duel') || this.sanLog.length >= 10) return ''
-    const key =
-      this.mode === 'duel'
-        ? this.duelSession?.roster.opponentId
-        : this.matchScene?.id
-    if (key?.includes('rowan')) {
-      return " Aim: castle; bleed Rowan's fire"
+  private liveMatchAim(scene: Scene): string | null {
+    if (this.mode !== 'match' && this.mode !== 'duel') return null
+    if (this.sanLog.length >= MATCH_AIM_PLY_LIMIT) return null
+    if (this.mode === 'duel') {
+      const opponentId = this.duelSession?.roster.opponentId
+      return opponentId ? duelAimForOpponentId(opponentId) : DEFAULT_MATCH_AIM
     }
-    if (key?.includes('vega')) {
-      return ' Aim: castle; use development vs Vega pressure'
-    }
-    if (key?.includes('alexion') || key?.includes('boss') || key?.includes('counterpart')) {
-      return ' Aim: accountable: no loose pieces'
-    }
-    return ''
+    const id = this.matchScene?.id ?? (scene.type === 'match' ? scene.id : null)
+    return id ? matchAimForSceneId(id) : DEFAULT_MATCH_AIM
   }
 
   private boardGuideText(scene: Scene): string {
@@ -1746,23 +1745,23 @@ export class GameFlow {
       const word = replies === 1 ? 'reply' : 'replies'
       return `Check: ${replies} legal ${word}. Save king: move, block, capture.`
     }
-    const teachingGoal = this.liveTeachingGoal(scene)
+    const liveCommand = this.liveTeachingGoal(scene) ?? this.liveMatchAim(scene)
     const selectionGuide = this.boardSelectionGuide()
     if (selectionGuide) {
       if (
-        teachingGoal &&
+        liveCommand &&
         !this.boardSelection.castleSquares.length &&
         !this.boardSelection.guardTarget
       ) {
-        return teachingGoal
+        return liveCommand
       }
       return selectionGuide
     }
-    if (teachingGoal) return teachingGoal
+    if (liveCommand) return liveCommand
     if (scene.type === 'freeplay') {
       return 'Select side. Targets glow; captures bronze, check crimson.'
     }
-    return `${defaultGuide}${this.openingAimGuide()}`
+    return defaultGuide
   }
 
   private liveTeachingGoal(scene: Scene): string | null {

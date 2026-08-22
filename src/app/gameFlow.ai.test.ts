@@ -167,10 +167,12 @@ describe('GameFlow AI / puzzles', () => {
     onChessUpdate.mockClear()
     expect(flow.startDuel('alexion', 'alexion-mentor', 'w')).toBe(true)
     const payloadW = onChessUpdate.mock.calls.at(-1)?.[0]
-    expect(payloadW?.boardGuide).toMatch(/Targets glow/)
+    expect(payloadW?.boardGuide).toMatch(/accountable/)
+    expect(payloadW?.boardGuide).toMatch(/no loose pieces/)
+    expect(payloadW?.boardGuide).not.toMatch(/Targets glow/)
   })
 
-  it('adds rival-specific live aims to the default board guide', () => {
+  it('puts rival-specific live aims on the instrument as the command', () => {
     const guideFor = (opponentId: string, variantId: string) => {
       const onChessUpdate = vi.fn()
       const flow = new GameFlow(PLAYABLE_CHAPTERS, {
@@ -187,17 +189,20 @@ describe('GameFlow AI / puzzles', () => {
     }
 
     const rowanGuide = guideFor('rowan', 'rowan-gambit')
-    expect(rowanGuide).toMatch(/Targets glow/)
     expect(rowanGuide).toMatch(/Rowan/)
-    expect(rowanGuide).toMatch(/castle/)
+    expect(rowanGuide).toMatch(/castle/i)
+    expect(rowanGuide).not.toMatch(/Targets glow/)
 
     const vegaGuide = guideFor('vega', 'vega-italian')
-    expect(vegaGuide).toMatch(/Vega pressure/)
+    expect(vegaGuide).toMatch(/Vega/)
+    expect(vegaGuide).toMatch(/pressure/)
     expect(vegaGuide).toMatch(/development/)
+    expect(vegaGuide).not.toMatch(/Targets glow/)
 
     const alexionGuide = guideFor('alexion', 'alexion-mentor')
     expect(alexionGuide).toMatch(/accountable/)
     expect(alexionGuide).toMatch(/no loose pieces/)
+    expect(alexionGuide).not.toMatch(/Targets glow/)
   })
 
   it('emits freeplay-specific boardGuide on the rehearsal board', () => {

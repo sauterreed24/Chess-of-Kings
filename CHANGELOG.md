@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.17] — 2026-08-22
+
+Pass 25 — Match aim stays:
+
+- **Match/duel instrument** keeps a short opening command after a piece is selected, instead of replacing it with a legal-move census. Amara's first game reads `Open the center; castle before Amara's symmetry hardens.`
+- Playwright asserts that aim before and after selecting e2, and the archive duel keeps the accountable command the same way.
+- Docs: [`docs/PASS25_MATCH_AIM.md`](docs/PASS25_MATCH_AIM.md).
+
 ## [0.5.16] — 2026-08-22
 
 Pass 24 — First live match:
