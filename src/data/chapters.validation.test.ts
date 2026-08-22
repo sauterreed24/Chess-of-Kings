@@ -33,6 +33,13 @@ describe('campaign story beats', () => {
     expect(edred?.type === 'match' && edred.scriptedBlackSans?.[0]).toBe('c5')
   })
 
+  it('authors Chapter I Marius after Edred on scene 16', () => {
+    const ch1 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch1')
+    expect(ch1?.scenes.findIndex((scene) => scene.id === 'c1-before-marius')).toBe(16)
+    const marius = ch1?.scenes.find((scene) => scene.id === 'c1-match-marius')
+    expect(marius?.type === 'match' && marius.scriptedBlackSans?.[0]).toBe('e5')
+  })
+
   it('authors Chapter III Demetrios return with a classical e5 reply', () => {
     const ch3 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch3')
     const drill = ch3?.scenes.find((scene) => scene.id === 'c3-puzzle-prophylaxis')
