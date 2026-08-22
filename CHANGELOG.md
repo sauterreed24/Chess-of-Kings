@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.92] — 2026-08-22
+
+Pass 100 — Chapter I Lukas match on the phone instrument:
+
+- **Playwright** — a post-Amara Chapter I seed resumes `c1-before-lukas` (Pass 92 current-age resume, scene 10). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted Italian `e5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS100_PHONE_CH1_LUKAS.md`](docs/PASS100_PHONE_CH1_LUKAS.md).
+
 ## [0.5.91] — 2026-08-22
 
 Pass 99 — Chapter III Kallistos match on the phone instrument:
