@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.76] — 2026-08-22
+
+Pass 84 — Chapter VI Prax match on the phone instrument:
+
+- **Phone matches** keep a 44px Hint/Reset floor when the lab undocks or the viewport resizes, instead of stripping inline hit-target styles until the next ply.
+- **Playwright** — Chapter VI walks the Silicon Threshold drills into the first Prax match. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `c5` reply, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS84_PHONE_CH6_MATCH.md`](docs/PASS84_PHONE_CH6_MATCH.md).
+
 ## [0.5.75] — 2026-08-22
 
 Pass 83 — Phone Reset restyle-on-unhide:
