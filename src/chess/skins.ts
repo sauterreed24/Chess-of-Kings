@@ -87,6 +87,16 @@ const FLUTE: Record<PieceSymbol, { cx: number; cy: number; rx: number; ry: numbe
   k: { cx: 17.8, cy: 24.1, rx: 1.45, ry: 6.7 },
 }
 
+/** Hollow turned cup in the head / mitre / battlement. Knights skip — the horse is not a lathe bowl. */
+const CUP: Record<PieceSymbol, { cy: number; rx: number; ry: number } | null> = {
+  p: { cy: 13.4, rx: 3.2, ry: 2.15 },
+  n: null,
+  b: { cy: 11.4, rx: 2.35, ry: 2.2 },
+  r: { cy: 11.0, rx: 7.2, ry: 1.42 },
+  q: { cy: 15.1, rx: 5.1, ry: 1.85 },
+  k: { cy: 16.4, rx: 3.15, ry: 1.65 },
+}
+
 /** Molded plinth just above the foot. */
 const PLINTH_CY: Record<PieceSymbol, number> = {
   p: 38.4,
@@ -194,13 +204,20 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const umbra =
     `<ellipse class="piece-umbra" cx="${(45 - fluteSpec.cx).toFixed(1)}" cy="${fluteSpec.cy}" ` +
     `rx="${(fluteSpec.rx * 0.92).toFixed(2)}" ry="${fluteSpec.ry}" fill="${umbraFill}"/>`
+  const cupSpec = CUP[piece]
+  const cupFill = color === 'w' ? 'rgba(36,18,6,0.34)' : 'rgba(0,2,8,0.48)'
+  const cupStroke = color === 'w' ? 'rgba(255,248,232,0.28)' : 'rgba(232,201,126,0.22)'
+  const cup = cupSpec
+    ? `<ellipse class="piece-cup" cx="22.5" cy="${cupSpec.cy}" rx="${cupSpec.rx}" ry="${cupSpec.ry}" ` +
+      `fill="${cupFill}" stroke="${cupStroke}" stroke-width="0.45"/>`
+    : ''
   return svg
     .replace(
       /<svg([^>]*)>/,
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${highlight}</svg>`)
+    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${cup}${highlight}</svg>`)
 }
 
 export function glyphForSkin(
