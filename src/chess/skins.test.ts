@@ -180,6 +180,12 @@ describe('carveGlyph', () => {
     expect(heights[1]).toBeGreaterThanOrEqual(4.5)
   })
 
+  it('sizes the foot ferrule to read on a phone square', () => {
+    const pawn = carveGlyph('<svg></svg>', 'w', 'p')
+    const ry = Number(pawn.match(/class="piece-ferrule"[^>]*ry="([\d.]+)"/)?.[1])
+    expect(ry).toBeGreaterThanOrEqual(1.45)
+  })
+
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {
     const a = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')
     const b = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')

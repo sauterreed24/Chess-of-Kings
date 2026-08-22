@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.53] — 2026-08-22
+
+Pass 61 — Foot ferrule band:
+
+- **Ivory/lapis pieces** thicken the gold/lapis ferrule so calibration e2 is not a 1.4px hairline under a 2.3px wood plinth. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration e2 and hanging-knight c3 ferrules are at least 2.4 CSS pixels tall.
+- Docs: [`docs/PASS61_FERRULE_BAND.md`](docs/PASS61_FERRULE_BAND.md).
+
 ## [0.5.52] — 2026-08-22
 
 Pass 60 — King cross bar:

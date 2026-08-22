@@ -144,6 +144,10 @@ const PLINTH_CY: Record<PieceSymbol, number> = {
   k: 38.2,
 }
 
+/** Gold/lapis band on the foot — thick enough to read on a ~40px phone square. */
+const FERRULE_RY = 1.52
+const FERRULE_CY_OFFSET = 2.2
+
 /** Belly waist between the collar and the plinth — the turned stem of the piece. */
 const WAIST_CY: Record<PieceSymbol, number> = {
   p: 35.1,
@@ -217,12 +221,12 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const ringFill = color === 'w' ? 'rgba(160,110,40,0.4)' : 'rgba(6,16,28,0.6)'
   const ringStroke = color === 'w' ? 'rgba(255,255,255,0.46)' : 'rgba(232,201,126,0.4)'
   const plinth = latheRing('piece-plinth', PLINTH_CY[piece] ?? 38.4, rx * 0.92, 1.35, ringFill, ringStroke)
-  const ferruleFill = color === 'w' ? 'rgba(232,201,126,0.58)' : 'rgba(140,186,220,0.32)'
+  const ferruleFill = color === 'w' ? 'rgba(232,201,126,0.78)' : 'rgba(140,186,220,0.45)'
   const ferrule = latheRing(
     'piece-ferrule',
-    (PLINTH_CY[piece] ?? 38.4) + 1.55,
+    (PLINTH_CY[piece] ?? 38.4) + FERRULE_CY_OFFSET,
     rx * 0.97,
-    0.82,
+    FERRULE_RY,
     ferruleFill,
     ringStroke,
   )
