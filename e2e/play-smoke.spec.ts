@@ -211,6 +211,46 @@ function seedChapterIIUnlocked() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+/** Mid-age Chapter II save: after Rowan, parked on `c2-before-vega` (scene 7). */
+function seedChapterIIAfterRowan() {
+  const save = {
+    version: 3,
+    chapterIndex: 2,
+    sceneIndex: 7,
+    highestUnlockedChapter: 2,
+    lastScreen: 'title',
+    chapter1Complete: true,
+    chapter2Complete: false,
+    completedSceneIds: [
+      'c2-intro',
+      'c2-codex-fire',
+      'c2-puzzle-king-hunt',
+      'c2-after-puzzle',
+      'c2-before-rowan',
+      'c2-match-rowan',
+      'c2-after-rowan',
+    ],
+    completedPuzzleIds: ['c2-puzzle-king-hunt'],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion', 'rowan'],
+    unlockedDuelVariantIds: ['alexion-mentor', 'rowan-gambit'],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 90,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1190, peak: 1190, rated: 2 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 function seedChapterIIIUnlocked() {
   const save = {
     version: 3,
@@ -974,6 +1014,12 @@ async function advanceToRowanMatch(page: Page) {
   await expect(page.locator('#narrative-body')).toContainText(/King's Gambit|messy|Fire spreads/i)
   await page.locator('#btn-next').click()
   await expect(page.locator('[data-square="f4"]')).toBeVisible()
+}
+
+async function advanceToVegaMatch(page: Page) {
+  await expect(page.locator('#narrative-body')).toContainText(/calculate while the board is loud|Bring your king|Open files/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="c4"]')).toBeVisible()
 }
 
 async function enterChapterIII(page: Page) {
@@ -1799,6 +1845,80 @@ test('first Chapter II match stays board-first on the phone instrument', { timeo
   await page.locator('[data-square="f3"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3/i)
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3[!?]*\s+exf4/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+  await expect(page.locator('#btn-reset')).toBeVisible()
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('resize'))
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
+  })
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
+test('second Chapter II match lets Reed castle against Vega', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIIAfterRowan)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await expect(page.locator('.chapter-btn[data-idx="2"] .chapter-btn__state')).toHaveText('Resume')
+  await page.locator('.chapter-btn[data-idx="2"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toHaveText(/Chapter II\b/)
+  await advanceToVegaMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Vega')
+  await expect(page.locator('[data-square="c4"] .piece-lit')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  await expect(page.locator('#board-guide')).toContainText(/Castle early|pressure with development/i)
+  await expect(page.locator('#board-status')).toBeHidden()
+  await expect(page.locator('.play-crawl')).toBeVisible()
+  await expect(page.locator('.move-ledger-wrap')).toBeVisible()
+  await expect(page.locator('.instrument-toggles')).toBeVisible()
+  await page.locator('[data-square="e1"]').click()
+  await expect(page.locator('#board-guide')).toContainText(/Castle early|pressure with development/i)
+  await expect(page.locator('#board-guide')).not.toContainText(/legal targets/i)
+  await expect(page.locator('[data-square="g1"]')).toHaveClass(/sq-legal-castle/)
+  await page.locator('[data-square="g1"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*O-O/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*O-O[!?]*\s+Bc5/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+})
+
+test('second Chapter II match stays board-first on the phone instrument', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIIAfterRowan)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await enterChapterII(page)
+  await advanceToVegaMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Vega')
+  await expect(page.locator('[data-square="e4"] .pawn-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="c4"] .bishop-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e1"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  const boardBox = await page.locator('#board-panel').boundingBox()
+  expect(boardBox).toBeTruthy()
+  expect(boardBox!.width).toBeGreaterThan(300)
+  expect(boardBox!.y).toBeLessThan(220)
+  await expect(page.locator('#board-panel')).toBeInViewport()
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#board-guide')).toContainText(/Castle early|pressure with development/i)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  expect(
+    await page.locator('#board-guide').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.locator('[data-square="e1"]').click()
+  await expect(page.locator('[data-square="g1"]')).toHaveClass(/sq-legal-castle/)
+  await page.locator('[data-square="g1"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*O-O/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*O-O[!?]*\s+Bc5/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')

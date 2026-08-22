@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.90] — 2026-08-22
+
+Pass 98 — Chapter II Vega match on the phone instrument:
+
+- **Playwright** — a post-Rowan Chapter II seed resumes `c2-before-vega` (Pass 92 current-age resume, scene 7). Desktop and 390×844: civic silhouettes on the Italian tabiya, board-first, kingside `O-O`, scripted `Bc5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing Romantic piece CSS (gzip locked). Docs: [`docs/PASS98_PHONE_CH2_VEGA.md`](docs/PASS98_PHONE_CH2_VEGA.md).
+
 ## [0.5.89] — 2026-08-22
 
 Pass 97 — Chapter IX Bram match on the phone instrument:

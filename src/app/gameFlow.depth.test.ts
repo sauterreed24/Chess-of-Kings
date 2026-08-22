@@ -1006,6 +1006,37 @@ describe('GameFlow depth systems', () => {
     root.remove()
   })
 
+  it('keeps Vega\'s Italian-pressure aim when the king is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 2
+    const ch2 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch2')
+    const matchIdx = PLAYABLE_CHAPTERS[ch2]!.scenes.findIndex((s) => s.id === 'c2-match-vega')
+    expect(matchIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch2, matchIdx)
+    expect(latest?.boardGuide).toMatch(/Castle early|pressure with development/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+    flow.board?.showLegalFrom(flow.chess, 'e1')
+    expect(latest?.boardGuide).toMatch(/Castle early|pressure with development/i)
+    expect(latest?.boardGuide).not.toMatch(/e1 king selected/)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    expect(flow.chess.get('e2')).toBeUndefined()
+    expect(flow.chess.get('e4')?.type).toBe('p')
+    expect(flow.chess.get('c4')?.type).toBe('b')
+    root.remove()
+  })
+
   it('keeps Amara\'s opening aim when a pawn is selected', () => {
     let latest: { boardGuide: string } | null = null
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
