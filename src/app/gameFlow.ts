@@ -1746,8 +1746,26 @@ export class GameFlow {
       const word = replies === 1 ? 'reply' : 'replies'
       return `Check: ${replies} legal ${word}. Save king: move, block, capture.`
     }
+    const teachingGoal = this.liveTeachingGoal(scene)
     const selectionGuide = this.boardSelectionGuide()
-    if (selectionGuide) return selectionGuide
+    if (selectionGuide) {
+      if (
+        teachingGoal &&
+        !this.boardSelection.castleSquares.length &&
+        !this.boardSelection.guardTarget
+      ) {
+        return teachingGoal
+      }
+      return selectionGuide
+    }
+    if (teachingGoal) return teachingGoal
+    if (scene.type === 'freeplay') {
+      return 'Select side. Targets glow; captures bronze, check crimson.'
+    }
+    return `${defaultGuide}${this.openingAimGuide()}`
+  }
+
+  private liveTeachingGoal(scene: Scene): string | null {
     if (scene.type === 'calibration' && this.calibrationScene) {
       const teaching = this.calibrationScene.teaching
       return teaching?.goalBrief ?? teaching?.goalPlain ?? 'Develop center; guard king.'
@@ -1756,10 +1774,7 @@ export class GameFlow {
       const teaching = scene.teaching
       return teaching?.goalBrief ?? teaching?.goalPlain ?? 'Goal: solve proof. Advance when sealed.'
     }
-    if (scene.type === 'freeplay') {
-      return 'Select side. Targets glow; captures bronze, check crimson.'
-    }
-    return `${defaultGuide}${this.openingAimGuide()}`
+    return null
   }
 
   private boardSelectionGuide(): string | null {

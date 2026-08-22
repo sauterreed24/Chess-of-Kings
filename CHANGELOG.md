@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.15] — 2026-08-22
+
+Pass 23 — Goal stays while you choose:
+
+- **Teaching/calibration instrument** keeps the live goal after a piece is selected, instead of replacing it with a legal-move census. Castling still names `g1`.
+- **Carved collar** — ivory/lapis glyphs get a waist ring so the set reads as turned pieces on a plinth.
+- Docs: [`docs/PASS23_GOAL_STAYS.md`](docs/PASS23_GOAL_STAYS.md).
+
 ## [0.5.14] — 2026-08-22
 
 Pass 22 — Lamp-lit ivory and the first mate:

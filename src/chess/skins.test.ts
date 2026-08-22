@@ -9,6 +9,7 @@ describe('carveGlyph', () => {
     expect(carved).toContain('class="piece-carve"')
     expect(carved).toContain('class="piece-ground"')
     expect(carved).toContain('class="piece-lit"')
+    expect(carved).toContain('class="piece-collar"')
     expect(carved).toContain('feSpecularLighting')
     expect(carved).toContain('linearGradient')
     expect(carved).toMatch(/fill="url\(#pl\d+g\)"/)
@@ -18,7 +19,7 @@ describe('carveGlyph', () => {
 
   it('uses a gold sheen on black pieces', () => {
     expect(carveGlyph('<svg></svg>', 'b')).toContain('rgba(232,201,126,0.28)')
-    expect(carveGlyph('<svg></svg>', 'b')).toContain('#4a7aa8')
+    expect(carveGlyph('<svg></svg>', 'b')).toContain('#6a98c4')
   })
 
   it('gives each piece type a distinct sheen path', () => {
@@ -29,6 +30,8 @@ describe('carveGlyph', () => {
     expect(king).not.toBe(rook)
     expect(pawn).toContain('rx="8.4"')
     expect(rook).toContain('rx="11.4"')
+    expect(pawn).toContain('cy="31.8"')
+    expect(rook).toContain('cy="34.6"')
   })
 
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {
@@ -65,6 +68,7 @@ describe('glyphForSkin', () => {
     expect(pawn).toContain('piece-foot')
     expect(pawn).toContain('piece-ground')
     expect(pawn).toContain('piece-lit')
+    expect(pawn).toContain('piece-collar')
     expect(pawn).toContain('feSpecularLighting')
     expect(glyphForSkin('alexandrine-ornate', 'b', 'k')).toContain('piece-carve')
   })

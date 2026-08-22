@@ -577,7 +577,57 @@ describe('GameFlow depth systems', () => {
 
     flow.board?.showLegalFrom(flow.chess, 'e2')
 
-    expect(latest?.boardGuide).toMatch(/e2 pawn selected: 2 legal targets; no captures/)
+    expect(latest?.boardGuide).toContain('four White moves')
+    expect(latest?.boardGuide).toContain('Archive reply')
+    expect(latest?.boardGuide).not.toMatch(/e2 pawn selected/)
+    root.remove()
+  })
+
+  it('keeps the hanging-knight command when the bishop is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const puzzleIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.id === 'c1-tutorial-hanging')
+    flow.jumpToScene(ch1, puzzleIdx)
+    flow.board?.showLegalFrom(flow.chess, 'c3')
+    expect(latest?.boardGuide).toMatch(/loose knight on d4/i)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+    root.remove()
+  })
+
+  it('still names kingside when the castle king is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 1
+    const ch1 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch1')
+    const castleIdx = PLAYABLE_CHAPTERS[ch1]!.scenes.findIndex((s) => s.id === 'c1-tutorial-castle')
+    flow.jumpToScene(ch1, castleIdx)
+    flow.board?.showLegalFrom(flow.chess, 'e1')
+    expect(latest?.boardGuide).toMatch(/castle kingside to g1/i)
     root.remove()
   })
 
