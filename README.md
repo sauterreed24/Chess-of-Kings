@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.26)
+## What's new in this release (v0.5.27)
+
+**Pass 35 — Stem umbra** — ivory and lapis get a shadow-side core opposite the lamp flute so the stem reads as a cylinder. See [`docs/PASS35_STEM_UMBRA.md`](docs/PASS35_STEM_UMBRA.md).
+
+## Previous release (v0.5.26)
 
 **Pass 34 — Phone lab caption** — hanging-knight phones show **Chapter I** on the overlay bar instead of a clipped era. See [`docs/PASS34_LAB_CAPTION.md`](docs/PASS34_LAB_CAPTION.md).
 

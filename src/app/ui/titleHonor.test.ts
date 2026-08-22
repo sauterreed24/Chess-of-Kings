@@ -14,6 +14,7 @@ describe('paintTitleHonor', () => {
     expect(root.querySelectorAll('.piece-rim')).toHaveLength(10)
     expect(root.querySelectorAll('.piece-neck')).toHaveLength(8)
     expect(root.querySelectorAll('.piece-flute')).toHaveLength(10)
+    expect(root.querySelectorAll('.piece-umbra')).toHaveLength(10)
     expect(root.querySelectorAll('.piece-ground')).toHaveLength(10)
     expect(root.querySelectorAll('feSpecularLighting')).toHaveLength(20)
     expect(root.querySelectorAll('feDiffuseLighting')).toHaveLength(10)
