@@ -311,6 +311,36 @@ describe('GameFlow AI / puzzles', () => {
     expect(latest?.coachTip).toMatch(/^Hint — /)
   })
 
+  it('seals canHint after four calibration moves', async () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    const calibrationIdx = PLAYABLE_CHAPTERS[0]!.scenes.findIndex((s) => s.id === 'pr-calibration')
+    flow.jumpToScene(0, calibrationIdx)
+    expect(onChessUpdate.mock.calls.at(-1)?.[0]?.canHint).toBe(true)
+    const developing: Array<[string, string]> = [
+      ['e2', 'e4'],
+      ['g1', 'f3'],
+      ['d2', 'd4'],
+      ['b1', 'c3'],
+    ]
+    for (const [from, to] of developing) {
+      flow.tryPlayerMove(from, to)
+      await vi.advanceTimersByTimeAsync(500)
+    }
+    const sealed = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(sealed?.calibration?.current).toBeGreaterThanOrEqual(4)
+    expect(sealed?.canHint).toBe(false)
+    onChessUpdate.mockClear()
+    flow.requestHint()
+    expect(onChessUpdate).not.toHaveBeenCalled()
+  })
+
   it('threads active rival doctrine into visible move coaching and replies', async () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {

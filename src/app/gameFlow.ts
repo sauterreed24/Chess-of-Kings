@@ -935,7 +935,8 @@ export class GameFlow {
         !this.aiThinking &&
         !matchOutcome &&
         !this.isSceneTerminalForCurrentMode() &&
-        this.chess.turn() === this.playerColor,
+        this.chess.turn() === this.playerColor &&
+        !(this.mode === 'calibration' && this.calibrationSolved()),
       boardGuide: this.boardGuideText(sc),
     })
   }
@@ -1489,6 +1490,7 @@ export class GameFlow {
    */
   requestHint(): void {
     if (this.aiThinking || this.chess.turn() !== this.playerColor || this.chess.isGameOver()) return
+    if (this.mode === 'calibration' && this.calibrationSolved()) return
     const sc = this.currentScene()
     if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return
 
