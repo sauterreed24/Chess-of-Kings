@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.36)
+## What's new in this release (v0.5.37)
+
+**Pass 45 — King cross inlay** — ivory and lapis kings get a gold/lapis cross so the hanging-knight king is not a blank crown. See [`docs/PASS45_KING_CROSS.md`](docs/PASS45_KING_CROSS.md).
+
+## Previous release (v0.5.36)
 
 **Pass 44 — Bishop mitre cleft** — ivory and lapis bishops get a carved mitre cleft so the hanging-knight bishop is not a smooth blob. See [`docs/PASS44_BISHOP_CLEFT.md`](docs/PASS44_BISHOP_CLEFT.md).
 
