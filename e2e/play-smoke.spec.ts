@@ -123,6 +123,20 @@ async function tallestCrossBox(page: Page, square: string): Promise<{ w: number;
   return tallestOverlayBox(page, square, '.piece-cross')
 }
 
+async function expectPhoneHintProveHitTargets(page: Page) {
+  const hintBox = await page.locator('#btn-hint').boundingBox()
+  const nextBox = await page.locator('#btn-next').boundingBox()
+  expect(hintBox).toBeTruthy()
+  expect(nextBox).toBeTruthy()
+  expect(nextBox!.x).toBeGreaterThan(hintBox!.x + 80)
+  expect(Math.abs(nextBox!.y - hintBox!.y)).toBeLessThan(16)
+  expect(nextBox!.height).toBeLessThan(52)
+  expect(nextBox!.height).toBeGreaterThanOrEqual(44)
+  expect(nextBox!.width).toBeGreaterThanOrEqual(44)
+  expect(hintBox!.height).toBeGreaterThanOrEqual(44)
+  expect(hintBox!.width).toBeGreaterThanOrEqual(44)
+}
+
 function seedChapterIUnlocked() {
   const save = {
     version: 3,
@@ -149,6 +163,44 @@ function seedChapterIUnlocked() {
     matchHistory: [],
     rivalMemory: {},
     ladder: { rating: 1100, peak: 1100, rated: 0 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
+function seedChapterVIUnlocked() {
+  const save = {
+    version: 3,
+    chapterIndex: 6,
+    sceneIndex: 0,
+    highestUnlockedChapter: 6,
+    lastScreen: 'title',
+    chapter1Complete: true,
+    chapter2Complete: true,
+    completedSceneIds: ['c3-reflection', 'c3-freeplay', 'c4-reflection', 'c4-freeplay', 'c5-reflection', 'c5-freeplay'],
+    completedPuzzleIds: [],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia'],
+    unlockedDuelVariantIds: [
+      'alexion-mentor',
+      'kallistos-law',
+      'nysa-frontier',
+      'cassian-paradox',
+      'gage-discipline',
+      'helia-machine',
+    ],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 160,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1280, peak: 1280, rated: 4 },
     inProgress: null,
   }
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
@@ -531,6 +583,10 @@ test('compact calibration docks Prove and hides the duplicate manuscript', async
   expect(resetBox).toBeTruthy()
   expect(resetBox!.x).toBeGreaterThan(proveBox!.x + 80)
   expect(Math.abs(resetBox!.y - proveBox!.y)).toBeLessThan(16)
+  expect(proveBox!.height).toBeGreaterThanOrEqual(44)
+  expect(proveBox!.width).toBeGreaterThanOrEqual(44)
+  expect(resetBox!.height).toBeGreaterThanOrEqual(44)
+  expect(resetBox!.width).toBeGreaterThanOrEqual(44)
   const toolsBox = await page.locator('.board-tools').boundingBox()
   expect(toolsBox?.height ?? 99).toBeLessThan(52)
   await page.setViewportSize({ width: 1280, height: 800 })
@@ -593,13 +649,7 @@ test('hanging knight goal stays short on the phone instrument', async ({ page })
   await expect(page.locator('.board-tools #btn-next')).toBeVisible()
   await expect(page.locator('#btn-next')).toBeVisible()
   await expect(page.locator('#btn-next-hint')).toBeHidden()
-  const hintBox = await page.locator('#btn-hint').boundingBox()
-  const nextBox = await page.locator('#btn-next').boundingBox()
-  expect(hintBox).toBeTruthy()
-  expect(nextBox).toBeTruthy()
-  expect(nextBox!.x).toBeGreaterThan(hintBox!.x + 80)
-  expect(Math.abs(nextBox!.y - hintBox!.y)).toBeLessThan(16)
-  expect(nextBox!.height).toBeLessThan(52)
+  await expectPhoneHintProveHitTargets(page)
   await expect(page.locator('#lab-era-label')).toHaveText(/chapter i/i)
   await expect(page.locator('#lab-era-label')).not.toContainText(/scholarly/i)
   expect(
@@ -1462,43 +1512,7 @@ test('Chapter V drills solve on the live board', async ({ page }) => {
 })
 
 test('Chapter VI drills solve on the live board', async ({ page }) => {
-  await page.addInitScript(() => {
-    const save = {
-      version: 3,
-      chapterIndex: 6,
-      sceneIndex: 0,
-      highestUnlockedChapter: 6,
-      lastScreen: 'title',
-      chapter1Complete: true,
-      chapter2Complete: true,
-      completedSceneIds: ['c3-reflection', 'c3-freeplay', 'c4-reflection', 'c4-freeplay', 'c5-reflection', 'c5-freeplay'],
-      completedPuzzleIds: [],
-      stratarchiaUnlocked: false,
-      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia'],
-      unlockedDuelVariantIds: [
-        'alexion-mentor',
-        'kallistos-law',
-        'nysa-frontier',
-        'cassian-paradox',
-        'gage-discipline',
-        'helia-machine',
-      ],
-      codexUnlocks: [],
-      titleUnlocks: [],
-      chronicleEchoes: [],
-      rankPoints: 160,
-      cosmetics: {
-        unlockedPieceSkins: ['classic-royal'],
-        selectedPieceSkin: 'classic-royal',
-      },
-      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
-      matchHistory: [],
-      rivalMemory: {},
-      ladder: { rating: 1280, peak: 1280, rated: 4 },
-      inProgress: null,
-    }
-    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
-  })
+  await page.addInitScript(seedChapterVIUnlocked)
   await page.goto('./')
   await page.locator('#btn-chapters').click({ timeout: 15_000 })
   await page.locator('.chapter-btn', { hasText: 'Chapter VI' }).click()
@@ -1523,6 +1537,67 @@ test('Chapter VI drills solve on the live board', async ({ page }) => {
   await expect(page.locator('#btn-next')).toBeEnabled()
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/Prax|public line|hole/i)
+})
+
+test('Chapter VI drills stay board-first on the phone instrument', async ({ page }) => {
+  await page.addInitScript(seedChapterVIUnlocked)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn', { hasText: 'Chapter VI' }).click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter VI')
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Outpost|ledger|Precision/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="c3"]')).toBeVisible()
+  await expect(page.locator('#manuscript-panel')).toBeHidden()
+  await expect(page.locator('#narrative-body')).toBeHidden()
+  await expect(page.locator('.teaching').first()).toBeHidden()
+  await expect(page.locator('.story-beat')).toBeHidden()
+  await expect(page.locator('.top-bar')).toBeHidden()
+  await expect(page.locator('#btn-vestibule')).toBeVisible()
+  await expect(page.locator('.board-tools #btn-next')).toBeVisible()
+  await expect(page.locator('#btn-next')).toBeInViewport()
+  await expect(page.locator('#btn-next-hint')).toBeHidden()
+  await expect(page.locator('#turn-pulse')).toBeHidden()
+  await expect(page.locator('.instrument-header')).toBeHidden()
+  await expect(page.locator('#board-guide')).toBeVisible()
+  await expect(page.locator('#board-guide')).toBeInViewport()
+  await expect(page.locator('#board-guide')).toContainText(/outpost|d5/i)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  await expect(page.locator('#lab-era-label')).toHaveText(/chapter vi/i)
+  expect(
+    await page.locator('#lab-era-label').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  await expectPhoneHintProveHitTargets(page)
+  await expect(page.locator('[data-square="c3"] .knight-silhouette')).toBeVisible()
+  await page.locator('[data-square="c3"]').click()
+  await page.locator('[data-square="d5"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e3"]')).toBeVisible()
+  await expect(page.locator('#manuscript-panel')).toBeHidden()
+  await expect(page.locator('.board-tools #btn-next')).toBeVisible()
+  await expect(page.locator('#turn-pulse')).toBeHidden()
+  await expect(page.locator('[data-square="e3"] .knight-silhouette')).toBeVisible()
+  await page.locator('[data-square="e3"]').click()
+  await page.locator('[data-square="d5"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e1"]')).toBeVisible()
+  await expect(page.locator('#manuscript-panel')).toBeHidden()
+  await expect(page.locator('#turn-pulse')).toBeHidden()
+  await page.locator('[data-square="e1"]').click()
+  await page.locator('[data-square="e8"]').click()
+  await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toBeVisible()
+  await expect(page.locator('#narrative-body')).toContainText(/Prax|public line|hole/i)
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#manuscript-panel #btn-next')).toBeVisible()
 })
 
 test('Chapter VII drills solve on the live board', async ({ page }) => {
@@ -1585,13 +1660,7 @@ test('Chapter VII drills stay board-first on the phone instrument', async ({ pag
   expect(
     await page.locator('#lab-era-label').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
   ).toBe(false)
-  const hintBox = await page.locator('#btn-hint').boundingBox()
-  const nextBox = await page.locator('#btn-next').boundingBox()
-  expect(hintBox).toBeTruthy()
-  expect(nextBox).toBeTruthy()
-  expect(nextBox!.x).toBeGreaterThan(hintBox!.x + 80)
-  expect(Math.abs(nextBox!.y - hintBox!.y)).toBeLessThan(16)
-  expect(nextBox!.height).toBeLessThan(52)
+  await expectPhoneHintProveHitTargets(page)
   await page.locator('[data-square="e4"]').click()
   await page.locator('[data-square="d5"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
@@ -1679,13 +1748,7 @@ test('Chapter VIII drills stay board-first on the phone instrument', async ({ pa
   expect(
     await page.locator('#lab-era-label').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
   ).toBe(false)
-  const hintBox = await page.locator('#btn-hint').boundingBox()
-  const nextBox = await page.locator('#btn-next').boundingBox()
-  expect(hintBox).toBeTruthy()
-  expect(nextBox).toBeTruthy()
-  expect(nextBox!.x).toBeGreaterThan(hintBox!.x + 80)
-  expect(Math.abs(nextBox!.y - hintBox!.y)).toBeLessThan(16)
-  expect(nextBox!.height).toBeLessThan(52)
+  await expectPhoneHintProveHitTargets(page)
   await page.locator('[data-square="d2"]').click()
   await page.locator('[data-square="a5"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
@@ -1773,13 +1836,7 @@ test('Chapter IX drills stay board-first on the phone instrument', async ({ page
   expect(
     await page.locator('#lab-era-label').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
   ).toBe(false)
-  const hintBox = await page.locator('#btn-hint').boundingBox()
-  const nextBox = await page.locator('#btn-next').boundingBox()
-  expect(hintBox).toBeTruthy()
-  expect(nextBox).toBeTruthy()
-  expect(nextBox!.x).toBeGreaterThan(hintBox!.x + 80)
-  expect(Math.abs(nextBox!.y - hintBox!.y)).toBeLessThan(16)
-  expect(nextBox!.height).toBeLessThan(52)
+  await expectPhoneHintProveHitTargets(page)
   await page.locator('[data-square="e2"]').click()
   await page.locator('[data-square="e6"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })

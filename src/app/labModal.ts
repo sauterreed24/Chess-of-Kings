@@ -45,6 +45,22 @@ export function clearPhoneLessonMarkers(narrativeBody: HTMLElement | null | unde
   narrativeBody.removeAttribute('data-calibration-lesson')
 }
 
+const PHONE_HIT_PX = '44px'
+
+/** Phone tool-row buttons keep a 44px hit target without a stylesheet bump. */
+function stylePhoneHitTarget(el: HTMLElement | null | undefined, on: boolean): void {
+  if (!el) return
+  if (on) {
+    el.style.boxSizing = 'border-box'
+    el.style.minHeight = PHONE_HIT_PX
+    el.style.minWidth = PHONE_HIT_PX
+  } else {
+    el.style.boxSizing = ''
+    el.style.minHeight = ''
+    el.style.minWidth = ''
+  }
+}
+
 /** `.primary--advance` is width:100% / column so it can sit under the manuscript.
  *  Inline overrides keep CSS gzip untouched while Prove shares the Hint row. */
 function styleDockedProve(next: HTMLButtonElement, docked: boolean): void {
@@ -55,6 +71,8 @@ function styleDockedProve(next: HTMLButtonElement, docked: boolean): void {
     next.style.minWidth = '7rem'
     next.style.flexDirection = 'row'
     next.style.padding = '0.65rem 0.7rem'
+    next.style.boxSizing = 'border-box'
+    next.style.minHeight = PHONE_HIT_PX
     sub?.classList.add('hidden')
   } else {
     next.style.width = ''
@@ -62,6 +80,8 @@ function styleDockedProve(next: HTMLButtonElement, docked: boolean): void {
     next.style.minWidth = ''
     next.style.flexDirection = ''
     next.style.padding = ''
+    next.style.boxSizing = ''
+    next.style.minHeight = ''
     sub?.classList.remove('hidden')
   }
 }
@@ -103,10 +123,14 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
     if (hint) hint.after(next)
     else tools.prepend(next)
     styleDockedProve(next, true)
+    stylePhoneHitTarget(hintBtn, Boolean(hintBtn && !hintBtn.hidden))
+    stylePhoneHitTarget(reset, Boolean(reset && !reset.hidden))
     tools.classList.remove('hidden')
     manuscript.classList.add('hidden')
   } else {
     styleDockedProve(next, false)
+    stylePhoneHitTarget(hintBtn, false)
+    stylePhoneHitTarget(reset, false)
     actions.prepend(next)
     manuscript.classList.remove('hidden')
   }

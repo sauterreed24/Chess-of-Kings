@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.68)
+## What's new in this release (v0.5.69)
+
+**Pass 77 — Chapter VI phone lab** — the Silicon Threshold drills now prove on a 390×844 instrument with 44px Hint|Prove hit targets. See [`docs/PASS77_PHONE_CH6_LAB.md`](docs/PASS77_PHONE_CH6_LAB.md).
+
+## Previous release (v0.5.68)
 
 **Pass 76 — Chapter VII phone lab** — the Human Synthesis drills now prove on a 390×844 instrument: manuscript hidden, Prove docked beside Hint, no turn-pulse wait. See [`docs/PASS76_PHONE_CH7_LAB.md`](docs/PASS76_PHONE_CH7_LAB.md).
 
@@ -626,7 +630,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 - **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening.
 - **Pass 5 (shipped v0.3.1)** — `RewardGrantService`, `aiTurnController`, and `aiSearch.worker` (title **AI Thread** setting, or `localStorage` `cok-ai-worker`).
 - **Piece silhouettes** — the knight is a civic horse head (Pass 73). Pawn, bishop, rook, queen, and king still use Wikipedia Staunton paths plus carve overlays.
-- **Phone labs** — Chapters VII–IX drills are proven at 390×844. Chapter VI still lacks a phone e2e pass.
+- **Phone labs** — Chapters VI–IX drills are proven at 390×844. Hint and Prove keep a 44px hit target on the phone instrument.
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
 ---
