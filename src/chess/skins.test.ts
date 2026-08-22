@@ -157,6 +157,14 @@ describe('carveGlyph', () => {
     expect(pearlR).toBeGreaterThanOrEqual(2.1)
   })
 
+  it('sizes the king cross inlay to read on a phone square', () => {
+    const kingGlyph = carveGlyph('<svg></svg>', 'w', 'k')
+    const widths = [...kingGlyph.matchAll(/class="piece-cross"[^>]*width="([\d.]+)"/g)].map((m) => Number(m[1]))
+    const heights = [...kingGlyph.matchAll(/class="piece-cross"[^>]*height="([\d.]+)"/g)].map((m) => Number(m[1]))
+    expect(widths[0]).toBeGreaterThanOrEqual(2.5)
+    expect(heights[1]).toBeGreaterThanOrEqual(2.1)
+  })
+
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {
     const a = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')
     const b = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')

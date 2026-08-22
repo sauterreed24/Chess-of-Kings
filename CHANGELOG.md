@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.48] — 2026-08-22
+
+Pass 56 — King cross inlay:
+
+- **Ivory/lapis kings** thicken the gold/lapis cross so calibration e1 is not a 1.4px hairline after the queen pearls grew. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration e1 and hanging-knight d1 stems are at least 2 CSS pixels wide.
+- Docs: [`docs/PASS56_KING_INLAY.md`](docs/PASS56_KING_INLAY.md).
+
 ## [0.5.47] — 2026-08-22
 
 Pass 55 — Queen coronet pearls:
