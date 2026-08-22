@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { Chess } from 'chess.js'
-import { BoardView } from './boardView'
+import { BoardView, squareEdgeLabelHtml } from './boardView'
 import type { BoardSelectionState } from './boardView'
 
 describe('BoardView keyboard navigation', () => {
@@ -250,6 +250,10 @@ describe('BoardView square facets', () => {
     expect(a1Rank?.textContent).toBe('1')
     expect(a1File?.style.fontSize).toBe('0.7rem')
     expect(a1Rank?.style.fontSize).toBe('0.7rem')
+    expect(squareEdgeLabelHtml(0, 1)).toContain('sq-label--rank')
+    expect(squareEdgeLabelHtml(0, 1)).toContain('sq-label--file')
+    expect(squareEdgeLabelHtml(0, 1)).toContain('>a<')
+    expect(squareEdgeLabelHtml(7, 8)).toBe('')
     const lightLamp = root.querySelector('.sq-light .sq-facet-lamp')?.getAttribute('fill')
     const darkLamp = root.querySelector('.sq-dark .sq-facet-lamp')?.getAttribute('fill')
     expect(lightLamp).toBeTruthy()

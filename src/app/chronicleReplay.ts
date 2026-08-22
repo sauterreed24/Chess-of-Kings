@@ -1,6 +1,6 @@
 import { Chess } from 'chess.js'
 import type { MatchHistoryEntry, PieceSkinId } from '../types'
-import { squareFacetSvg } from '../chess/boardView'
+import { squareEdgeLabelHtml, squareFacetSvg } from '../chess/boardView'
 import { glyphForSkin, pieceStrokeStyleAttr } from '../chess/skins'
 import { devWarn } from './devLog'
 import { escapeHtml } from './htmlEscape'
@@ -53,7 +53,7 @@ export function renderEchoBoardFen(fen: string, skin: PieceSkinId): string {
       const glyph = square
         ? `<span class="piece piece--${square.color}"${pieceStrokeStyleAttr(skin, square.color)} aria-hidden="true">${glyphForSkin(skin, square.color, square.type)}</span>`
         : ''
-      html += `<span class="echo-sq ${dark ? 'echo-sq--dark' : 'echo-sq--light'}" style="position:relative">${squareFacetSvg(!dark)}${glyph}</span>`
+      html += `<span class="echo-sq ${dark ? 'echo-sq--dark' : 'echo-sq--light'}" style="position:relative">${squareFacetSvg(!dark)}${squareEdgeLabelHtml(f, r + 1)}${glyph}</span>`
     }
   }
   html += '</div>'
