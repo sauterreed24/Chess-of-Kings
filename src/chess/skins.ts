@@ -143,6 +143,37 @@ function pawnGlyph(facetHighlight: boolean): string {
   )
 }
 
+/**
+ * Civic Staunton king — crown bowl, readable plus, and a 45×45 footprint
+ * that still seats the carved plinth. Wikipedia's stroke-only cross and
+ * bow-tie flares vanished at phone size; this silhouette has to read even
+ * in high-contrast (no overlays).
+ */
+const KING_BODY =
+  'M11.2 40C10.4 37.6 10.8 35.8 13.8 35.2C16.8 34.2 16.6 32.8 16.4 31.2L17.0 23.2C11.4 21.6 8.8 18.2 9.6 15.2C10.4 13.0 14.8 12.0 19.8 11.6H25.2C30.2 12.0 34.6 13.0 35.4 15.2C36.2 18.2 33.6 21.6 28.0 23.2L28.6 31.2C28.4 32.8 28.2 34.2 31.2 35.2C34.2 35.8 34.6 37.6 33.8 40z'
+
+/** Gold/lapis inlay on the king’s cross — thick enough to read on a ~40px phone square. */
+const KING_CROSS = [
+  { x: 21.15, y: 5.9, w: 2.7, h: 5.95 },
+  { x: 19.15, y: 6.25, w: 6.7, h: 3.45 },
+] as const
+
+function kingGlyph(facetHighlight: boolean): string {
+  const facet = facetHighlight
+    ? '<path fill="var(--piece-stroke)" stroke="none" d="M10.2 14.8c3.6-3.2 8.8-4.2 12.4-3.4-4.8.8-9.2 2.2-12.4 3.4z"/>'
+    : ''
+  const [stem, bar] = KING_CROSS
+  return (
+    `<svg class="svg-piece" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">` +
+    `<g fill="none" fill-rule="evenodd" stroke="var(--piece-stroke)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">` +
+    `<path class="king-silhouette" fill="var(--piece-fill)" d="${KING_BODY}"/>` +
+    facet +
+    `<rect class="king-cross-stem" fill="var(--piece-stroke)" stroke="none" x="${stem.x}" y="${stem.y}" width="${stem.w}" height="${stem.h}" rx="0.45"/>` +
+    `<rect class="king-cross-bar" fill="var(--piece-stroke)" stroke="none" x="${bar.x}" y="${bar.y}" width="${bar.w}" height="${bar.h}" rx="0.45"/>` +
+    `</g></svg>`
+  )
+}
+
 // SVGs processed to support dynamic CSS variables:
 // --piece-fill (body color)
 // --piece-stroke (outlines and details)
@@ -153,7 +184,7 @@ const SVGS: Record<Color, Record<PieceSymbol, string>> = {
     "b": bishopGlyph(false),
     "r": rookGlyph(false),
     "q": queenGlyph(false),
-    "k": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"none\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path stroke-linejoin=\"miter\" d=\"M22.5 11.63V6M20 8h5\"/><path fill=\"var(--piece-fill)\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" d=\"M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5\"/><path fill=\"var(--piece-fill)\" d=\"M11.5 37c5.5 3.5 15.5 3.5 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10z\"/><path d=\"M11.5 30c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0\"/></g></svg>"
+    "k": kingGlyph(false),
   },
   "b": {
     "p": pawnGlyph(true),
@@ -161,7 +192,7 @@ const SVGS: Record<Color, Record<PieceSymbol, string>> = {
     "b": bishopGlyph(true),
     "r": rookGlyph(true),
     "q": queenGlyph(true),
-    "k": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"none\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path fill=\"var(--piece-fill)\" stroke-linejoin=\"miter\" d=\"M22.5 11.6V6\"/><path fill=\"var(--piece-fill)\" fill=\"var(--piece-stroke)\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" d=\"M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5\"/><path fill=\"var(--piece-fill)\" fill=\"var(--piece-stroke)\" d=\"M11.5 37a22.3 22.3 0 0 0 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10z\"/><path fill=\"var(--piece-fill)\" stroke-linejoin=\"miter\" d=\"M20 8h5\"/><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" d=\"M32 29.5s8.5-4 6-9.7C34.1 14 25 18 22.5 24.6v2.1-2.1C20 18 9.9 14 7 19.9c-2.5 5.6 4.8 9 4.8 9\"/><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" d=\"M11.5 30c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0\"/></g></svg>"
+    "k": kingGlyph(true),
   }
 };
 
@@ -224,12 +255,6 @@ const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }
   { x: 19.2, y: 15.4, w: 6.6, h: 3.4 },
 ]
 
-/** Gold/lapis inlay on the king’s cross — thick enough to read on a ~40px phone square. */
-const KING_CROSS: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
-  { x: 21.15, y: 5.9, w: 2.7, h: 5.95 },
-  { x: 19.15, y: 6.25, w: 6.7, h: 3.45 },
-]
-
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
 const COLLAR_CY: Record<PieceSymbol, number> = {
   p: 31.8,
@@ -247,7 +272,7 @@ const NECK_CY: Record<PieceSymbol, number> = {
   b: 22.8,
   r: 17.4,
   q: 22.6,
-  k: 18.4,
+  k: 16.6,
 }
 
 /** Lamp-side flute on the turned stem (knight uses a cheek catch-light). Shadow-side umbra mirrors this. */
@@ -267,7 +292,7 @@ const CUP: Record<PieceSymbol, { cy: number; rx: number; ry: number } | null> = 
   b: { cy: 10.6, rx: 2.55, ry: 2.25 },
   r: { cy: 16.2, rx: 6.4, ry: 2.38 },
   q: { cy: 16.4, rx: 5.6, ry: 2.38 },
-  k: { cy: 15.2, rx: 3.45, ry: 2.38 },
+  k: { cy: 15.0, rx: 4.6, ry: 2.38 },
 }
 
 /** Molded plinth just above the foot. */

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.73)
+## What's new in this release (v0.5.74)
+
+**Pass 82 — King crown head** — ivory and lapis kings are a carved crown silhouette, not a Wikipedia stroke-plus with overlay inlay. See [`docs/PASS82_KING_CROWN_HEAD.md`](docs/PASS82_KING_CROWN_HEAD.md).
+
+## Previous release (v0.5.73)
 
 **Pass 81 — Pawn globe head** — ivory and lapis pawns are a carved globe silhouette, not a Wikipedia teardrop with overlay spark. See [`docs/PASS81_PAWN_GLOBE_HEAD.md`](docs/PASS81_PAWN_GLOBE_HEAD.md).
 
@@ -645,7 +649,7 @@ npm run test:e2e         # optional Playwright smoke (after build; uses preview 
 - **Pass 6 (shipped v0.4.0)** — see [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md). Continuity (Lukas/Marius rematches, loss recaps), calibration honesty, settings toggles, compact **Chapter III**, playtest checklist.
 - **Pass 4 (shipped v0.3.0)** — see [`docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md`](docs/PASS4_GAMEFLOW_AI_MAX_EFFORT_PLAN.md). Four GameFlow seams: `SnapshotManager`, `DuelManager`, `CampaignOrchestrator`, plus AI bench/eval hardening.
 - **Pass 5 (shipped v0.3.1)** — `RewardGrantService`, `aiTurnController`, and `aiSearch.worker` (title **AI Thread** setting, or `localStorage` `cok-ai-worker`).
-- **Piece silhouettes** — knight (Pass 73), bishop (Pass 78), queen (Pass 79), rook (Pass 80), and pawn (Pass 81) are civic silhouettes. King still uses Wikipedia Staunton paths plus carve overlays.
+- **Piece silhouettes** — knight, bishop, queen, rook, pawn, and king are civic silhouettes (Passes 73, 78–82). Wikipedia Staunton paths are gone from the instrument.
 - **Phone labs** — Chapters VI–IX drills are proven at 390×844. Hint and Prove keep a 44px hit target on the phone instrument.
 - **Native shells** — Capacitor scaffolding for iOS / Android exists; TestFlight / Play Internal Testing is environment-dependent.
 
