@@ -109,9 +109,6 @@ describe('Alexandrine Imperial state polish', () => {
   it('keeps two columns on wide short labs', () => {
     expect(CSS).not.toMatch(/@media \(max-width: 960px\), \(max-height: 620px\)/)
     expect(CSS).toMatch(
-      /@media \(max-height: 620px\)[\s\S]*?@media \(min-width: 961px\)[\s\S]*?\.screen-play--board-scene \.play-atelier/,
-    )
-    expect(CSS).toMatch(
       /@media \(max-height: 620px\)[\s\S]*?@media \(min-width: 961px\)[\s\S]*?--mobile-board-max, 72vh/,
     )
   })

@@ -3891,22 +3891,9 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
   }
 
   @media (min-width: 961px) {
-    .screen-play--board-scene .play-atelier {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(330px, 390px);
-    }
-    .screen-play--board-scene .instrument-column {
-      order: 0;
-      position: sticky;
-      top: 0.55rem;
-      width: auto;
-      max-width: none;
-      margin-inline: 0;
-    }
     .screen-play--board-scene :is(.board-brass, .board-wrap) {
       max-width: var(--mobile-board-max, 72vh);
       max-height: var(--mobile-board-max, 72vh);
-      margin-inline: auto;
     }
   }
   .chapter-title {
