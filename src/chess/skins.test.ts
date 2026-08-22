@@ -173,6 +173,13 @@ describe('carveGlyph', () => {
     expect(heights[1]).toBeGreaterThanOrEqual(1.8)
   })
 
+  it('sizes rook merlon wells to read on a phone square', () => {
+    const rook = carveGlyph('<svg></svg>', 'w', 'r')
+    const heights = [...rook.matchAll(/class="piece-merlon"[^>]*height="([\d.]+)"/g)].map((m) => Number(m[1]))
+    expect(heights[0]).toBeGreaterThanOrEqual(4.5)
+    expect(heights[1]).toBeGreaterThanOrEqual(4.5)
+  })
+
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {
     const a = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')
     const b = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')

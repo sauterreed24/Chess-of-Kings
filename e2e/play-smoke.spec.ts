@@ -30,6 +30,8 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   expect(calCross.w).toBeGreaterThanOrEqual(2)
   const calCleft = await tallestOverlayBox(page, 'c1', '.piece-cleft')
   expect(calCleft.w).toBeGreaterThanOrEqual(2)
+  const calMerlon = await deepestOverlayBox(page, 'a1', '.piece-merlon')
+  expect(calMerlon.h).toBeGreaterThanOrEqual(3.5)
   await expect(page.locator('[data-square="e2"] .piece-ferrule')).toBeVisible()
   await expect(page.locator('[data-square="e2"] feSpecularLighting')).toHaveCount(2)
   await expect(page.locator('[data-square="e2"] fePointLight')).toHaveCount(3)
@@ -68,15 +70,24 @@ async function playIfLegal(
   return true
 }
 
-async function tallestOverlayBox(page: Page, square: string, sel: string): Promise<{ w: number; h: number }> {
-  const boxes = await page.locator(`[data-square="${square}"] ${sel}`).evaluateAll((els) =>
+async function overlayBoxes(page: Page, square: string, sel: string): Promise<Array<{ w: number; h: number }>> {
+  return page.locator(`[data-square="${square}"] ${sel}`).evaluateAll((els) =>
     els.map((el) => {
       const r = el.getBoundingClientRect()
       return { w: r.width, h: r.height }
     }),
   )
+}
+
+async function tallestOverlayBox(page: Page, square: string, sel: string): Promise<{ w: number; h: number }> {
+  const boxes = await overlayBoxes(page, square, sel)
   const stem = boxes.filter((b) => b.h > b.w).sort((a, b) => b.h - a.h)[0]
   return stem ?? { w: 0, h: 0 }
+}
+
+async function deepestOverlayBox(page: Page, square: string, sel: string): Promise<{ w: number; h: number }> {
+  const boxes = await overlayBoxes(page, square, sel)
+  return [...boxes].sort((a, b) => b.h - a.h)[0] ?? { w: 0, h: 0 }
 }
 
 async function tallestCrossBox(page: Page, square: string): Promise<{ w: number; h: number }> {
@@ -272,6 +283,8 @@ test('compact calibration docks Prove and hides the duplicate manuscript', async
   expect(phoneCross.w).toBeGreaterThanOrEqual(2)
   const phoneCleft = await tallestOverlayBox(page, 'c1', '.piece-cleft')
   expect(phoneCleft.w).toBeGreaterThanOrEqual(2)
+  const phoneMerlon = await deepestOverlayBox(page, 'a1', '.piece-merlon')
+  expect(phoneMerlon.h).toBeGreaterThanOrEqual(3.5)
   await expect(page.locator('[data-square="e2"] .piece-spark')).toBeVisible()
   await expect(page.locator('.screen-play--board-scene .play-crawl .chapter-label')).toBeHidden()
   await expect(page.locator('#board-guide')).toBeVisible()
@@ -447,6 +460,8 @@ test('castle puzzle marks kingside as a castle destination', async ({ page }) =>
   await expect(page.locator('#board-guide')).toContainText(/Castle kingside/i)
   await expect(page.locator('#manuscript-panel #btn-next')).toBeVisible()
   await expect(page.locator('[data-square="h1"] .piece-merlon').first()).toBeVisible()
+  const castleMerlon = await deepestOverlayBox(page, 'h1', '.piece-merlon')
+  expect(castleMerlon.h).toBeGreaterThanOrEqual(3.5)
   await expect(page.locator('.story-beat')).toBeVisible()
   await expect(page.locator('.lesson-lead')).toBeVisible()
   await expect(page.locator('#narrative-body')).toBeVisible()

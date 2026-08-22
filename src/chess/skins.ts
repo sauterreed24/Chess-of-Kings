@@ -76,10 +76,10 @@ const QUEEN_PEARLS: ReadonlyArray<{ cx: number; cy: number }> = [
   { cx: 39, cy: 12 },
 ]
 
-/** Crenel wells between the three Staunton merlons. */
+/** Crenel wells between the three Staunton merlons — deep enough to read on a ~40px phone square. */
 const ROOK_MERLONS: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
-  { x: 15.3, y: 9.15, w: 4.4, h: 2.15 },
-  { x: 25.3, y: 9.15, w: 4.4, h: 2.15 },
+  { x: 15.15, y: 9.05, w: 4.7, h: 4.85 },
+  { x: 25.15, y: 9.05, w: 4.7, h: 4.85 },
 ]
 
 /** Mitre cleft — vertical cut and crossbar, thick enough to read on a ~40px phone square. */
@@ -277,12 +277,12 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     piece === 'p'
       ? `<circle class="piece-spark" cx="${PAWN_SPARK.cx}" cy="${PAWN_SPARK.cy}" r="${PAWN_SPARK.r}" fill="${sparkFill}"/>`
       : ''
-  const merlonFill = color === 'w' ? 'rgba(36,18,6,0.4)' : 'rgba(0,2,8,0.52)'
+  const merlonFill = color === 'w' ? 'rgba(36,18,6,0.5)' : 'rgba(0,2,8,0.6)'
   const merlons =
     piece === 'r'
       ? ROOK_MERLONS.map(
           (m) =>
-            `<rect class="piece-merlon" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.35" fill="${merlonFill}"/>`,
+            `<rect class="piece-merlon" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.55" fill="${merlonFill}"/>`,
         ).join('')
       : ''
   const cleftFill = merlonFill
