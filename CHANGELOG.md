@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.121] — 2026-08-22
+
+Pass 129 — last-move ring readability:
+
+- **Graphics** — last-move origin/destination, castle aim, capture, check, selection, and Move Guard rings use a 5px inset so the route still reads on phone marble. Same-length CSS; no new rules.
+- **Playwright** — 390×844 skip-ahead calibration asserts e2–e4 rings compute to 5px.
+- No JS budget change. Docs: [`docs/PASS129_LAST_MOVE_RING.md`](docs/PASS129_LAST_MOVE_RING.md).
+
 ## [0.5.120] — 2026-08-22
 
 Pass 128 — calibration rail readability:
