@@ -116,12 +116,39 @@ function rookGlyph(facetHighlight: boolean): string {
   )
 }
 
+/**
+ * Civic Staunton pawn — round globe, collar ring, stem, and a 45×45
+ * footprint that still seats the carved plinth. Wikipedia's tiny head
+ * circle vanished into a teardrop at phone size; this silhouette has
+ * to read even in high-contrast (no overlays).
+ */
+const PAWN_BODY =
+  'M14.1 40C13.3 37.6 13.8 36.2 16.4 35.6L18.0 28.4C15.6 26.8 15.2 24.6 17.2 23.0C15.4 21.6 15.2 19.6 17.2 18.4C15.6 15.2 16.6 8.6 22.5 6.2C28.4 8.6 29.4 15.2 27.8 18.4C29.8 19.6 29.6 21.6 27.8 23.0C29.8 24.6 29.4 26.8 27.0 28.4L28.6 35.6C31.2 36.2 31.7 37.6 30.9 40z'
+
+const PAWN_GLOBE = { cx: 20.4, cy: 10.55, r: 2.85 }
+const PAWN_RING = { cx: 22.5, cy: 20.7, rx: 5.85, ry: 1.62 }
+
+function pawnGlyph(facetHighlight: boolean): string {
+  const facet = facetHighlight
+    ? '<path fill="var(--piece-stroke)" stroke="none" d="M16.8 8.6c2.4-2.8 6.2-3.2 8.4-1.2-3.4.8-6.4 2-8.4 1.2z"/>'
+    : ''
+  return (
+    `<svg class="svg-piece" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">` +
+    `<g fill="none" fill-rule="evenodd" stroke="var(--piece-stroke)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">` +
+    `<path class="pawn-silhouette" fill="var(--piece-fill)" d="${PAWN_BODY}"/>` +
+    facet +
+    `<ellipse class="pawn-ring" fill="var(--piece-stroke)" stroke="none" cx="${PAWN_RING.cx}" cy="${PAWN_RING.cy}" rx="${PAWN_RING.rx}" ry="${PAWN_RING.ry}"/>` +
+    `<circle class="pawn-globe" fill="var(--piece-stroke)" stroke="none" cx="${PAWN_GLOBE.cx}" cy="${PAWN_GLOBE.cy}" r="${PAWN_GLOBE.r}"/>` +
+    `</g></svg>`
+  )
+}
+
 // SVGs processed to support dynamic CSS variables:
 // --piece-fill (body color)
 // --piece-stroke (outlines and details)
 const SVGS: Record<Color, Record<PieceSymbol, string>> = {
   "w": {
-    "p": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-width=\"1.5\" d=\"M22.5 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38C17.33 16.5 16 18.59 16 21c0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z\"/></svg>",
+    "p": pawnGlyph(false),
     "n": knightGlyph(false),
     "b": bishopGlyph(false),
     "r": rookGlyph(false),
@@ -129,7 +156,7 @@ const SVGS: Record<Color, Record<PieceSymbol, string>> = {
     "k": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><g fill=\"none\" fill-rule=\"evenodd\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path stroke-linejoin=\"miter\" d=\"M22.5 11.63V6M20 8h5\"/><path fill=\"var(--piece-fill)\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" d=\"M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5\"/><path fill=\"var(--piece-fill)\" d=\"M11.5 37c5.5 3.5 15.5 3.5 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10z\"/><path d=\"M11.5 30c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0\"/></g></svg>"
   },
   "b": {
-    "p": "<svg class=\"svg-piece\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 45 45\"><path fill=\"var(--piece-fill)\" stroke=\"var(--piece-stroke)\" stroke-linecap=\"round\" stroke-width=\"1.5\" d=\"M22.5 9a4 4 0 0 0-3.22 6.38 6.48 6.48 0 0 0-.87 10.65c-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47a6.46 6.46 0 0 0-.87-10.65A4.01 4.01 0 0 0 22.5 9z\"/></svg>",
+    "p": pawnGlyph(true),
     "n": knightGlyph(true),
     "b": bishopGlyph(true),
     "r": rookGlyph(true),
@@ -162,15 +189,15 @@ const FOOT_RX: Record<PieceSymbol, number> = {
   k: 11.8,
 }
 
-/** Lamp-side bloom on the Staunton pawn globe — sized to read on a ~40px phone square. */
-const PAWN_ORB = { cx: 20.85, cy: 11.35, r: 2.72 }
+/** Lamp-side bloom on the civic pawn globe — sized to read on a ~40px phone square. */
+const PAWN_ORB = { cx: PAWN_GLOBE.cx, cy: PAWN_GLOBE.cy, r: 2.72 }
 
 /** Hot core inside the pawn bloom — a glass-globe spark, not a second cup. */
-const PAWN_SPARK = { cx: 19.95, cy: 10.45, r: 1.55 }
+const PAWN_SPARK = { cx: PAWN_GLOBE.cx - 0.9, cy: PAWN_GLOBE.cy - 0.9, r: 1.55 }
 
 /** Crown / mitre / battlement highlights keyed to Staunton silhouettes. */
 const SHEEN_PATH: Record<PieceSymbol, string> = {
-  p: 'M17.8 11c2.8-3.6 6.6-3.6 9.4 0-3.2 1.15-6.2 1.15-9.4 0z',
+  p: 'M16.6 9.4c3.4-4.0 8.4-4.0 11.8 0-4.0 1.15-7.8 1.15-11.8 0z',
   n: 'M17.6 8.8c3.4-3.6 9-4 13 0.2-4.6 1.1-9 1.8-13-0.2z',
   b: 'M19.6 6.4c2-2.2 4.8-2.2 6.8 0-2.3.8-4.5.8-6.8 0z',
   r: 'M11.2 8.4h22.6v2.05H11.2z',
@@ -215,7 +242,7 @@ const COLLAR_CY: Record<PieceSymbol, number> = {
 
 /** Neck ring under the head / mitre / crown. Knights skip this — the horse is not lathe-turned. */
 const NECK_CY: Record<PieceSymbol, number> = {
-  p: 21.2,
+  p: 21.8,
   n: 24.6,
   b: 22.8,
   r: 17.4,
@@ -235,7 +262,7 @@ const FLUTE: Record<PieceSymbol, { cx: number; cy: number; rx: number; ry: numbe
 
 /** Hollow turned cup in the head / mitre / battlement. Knights skip — the horse is not a lathe bowl. */
 const CUP: Record<PieceSymbol, { cy: number; rx: number; ry: number } | null> = {
-  p: { cy: 13.4, rx: 3.2, ry: 2.15 },
+  p: { cy: 12.6, rx: 3.7, ry: 2.22 },
   n: null,
   b: { cy: 10.6, rx: 2.55, ry: 2.25 },
   r: { cy: 16.2, rx: 6.4, ry: 2.38 },
