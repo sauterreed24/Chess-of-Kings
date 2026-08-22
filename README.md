@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.95)
+## What's new in this release (v0.5.96)
+
+**Pass 104 — Chapter I Counterpart match** — the Ancient Board finale stays board-first on a 390×844 instrument from a mid-age resume, from the e4–e5 tabiya, with `Nf3` and the authored `Nc6` reply. See [`docs/PASS104_PHONE_CH1_COUNTERPART.md`](docs/PASS104_PHONE_CH1_COUNTERPART.md).
+
+## Previous release (v0.5.95)
 
 **Pass 103 — Chapter I Demetrios match** — the Ancient Board fifth examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored Giuoco `e5` reply. See [`docs/PASS103_PHONE_CH1_DEMETRIOS.md`](docs/PASS103_PHONE_CH1_DEMETRIOS.md).
 

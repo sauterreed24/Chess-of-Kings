@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.96] — 2026-08-22
+
+Pass 104 — Chapter I Counterpart match on the phone instrument:
+
+- **Playwright** — a post-Demetrios Chapter I seed resumes `c1-after-demetrios` (Pass 92 current-age resume, scene 21). Desktop and 390×844: civic silhouettes on the e4–e5 tabiya, board-first, `g1–f3`, scripted `Nc6` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS104_PHONE_CH1_COUNTERPART.md`](docs/PASS104_PHONE_CH1_COUNTERPART.md).
+
 ## [0.5.95] — 2026-08-22
 
 Pass 103 — Chapter I Demetrios match on the phone instrument:
