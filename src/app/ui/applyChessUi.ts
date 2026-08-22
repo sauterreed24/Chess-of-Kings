@@ -176,9 +176,14 @@ export function applyChessUi(
   dom.btnReset.hidden = idleTools
   const tools = dom.btnUndo.closest('.board-tools')
   if (tools instanceof HTMLElement) {
+    const nextDocked = tools.contains(dom.btnNext) && !dom.btnNext.classList.contains('hidden')
     tools.classList.toggle(
       'hidden',
-      dom.btnHint.hidden && dom.btnUndo.hidden && dom.btnRunBack.hidden && dom.btnReset.hidden,
+      !nextDocked &&
+        dom.btnHint.hidden &&
+        dom.btnUndo.hidden &&
+        dom.btnRunBack.hidden &&
+        dom.btnReset.hidden,
     )
   }
   const ledgerKey = `${p.sanLog.length}|${p.ledgerFp}`

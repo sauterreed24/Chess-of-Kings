@@ -1,8 +1,22 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PLAYABLE_CHAPTERS } from '../../data/chapters'
 import { renderScene } from './renderScene'
 import { createMountPlayState, type MountDomRefs } from '../mountContext'
 import { GameFlow } from '../gameFlow'
+import { PHONE_LAB_NAV_QUERY } from '../labModal'
+
+function stubPhoneLabNav(phone: boolean) {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: phone && query === PHONE_LAB_NAV_QUERY,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+    onchange: null,
+  }))
+}
 
 function minimalDom(): MountDomRefs {
   document.body.innerHTML = `
@@ -17,10 +31,16 @@ function minimalDom(): MountDomRefs {
         </header>
         <p id="scene-tag"></p>
         <div id="play-atelier" class="play-atelier--solo"></div>
-        <div id="narrative-body" class="narrative-body"></div>
-        <aside id="chapter-rail" class="hidden"></aside>
-        <div id="manuscript-panel"></div>
-        <div id="board-panel" class="instrument-column--hidden"></div>
+        <article id="manuscript-panel">
+          <aside id="chapter-rail" class="hidden"></aside>
+          <div id="narrative-body" class="narrative-body"></div>
+          <div class="narrative-actions">
+            <button id="btn-next"><span id="btn-next-hint"></span></button>
+          </div>
+        </article>
+        <div id="board-panel" class="instrument-column--hidden">
+          <div class="board-tools"><button id="btn-hint">Hint</button></div>
+        </div>
         <div id="board-stage"></div>
         <span id="board-status"></span>
         <span id="turn-pulse"></span>
@@ -36,8 +56,6 @@ function minimalDom(): MountDomRefs {
         <p id="lesson-note"></p>
         <p id="coach-tip" class="hidden"></p>
         <button id="btn-reset"></button>
-        <button id="btn-next"></button>
-        <span id="btn-next-hint"></span>
       </section>
     </div>
   `
@@ -56,7 +74,7 @@ function minimalDom(): MountDomRefs {
     lessonNote: q('#lesson-note'),
     coachTipEl: q('#coach-tip'),
     btnReset: q('#btn-reset'),
-    btnHint: document.createElement('button'),
+    btnHint: q('#btn-hint'),
     btnNext: q('#btn-next'),
     btnNextHint: q('#btn-next-hint'),
     btnSkipAhead: document.createElement('button'),
@@ -86,6 +104,10 @@ function minimalDom(): MountDomRefs {
 }
 
 describe('renderScene', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    document.body.innerHTML = ''
+  })
   it('emits story-beat markup for the Prologue dialogue opening', () => {
     const dom = minimalDom()
     const play = createMountPlayState()
@@ -324,5 +346,39 @@ describe('renderScene', () => {
     expect(crawl()?.classList.contains('hidden')).toBe(false)
     expect(ledgerWrap()?.classList.contains('hidden')).toBe(false)
     expect(toggles()?.classList.contains('hidden')).toBe(false)
+  })
+
+  it('restores Advance into the manuscript after a phone puzzle', () => {
+    stubPhoneLabNav(true)
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const cbs = {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    }
+    const chapterI = PLAYABLE_CHAPTERS.find((ch) => ch.id === 'ch1')!
+    flow.highestUnlockedChapter = chapterI.index
+    flow.jumpToChapter(chapterI.index)
+    const hangingIdx = chapterI.scenes.findIndex((scene) => scene.id === 'c1-tutorial-hanging')
+    renderScene(chapterI, chapterI.scenes[hangingIdx]!, hangingIdx, dom, play, flow, cbs)
+    expect(dom.manuscriptPanel.classList.contains('hidden')).toBe(true)
+    expect(dom.btnNext.parentElement?.classList.contains('board-tools')).toBe(true)
+
+    const afterIdx = chapterI.scenes.findIndex((scene) => scene.id === 'c1-after-hanging')
+    renderScene(chapterI, chapterI.scenes[afterIdx]!, afterIdx, dom, play, flow, cbs)
+    expect(dom.narrativeBody.hasAttribute('data-puzzle-lesson')).toBe(false)
+    expect(dom.narrativeBody.classList.contains('hidden')).toBe(false)
+    expect(dom.manuscriptPanel.classList.contains('hidden')).toBe(false)
+    expect(dom.btnNext.parentElement?.classList.contains('narrative-actions')).toBe(true)
+    expect(dom.btnNext.style.width).toBe('')
   })
 })

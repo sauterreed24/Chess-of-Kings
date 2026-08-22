@@ -132,4 +132,33 @@ describe('setTopBarInertForLab', () => {
     expect(body.querySelector('.teaching')?.classList.contains('hidden')).toBe(false)
     expect(body.querySelector('.lesson-lead')?.classList.contains('hidden')).toBe(false)
   })
+
+  it('docks Prove next to Hint and hides the manuscript on phone puzzles', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body" data-puzzle-lesson></div>
+          <div class="narrative-actions"><button id="btn-next">Prove<span id="btn-next-hint">Requires objective met</span></button></div>
+        </article>
+        <div class="board-tools"><button id="btn-hint">Hint</button></div>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const next = document.querySelector('#btn-next')!
+    syncPhonePuzzleLesson(body)
+    expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(true)
+    expect(next.parentElement?.classList.contains('board-tools')).toBe(true)
+    expect(next.parentElement?.classList.contains('hidden')).toBe(false)
+    expect(next.previousElementSibling?.id).toBe('btn-hint')
+    expect(next.style.width).toBe('auto')
+    expect(next.style.flexDirection).toBe('row')
+    expect(document.querySelector('#btn-next-hint')?.classList.contains('hidden')).toBe(true)
+
+    stubPhoneLabNav(false)
+    syncPhonePuzzleLesson(body)
+    expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(false)
+    expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
+    expect(next.style.width).toBe('')
+    expect(document.querySelector('#btn-next-hint')?.classList.contains('hidden')).toBe(false)
+  })
 })

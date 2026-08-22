@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.37)
+## What's new in this release (v0.5.38)
+
+**Pass 46 — Phone puzzle Prove dock** — hanging-knight phones hide the empty tutorial card and dock Prove beside Hint. See [`docs/PASS46_PHONE_PROVE_DOCK.md`](docs/PASS46_PHONE_PROVE_DOCK.md).
+
+## Previous release (v0.5.37)
 
 **Pass 45 — King cross inlay** — ivory and lapis kings get a gold/lapis cross so the hanging-knight king is not a blank crown. See [`docs/PASS45_KING_CROSS.md`](docs/PASS45_KING_CROSS.md).
 
