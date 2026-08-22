@@ -23,6 +23,7 @@ import {
   DOSSIER_ECHO_EMPTY,
   ECHO_OUTCOME_LABELS,
 } from '../../data/strings'
+import { syncPhoneHitTarget } from '../labModal'
 import { aiTraitBars } from '../mainUiFormatters'
 import type { GameFlow } from '../gameFlow'
 import type { RewardOverlayController } from '../rewardOverlayController'
@@ -375,6 +376,18 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         )}
       </div>`
     revealDuelPanel(shouldReveal)
+    for (const id of [
+      'duel-variant',
+      'duel-color',
+      'duel-difficulty',
+      'duel-skin',
+      'btn-auto-duel',
+      'btn-preview-skin',
+      'btn-start-duel',
+      'btn-mastery-trial',
+    ]) {
+      syncPhoneHitTarget(duelPanel.querySelector<HTMLElement>(`#${id}`), true)
+    }
     duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
       const val = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? 'classic-royal') as PieceSkinId
       flow.setPieceSkin(val)

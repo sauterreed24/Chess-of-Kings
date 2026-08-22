@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.103] — 2026-08-22
+
+Pass 111 — phone Duel Archive setup:
+
+- **Playability** — dossier Variant / Color / Pressure / Skin selects and the four launch actions keep a 44px hit target on `max-width: 700px`. Desktop Chrome phone viewports are fine-pointer, so the coarse-pointer 2.65rem rule does not apply.
+- **Playwright** — 390×844 opens the first dossier and asserts those controls are 44px.
+- No CSS budget change. Docs: [`docs/PASS111_PHONE_DUEL_SETUP.md`](docs/PASS111_PHONE_DUEL_SETUP.md).
+
 ## [0.5.102] — 2026-08-22
 
 Pass 110 — Alexandrine ivory outline contrast:
