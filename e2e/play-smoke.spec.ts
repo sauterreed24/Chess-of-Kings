@@ -2229,7 +2229,7 @@ test('first Chapter I match stays board-first on the phone instrument', { timeou
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
   await expect(page.locator('[data-square="d5"] .pawn-silhouette')).toBeVisible()
   await page.locator('[data-square="e4"]').click()
-  await expect(page.locator('[data-square="d5"]')).toHaveClass(/sq-legal-dot/)
+  await expect(page.locator('[data-square="d5"]')).toHaveClass(/sq-legal-capture/)
   await page.locator('[data-square="d5"]').click()
   await expect(page.locator('#captured-top .cap-piece')).toHaveCount(1, { timeout: 15_000 })
   const cap = page.locator('#captured-top .cap-piece').first()
