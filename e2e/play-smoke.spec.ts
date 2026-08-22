@@ -130,6 +130,8 @@ test('short lab keeps title chapters duel nav', async ({ page }) => {
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
   await page.locator('#btn-skip-ahead').click()
   await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await expect(page.locator('[data-square="e2"]')).toBeInViewport()
+  await expect(page.locator('[data-square="e4"]')).toBeInViewport()
   await expect(page.locator('#btn-title')).toBeVisible()
   await expect(page.locator('#btn-chapters')).toBeVisible()
   await expect(page.locator('#btn-duel')).toBeVisible()

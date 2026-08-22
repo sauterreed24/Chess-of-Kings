@@ -1,6 +1,6 @@
 /** Shared compact-viewport query used by play layout and board-fit logic. */
 export const COMPACT_MEDIA_QUERY =
-  '(max-width: 700px), (max-width: 1024px) and (max-height: 700px)'
+  '(max-width: 700px), (max-width: 1024px) and (max-height: 700px), (max-height: 620px)'
 
 export function isCompactViewport(): boolean {
   return window.matchMedia?.(COMPACT_MEDIA_QUERY)?.matches ?? false
@@ -31,33 +31,13 @@ export function applyMobileBoardFit({ playScreen, boardStage, labOverlay }: Mobi
   const wrapRect = boardWrap.getBoundingClientRect()
   const chromeAbove = Math.max(0, wrapRect.top)
 
-  let chromeBelow = 0
-  const instrumentFrame = boardStage.closest<HTMLElement>('.instrument-frame')
-  if (instrumentFrame) {
-    for (const selector of ['.move-ledger-wrap', '.board-tools', '.instrument-toggles', '.lesson-note', '.coach-tip']) {
-      const el = instrumentFrame.querySelector<HTMLElement>(selector)
-      if (!el || el.classList.contains('hidden')) continue
-      const rect = el.getBoundingClientRect()
-      if (rect.height > 0) chromeBelow += rect.height
-    }
-    const frameStyle = window.getComputedStyle(instrumentFrame)
-    chromeBelow += parseFloat(frameStyle.paddingBottom) || 0
-  }
-
-  const capturedBot = boardStage.querySelector<HTMLElement>('.captured-row--bot')
-  if (capturedBot) {
-    const capturedRect = capturedBot.getBoundingClientRect()
-    if (capturedRect.height > 0) chromeBelow += capturedRect.height
-  }
-
-  const playStyle = window.getComputedStyle(playScreen)
-  chromeBelow += parseFloat(playStyle.paddingBottom) || 0
-
   const viewportW = window.visualViewport?.width ?? window.innerWidth
   const viewportH = window.visualViewport?.height ?? window.innerHeight
   const widthCap = Math.max(0, viewportW - 40)
-  const heightCap = Math.max(0, viewportH - chromeAbove - chromeBelow - 12)
-  const boardMax = Math.min(widthCap, heightCap)
+  /* Tools under the marble can scroll. Size the grid so the starting ranks
+     stay on screen even when wrap.top is already deep in a short window. */
+  const heightCap = viewportH - chromeAbove - 16
+  const boardMax = Math.min(widthCap, Math.max(160, heightCap))
 
   if (boardMax > 0) {
     playScreen.style.setProperty('--mobile-board-max', `${Math.floor(boardMax)}px`)
