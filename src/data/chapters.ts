@@ -1066,6 +1066,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           threat: 'Delay, and the king slips toward the centre again. The Romantic court does not forgive slow hands.',
           goalPlain:
             'Deliver checkmate in one. Every flight square must be denied — find the queen move that seals the verdict.',
+          goalBrief: 'Checkmate in one on the eighth rank.',
           whyItWorks:
             'Corner and edge mates are exercises in coverage: the attacker uses the board’s rim as a second defender.',
           concept:

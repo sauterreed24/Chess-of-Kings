@@ -8,6 +8,31 @@ function materialAdvantage(chess: Chess, forColor: 'w' | 'b'): number {
 }
 
 describe('campaign story beats', () => {
+  it('keeps every teaching-puzzle instrument command under 80 characters', () => {
+    const overlong = PLAYABLE_CHAPTERS.flatMap((chapter) =>
+      chapter.scenes.flatMap((scene) => {
+        if (scene.type !== 'puzzle') return []
+        const command = scene.teaching.goalBrief ?? scene.teaching.goalPlain
+        return command.length >= 80 ? [`${scene.id} (${command.length})`] : []
+      }),
+    )
+    expect(overlong).toEqual([])
+  })
+
+  it('authors Chapter II Rowan from a King\'s Gambit tabiya', () => {
+    const ch2 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch2')
+    const hunt = ch2?.scenes.find((scene) => scene.id === 'c2-puzzle-king-hunt')
+    const rowan = ch2?.scenes.find((scene) => scene.id === 'c2-match-rowan')
+    expect(hunt?.type === 'puzzle' && (hunt.teaching.goalBrief ?? hunt.teaching.goalPlain).length).toBeLessThan(80)
+    expect(hunt?.type === 'puzzle' && hunt.teaching.goalBrief).toMatch(/eighth rank/i)
+    expect(rowan?.type === 'match' && rowan.scriptedBlackSans?.[0]).toBe('exf4')
+    expect(rowan?.type === 'match' && rowan.fen).toContain('4PP2')
+    if (rowan?.type !== 'match' || !rowan.fen) return
+    const board = new Chess(rowan.fen)
+    expect(board.move('Nf3')).toBeTruthy()
+    expect(board.move('exf4')).toBeTruthy()
+  })
+
   it('gives every campaign match explicit story stakes', () => {
     const matches = PLAYABLE_CHAPTERS.flatMap((chapter) =>
       chapter.scenes.filter((scene) => scene.type === 'match'),

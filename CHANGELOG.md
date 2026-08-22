@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.80] — 2026-08-22
+
+Pass 88 — Chapter II Rowan match on the phone instrument:
+
+- **King-hunt command** — the Romantic mate drill now has a phone-short `goalBrief` (`Checkmate in one on the eighth rank.`) so the instrument does not overflow the long `goalPlain`.
+- **Playwright** — Chapter II walks the Age of Fire king hunt into the first Rowan match. Desktop and 390×844: civic silhouettes on the King’s Gambit tabiya (`f4`, not `e2–e4`), board-first, `Nf3`, scripted `exf4` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS88_PHONE_CH2_MATCH.md`](docs/PASS88_PHONE_CH2_MATCH.md).
+
 ## [0.5.79] — 2026-08-22
 
 Pass 87 — Chapter IX Wren match on the phone instrument:
