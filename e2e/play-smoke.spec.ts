@@ -154,6 +154,59 @@ function seedChapterIUnlocked() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+function seedChapterVIIIUnlocked() {
+  const save = {
+    version: 3,
+    chapterIndex: 8,
+    sceneIndex: 0,
+    highestUnlockedChapter: 8,
+    lastScreen: 'title',
+    chapter1Complete: true,
+    chapter2Complete: true,
+    completedSceneIds: [
+      'c3-reflection',
+      'c3-freeplay',
+      'c4-reflection',
+      'c4-freeplay',
+      'c5-reflection',
+      'c5-freeplay',
+      'c6-reflection',
+      'c6-freeplay',
+      'c7-reflection',
+      'c7-freeplay',
+    ],
+    completedPuzzleIds: [],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax', 'iota', 'mira', 'soren'],
+    unlockedDuelVariantIds: [
+      'alexion-mentor',
+      'kallistos-law',
+      'nysa-frontier',
+      'cassian-paradox',
+      'gage-discipline',
+      'helia-machine',
+      'prax-precision',
+      'iota-threshold',
+      'mira-practical',
+      'soren-answer',
+    ],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 200,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1340, peak: 1340, rated: 6 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 function seedChapterIXUnlocked() {
   const save = {
     version: 3,
@@ -1499,58 +1552,7 @@ test('Chapter VII drills solve on the live board', async ({ page }) => {
 })
 
 test('Chapter VIII drills solve on the live board', async ({ page }) => {
-  await page.addInitScript(() => {
-    const save = {
-      version: 3,
-      chapterIndex: 8,
-      sceneIndex: 0,
-      highestUnlockedChapter: 8,
-      lastScreen: 'title',
-      chapter1Complete: true,
-      chapter2Complete: true,
-      completedSceneIds: [
-        'c3-reflection',
-        'c3-freeplay',
-        'c4-reflection',
-        'c4-freeplay',
-        'c5-reflection',
-        'c5-freeplay',
-        'c6-reflection',
-        'c6-freeplay',
-        'c7-reflection',
-        'c7-freeplay',
-      ],
-      completedPuzzleIds: [],
-      stratarchiaUnlocked: false,
-      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax', 'iota', 'mira', 'soren'],
-      unlockedDuelVariantIds: [
-        'alexion-mentor',
-        'kallistos-law',
-        'nysa-frontier',
-        'cassian-paradox',
-        'gage-discipline',
-        'helia-machine',
-        'prax-precision',
-        'iota-threshold',
-        'mira-practical',
-        'soren-answer',
-      ],
-      codexUnlocks: [],
-      titleUnlocks: [],
-      chronicleEchoes: [],
-      rankPoints: 200,
-      cosmetics: {
-        unlockedPieceSkins: ['classic-royal'],
-        selectedPieceSkin: 'classic-royal',
-      },
-      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
-      matchHistory: [],
-      rivalMemory: {},
-      ladder: { rating: 1340, peak: 1340, rated: 6 },
-      inProgress: null,
-    }
-    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
-  })
+  await page.addInitScript(seedChapterVIIIUnlocked)
   await page.goto('./')
   await page.locator('#btn-chapters').click({ timeout: 15_000 })
   await page.locator('.chapter-btn', { hasText: 'Chapter VIII' }).click()
@@ -1575,6 +1577,72 @@ test('Chapter VIII drills solve on the live board', async ({ page }) => {
   await expect(page.locator('#btn-next')).toBeEnabled()
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/Voss|office|exchange/i)
+})
+
+test('Chapter VIII drills stay board-first on the phone instrument', async ({ page }) => {
+  await page.addInitScript(seedChapterVIIIUnlocked)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn', { hasText: 'Chapter VIII' }).click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter VIII')
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Sovereign exchange|Temporal fork|Alexandrine Board/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="d2"]')).toBeVisible()
+  await expect(page.locator('#manuscript-panel')).toBeHidden()
+  await expect(page.locator('#narrative-body')).toBeHidden()
+  await expect(page.locator('.teaching').first()).toBeHidden()
+  await expect(page.locator('.story-beat')).toBeHidden()
+  await expect(page.locator('.top-bar')).toBeHidden()
+  await expect(page.locator('#btn-vestibule')).toBeVisible()
+  await expect(page.locator('.board-tools #btn-next')).toBeVisible()
+  await expect(page.locator('#btn-next')).toBeInViewport()
+  await expect(page.locator('#btn-next-hint')).toBeHidden()
+  await expect(page.locator('#turn-pulse')).toBeHidden()
+  await expect(page.locator('.instrument-header')).toBeHidden()
+  await expect(page.locator('#board-guide')).toBeVisible()
+  await expect(page.locator('#board-guide')).toBeInViewport()
+  await expect(page.locator('#board-guide')).toContainText(/hanging queen|a5/i)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  await expect(page.locator('#lab-era-label')).toHaveText(/chapter viii/i)
+  expect(
+    await page.locator('#lab-era-label').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  const hintBox = await page.locator('#btn-hint').boundingBox()
+  const nextBox = await page.locator('#btn-next').boundingBox()
+  expect(hintBox).toBeTruthy()
+  expect(nextBox).toBeTruthy()
+  expect(nextBox!.x).toBeGreaterThan(hintBox!.x + 80)
+  expect(Math.abs(nextBox!.y - hintBox!.y)).toBeLessThan(16)
+  expect(nextBox!.height).toBeLessThan(52)
+  await page.locator('[data-square="d2"]').click()
+  await page.locator('[data-square="a5"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="d5"]')).toBeVisible()
+  await expect(page.locator('#manuscript-panel')).toBeHidden()
+  await expect(page.locator('.board-tools #btn-next')).toBeVisible()
+  await expect(page.locator('#turn-pulse')).toBeHidden()
+  await expect(page.locator('[data-square="d5"] .knight-silhouette')).toBeVisible()
+  await page.locator('[data-square="d5"]').click()
+  await page.locator('[data-square="c7"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="c3"]')).toBeVisible()
+  await expect(page.locator('#manuscript-panel')).toBeHidden()
+  await expect(page.locator('#turn-pulse')).toBeHidden()
+  await page.locator('[data-square="c3"]').click()
+  await page.locator('[data-square="g7"]').click()
+  await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toBeVisible()
+  await expect(page.locator('#narrative-body')).toContainText(/Voss|office|exchange/i)
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#manuscript-panel #btn-next')).toBeVisible()
 })
 
 test('Chapter IX drills solve on the live board', async ({ page }) => {

@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.67] — 2026-08-22
+
+Pass 75 — Chapter VIII phone lab:
+
+- **390×844 Alexandrine drills** prove hanging-queen / knight-fork / notarized-mate on the phone instrument: manuscript hidden, Prove docked beside Hint, `#turn-pulse` stays hidden, overlay caption is `Chapter VIII`.
+- After the g7 mate, Voss’s briefing restores the manuscript. Theme untouched (CSS gzip locked). Docs: [`docs/PASS75_PHONE_CH8_LAB.md`](docs/PASS75_PHONE_CH8_LAB.md).
+
 ## [0.5.66] — 2026-08-22
 
 Pass 74 — Chapter IX phone lab:
