@@ -184,6 +184,37 @@ test('calibration prove completes after four developing white moves', async ({ p
   await expect(page.locator('.calibration-rail__label')).toContainText('4 / 4')
 })
 
+test('widening a sealed phone calibration keeps Hint hidden', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  const developing: Array<[string, string]> = [
+    ['e2', 'e4'],
+    ['g1', 'f3'],
+    ['d2', 'd4'],
+    ['b1', 'c3'],
+    ['c2', 'c3'],
+    ['a2', 'a3'],
+  ]
+  let played = 0
+  for (const [from, to] of developing) {
+    if (played >= 4) break
+    if (!(await playIfLegal(page, from, to))) continue
+    played += 1
+    await expect(page.locator('#turn-pulse')).toContainText(/White turn|Sealed/i, { timeout: 20_000 })
+  }
+  expect(played).toBeGreaterThanOrEqual(4)
+  await expect(page.locator('.calibration-rail__label')).toContainText('4 / 4')
+  await expect(page.locator('#btn-hint')).toBeHidden()
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await expect(page.locator('#btn-hint')).toBeHidden()
+  await expect(page.locator('#btn-hint')).toBeDisabled()
+})
+
 test('calibration teaching keeps the goal fully readable', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('./')
@@ -251,6 +282,10 @@ test('compact calibration docks Prove and hides the duplicate manuscript', async
   expect(Math.abs(resetBox!.y - proveBox!.y)).toBeLessThan(16)
   const toolsBox = await page.locator('.board-tools').boundingBox()
   expect(toolsBox?.height ?? 99).toBeLessThan(52)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  await expect(page.locator('#btn-hint')).toBeEnabled()
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
 })
 
 test('phone duel after calibration keeps the dossier visible', async ({ page }) => {

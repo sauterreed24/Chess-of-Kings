@@ -182,6 +182,7 @@ export function applyChessUi(
     !dom.btnNext.classList.contains('hidden')
   const idleTools = p.sanLog.length === 0
   const puzzleDocked = nextDocked && !calibration
+  dom.btnHint.disabled = !p.canHint
   dom.btnHint.hidden = !p.canHint || (nextDocked && !!calibration)
   dom.btnReset.hidden = idleTools || puzzleDocked
   if (tools instanceof HTMLElement) {

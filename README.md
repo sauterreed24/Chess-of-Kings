@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.45)
+## What's new in this release (v0.5.46)
+
+**Pass 54 — Wide calibration Hint** — a spent Hint stays hidden when a phone calibration lab widens after the Archive replies. See [`docs/PASS54_WIDE_CAL_HINT.md`](docs/PASS54_WIDE_CAL_HINT.md).
+
+## Previous release (v0.5.45)
 
 **Pass 53 — Pawn globe catch-light** — ivory and lapis pawns get a readable globe bloom and spark on the first board, instead of a 2px speck. See [`docs/PASS53_PAWN_GLOBE.md`](docs/PASS53_PAWN_GLOBE.md).
 

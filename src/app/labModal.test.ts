@@ -219,6 +219,33 @@ describe('setTopBarInertForLab', () => {
     expect(hint.hidden).toBe(false)
   })
 
+  it('keeps a spent Hint hidden when calibration widens after an Archive reply', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body" data-calibration-lesson></div>
+          <div class="narrative-actions"><button id="btn-next">Prove</button></div>
+        </article>
+        <div class="move-ledger-wrap"><div id="move-ledger"><div class="ledger-row">1. e4</div></div></div>
+        <div class="board-tools">
+          <button id="btn-hint">Hint</button>
+          <button id="btn-reset">Reset</button>
+        </div>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const hint = document.querySelector<HTMLButtonElement>('#btn-hint')!
+    hint.hidden = true
+    hint.disabled = true
+    syncPhonePuzzleLesson(body)
+    expect(hint.hidden).toBe(true)
+
+    stubPhoneLabNav(false)
+    syncPhonePuzzleLesson(body)
+    expect(hint.hidden).toBe(true)
+    expect(hint.disabled).toBe(true)
+  })
+
   it('docks Prove and hides the empty ledger on phone calibration', () => {
     stubPhoneLabNav(true)
     document.body.innerHTML = `

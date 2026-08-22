@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.46] — 2026-08-22
+
+Pass 54 — Wide calibration Hint:
+
+- **Phone calibration** keeps a spent Hint hidden when the lab widens after an Archive reply or a 4/4 seal. `canHint` drops on seal and is mirrored onto `#btn-hint.disabled` so resize cannot revive a dead control.
+- Playwright restores Hint when compact calibration widens on White’s turn, and keeps it hidden after a 4/4 seal.
+- Docs: [`docs/PASS54_WIDE_CAL_HINT.md`](docs/PASS54_WIDE_CAL_HINT.md).
+
 ## [0.5.45] — 2026-08-22
 
 Pass 53 — Pawn globe catch-light:

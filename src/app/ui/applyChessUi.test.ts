@@ -277,6 +277,7 @@ describe('applyChessUi', () => {
     expect(dom.btnUndo.hidden).toBe(true)
     expect(dom.btnReset.hidden).toBe(true)
     expect(dom.btnHint.hidden).toBe(false)
+    expect(dom.btnHint.disabled).toBe(false)
     expect(tools.classList.contains('hidden')).toBe(false)
 
     applyChessUi(
@@ -330,6 +331,7 @@ describe('applyChessUi', () => {
       cbs,
     )
     expect(dom.btnHint.hidden).toBe(true)
+    expect(dom.btnHint.disabled).toBe(true)
     expect(tools.classList.contains('hidden')).toBe(false)
   })
 
@@ -383,5 +385,6 @@ describe('applyChessUi', () => {
     )
     expect(dom.btnReset.hidden).toBe(false)
     expect(dom.btnHint.hidden).toBe(true)
+    expect(dom.btnHint.disabled).toBe(false)
   })
 })

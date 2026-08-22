@@ -90,12 +90,13 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
   const lessonNote = scope.querySelector('#lesson-note')
   if (lessonNote) lessonNote.classList.toggle('hidden', hideMatchChrome)
   /* Resize docks Prove without a chess update; keep Reset in lockstep.
-     Phone calibration also hides Hint so Prove|Reset share one row. */
+     Phone calibration also hides Hint so Prove|Reset share one row.
+     A spent Hint (Archive reply / sealed) stays hidden when the lab widens. */
   const reset = scope.querySelector<HTMLButtonElement>('#btn-reset')
   const hintBtn = scope.querySelector<HTMLButtonElement>('#btn-hint')
   const idleTools = !scope.querySelector('#move-ledger .ledger-row')
   if (reset) reset.hidden = idleTools || (phone && puzzle)
-  if (hintBtn && calibration) hintBtn.hidden = phone
+  if (hintBtn && calibration) hintBtn.hidden = phone || hintBtn.disabled
   if (!next || !tools || !actions || !manuscript) return
   if (hide) {
     const hint = tools.querySelector('#btn-hint')
