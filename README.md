@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.21)
+## What's new in this release (v0.5.22)
+
+**Pass 30 — Turned waist** — ivory and lapis get a waist ring and an inner plinth lip so the stem reads as turned wood. See [`docs/PASS30_TURNED_WAIST.md`](docs/PASS30_TURNED_WAIST.md).
+
+## Previous release (v0.5.21)
 
 **Pass 29 — Quiet puzzle chrome** — hanging-knight boards drop the chapter crawl, empty ledger, and Sound/Move Guard row so the command sits on the marble. See [`docs/PASS29_PUZZLE_CHROME.md`](docs/PASS29_PUZZLE_CHROME.md).
 
