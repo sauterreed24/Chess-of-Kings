@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.24)
+## What's new in this release (v0.5.25)
+
+**Pass 33 — Lamp fill and stem flute** — ivory and lapis catch a second lamp and a turned-stem flute so the body reads as a cylinder. See [`docs/PASS33_LAMP_FLUTE.md`](docs/PASS33_LAMP_FLUTE.md).
+
+## Previous release (v0.5.24)
 
 **Pass 32 — Phone lab nav** — hanging-knight phones drop the duplicate Title / Chapters / Duel bar so the lab owns the exit. See [`docs/PASS32_PHONE_LAB_NAV.md`](docs/PASS32_PHONE_LAB_NAV.md).
 
