@@ -8,6 +8,7 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
   await page.locator('#btn-skip-ahead').click()
   await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await expect(page.locator('[data-square="e2"] .piece-carve')).toBeVisible()
   await expect(page.locator('.play-state-readouts')).toBeHidden()
   await expect(page.locator('#board-guide')).toContainText(/Develop center|guard king/)
   await page.locator('[data-square="e2"]').click()
@@ -24,6 +25,50 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   await page.locator('#btn-confirm-ok').click()
   await expect(page.locator('#screen-duel')).toBeVisible()
   await expect(page.locator('.duel-row').first()).toBeVisible()
+})
+
+async function playIfLegal(
+  page: import('@playwright/test').Page,
+  from: string,
+  to: string,
+): Promise<boolean> {
+  await page.locator(`[data-square="${from}"]`).click()
+  const dest = page.locator(`[data-square="${to}"]`)
+  const cls = (await dest.getAttribute('class')) ?? ''
+  if (!/sq-legal-dot|sq-legal-capture/.test(cls)) {
+    await page.locator(`[data-square="${from}"]`).click()
+    return false
+  }
+  await dest.click()
+  return true
+}
+
+test('calibration prove completes after four developing white moves', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+
+  const developing: Array<[string, string]> = [
+    ['e2', 'e4'],
+    ['g1', 'f3'],
+    ['d2', 'd4'],
+    ['b1', 'c3'],
+    ['c2', 'c3'],
+    ['a2', 'a3'],
+  ]
+  let played = 0
+  for (const [from, to] of developing) {
+    if (played >= 4) break
+    if (!(await playIfLegal(page, from, to))) continue
+    played += 1
+    await expect(page.locator('#turn-pulse')).toContainText(/White turn|Sealed/i, { timeout: 20_000 })
+  }
+  expect(played).toBeGreaterThanOrEqual(4)
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await expect(page.locator('.calibration-rail__label')).toContainText('4 / 4')
 })
 
 test('compact calibration stacks the board above the manuscript', async ({ page }) => {

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.4)
+## What's new in this release (v0.5.5)
+
+**Pass 13 — Carved piece presence** — ivory/lapis glyphs get a foot shadow and crown sheen, and Playwright finishes the four-move calibration prove. See [`docs/PASS13_CARVED_PIECES.md`](docs/PASS13_CARVED_PIECES.md).
+
+## Previous release (v0.5.4)
 
 **Pass 12 — Board-first compact** — phone labs drop the duplicate chapter label and shrink the crawl so the marble sits higher. Duel start is now in Playwright. See [`docs/PASS12_BOARD_FIRST.md`](docs/PASS12_BOARD_FIRST.md).
 
