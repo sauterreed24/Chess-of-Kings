@@ -81,7 +81,7 @@ recent maximum-effort commits in `git log` are reasonable templates.
 See the shipped **Pass 6** plan: [`docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md`](docs/PASS6_CONTINUITY_MAX_EFFORT_PLAN.md) and the playtest checklist [`docs/PASS6_PLAYTEST_CHECKLIST.md`](docs/PASS6_PLAYTEST_CHECKLIST.md).
 
 Current focus (next content / polish):
-- Piece silhouette readability (especially the knight) and phone lab playtesting for Chapters VI–IX
+- Phone lab playtesting for Chapters VI–IX; remaining Wikipedia silhouettes (bishop, queen) are secondary
 - Contrast / accessibility hardening and mobile viewport sweeps
 - Native TestFlight / Play Internal pipeline (environment-dependent)
 
