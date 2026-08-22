@@ -70,7 +70,7 @@ export const ARCHIVE_RATING_BAND_LABELS = {
 
 export const PLATEAU_COPY = {
   heading: 'Mastery plateau',
-  lede: 'Chapters I–VIII are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
+  lede: 'Chapters I–IX are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive.',
   dailyCta: 'Daily Calculus',
   duelCta: 'Duel Archive',
   resumeCta: 'Resume Recovered Session',
@@ -109,7 +109,13 @@ export const PLATEAU_PENDING_CH7_COPY = {
 /** Hub after Chapter VIII reflection while freeplay / clear rewards are still outstanding. */
 export const PLATEAU_PENDING_CH8_COPY = {
   heading: 'Almost sealed',
-  lede: 'The Alexandrine Board reflection is inscribed. Finish the Chapter VIII rehearsal to claim the stratarchic seal, then the mastery plateau opens fully.',
+  lede: 'The Alexandrine Board reflection is inscribed. Finish the Chapter VIII rehearsal to claim the stratarchic seal, then the Apotheosis Engine opens.',
+} as const
+
+/** Hub after Chapter IX reflection while freeplay / clear rewards are still outstanding. */
+export const PLATEAU_PENDING_CH9_COPY = {
+  heading: 'Almost sealed',
+  lede: 'The Apotheosis Engine reflection is inscribed. Finish the Chapter IX rehearsal to claim the last seal, then the mastery plateau opens fully.',
 } as const
 
 /** Shown when Chapter III is sealed and Chapter IV is waiting, including migrated saves. */
@@ -145,6 +151,13 @@ export const ALEXANDRINE_OPENED_COPY = {
   heading: 'A new age is open',
   lede: 'The Human Synthesis is sealed. The Alexandrine Board waits in the vestibule — take the vacant office, fork two futures, file the mate.',
   enterCta: 'Enter the Alexandrine Board',
+} as const
+
+/** Shown when Chapter VIII is sealed and Chapter IX is waiting, including migrated saves. */
+export const APOTHEOSIS_OPENED_COPY = {
+  heading: 'A new age is open',
+  lede: 'The Alexandrine Board is sealed. The Apotheosis Engine waits in the vestibule — read the census, survive the compiled school, file the last rank.',
+  enterCta: 'Enter the Apotheosis Engine',
 } as const
 
 export const ECHO_OUTCOME_LABELS = {

@@ -31,6 +31,7 @@ describe('chapterProgress', () => {
     expect(html).toContain('Silicon')
     expect(html).toContain('Synthesis')
     expect(html).toContain('Board')
+    expect(html).toContain('Apex')
   })
 
   it('marks sealed, current, and locked ages along the succession', () => {

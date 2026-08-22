@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.64] — 2026-08-22
+
+Pass 72 — Chapter IX playable:
+
+- **Chapter IX — The Apotheosis Engine** is playable: civic census-hall lore, Wren + Bram matches with Petroff/Indian scripts, pin-census / compiled-fork / last-rank drills, and a seal that moves the mastery plateau to I–IX.
+- **Successor unlock backfill** opens Chapter IX for chronicles that sealed Chapter VIII when it was the last compiled age.
+- Hub copy: Chapter VIII survivors are invited into the Apotheosis Engine; the mastery plateau now keys off Chapter IX freeplay. `LOCKED_ROADMAP` is empty — no fake teaser cliff.
+- Theme reuses `theme-classical` (CSS gzip locked). Docs: [`docs/PASS72_CHAPTER_IX.md`](docs/PASS72_CHAPTER_IX.md).
+
 ## [0.5.63] — 2026-08-22
 
 Pass 71 — Chapter VIII playable:

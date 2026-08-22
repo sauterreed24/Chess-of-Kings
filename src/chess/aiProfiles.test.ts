@@ -33,6 +33,10 @@ describe('AI profile resolver', () => {
     expect(resolveProfileByDuelVariant('elara-fork').id).toBe('elara_fork')
     expect(resolveProfileByMatchId('c8-match-voss').style).toBe('alexandrine')
     expect(resolveProfileByMatchId('c8-match-elara').style).toBe('alexandrine')
+    expect(resolveProfileByMatchId('c9-match-wren').id).toBe('wren_census')
+    expect(resolveProfileByDuelVariant('bram-fused').id).toBe('bram_fused')
+    expect(resolveProfileByMatchId('c9-match-wren').style).toBe('apotheosis')
+    expect(resolveProfileByMatchId('c9-match-bram').style).toBe('apotheosis')
   })
 
   it('detects game phase and adapts conversion/endgame values', () => {

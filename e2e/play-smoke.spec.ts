@@ -787,7 +787,7 @@ test('post-Chapter IV chapters screen invites the Machine of Discipline', async 
   await expect(page.locator('.plateau-hub')).toBeVisible()
   await expect(page.locator('.plateau-hub')).toContainText('A new age is open')
   await expect(page.locator('#btn-plateau-machine')).toBeVisible()
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Final synthesis|Apotheosis/i)
+  await expect(page.locator('.roadmap-teaser')).toHaveCount(0)
   await expect(page.locator('.chapter-btn, .chapter-locked').filter({ hasText: 'Paradox Masters' })).toBeVisible()
   await expect(page.locator('.doctrine-atlas')).toContainText('Machine')
   await expect(page.locator('.doctrine-atlas')).toContainText('Silicon')
@@ -850,7 +850,7 @@ test('post-Chapter V chapters screen invites the Silicon Threshold', async ({ pa
   await expect(page.locator('#btn-plateau-silicon')).toBeVisible()
   await expect(page.locator('#btn-plateau-machine')).toHaveCount(0)
   await expect(page.locator('#btn-plateau-duel')).toBeVisible()
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Final synthesis|Apotheosis/i)
+  await expect(page.locator('.roadmap-teaser')).toHaveCount(0)
   await expect(page.locator('.doctrine-atlas')).toContainText('Silicon')
   await expect(page.locator('.doctrine-atlas')).toContainText('Synthesis')
   await page.locator('#btn-plateau-silicon').click()
@@ -916,7 +916,7 @@ test('post-Chapter VI chapters screen invites the Human Synthesis', async ({ pag
   await expect(page.locator('#btn-plateau-synthesis')).toBeVisible()
   await expect(page.locator('#btn-plateau-silicon')).toHaveCount(0)
   await expect(page.locator('#btn-plateau-duel')).toBeVisible()
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Final synthesis|Apotheosis/i)
+  await expect(page.locator('.roadmap-teaser')).toHaveCount(0)
   await expect(page.locator('.doctrine-atlas')).toContainText('Synthesis')
   await page.locator('#btn-plateau-synthesis').click()
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
@@ -985,7 +985,7 @@ test('post-Chapter VII chapters screen invites the Alexandrine Board', async ({ 
   await expect(page.locator('#btn-plateau-alexandrine')).toBeVisible()
   await expect(page.locator('#btn-plateau-synthesis')).toHaveCount(0)
   await expect(page.locator('#btn-plateau-duel')).toBeVisible()
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Final synthesis|Apotheosis/i)
+  await expect(page.locator('.roadmap-teaser')).toHaveCount(0)
   await expect(page.locator('.doctrine-atlas')).toContainText('Board')
   await page.locator('#btn-plateau-alexandrine').click()
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
@@ -993,7 +993,7 @@ test('post-Chapter VII chapters screen invites the Alexandrine Board', async ({ 
   await expect(page.locator('#narrative-body')).toContainText(/Voss|Elara|exchange|fork/i)
 })
 
-test('post-Chapter VIII chapters screen shows mastery plateau hub', async ({ page }) => {
+test('post-Chapter VIII chapters screen invites the Apotheosis Engine', async ({ page }) => {
   await page.addInitScript(() => {
     const save = {
       version: 3,
@@ -1054,11 +1054,88 @@ test('post-Chapter VIII chapters screen shows mastery plateau hub', async ({ pag
   await page.goto('./')
   await page.locator('#btn-chapters').click({ timeout: 15_000 })
   await expect(page.locator('.plateau-hub')).toBeVisible()
-  await expect(page.locator('.plateau-hub')).toContainText('Mastery plateau')
-  await expect(page.locator('.plateau-hub')).toContainText('I–VIII are sealed')
-  await expect(page.locator('#btn-plateau-duel')).toBeVisible()
+  await expect(page.locator('.plateau-hub')).toContainText('A new age is open')
+  await expect(page.locator('#btn-plateau-apotheosis')).toBeVisible()
   await expect(page.locator('#btn-plateau-alexandrine')).toHaveCount(0)
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Final synthesis|Apotheosis/i)
+  await expect(page.locator('#btn-plateau-duel')).toBeVisible()
+  await expect(page.locator('.roadmap-teaser')).toHaveCount(0)
+  await expect(page.locator('.doctrine-atlas')).toContainText('Apex')
+  await page.locator('#btn-plateau-apotheosis').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter IX')
+  await expect(page.locator('#narrative-body')).toContainText(/Wren|Bram|census/i)
+})
+
+test('post-Chapter IX chapters screen shows mastery plateau hub', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 9,
+      sceneIndex: 0,
+      highestUnlockedChapter: 9,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: [
+        'c3-reflection',
+        'c3-freeplay',
+        'c4-reflection',
+        'c4-freeplay',
+        'c5-reflection',
+        'c5-freeplay',
+        'c6-reflection',
+        'c6-freeplay',
+        'c7-reflection',
+        'c7-freeplay',
+        'c8-reflection',
+        'c8-freeplay',
+        'c9-reflection',
+        'c9-match-bram',
+        'c9-freeplay',
+      ],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: true,
+      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax', 'iota', 'mira', 'soren', 'voss', 'elara', 'wren', 'bram'],
+      unlockedDuelVariantIds: [
+        'alexion-mentor',
+        'kallistos-law',
+        'nysa-frontier',
+        'cassian-paradox',
+        'gage-discipline',
+        'helia-machine',
+        'prax-precision',
+        'iota-threshold',
+        'mira-practical',
+        'soren-answer',
+        'voss-exchange',
+        'elara-fork',
+        'wren-census',
+        'bram-fused',
+      ],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 240,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1400, peak: 1400, rated: 8 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await expect(page.locator('.plateau-hub')).toBeVisible()
+  await expect(page.locator('.plateau-hub')).toContainText('Mastery plateau')
+  await expect(page.locator('.plateau-hub')).toContainText('I–IX are sealed')
+  await expect(page.locator('#btn-plateau-duel')).toBeVisible()
+  await expect(page.locator('#btn-plateau-apotheosis')).toHaveCount(0)
+  await expect(page.locator('.roadmap-teaser')).toHaveCount(0)
   await page.locator('#btn-plateau-duel').click()
   await expect(page.locator('#screen-duel')).toBeVisible()
   await expect(page.locator('.duel-row').first()).toBeVisible()
@@ -1436,6 +1513,89 @@ test('Chapter VIII drills solve on the live board', async ({ page }) => {
   await expect(page.locator('#btn-next')).toBeEnabled()
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/Voss|office|exchange/i)
+})
+
+test('Chapter IX drills solve on the live board', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 9,
+      sceneIndex: 0,
+      highestUnlockedChapter: 9,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: [
+        'c3-reflection',
+        'c3-freeplay',
+        'c4-reflection',
+        'c4-freeplay',
+        'c5-reflection',
+        'c5-freeplay',
+        'c6-reflection',
+        'c6-freeplay',
+        'c7-reflection',
+        'c7-freeplay',
+        'c8-reflection',
+        'c8-freeplay',
+      ],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: true,
+      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax', 'iota', 'mira', 'soren', 'voss', 'elara'],
+      unlockedDuelVariantIds: [
+        'alexion-mentor',
+        'kallistos-law',
+        'nysa-frontier',
+        'cassian-paradox',
+        'gage-discipline',
+        'helia-machine',
+        'prax-precision',
+        'iota-threshold',
+        'mira-practical',
+        'soren-answer',
+        'voss-exchange',
+        'elara-fork',
+      ],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 220,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1370, peak: 1370, rated: 7 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn', { hasText: 'Chapter IX' }).click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter IX')
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Habit census|Compiled school|Apotheosis Engine/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await page.locator('[data-square="e2"]').click()
+  await page.locator('[data-square="e6"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/fork|compiled|queen/i)
+  await page.locator('[data-square="e4"]').click()
+  await page.locator('[data-square="d6"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await page.locator('[data-square="a1"]').click()
+  await page.locator('[data-square="a8"]').click()
+  await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Wren|census/i)
 })
 
 test('seeded save unlocks Lukas in the duel archive and shows Chapter III', async ({ page }) => {

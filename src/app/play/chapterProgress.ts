@@ -17,6 +17,7 @@ const AGE_SHORT: Record<string, string> = {
   ch6: 'Silicon',
   ch7: 'Synthesis',
   ch8: 'Board',
+  ch9: 'Apex',
 }
 
 export type DoctrineAtlasMark = {

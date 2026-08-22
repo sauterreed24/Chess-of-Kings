@@ -265,6 +265,38 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       titleId: 'alexandrine-analyst',
     },
   ],
+  'c9-match-wren': [
+    {
+      id: 'rw-variant-wren-census',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Wren Census Clerk',
+      description: "Replay Wren's habit-census doctrine from Chapter IX in Duel mode.",
+      duelVariantId: 'wren-census',
+    },
+    {
+      id: 'rw-codex-wren-census',
+      kind: 'codex',
+      label: 'Archive Note: The Habit Census',
+      description: 'Wren files that the captures you delay are already underlined, and that you changed a line.',
+      codexId: 'codex-wren-census',
+    },
+  ],
+  'c9-match-bram': [
+    {
+      id: 'rw-variant-bram-fused',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Bram Compiled Reply',
+      description: "Replay Bram's compiled-school doctrine from Chapter IX in Duel mode.",
+      duelVariantId: 'bram-fused',
+    },
+    {
+      id: 'rw-title-apotheosis',
+      kind: 'title',
+      label: 'Title Earned: Apotheosis Analyst',
+      description: 'Recognized for taking the pinned piece, forking the compiled queen, and filing the last rank.',
+      titleId: 'apotheosis-analyst',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
@@ -386,6 +418,21 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       kind: 'chronicle',
       label: 'Chronicle Echo Unlocked',
       description: 'An eighth echo joins your archive: sovereign exchanges, temporal forks, and notarized finishes.',
+    },
+  ],
+  ch9: [
+    {
+      id: 'rw-title-apotheosis-seal',
+      kind: 'title',
+      label: 'Title Earned: Seal of the Apotheosis Engine',
+      description: 'Chapter IX completed. Your chronicle carries choosing after the census as a civic virtue.',
+      titleId: 'seal-apotheosis-engine',
+    },
+    {
+      id: 'rw-chronicle-echo-ch9',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'A ninth echo joins your archive: habit census, compiled forks, and last-rank finishes.',
     },
   ],
 }

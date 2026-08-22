@@ -109,7 +109,7 @@ describe('Chapter VIII playtest', () => {
     expect(flow.currentScene().id).toBe('c8-freeplay')
   })
 
-  it('seals the Alexandrine age and finishes the compiled campaign', () => {
+  it('seals the Alexandrine age and opens the Apotheosis Engine', () => {
     const { flow, ch8, onChapterComplete, onCampaignFinished } = chapterEightFlow()
     const freeIdx = PLAYABLE_CHAPTERS[ch8]!.scenes.findIndex((scene) => scene.id === 'c8-freeplay')
     flow.jumpToScene(ch8, freeIdx)
@@ -117,7 +117,8 @@ describe('Chapter VIII playtest', () => {
     expect(flow.canAdvance()).toBe(true)
     flow.advanceScene()
     expect(onChapterComplete).toHaveBeenCalled()
-    expect(onCampaignFinished).toHaveBeenCalled()
+    expect(onCampaignFinished).not.toHaveBeenCalled()
     expect(flow.chapter8Complete).toBe(true)
+    expect(flow.currentScene().id).toBe('c9-intro')
   })
 })
