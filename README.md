@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.107)
+## What's new in this release (v0.5.108)
+
+**Pass 116 — phone title enter** — Enter the Archive (and Resume / New chronicle when a save exists) keep a 44px hit target on a 390×844 instrument. See [`docs/PASS116_PHONE_TITLE_ENTER.md`](docs/PASS116_PHONE_TITLE_ENTER.md).
+
+## Previous release (v0.5.107)
 
 **Pass 115 — phone dossier folds** — World of the Long Reign and Chronicle Index lore summaries keep a 44px hit target on a 390×844 instrument. See [`docs/PASS115_PHONE_DOSSIER_FOLD.md`](docs/PASS115_PHONE_DOSSIER_FOLD.md).
 

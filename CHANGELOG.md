@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.108] — 2026-08-22
+
+Pass 116 — phone title enter:
+
+- **Playability** — Enter the Archive, Resume expedition, and New chronicle keep a 44px hit target on `max-width: 700px`. Default button padding was ~35px on the 17px phone root. No new CSS.
+- **Playwright** — 390×844 asserts Enter the Archive is 44px.
+- No CSS budget change. Docs: [`docs/PASS116_PHONE_TITLE_ENTER.md`](docs/PASS116_PHONE_TITLE_ENTER.md).
+
 ## [0.5.107] — 2026-08-22
 
 Pass 115 — phone dossier folds:

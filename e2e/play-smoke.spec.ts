@@ -3255,6 +3255,17 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-band-status')).toBeVisible()
 })
 
+test('title enter archive stays 44px on the phone instrument', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  const enter = page.locator('#btn-enter-archive')
+  await expect(enter).toBeVisible({ timeout: 15_000 })
+  expect(await enter.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  const box = await enter.boundingBox()
+  expect(box).toBeTruthy()
+  expect(Math.round(box!.height)).toBeGreaterThanOrEqual(44)
+})
+
 test('title lore fold stays 44px on the phone instrument', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
