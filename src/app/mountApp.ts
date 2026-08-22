@@ -347,6 +347,10 @@ export function mountApp(app: HTMLDivElement) {
     syncPhoneTopNav()
     syncPhoneDossierFolds(app)
     syncPhoneTitleCtas()
+    syncPhoneHitTarget(btnSkipAhead, !btnSkipAhead.classList.contains('hidden'))
+    for (const el of chapterQuickActions.querySelectorAll<HTMLElement>('.chapter-quick-actions__btn')) {
+      syncPhoneHitTarget(el, !chapterQuickActions.classList.contains('hidden'))
+    }
   }
 
   function syncPhoneTopNav() {
@@ -834,6 +838,9 @@ export function mountApp(app: HTMLDivElement) {
         : ''
       chapterQuickActions.innerHTML = `${resumeBtn}${plateauBlock}`
       chapterQuickActions.classList.remove('hidden')
+      for (const el of chapterQuickActions.querySelectorAll<HTMLElement>('.chapter-quick-actions__btn')) {
+        syncPhoneHitTarget(el, true)
+      }
       chapterQuickActions.querySelector<HTMLButtonElement>('#btn-resume-recovered')?.addEventListener('click', () => {
         const ok = flow.resumeRecoverableSession()
         if (ok) {

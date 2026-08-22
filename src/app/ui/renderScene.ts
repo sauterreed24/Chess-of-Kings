@@ -19,7 +19,7 @@ import { prosePeekSkipIndex } from '../play/skipAhead'
 import { resolveProfileByMatchId } from '../../chess/aiProfiles'
 import type { GameFlow } from '../gameFlow'
 import type { MountDomRefs, MountPlayState } from '../mountContext'
-import { syncPhoneDossierFolds, syncPhonePuzzleLesson } from '../labModal'
+import { syncPhoneDossierFolds, syncPhoneHitTarget, syncPhonePuzzleLesson } from '../labModal'
 
 export type RenderSceneCallbacks = {
   setBoardVisible: (on: boolean) => void
@@ -78,6 +78,7 @@ export function renderScene(
     delete dom.btnSkipAhead.dataset.target
     dom.btnSkipAhead.classList.add('hidden')
   }
+  syncPhoneHitTarget(dom.btnSkipAhead, skipTarget !== null)
   dom.app.querySelector('#play-atelier')?.classList.toggle('play-atelier--solo', !showBoard)
   callbacks.setBoardVisible(showBoard)
   dom.narrativeBody.classList.toggle('narrative-body--dialogue', scene.type === 'dialogue')

@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.109] — 2026-08-22
+
+Pass 117 — phone skip-ahead:
+
+- **Playability** — “I know the rules — straight to the board” and Chronicle Index hub CTAs keep a 44px hit target on `max-width: 700px`. No new CSS.
+- **Playwright** — 390×844 enters the prologue and asserts skip-ahead is 44px.
+- No CSS budget change. Docs: [`docs/PASS117_PHONE_SKIP_AHEAD.md`](docs/PASS117_PHONE_SKIP_AHEAD.md).
+
 ## [0.5.108] — 2026-08-22
 
 Pass 116 — phone title enter:
