@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.83] — 2026-08-22
+
+Pass 91 — Chapter V Gage match on the phone instrument:
+
+- **Playwright** — Chapter V walks the Machine of Discipline drills into the first Gage match. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `d6` reply, board-guide fit, Hint/Reset floors after resize. Phone drills hide the manuscript and dock Prove.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS91_PHONE_CH5_MATCH.md`](docs/PASS91_PHONE_CH5_MATCH.md).
+
 ## [0.5.82] — 2026-08-22
 
 Pass 90 — Chapter IV Nysa match on the phone instrument:
