@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.120)
+## What's new in this release (v0.5.121)
+
+**Pass 129 — last-move rings** — last-move, check, capture, and selection rings use a 5px inset so the route still reads on a 390×844 instrument. See [`docs/PASS129_LAST_MOVE_RING.md`](docs/PASS129_LAST_MOVE_RING.md).
+
+## Previous release (v0.5.120)
 
 **Pass 128 — calibration rail** — the opening 0/4 inscribed track uses a 0.7rem label and 16px dots so the first session still reads on a 390×844 instrument. See [`docs/PASS128_CAL_RAIL.md`](docs/PASS128_CAL_RAIL.md).
 

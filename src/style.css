@@ -1730,7 +1730,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 .promo-btn:focus  { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 .sq-selected {
-  box-shadow: inset 0 0 0 3px var(--gold-bright), inset 0 0 28px rgba(232,201,126,0.28);
+  box-shadow: inset 0 0 0 5px var(--gold-bright), inset 0 0 28px rgba(232,201,126,0.28);
   z-index: 2;
   filter: brightness(1.08);
 }
@@ -1747,17 +1747,17 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   box-shadow: 0 0 0 2px #08070599, 0 0 16px #e8c97e99;
 }
 .sq-legal-capture {
-  box-shadow: inset 0 0 0 3px #e8c97ef5, inset 0 0 32px rgba(140,44,30,0.34);
+  box-shadow: inset 0 0 0 5px #e8c97ef5, inset 0 0 32px rgba(140,44,30,0.34);
   border-radius: 2px;
 }
 .sq-guard {
-  box-shadow: inset 0 0 0 3px #e8c97e, inset 0 0 0 7px #08070561, 0 0 16px #e8c97e52;
+  box-shadow: inset 0 0 0 5px #e8c97e, inset 0 0 0 7px #08070561, 0 0 16px #e8c97e52;
 }
 
 /* Last-move route cue sits on the marble/lapis instead of replacing it */
 .sq-last { animation: last-move-fade 0.7s var(--ease-out); }
 .sq-last-from {
-  box-shadow: inset 0 0 0 3px #a8d88acc;
+  box-shadow: inset 0 0 0 5px #a8d88acc;
 }
 .sq-last-from::before {
   background:
@@ -1767,7 +1767,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 .sq-last-to,
 .sq-legal-castle {
-  box-shadow: inset 0 0 0 3px #f0d28af5, 0 0 22px #e8c97e55;
+  box-shadow: inset 0 0 0 5px #f0d28af5, 0 0 22px #e8c97e55;
 }
 .sq-last-to::before,
 .sq-legal-castle::before {
@@ -1782,7 +1782,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   to   { filter: brightness(1); }
 }
 .sq-check {
-  box-shadow: inset 0 0 0 3px rgba(140,44,30,0.9), 0 0 24px rgba(140,44,30,0.4);
+  box-shadow: inset 0 0 0 5px rgba(140,44,30,0.9), 0 0 24px rgba(140,44,30,0.4);
   z-index: 1;
 }
 
@@ -2847,7 +2847,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 
 .sq-check {
   box-shadow:
-    inset 0 0 0 3px rgba(214,70,48,0.96),
+    inset 0 0 0 5px rgba(214,70,48,0.96),
     inset 0 0 30px rgba(214,70,48,0.42),
     0 0 36px rgba(140,44,30,0.46);
 }
