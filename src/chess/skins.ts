@@ -488,6 +488,27 @@ function thickenOutline(svg: string): string {
   return svg.replace(/stroke-width="1.5"/g, 'stroke-width="2.4"')
 }
 
+/**
+ * CSS locks Alexandrine ivory at gold `#b38f36` on cream `#fdf5e2` (~2.5:1).
+ * Darker bronze keeps the set gold without a stylesheet bump.
+ */
+export const ORNATE_IVORY_STROKE = '#6b4e14'
+
+export function pieceStrokeTone(skin: PieceSkinId, color: Color): string | null {
+  if (skin === 'alexandrine-ornate' && color === 'w') return ORNATE_IVORY_STROKE
+  return null
+}
+
+export function pieceStrokeStyleAttr(skin: PieceSkinId, color: Color): string {
+  const tone = pieceStrokeTone(skin, color)
+  return tone ? ` style="--piece-stroke:${tone}"` : ''
+}
+
+export function applyPieceStrokeTone(el: HTMLElement, skin: PieceSkinId, color: Color): void {
+  const tone = pieceStrokeTone(skin, color)
+  if (tone) el.style.setProperty('--piece-stroke', tone)
+}
+
 export function glyphForSkin(
   skin: PieceSkinId,
   color: Color,

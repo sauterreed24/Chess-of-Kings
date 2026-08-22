@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.102] — 2026-08-22
+
+Pass 110 — Alexandrine ivory outline contrast:
+
+- **Graphics** — ivory ornate pieces keep cream fill and set `--piece-stroke` to `#6b4e14` inline so gold-on-cream reads on 390×844. CSS hex stays locked. Sapphire ornate is unchanged.
+- **Playwright** — the ornate Lukas seed asserts the darker ivory stroke, cream/sapphire fills, stroke 2.4, `e2–e4` / `e5`.
+- No CSS budget change. Docs: [`docs/PASS110_ORNATE_IVORY.md`](docs/PASS110_ORNATE_IVORY.md).
+
 ## [0.5.101] — 2026-08-22
 
 Pass 109 — phone title settings hit targets:

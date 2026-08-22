@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { carveGlyph, glyphForSkin } from './skins'
+import { carveGlyph, glyphForSkin, pieceStrokeStyleAttr, pieceStrokeTone } from './skins'
 
 describe('carveGlyph', () => {
   it('plants a foot shadow, crown sheen, and lamp-lit body on a raw Staunton svg', () => {
@@ -346,6 +346,11 @@ describe('glyphForSkin', () => {
     expect(glyphForSkin('alexandrine-ornate', 'w', 'q')).toContain('stroke-width="2.4"')
     expect(glyphForSkin('alexandrine-ornate', 'w', 'q')).not.toContain('stroke-width="1.5"')
     expect(glyphForSkin('classic-royal', 'w', 'q')).toContain('stroke-width="1.5"')
+    expect(pieceStrokeTone('alexandrine-ornate', 'w')).toBe('#6b4e14')
+    expect(pieceStrokeTone('alexandrine-ornate', 'b')).toBeNull()
+    expect(pieceStrokeTone('classic-royal', 'w')).toBeNull()
+    expect(pieceStrokeStyleAttr('alexandrine-ornate', 'w')).toContain('--piece-stroke:#6b4e14')
+    expect(pieceStrokeStyleAttr('obsidian-neon', 'w')).toBe('')
   })
 
   it('leaves high-contrast glyphs uncarved for tournament readability', () => {

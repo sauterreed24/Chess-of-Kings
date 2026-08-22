@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.101)
+## What's new in this release (v0.5.102)
+
+**Pass 110 — Alexandrine ivory contrast** — cream ornate pieces use a darker bronze outline so gold-on-cream still reads on a 390×844 instrument, without a CSS hex change. See [`docs/PASS110_ORNATE_IVORY.md`](docs/PASS110_ORNATE_IVORY.md).
+
+## Previous release (v0.5.101)
 
 **Pass 109 — phone title settings** — Sound, Move Guard, Motion, AI Thread, and Visual keep a 44px hit target on a 390×844 instrument. See [`docs/PASS109_PHONE_TITLE_SETTINGS.md`](docs/PASS109_PHONE_TITLE_SETTINGS.md).
 
