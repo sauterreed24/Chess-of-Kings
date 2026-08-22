@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.5] — 2026-08-22
+
+Pass 13 — Carved piece presence:
+
+- **Ivory/lapis glyphs** sit on a contact shadow with a crown sheen so the default set reads carved, not flat.
+- High-contrast skin stays uncarved for tournament readability.
+- Playwright finishes the prologue calibration in four developing moves and unlocks Advance.
+- Docs: [`docs/PASS13_CARVED_PIECES.md`](docs/PASS13_CARVED_PIECES.md).
+
 ## [0.5.4] — 2026-08-22
 
 Pass 12 — Board-first compact:

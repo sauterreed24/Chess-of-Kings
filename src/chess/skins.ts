@@ -38,10 +38,22 @@ export const PIECE_SKIN_MAP: Record<PieceSkinId, Record<Color, Record<PieceSymbo
   'obsidian-neon': SVGS,
 }
 
+/** Foot shadow + crown sheen so Staunton glyphs read as carved ivory/lapis. */
+export function carveGlyph(svg: string, color: Color): string {
+  if (svg.includes('piece-carve')) return svg
+  const sheen = color === 'w' ? 'rgba(255,255,255,0.32)' : 'rgba(232,201,126,0.22)'
+  const foot =
+    '<ellipse class="piece-foot" cx="22.5" cy="41.4" rx="10.6" ry="1.9" fill="rgba(0,0,0,0.34)"/>'
+  const highlight = `<path class="piece-carve" d="M13.5 12.5c4.2-4.6 13.8-4.6 18 0-6.2 2.1-11.8 2.1-18 0z" fill="${sheen}"/>`
+  return svg.replace(/<svg([^>]*)>/, `<svg$1>${foot}`).replace('</svg>', `${highlight}</svg>`)
+}
+
 export function glyphForSkin(
   skin: PieceSkinId,
   color: Color,
   piece: PieceSymbol,
 ): string {
-  return PIECE_SKIN_MAP[skin]?.[color]?.[piece] ?? PIECE_SKIN_MAP['classic-royal'][color][piece]
+  const raw = PIECE_SKIN_MAP[skin]?.[color]?.[piece] ?? PIECE_SKIN_MAP['classic-royal'][color][piece]
+  if (skin === 'high-contrast') return raw
+  return carveGlyph(raw, color)
 }
