@@ -48,6 +48,7 @@ describe('buildLadderTrack', () => {
     expect(html).toContain('>M<')
     expect(html).toContain('>B<')
     expect(html).toContain('>C<')
+    expect(html).toContain('font-size:0.7rem')
     expect(html).toContain('Amara')
     expect(html).toContain('Lukas')
   })
