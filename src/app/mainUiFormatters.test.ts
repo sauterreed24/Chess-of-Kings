@@ -83,6 +83,7 @@ describe('mainUiFormatters', () => {
     })
 
     expect(html).toContain('story-beat--fire')
+    expect(html).toContain('font-size:0.7rem')
     expect(html).toContain('&lt;Pressure&gt;')
     expect(html).toContain('Fire &amp; calculation')
     expect(html).toContain('A poisoned &lt;pawn&gt; asks whether Reed can wait.')
@@ -106,6 +107,7 @@ describe('mainUiFormatters', () => {
   it('aiTraitBars renders escaped rival doctrine traits', () => {
     const html = aiTraitBars(AI_PROFILES.rowan_gambit)
     expect(html).toContain('Court Dossier')
+    expect(html).toContain('font-size:0.7rem')
     expect(html).toContain('Audacity')
     expect(html).toContain('Vigil')
     expect(html).toContain('Rowan Gambit Tabiya')
@@ -241,6 +243,7 @@ describe('mainUiFormatters', () => {
       concept: 'Every move needs a reason.',
     })
     expect(html).toContain('A loose knight hangs.')
+    expect(html).toContain('font-size:0.7rem')
     expect(html).toContain('Complete four moves as White')
     expect(html).toContain('teaching-more')
     expect(html).toContain('Why it works · Concept')

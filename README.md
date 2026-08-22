@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.125)
+## What's new in this release (v0.5.126)
+
+**Pass 134 — beat labels** — story-beat and Court Dossier kickers render at 0.7rem so the match manuscript still reads on a 390×844 instrument. See [`docs/PASS134_BEAT_LABEL.md`](docs/PASS134_BEAT_LABEL.md).
+
+## Previous release (v0.5.125)
 
 **Pass 133 — match briefing** — the encounter tier, "Encounter N of M" line, and ladder dots render at 0.7rem so the Amara card still reads on a 390×844 instrument. See [`docs/PASS133_MATCH_BRIEF.md`](docs/PASS133_MATCH_BRIEF.md).
 
