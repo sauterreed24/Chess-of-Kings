@@ -135,6 +135,15 @@ test('short lab keeps title chapters duel nav', async ({ page }) => {
   await expect(page.locator('#btn-title')).toBeVisible()
   await expect(page.locator('#btn-chapters')).toBeVisible()
   await expect(page.locator('#btn-duel')).toBeVisible()
+  const boardBox = await page.locator('#board-panel').boundingBox()
+  const manuscriptBox = await page.locator('#manuscript-panel').boundingBox()
+  const wrapBox = await page.locator('.board-wrap').boundingBox()
+  expect(boardBox).toBeTruthy()
+  expect(manuscriptBox).toBeTruthy()
+  expect(wrapBox).toBeTruthy()
+  expect(boardBox!.x).toBeGreaterThan(manuscriptBox!.x)
+  expect(Math.abs(boardBox!.y - manuscriptBox!.y)).toBeLessThan(80)
+  expect(wrapBox!.width).toBeGreaterThanOrEqual(240)
 })
 
 test('title → chapter → advance opens the lab simulation', async ({ page }) => {

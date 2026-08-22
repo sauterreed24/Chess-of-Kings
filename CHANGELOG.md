@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.10] — 2026-08-22
+
+Pass 18 — Wide short-lab board:
+
+- **Wide short labs** keep the two-column atelier so leftover height can grow the marble past the stacked 42vh postage stamp.
+- Phone and narrow short windows still stack board-first; e2 stays on screen.
+- Docs: [`docs/PASS18_WIDE_SHORT_BOARD.md`](docs/PASS18_WIDE_SHORT_BOARD.md).
+
 ## [0.5.9] — 2026-08-22
 
 Pass 17 — Short-lab board fit:
