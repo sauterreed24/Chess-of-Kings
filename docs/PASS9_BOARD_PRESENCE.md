@@ -15,7 +15,7 @@ Playtest of the v0.5.0 Paradox Masters build (desktop 1280×800 and iPhone-width
 4. **Captured material** — the HUD now uses the active piece skin SVGs instead of unicode figurines. Eval + captures also appear on freeplay rehearsal boards (still hidden on calibration and puzzles).
 5. **Board-first compact layout** — under 960px the live board stacks above the manuscript, the crawl subtitle/philosophy hide, and the instrument column can grow past the old 420px cap.
 6. **Readable flight** — piece carry is 280ms with a slightly higher arc so a reply can be followed.
-7. **Play smoke** — Playwright clicks e2→e4 on the prologue calibration after skip-ahead and asserts the ledger and 1/4 counter.
+7. **Play smoke** — Playwright clicks e2→e4 on the prologue calibration after skip-ahead, waits for the Archive reply, and asserts a 390×844 board stacks above the manuscript at >300px wide.
 
 ## Playtest notes
 
