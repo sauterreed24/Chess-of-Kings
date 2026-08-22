@@ -172,6 +172,28 @@ describe('BoardView keyboard navigation', () => {
     root.remove()
   })
 
+  it('marks kingside castle as a castle destination, not a quiet move dot', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const states: BoardSelectionState[] = []
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+      onSelectionChange: (state) => states.push(state),
+    })
+    const chess = new Chess('r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1')
+    view.draw(chess, null, { mode: 'solo', soloColor: 'w' })
+    view.showLegalFrom(chess, 'e1')
+
+    const g1 = root.querySelector<HTMLButtonElement>('[data-square="g1"]')!
+    expect(g1.classList.contains('sq-legal-castle')).toBe(true)
+    expect(g1.classList.contains('sq-legal-dot')).toBe(false)
+    expect(g1.getAttribute('aria-label')).toContain('legal castle destination')
+    expect(states[states.length - 1]?.castleSquares).toEqual(['g1'])
+    root.remove()
+  })
+
   it('reports pending move-guard confirmation targets', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)

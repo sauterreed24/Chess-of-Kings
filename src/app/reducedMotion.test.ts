@@ -155,8 +155,9 @@ describe('Alexandrine Imperial state polish', () => {
   it('keeps the last move legible as an origin-to-destination route cue', () => {
     expect(CSS).toMatch(/\.sq-last-from\s*\{[^}]*box-shadow:\s*inset 0 0 0 3px #a8d88acc/s)
     expect(CSS).toMatch(/\.sq-last-from::before\s*\{[^}]*#1a3a5c4d/s)
-    expect(CSS).toMatch(/\.sq-last-to\s*\{[^}]*#f0d28af5/s)
-    expect(CSS).toMatch(/\.sq-last-to::before\s*\{[^}]*radial-gradient\(circle at 54% 46%, #e8c97e73/s)
+    expect(CSS).toMatch(/\.sq-last-to(?:,\s*\.sq-legal-castle)?\s*\{[^}]*#f0d28af5/s)
+    expect(CSS).toMatch(/\.sq-last-to::before(?:,\s*\.sq-legal-castle::before)?\s*\{[^}]*radial-gradient\(circle at 54% 46%, #e8c97e73/s)
+    expect(CSS).toMatch(/\.sq-legal-castle/)
     expect(CSS).not.toMatch(/\.sq-last-from \{[^}]*!important/)
   })
 

@@ -101,6 +101,7 @@ function emptyBoardSelection(): BoardSelectionState {
     legalMoveCount: 0,
     captureCount: 0,
     quietMoveCount: 0,
+    castleSquares: [],
     guardTarget: null,
   }
 }
@@ -1781,6 +1782,18 @@ export class GameFlow {
                   : 'piece'
     if (s.guardTarget) {
       return `${s.selected} ${pieceName} is staged for ${s.guardTarget}. Activate ${s.guardTarget} again to confirm the guarded move.`
+    }
+    if (s.castleSquares.length) {
+      const castleLine = s.castleSquares
+        .map((sq) =>
+          sq === 'g1' || sq === 'g8'
+            ? `castle kingside to ${sq}`
+            : sq === 'c1' || sq === 'c8'
+              ? `castle queenside to ${sq}`
+              : `castle to ${sq}`,
+        )
+        .join('; ')
+      return `${s.selected} ${pieceName} selected: ${castleLine}. Choose a highlighted square.`
     }
     const targetWord = s.legalMoveCount === 1 ? 'target' : 'targets'
     const captureLine = s.captureCount

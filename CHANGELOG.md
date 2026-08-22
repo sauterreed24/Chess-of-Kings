@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.13] — 2026-08-22
+
+Pass 21 — Castle destination cue:
+
+- **Kingside/queenside destinations** read as castle squares, not quiet-move dots, and the instrument names `castle kingside to g1` when the king is selected.
+- Playwright plays hanging knight then O-O on the live Chapter I board.
+- Docs: [`docs/PASS21_CASTLE_CUE.md`](docs/PASS21_CASTLE_CUE.md).
+
 ## [0.5.12] — 2026-08-22
 
 Pass 20 — Puzzle instrument focus:
