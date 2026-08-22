@@ -22,7 +22,7 @@ const PROMO_NAMES: Record<PieceSymbol, string> = {
 const SQ_FACET_STYLE =
   'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0'
 
-function squareFacetSvg(light: boolean): string {
+export function squareFacetSvg(light: boolean): string {
   const lamp = light ? 'rgba(255,252,244,0.32)' : 'rgba(196,226,255,0.2)'
   const shade = light ? 'rgba(42,22,8,0.2)' : 'rgba(0,4,16,0.3)'
   return (

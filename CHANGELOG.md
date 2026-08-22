@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.114] — 2026-08-22
+
+Pass 122 — echo board facets:
+
+- **Graphics** — chronicle echo boards reuse live-board lamp/shade facets and wrap glyphs in carved `.piece` spans so ivory/lapis still read. No new CSS.
+- **Playability** — dossier echo replay buttons keep a 44px hit target on `max-width: 700px`.
+- **Playwright** — 390×844 opens an Alexion echo and asserts 64 facets plus a 2.4 outline.
+- No CSS budget change. Docs: [`docs/PASS122_ECHO_BOARD.md`](docs/PASS122_ECHO_BOARD.md).
+
 ## [0.5.113] — 2026-08-22
 
 Pass 121 — phone match tools:

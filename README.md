@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.113)
+## What's new in this release (v0.5.114)
+
+**Pass 122 — echo board facets** — chronicle replay boards use carved lamp/shade squares and 44px echo buttons on a 390×844 instrument. See [`docs/PASS122_ECHO_BOARD.md`](docs/PASS122_ECHO_BOARD.md).
+
+## Previous release (v0.5.113)
 
 **Pass 121 — phone match tools** — Take back, Sound, and Move Guard keep a 44px hit target on a 390×844 instrument. See [`docs/PASS121_PHONE_MATCH_TOOLS.md`](docs/PASS121_PHONE_MATCH_TOOLS.md).
 

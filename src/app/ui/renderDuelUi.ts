@@ -388,6 +388,9 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
     ]) {
       syncPhoneHitTarget(duelPanel.querySelector<HTMLElement>(`#${id}`), true)
     }
+    for (const el of duelPanel.querySelectorAll<HTMLElement>('.duel-echo-btn')) {
+      syncPhoneHitTarget(el, true)
+    }
     syncPhoneDossierFolds(duelPanel)
     duelPanel.querySelector<HTMLButtonElement>('#btn-preview-skin')?.addEventListener('click', () => {
       const val = (duelPanel.querySelector<HTMLSelectElement>('#duel-skin')?.value ?? 'classic-royal') as PieceSkinId
