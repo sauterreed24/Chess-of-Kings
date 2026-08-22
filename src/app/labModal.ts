@@ -134,8 +134,12 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
     manuscript.classList.add('hidden')
   } else {
     styleDockedProve(next, false)
-    stylePhoneHitTarget(hintBtn, false)
-    stylePhoneHitTarget(reset, false)
+    /* Phone matches keep Hint/Reset on the marble. Resize re-runs this
+       undock path — restyle visible tools instead of stripping the 44px
+       floor until the next ply. */
+    const phoneMatchTools = phone && !puzzle && !calibration
+    stylePhoneHitTarget(hintBtn, phoneMatchTools && Boolean(hintBtn && !hintBtn.hidden))
+    stylePhoneHitTarget(reset, phoneMatchTools && Boolean(reset && !reset.hidden))
     actions.prepend(next)
     manuscript.classList.remove('hidden')
   }

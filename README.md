@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.75)
+## What's new in this release (v0.5.76)
+
+**Pass 84 — Chapter VI Prax match** — the first Silicon Threshold match stays board-first on a 390×844 instrument, and phone Hint/Reset keep a 44px floor after undock or resize. See [`docs/PASS84_PHONE_CH6_MATCH.md`](docs/PASS84_PHONE_CH6_MATCH.md).
+
+## Previous release (v0.5.75)
 
 **Pass 83 — Phone Reset unhide** — Reset keeps a 44px hit target after the first phone ply, and the first Amara match proves on a 390×844 instrument. See [`docs/PASS83_PHONE_RESET_UNHIDE.md`](docs/PASS83_PHONE_RESET_UNHIDE.md).
 

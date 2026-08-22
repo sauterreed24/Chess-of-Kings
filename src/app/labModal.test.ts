@@ -319,4 +319,63 @@ describe('setTopBarInertForLab', () => {
     expect(document.querySelector('#lesson-note')?.classList.contains('hidden')).toBe(false)
     expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
   })
+
+  it('keeps 44px Hint and Reset on a phone match after undock or resize', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body"></div>
+          <div class="narrative-actions"><button id="btn-next">Advance<span id="btn-next-hint">Requires victory</span></button></div>
+        </article>
+        <div class="move-ledger-wrap"><div id="move-ledger"><div class="ledger-row">1. e4</div></div></div>
+        <div class="board-tools">
+          <button id="btn-hint">Hint</button>
+          <button id="btn-reset">Reset</button>
+        </div>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const hint = document.querySelector<HTMLButtonElement>('#btn-hint')!
+    const reset = document.querySelector<HTMLButtonElement>('#btn-reset')!
+    const next = document.querySelector<HTMLButtonElement>('#btn-next')!
+    hint.hidden = false
+    reset.hidden = false
+    syncPhonePuzzleLesson(body)
+    expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(false)
+    expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
+    expect(hint.style.minHeight).toBe('44px')
+    expect(reset.style.minHeight).toBe('44px')
+    expect(next.style.minHeight).toBe('')
+
+    syncPhonePuzzleLesson(body)
+    expect(hint.style.minHeight).toBe('44px')
+    expect(reset.style.minHeight).toBe('44px')
+    expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
+  })
+
+  it('does not unhide Reset on a phone match before the first ply', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body"></div>
+          <div class="narrative-actions"><button id="btn-next">Advance</button></div>
+        </article>
+        <div class="move-ledger-wrap"><div id="move-ledger">No moves yet.</div></div>
+        <div class="board-tools">
+          <button id="btn-hint">Hint</button>
+          <button id="btn-reset">Reset</button>
+        </div>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const hint = document.querySelector<HTMLButtonElement>('#btn-hint')!
+    const reset = document.querySelector<HTMLButtonElement>('#btn-reset')!
+    hint.hidden = false
+    reset.hidden = false
+    syncPhonePuzzleLesson(body)
+    expect(reset.hidden).toBe(true)
+    expect(reset.style.minHeight).toBe('')
+    expect(hint.hidden).toBe(false)
+    expect(hint.style.minHeight).toBe('44px')
+  })
 })
