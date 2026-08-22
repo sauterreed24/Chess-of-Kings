@@ -99,7 +99,7 @@ describe('Chapter V playtest', () => {
     expect(flow.currentScene().type === 'match' && flow.currentScene().scriptedBlackSans?.[0]).toBe('e6')
   })
 
-  it('seals the discipline age and finishes the compiled campaign', () => {
+  it('seals the discipline age and opens the Silicon Threshold', () => {
     const { flow, ch5, onChapterComplete, onCampaignFinished } = chapterFiveFlow()
     const freeIdx = PLAYABLE_CHAPTERS[ch5]!.scenes.findIndex((scene) => scene.id === 'c5-freeplay')
     flow.jumpToScene(ch5, freeIdx)
@@ -107,7 +107,8 @@ describe('Chapter V playtest', () => {
     expect(flow.canAdvance()).toBe(true)
     flow.advanceScene()
     expect(onChapterComplete).toHaveBeenCalled()
-    expect(onCampaignFinished).toHaveBeenCalled()
+    expect(onCampaignFinished).not.toHaveBeenCalled()
     expect(flow.chapter5Complete).toBe(true)
+    expect(flow.currentScene().id).toBe('c6-intro')
   })
 })

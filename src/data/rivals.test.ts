@@ -17,6 +17,8 @@ describe('RIVAL_PROFILES data', () => {
     'cassian',
     'gage',
     'helia',
+    'prax',
+    'iota',
   ]
 
   it('contains every named campaign and Duel Archive rival', () => {
@@ -112,6 +114,8 @@ describe('inferRivalIdFromSceneId', () => {
     expect(inferRivalIdFromSceneId('c4-match-cassian')).toBe('cassian')
     expect(inferRivalIdFromSceneId('c5-match-gage')).toBe('gage')
     expect(inferRivalIdFromSceneId('c5-match-helia')).toBe('helia')
+    expect(inferRivalIdFromSceneId('c6-match-prax')).toBe('prax')
+    expect(inferRivalIdFromSceneId('c6-match-iota')).toBe('iota')
     expect(inferRivalIdFromSceneId('c3-match-demetrios-return')).toBe('demetrios')
   })
 

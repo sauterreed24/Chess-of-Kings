@@ -258,6 +258,38 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.62, positional: 0.96, sacrificial: 0.2, prophylactic: 0.92 },
     motifBias: { fork: 0.46, pin: 0.92, skewer: 0.74, kingHunt: 0.3 },
   },
+  prax_precision: {
+    id: 'prax_precision',
+    label: 'Prax Public Line',
+    style: 'engine',
+    searchDepth: 4,
+    thinkTimeMs: 1100,
+    blunderRate: 0.028,
+    riskAppetite: 0.3,
+    tacticalAlertness: 0.94,
+    openingDiscipline: 0.92,
+    kingSafetyUrgency: 0.86,
+    conversionStrictness: 0.9,
+    conversionPersona: 'tactical',
+    weights: { tactical: 0.88, positional: 0.84, sacrificial: 0.28, prophylactic: 0.8 },
+    motifBias: { fork: 0.78, pin: 0.7, skewer: 0.72, kingHunt: 0.42 },
+  },
+  iota_threshold: {
+    id: 'iota_threshold',
+    label: 'Iota Ledger Finish',
+    style: 'engine',
+    searchDepth: 4,
+    thinkTimeMs: 1360,
+    blunderRate: 0.022,
+    riskAppetite: 0.18,
+    tacticalAlertness: 0.9,
+    openingDiscipline: 0.96,
+    kingSafetyUrgency: 0.9,
+    conversionStrictness: 0.99,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.7, positional: 0.97, sacrificial: 0.16, prophylactic: 0.94 },
+    motifBias: { fork: 0.5, pin: 0.94, skewer: 0.8, kingHunt: 0.28 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -282,6 +314,8 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('cassian')) return AI_PROFILES.cassian_paradox
   if (matchId.includes('gage')) return AI_PROFILES.gage_discipline
   if (matchId.includes('helia')) return AI_PROFILES.helia_machine
+  if (matchId.includes('prax')) return AI_PROFILES.prax_precision
+  if (matchId.includes('iota')) return AI_PROFILES.iota_threshold
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
   return AI_PROFILES.apprentice_court
@@ -299,6 +333,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('cassian')) return AI_PROFILES.cassian_paradox
   if (variantId.includes('gage')) return AI_PROFILES.gage_discipline
   if (variantId.includes('helia')) return AI_PROFILES.helia_machine
+  if (variantId.includes('prax')) return AI_PROFILES.prax_precision
+  if (variantId.includes('iota')) return AI_PROFILES.iota_threshold
   return AI_PROFILES.apprentice_court
 }
 

@@ -787,16 +787,17 @@ test('post-Chapter IV chapters screen invites the Machine of Discipline', async 
   await expect(page.locator('.plateau-hub')).toBeVisible()
   await expect(page.locator('.plateau-hub')).toContainText('A new age is open')
   await expect(page.locator('#btn-plateau-machine')).toBeVisible()
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Precision without mercy|Silicon/i)
+  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Switch schools|Human Synthesis/i)
   await expect(page.locator('.chapter-btn, .chapter-locked').filter({ hasText: 'Paradox Masters' })).toBeVisible()
   await expect(page.locator('.doctrine-atlas')).toContainText('Machine')
+  await expect(page.locator('.doctrine-atlas')).toContainText('Silicon')
   await page.locator('#btn-plateau-machine').click()
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
   await expect(page.locator('#play-chapter-label')).toContainText('Chapter V')
   await expect(page.locator('#narrative-body')).toContainText(/Gage|Helia|pause|discipline/i)
 })
 
-test('post-Chapter V chapters screen shows mastery plateau hub', async ({ page }) => {
+test('post-Chapter V chapters screen invites the Silicon Threshold', async ({ page }) => {
   await page.addInitScript(() => {
     const save = {
       version: 3,
@@ -845,10 +846,76 @@ test('post-Chapter V chapters screen shows mastery plateau hub', async ({ page }
   await page.goto('./')
   await page.locator('#btn-chapters').click({ timeout: 15_000 })
   await expect(page.locator('.plateau-hub')).toBeVisible()
-  await expect(page.locator('.plateau-hub')).toContainText('Mastery plateau')
-  await expect(page.locator('.plateau-hub')).toContainText('I–V are sealed')
+  await expect(page.locator('.plateau-hub')).toContainText('A new age is open')
+  await expect(page.locator('#btn-plateau-silicon')).toBeVisible()
+  await expect(page.locator('#btn-plateau-machine')).toHaveCount(0)
   await expect(page.locator('#btn-plateau-duel')).toBeVisible()
-  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Precision without mercy|Silicon/i)
+  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Switch schools|Human Synthesis/i)
+  await expect(page.locator('.doctrine-atlas')).toContainText('Silicon')
+  await page.locator('#btn-plateau-silicon').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter VI')
+  await expect(page.locator('#narrative-body')).toContainText(/Prax|Iota|ledger|outpost/i)
+})
+
+test('post-Chapter VI chapters screen shows mastery plateau hub', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 6,
+      sceneIndex: 0,
+      highestUnlockedChapter: 6,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: [
+        'c3-reflection',
+        'c3-freeplay',
+        'c4-reflection',
+        'c4-freeplay',
+        'c5-reflection',
+        'c5-freeplay',
+        'c6-reflection',
+        'c6-match-iota',
+        'c6-freeplay',
+      ],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax', 'iota'],
+      unlockedDuelVariantIds: [
+        'alexion-mentor',
+        'kallistos-law',
+        'nysa-frontier',
+        'cassian-paradox',
+        'gage-discipline',
+        'helia-machine',
+        'prax-precision',
+        'iota-threshold',
+      ],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 180,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1310, peak: 1310, rated: 5 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await expect(page.locator('.plateau-hub')).toBeVisible()
+  await expect(page.locator('.plateau-hub')).toContainText('Mastery plateau')
+  await expect(page.locator('.plateau-hub')).toContainText('I–VI are sealed')
+  await expect(page.locator('#btn-plateau-duel')).toBeVisible()
+  await expect(page.locator('#btn-plateau-silicon')).toHaveCount(0)
+  await expect(page.locator('.roadmap-teaser').first()).toContainText(/Switch schools|Human Synthesis/i)
   await page.locator('#btn-plateau-duel').click()
   await expect(page.locator('#screen-duel')).toBeVisible()
   await expect(page.locator('.duel-row').first()).toBeVisible()
@@ -1008,6 +1075,70 @@ test('Chapter V drills solve on the live board', async ({ page }) => {
   await expect(page.locator('#btn-next')).toBeEnabled()
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/Gage|pause/i)
+})
+
+test('Chapter VI drills solve on the live board', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 6,
+      sceneIndex: 0,
+      highestUnlockedChapter: 6,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c3-reflection', 'c3-freeplay', 'c4-reflection', 'c4-freeplay', 'c5-reflection', 'c5-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia'],
+      unlockedDuelVariantIds: [
+        'alexion-mentor',
+        'kallistos-law',
+        'nysa-frontier',
+        'cassian-paradox',
+        'gage-discipline',
+        'helia-machine',
+      ],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 160,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1280, peak: 1280, rated: 4 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn', { hasText: 'Chapter VI' }).click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toContainText('Chapter VI')
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Outpost|ledger|Precision/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="c3"]')).toBeVisible()
+  await page.locator('[data-square="c3"]').click()
+  await page.locator('[data-square="d5"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/queen|hanging|precision/i)
+  await page.locator('[data-square="e3"]').click()
+  await page.locator('[data-square="d5"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await page.locator('[data-square="e1"]').click()
+  await page.locator('[data-square="e8"]').click()
+  await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#btn-next')).toBeEnabled()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Prax|public line|hole/i)
 })
 
 test('seeded save unlocks Lukas in the duel archive and shows Chapter III', async ({ page }) => {

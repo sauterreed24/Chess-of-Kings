@@ -89,6 +89,43 @@ describe('campaign story beats', () => {
     }
   })
 
+  it('authors Chapter VI as a playable Silicon Threshold arc', () => {
+    const ch6 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch6')
+    expect(ch6).toBeTruthy()
+    expect(ch6?.subtitle).toMatch(/Silicon Threshold/)
+    expect(ch6?.themeClass).toBe('theme-classical')
+    const matches = ch6?.scenes.filter((scene) => scene.type === 'match') ?? []
+    expect(matches.map((scene) => scene.id)).toEqual(['c6-match-prax', 'c6-match-iota'])
+    expect(matches.every((scene) => scene.type === 'match' && scene.aiStyle === 'engine')).toBe(true)
+    const prax = matches.find((scene) => scene.id === 'c6-match-prax')
+    const iota = matches.find((scene) => scene.id === 'c6-match-iota')
+    expect(prax?.type === 'match' && prax.scriptedBlackSans?.[0]).toBe('c5')
+    expect(iota?.type === 'match' && iota.scriptedBlackSans?.[0]).toBe('c6')
+    const puzzles = ch6?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
+    expect(puzzles.map((scene) => scene.id)).toEqual(
+      expect.arrayContaining(['c6-puzzle-outpost', 'c6-puzzle-precision', 'c6-puzzle-backrank']),
+    )
+    const intro = ch6?.scenes.find((scene) => scene.id === 'c6-intro')
+    const codex = ch6?.scenes.find((scene) => scene.id === 'c6-codex-ledger')
+    const reflection = ch6?.scenes.find((scene) => scene.id === 'c6-reflection')
+    expect(intro?.type).toBe('dialogue')
+    expect(codex?.type).toBe('codex')
+    expect(reflection?.type).toBe('dialogue')
+    if (intro?.type === 'dialogue') {
+      const spoken = intro.lines.map((line) => line.text).join(' ')
+      expect(spoken).toContain('Prax')
+      expect(spoken).toContain('Iota')
+      expect(intro.lines.some((line) => line.speaker === 'helia')).toBe(true)
+    }
+    if (codex?.type === 'codex') {
+      expect(codex.entries.map((entry) => entry.term)).toContain('Ledger engine')
+      expect(codex.entries.map((entry) => entry.term)).toContain('Outpost')
+    }
+    if (reflection?.type === 'dialogue') {
+      expect(reflection.lines.map((line) => line.text).join(' ')).toContain('without vanishing into it')
+    }
+  })
+
   it('anchors the Prologue in the Long Reign modern commonwealth', () => {
     const prologue = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'prologue')
     const codex = prologue?.scenes.find((scene) => scene.id === 'pr-codex-long-reign')

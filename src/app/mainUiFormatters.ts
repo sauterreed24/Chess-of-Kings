@@ -32,6 +32,8 @@ const SPEAKER_META: Record<string, SpeakerMeta> = {
   cassian: { label: 'Cassian', sigil: 'CA', voice: 'rival', cadenceMs: 9 },
   gage: { label: 'Gage', sigil: 'GA', voice: 'scholar', cadenceMs: 9 },
   helia: { label: 'Helia', sigil: 'HE', voice: 'rival', cadenceMs: 8 },
+  prax: { label: 'Prax', sigil: 'PX', voice: 'scholar', cadenceMs: 8 },
+  iota: { label: 'Iota', sigil: 'IO', voice: 'rival', cadenceMs: 8 },
   rowan: { label: 'Rowan Vale', sigil: 'RO', voice: 'fire', cadenceMs: 7 },
   vega: { label: 'Vega Sorn', sigil: 'VE', voice: 'rival', cadenceMs: 8 },
 }

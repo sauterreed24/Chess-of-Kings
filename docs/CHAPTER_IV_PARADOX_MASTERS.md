@@ -2,7 +2,7 @@
 
 ## Summary
 
-Playable hypermodern chapter after Chapter III. Sealing the Professor's Law opens the Paradox Masters. Sealing Chapter IV opens the Machine of Discipline; the mastery plateau moves to Chapter V freeplay completion. Existing chronicles that already sealed Chapter III receive Chapter IV through a successor-unlock backfill.
+Playable hypermodern chapter after Chapter III. Sealing the Professor's Law opens the Paradox Masters. Sealing Chapter IV opens the Machine of Discipline; later ages (Silicon Threshold, then the mastery plateau after Chapter VI) remain successor doors. Existing chronicles that already sealed Chapter III receive Chapter IV through a successor-unlock backfill.
 
 ## Lore
 

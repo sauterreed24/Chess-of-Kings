@@ -2,7 +2,7 @@
 
 ## Summary
 
-Playable discipline chapter after Chapter IV. Sealing the Paradox Masters opens the Machine of Discipline. The mastery plateau moves to Chapter V freeplay completion. Existing chronicles that already sealed Chapter IV receive the new age through a successor-unlock backfill.
+Playable discipline chapter after Chapter IV. Sealing the Paradox Masters opens the Machine of Discipline. Sealing Chapter V opens the Silicon Threshold; the mastery plateau moves to Chapter VI freeplay completion. Existing chronicles that already sealed Chapter IV receive the new age through a successor-unlock backfill.
 
 ## Lore
 
@@ -35,5 +35,5 @@ Sealing the chapter amends the committee file again: Reed can wait without becom
 - Chapter FEN/goal validation covers luft (`pieceOn h3`), conversion capture, and opposition mate
 - Orchestrator: Ch IV seal opens Ch V; pre-Ch-V saves that sealed the paradox age unlock Ch V on load
 - Duel roster / reward unlock ids for Gage and Helia
-- Plateau hub fixtures cover sealed Ch IV (machine invite), pending Ch V, and sealed Ch V mastery plateau
+- Plateau hub fixtures cover sealed Ch IV (machine invite), pending Ch V, and sealed Ch V silicon invite
 - Playwright: Chapter V drills (`h2-h3`, `d1-d5`, `a1-a8`) and post-IV / post-V hub copy

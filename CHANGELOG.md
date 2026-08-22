@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.61] — 2026-08-22
+
+Pass 69 — Chapter VI playable:
+
+- **Chapter VI — The Silicon Threshold** is playable: ledger-engine lore (brass/lapis counting rooms, not sci-fi robots), Prax + Iota matches with public-line / finish scripts, outpost / hanging-queen / back-rank drills, and a seal that moves the mastery plateau to I–VI.
+- **Successor unlock backfill** opens Chapter VI for chronicles that sealed Chapter V when it was the last compiled age.
+- Hub copy: Chapter V survivors are invited into the Silicon Threshold; the mastery plateau now keys off Chapter VI freeplay.
+- Theme reuses `theme-classical` (CSS gzip locked). Docs: [`docs/PASS69_CHAPTER_VI.md`](docs/PASS69_CHAPTER_VI.md).
+
 ## [0.5.60] — 2026-08-22
 
 Pass 68 — Chapter V playable:

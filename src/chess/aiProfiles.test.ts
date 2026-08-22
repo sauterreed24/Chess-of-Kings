@@ -21,6 +21,10 @@ describe('AI profile resolver', () => {
     expect(resolveProfileByMatchId('c5-match-gage').id).toBe('gage_discipline')
     expect(resolveProfileByDuelVariant('helia-machine').id).toBe('helia_machine')
     expect(resolveProfileByMatchId('c5-match-gage').style).toBe('soviet')
+    expect(resolveProfileByMatchId('c6-match-prax').id).toBe('prax_precision')
+    expect(resolveProfileByDuelVariant('iota-threshold').id).toBe('iota_threshold')
+    expect(resolveProfileByMatchId('c6-match-prax').style).toBe('engine')
+    expect(resolveProfileByMatchId('c6-match-iota').style).toBe('engine')
   })
 
   it('detects game phase and adapts conversion/endgame values', () => {

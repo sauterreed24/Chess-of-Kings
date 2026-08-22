@@ -28,6 +28,7 @@ describe('chapterProgress', () => {
     expect(html).toContain('Lens')
     expect(html).toContain('Paradox')
     expect(html).toContain('Machine')
+    expect(html).toContain('Silicon')
   })
 
   it('marks sealed, current, and locked ages along the succession', () => {

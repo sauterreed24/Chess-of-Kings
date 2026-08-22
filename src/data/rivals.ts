@@ -541,6 +541,80 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  prax: {
+    opponentId: 'prax',
+    displayName: 'Prax',
+    blend: {
+      primary: { school: 'Indic Combinatorics', weight: 60 },
+      secondary: { school: 'Macedonian Phalanx', weight: 40 },
+    },
+    counterPrep: [
+      'Sit on the hole he names — Prax files an empty d5 or e5 as a leak, then harvests the file.',
+      'Do not hunt a pretty tactic while a piece hangs; his ledger treats missed captures as confession.',
+      'If he offers a sharp Sicilian structure, castle first and occupy; invention past the outpost is how you become the leak.',
+    ],
+    whiteOpenings: ['Open Sicilian pressure', 'English holes against c5', 'Quiet king-pawn with an outpost plan'],
+    blackOpenings: ['Sicilian Nc6 systems', 'Najdorf-quiet d6 walls', 'Precision c5 counters'],
+    signature: 'Occupy the named hole, then take whatever the occupancy left hanging.',
+    talk: {
+      opening: [
+        'The line is already there. Follow it, or be the leak.',
+        'Show me the hole you were about to walk past.',
+      ],
+      punished: [
+        'You sat on the square. Correct.',
+        'My invoice lost its lawsuit. Earned.',
+      ],
+      rattled: [
+        'You are treating the ledger like a conversation. Rare, and irritating.',
+        'I filed you as a tourist. Amend the file.',
+      ],
+      audacious: [
+        'You invented past the hole. I collect invention as tax.',
+        'Pretty leaks still drown cities. Watch.',
+      ],
+      draw: [
+        'A draw can be two correctly followed lines that refused to finish.',
+      ],
+    },
+  },
+  iota: {
+    opponentId: 'iota',
+    displayName: 'Iota',
+    blend: {
+      primary: { school: 'Achaemenid Patience', weight: 70 },
+      secondary: { school: 'Indic Combinatorics', weight: 30 },
+    },
+    counterPrep: [
+      'When you are a pawn up, finish — Iota treats an unconverted plus as weather you failed to collect.',
+      'Keep luft; her favorite finish is the back rank you donated while narrating a nicer idea.',
+      'If she offers a queen trade while ahead, take it unless you have a concrete mate; courtesy toward her extra pawn is how rumors stay rumors.',
+    ],
+    whiteOpenings: ['Caro structures as White pressure', 'Slav walls with a plus', 'Technical rook endings'],
+    blackOpenings: ['Caro-Kann c6-d5', 'Slav solidity', 'Finish-first simplifications'],
+    signature: 'Convert the smallest plus, then finish the back rank if you donate luft.',
+    talk: {
+      opening: [
+        'A plus of one pawn is a fact. Mercy is how facts become rumors.',
+        'Finish it uglier than drought.',
+      ],
+      punished: [
+        'You finished the file. The counting rooms notice.',
+        'My plus never closed. Well seen.',
+      ],
+      rattled: [
+        'You treated a one-pawn lead as weather, then changed the weather. Rare.',
+        'I filed you as courteous. Courtesy is a leak. Amend the file.',
+      ],
+      audacious: [
+        'You left a plus on the table and called it atmosphere. I collect atmosphere.',
+        'A rumor is not a win. I will demonstrate the difference.',
+      ],
+      draw: [
+        'A draw is a plus that stayed a rumor. Acceptable, barely.',
+      ],
+    },
+  },
 }
 
 /**

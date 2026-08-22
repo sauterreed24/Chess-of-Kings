@@ -49,6 +49,8 @@ describe('opening books', () => {
     expect(getBookTopLines('kallistos_classical', 7).map((line) => line.san)).toContain('Be7')
     expect(getBookTopLines('gage_discipline', 9).map((line) => line.san)).toContain('d6')
     expect(getBookTopLines('helia_machine', 9).map((line) => line.san)).toContain('e6')
+    expect(getBookTopLines('prax_precision', 9).map((line) => line.san)).toContain('c5')
+    expect(getBookTopLines('iota_threshold', 9).map((line) => line.san)).toContain('c6')
 
     const rowan = getBookTopLines('rowan_gambit', 9)
     const vega = getBookTopLines('vega_italian', 9)
