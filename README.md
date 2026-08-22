@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.78)
+## What's new in this release (v0.5.79)
+
+**Pass 87 — Chapter IX Wren match** — the first Apotheosis Engine match stays board-first on a 390×844 instrument, with the authored `e5` reply. See [`docs/PASS87_PHONE_CH9_MATCH.md`](docs/PASS87_PHONE_CH9_MATCH.md).
+
+## Previous release (v0.5.78)
 
 **Pass 86 — Chapter VIII Voss match** — the first Alexandrine Board match stays board-first on a 390×844 instrument, with a queen-pawn opening and the authored `d5` reply. See [`docs/PASS86_PHONE_CH8_MATCH.md`](docs/PASS86_PHONE_CH8_MATCH.md).
 
