@@ -1157,7 +1157,7 @@ test('first Chapter II match lets Reed open against Rowan', { timeout: 120_000 }
   await expect(page.locator('[data-square="f3"]')).toHaveClass(/sq-legal-dot/)
   await page.locator('[data-square="f3"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3/i)
-  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3!?\s+exf4/i, { timeout: 25_000 })
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3[!?]*\s+exf4/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
 })
 
@@ -1190,7 +1190,7 @@ test('first Chapter II match stays board-first on the phone instrument', { timeo
   await expect(page.locator('[data-square="f3"]')).toHaveClass(/sq-legal-dot/)
   await page.locator('[data-square="f3"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3/i)
-  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3!?\s+exf4/i, { timeout: 25_000 })
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3[!?]*\s+exf4/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
