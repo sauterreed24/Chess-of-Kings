@@ -153,6 +153,9 @@ describe('setTopBarInertForLab', () => {
     expect(next.previousElementSibling?.id).toBe('btn-hint')
     expect(next.style.width).toBe('auto')
     expect(next.style.flexDirection).toBe('row')
+    expect(next.style.minHeight).toBe('44px')
+    expect(next.style.boxSizing).toBe('border-box')
+    expect(document.querySelector('#btn-hint')?.getAttribute('style') ?? '').toMatch(/min-height:\s*44px/)
     expect(document.querySelector('#btn-next-hint')?.classList.contains('hidden')).toBe(true)
 
     stubPhoneLabNav(false)
@@ -160,6 +163,8 @@ describe('setTopBarInertForLab', () => {
     expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(false)
     expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
     expect(next.style.width).toBe('')
+    expect(next.style.minHeight).toBe('')
+    expect(document.querySelector('#btn-hint')?.getAttribute('style') ?? '').not.toMatch(/min-height/)
     expect(document.querySelector('#btn-next-hint')?.classList.contains('hidden')).toBe(false)
   })
 
@@ -213,10 +218,15 @@ describe('setTopBarInertForLab', () => {
     syncPhonePuzzleLesson(body)
     expect(hint.hidden).toBe(true)
     expect(reset.hidden).toBe(false)
+    expect(document.querySelector('#btn-next')?.style.minHeight).toBe('44px')
+    expect(reset.style.minHeight).toBe('44px')
+    expect(hint.style.minHeight).toBe('')
 
     stubPhoneLabNav(false)
     syncPhonePuzzleLesson(body)
     expect(hint.hidden).toBe(false)
+    expect(document.querySelector('#btn-next')?.style.minHeight).toBe('')
+    expect(reset.style.minHeight).toBe('')
   })
 
   it('keeps a spent Hint hidden when calibration widens after an Archive reply', () => {

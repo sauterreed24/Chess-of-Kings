@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.69] — 2026-08-22
+
+Pass 77 — Chapter VI phone lab:
+
+- **390×844 Silicon Threshold drills** prove outpost / hanging-queen / back-rank on the phone instrument: manuscript hidden, Prove docked beside Hint, `#turn-pulse` stays hidden, overlay caption is `Chapter VI`.
+- **44px hit targets** — docked Hint, Prove, and calibration Reset use inline `min-height`/`min-width` (CSS gzip locked). After the e8 mate, Prax’s briefing restores the manuscript. Docs: [`docs/PASS77_PHONE_CH6_LAB.md`](docs/PASS77_PHONE_CH6_LAB.md).
+
 ## [0.5.68] — 2026-08-22
 
 Pass 76 — Chapter VII phone lab:
