@@ -1,11 +1,18 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { PHONE_LAB_NAV_QUERY } from '../labModal'
 import { paintTitleHonor } from './titleHonor'
 
 describe('paintTitleHonor', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('plants ten carved classic-royal glyphs', () => {
     const root = document.createElement('div')
     paintTitleHonor(root)
     expect(root.querySelectorAll('.title-honor__piece')).toHaveLength(10)
+    expect(root.querySelector('.title-honor__row')).not.toBeNull()
+    expect(root.querySelectorAll('g[stroke-width="2.4"]').length).toBeGreaterThan(0)
     expect(root.querySelectorAll('.piece-carve')).toHaveLength(10)
     expect(root.querySelectorAll('.piece-lit')).toHaveLength(10)
     expect(root.querySelectorAll('.piece-collar')).toHaveLength(10)
@@ -47,5 +54,26 @@ describe('paintTitleHonor', () => {
 
   it('ignores a missing root', () => {
     expect(() => paintTitleHonor(null)).not.toThrow()
+  })
+
+  it('scales the honor guard into two ranks on phone', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === PHONE_LAB_NAV_QUERY,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      onchange: null,
+    }))
+    const root = document.createElement('div')
+    paintTitleHonor(root)
+    const row = root.querySelector<HTMLElement>('.title-honor__row')!
+    const piece = root.querySelector<HTMLElement>('.title-honor__piece')!
+    expect(row.style.flexWrap).toBe('wrap')
+    expect(row.style.width).toBe('13.2rem')
+    expect(piece.style.width).toBe('2.4rem')
+    expect(piece.style.height).toBe('2.4rem')
   })
 })

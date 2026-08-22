@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.106] — 2026-08-22
+
+Pass 114 — phone title honor guard:
+
+- **Graphics** — the carved ivory/lapis honor row wraps into two ranks of five on `max-width: 700px` at 2.4rem, and the civic outline thickens to 2.4 so crowns, mitres, and merlons read. No new CSS.
+- **Playwright** — desktop honor still asserts ten carved pieces; 390×844 asserts each glyph is at least 38px tall.
+- No CSS budget change. Docs: [`docs/PASS114_PHONE_HONOR_SCALE.md`](docs/PASS114_PHONE_HONOR_SCALE.md).
+
 ## [0.5.105] — 2026-08-22
 
 Pass 113 — phone top nav:

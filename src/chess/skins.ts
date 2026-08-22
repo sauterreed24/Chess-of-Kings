@@ -484,7 +484,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
 }
 
 /** Phone squares need a thicker outline than the shared 1.5 civic stroke. Cups stay 0.45. */
-function thickenOutline(svg: string): string {
+export function thickenOutline(svg: string): string {
   return svg.replace(/stroke-width="1.5"/g, 'stroke-width="2.4"')
 }
 
