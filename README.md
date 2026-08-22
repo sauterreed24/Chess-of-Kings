@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.110)
+## What's new in this release (v0.5.111)
+
+**Pass 119 — captured HUD scale** — captured match glyphs render at 2rem so carved silhouettes still read beside the marble on a 390×844 instrument. See [`docs/PASS119_CAPTURED_HUD.md`](docs/PASS119_CAPTURED_HUD.md).
+
+## Previous release (v0.5.110)
 
 **Pass 118 — classic-royal outline** — default ivory/lapis pieces use the 2.4 civic outline so carved edges still read on a 390×844 instrument. See [`docs/PASS118_CLASSIC_OUTLINE.md`](docs/PASS118_CLASSIC_OUTLINE.md).
 

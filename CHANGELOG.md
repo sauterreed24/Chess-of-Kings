@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.111] — 2026-08-22
+
+Pass 119 — captured HUD scale:
+
+- **Graphics** — match/duel captured glyphs render at 2rem so carved ivory/lapis still reads in the material tray. Ornate ivory keeps the bronze stroke. No new CSS.
+- **Playwright** — 390×844 Amara match takes `exd5` and asserts the captured pawn is 2rem with a 2.4 outline.
+- No CSS budget change. Docs: [`docs/PASS119_CAPTURED_HUD.md`](docs/PASS119_CAPTURED_HUD.md).
+
 ## [0.5.110] — 2026-08-22
 
 Pass 118 — classic-royal outline:
