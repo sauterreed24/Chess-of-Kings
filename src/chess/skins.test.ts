@@ -170,7 +170,7 @@ describe('carveGlyph', () => {
     const widths = [...bishop.matchAll(/class="piece-cleft"[^>]*width="([\d.]+)"/g)].map((m) => Number(m[1]))
     const heights = [...bishop.matchAll(/class="piece-cleft"[^>]*height="([\d.]+)"/g)].map((m) => Number(m[1]))
     expect(widths[0]).toBeGreaterThanOrEqual(2.3)
-    expect(heights[1]).toBeGreaterThanOrEqual(1.8)
+    expect(heights[1]).toBeGreaterThanOrEqual(3.2)
   })
 
   it('sizes rook merlon wells to read on a phone square', () => {

@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.51] — 2026-08-22
+
+Pass 59 — Bishop mitre bar:
+
+- **Ivory/lapis bishops** thicken the cleft crossbar so calibration c1 is not a 1.7px scratch after the stem and rook wells grew. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration c1 and hanging-knight c3 bars are at least 2.6 CSS pixels tall.
+- Docs: [`docs/PASS59_MITRE_BAR.md`](docs/PASS59_MITRE_BAR.md).
+
 ## [0.5.50] — 2026-08-22
 
 Pass 58 — Rook merlon wells:
