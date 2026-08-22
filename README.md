@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.17)
+## What's new in this release (v0.5.18)
+
+**Pass 26 — Turned lathe rings** — ivory and lapis get a molded plinth, a neck ring, and lamp-side body shade so they read as turned chessmen. See [`docs/PASS26_TURNED_LATHE.md`](docs/PASS26_TURNED_LATHE.md).
+
+## Previous release (v0.5.17)
 
 **Pass 25 — Match aim stays** — the first live game keeps a short command on the instrument after you select a piece, instead of counting legal targets. See [`docs/PASS25_MATCH_AIM.md`](docs/PASS25_MATCH_AIM.md).
 

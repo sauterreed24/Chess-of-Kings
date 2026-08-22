@@ -10,16 +10,28 @@ describe('carveGlyph', () => {
     expect(carved).toContain('class="piece-ground"')
     expect(carved).toContain('class="piece-lit"')
     expect(carved).toContain('class="piece-collar"')
+    expect(carved).toContain('class="piece-plinth"')
+    expect(carved).toContain('class="piece-neck"')
     expect(carved).toContain('feSpecularLighting')
+    expect(carved).toContain('feDiffuseLighting')
     expect(carved).toContain('linearGradient')
     expect(carved).toMatch(/fill="url\(#pl\d+g\)"/)
-    expect(carved).toContain('rgba(255,255,255,0.32)')
+    expect(carved).toContain('rgba(255,255,255,0.36)')
     expect(carveGlyph(carved, 'w')).toBe(carved)
   })
 
+  it('keeps lathe rings and lamp filters after HTML innerHTML', () => {
+    const host = document.createElement('div')
+    host.innerHTML = carveGlyph('<svg><path fill="var(--piece-fill)" d="M1"/></svg>', 'w', 'p')
+    expect(host.querySelector('.piece-plinth')).toBeTruthy()
+    expect(host.querySelector('.piece-neck')).toBeTruthy()
+    expect(host.querySelector('feDiffuseLighting')).toBeTruthy()
+    expect(host.querySelector('feSpecularLighting')).toBeTruthy()
+  })
+
   it('uses a gold sheen on black pieces', () => {
-    expect(carveGlyph('<svg></svg>', 'b')).toContain('rgba(232,201,126,0.28)')
-    expect(carveGlyph('<svg></svg>', 'b')).toContain('#6a98c4')
+    expect(carveGlyph('<svg></svg>', 'b')).toContain('rgba(232,201,126,0.32)')
+    expect(carveGlyph('<svg></svg>', 'b')).toContain('#7aa8d4')
   })
 
   it('gives each piece type a distinct sheen path', () => {
@@ -32,6 +44,11 @@ describe('carveGlyph', () => {
     expect(rook).toContain('rx="11.4"')
     expect(pawn).toContain('cy="31.8"')
     expect(rook).toContain('cy="34.6"')
+    expect(pawn).toContain('class="piece-neck"')
+    expect(pawn).toContain('class="piece-plinth"')
+    const knight = carveGlyph('<svg></svg>', 'w', 'n')
+    expect(knight).toContain('class="piece-plinth"')
+    expect(knight).not.toContain('class="piece-neck"')
   })
 
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {
@@ -52,6 +69,8 @@ describe('carveGlyph', () => {
       expect(carved).toContain('class="piece-lit"')
       expect(carved).toContain('linearGradient')
       expect(carved).not.toContain('feSpecularLighting')
+      expect(carved).not.toContain('feDiffuseLighting')
+      expect(carved).toContain('class="piece-plinth"')
       expect(carved).not.toContain(' filter=')
     } finally {
       if (prev == null) globalThis.localStorage?.removeItem('cok-visual-quality')
@@ -69,7 +88,10 @@ describe('glyphForSkin', () => {
     expect(pawn).toContain('piece-ground')
     expect(pawn).toContain('piece-lit')
     expect(pawn).toContain('piece-collar')
+    expect(pawn).toContain('piece-plinth')
+    expect(pawn).toContain('piece-neck')
     expect(pawn).toContain('feSpecularLighting')
+    expect(pawn).toContain('feDiffuseLighting')
     expect(glyphForSkin('alexandrine-ornate', 'b', 'k')).toContain('piece-carve')
   })
 
