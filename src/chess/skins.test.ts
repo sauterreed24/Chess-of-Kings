@@ -166,6 +166,16 @@ describe('carveGlyph', () => {
     expect(eyeR).toBeGreaterThanOrEqual(1.6)
   })
 
+  it('plants the carved eye on the horse head, not the snout', () => {
+    const knight = carveGlyph('<svg></svg>', 'w', 'n')
+    const cx = Number(knight.match(/class="piece-eye"[^/]*cx="([\d.]+)"/)?.[1])
+    const cy = Number(knight.match(/class="piece-eye"[^/]*cy="([\d.]+)"/)?.[1])
+    expect(cx).toBeGreaterThan(11)
+    expect(cx).toBeLessThan(16)
+    expect(cy).toBeLessThan(22)
+    expect(cy).toBeGreaterThan(14)
+  })
+
   it('sizes queen coronet pearls to read on a phone square', () => {
     const queen = carveGlyph('<svg></svg>', 'w', 'q')
     const pearlR = Number(queen.match(/class="piece-pearl"[^/]*r="([\d.]+)"/)?.[1])
@@ -290,6 +300,9 @@ describe('glyphForSkin', () => {
     expect(glyphForSkin('classic-royal', 'w', 'b')).toContain('piece-cleft')
     expect(glyphForSkin('classic-royal', 'w', 'k')).toContain('piece-cross')
     expect(glyphForSkin('classic-royal', 'w', 'n')).toContain('piece-eye')
+    expect(glyphForSkin('classic-royal', 'w', 'n')).toContain('knight-silhouette')
+    expect(glyphForSkin('classic-royal', 'w', 'n')).not.toContain('M22 10c10.5 1 16.5 8')
+    expect(glyphForSkin('classic-royal', 'b', 'n')).toContain('knight-silhouette')
     expect(pawn).toContain('feSpecularLighting')
     expect(pawn).toContain('feDiffuseLighting')
     expect(glyphForSkin('alexandrine-ornate', 'b', 'k')).toContain('piece-carve')
@@ -303,6 +316,10 @@ describe('glyphForSkin', () => {
     expect(glyphForSkin('high-contrast', 'w', 'q')).not.toContain('piece-ferrule')
     expect(glyphForSkin('high-contrast', 'w', 'n')).not.toContain('piece-mane')
     expect(glyphForSkin('high-contrast', 'w', 'n')).not.toContain('piece-eye')
+    expect(glyphForSkin('high-contrast', 'w', 'n')).toContain('knight-silhouette')
+    expect(glyphForSkin('high-contrast', 'w', 'n')).toContain('knight-iris')
+    expect(glyphForSkin('high-contrast', 'w', 'n')).toContain('knight-nostril')
+    expect(glyphForSkin('high-contrast', 'w', 'n')).not.toContain('M22 10c10.5 1 16.5 8')
     expect(glyphForSkin('high-contrast', 'w', 'q')).not.toContain('piece-pearl')
     expect(glyphForSkin('high-contrast', 'w', 'r')).not.toContain('piece-merlon')
     expect(glyphForSkin('high-contrast', 'w', 'b')).not.toContain('piece-cleft')

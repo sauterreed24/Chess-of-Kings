@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.64)
+## What's new in this release (v0.5.65)
+
+**Pass 73 — Knight horse head** — ivory and lapis knights are a carved horse silhouette, not a Wikipedia scribble with an eye on the snout. See [`docs/PASS73_KNIGHT_HEAD.md`](docs/PASS73_KNIGHT_HEAD.md).
+
+## Previous release (v0.5.64)
 
 **Pass 72 — Chapter IX playable** — The Apotheosis Engine is a full campaign age after the Alexandrine Board: habit census, compiled schools, Wren, and Bram. The compiled campaign now ends at a mastery plateau, not a teaser. See [`docs/PASS72_CHAPTER_IX.md`](docs/PASS72_CHAPTER_IX.md).
 

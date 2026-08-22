@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.65] — 2026-08-22
+
+Pass 73 — Knight horse-head silhouette:
+
+- **Ivory and lapis knights** replace the Wikipedia Staunton scribble with a civic horse: pointed ear, muzzle, nostril, and an iris on the head. The carved eye sits on that iris, not on the snout.
+- **High-contrast** keeps the same silhouette (no carve overlays), so tournament knights still read as horses.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS73_KNIGHT_HEAD.md`](docs/PASS73_KNIGHT_HEAD.md).
+
 ## [0.5.64] — 2026-08-22
 
 Pass 72 — Chapter IX playable:
