@@ -346,6 +346,7 @@ export function mountApp(app: HTMLDivElement) {
     for (const el of titlePrivacyHits) syncPhoneInlineHitTarget(el, true)
     syncPhoneTopNav()
     syncPhoneDossierFolds(app)
+    syncPhoneTitleCtas()
   }
 
   function syncPhoneTopNav() {
@@ -447,6 +448,14 @@ export function mountApp(app: HTMLDivElement) {
   })
   flowRef = flow
 
+  function syncPhoneTitleCtas() {
+    const saveVisible = !titleActionsSave.classList.contains('hidden')
+    const freshVisible = !titleActionsFresh.classList.contains('hidden')
+    syncPhoneHitTarget(btnResume, saveVisible)
+    syncPhoneHitTarget(btnNew, saveVisible)
+    syncPhoneHitTarget(btnEnterArchive, freshVisible)
+  }
+
   function syncTitleButtons() {
     const saved = hasSave()
     syncTitleActionGroups(saved, {
@@ -456,6 +465,7 @@ export function mountApp(app: HTMLDivElement) {
       newButton: btnNew,
       enterButton: btnEnterArchive,
     })
+    syncPhoneTitleCtas()
   }
 
   function syncMvpFlag() {
