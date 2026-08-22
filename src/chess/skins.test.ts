@@ -342,7 +342,10 @@ describe('glyphForSkin', () => {
     expect(glyphForSkin('obsidian-neon', 'w', 'q')).toContain('stroke-width="2.4"')
     expect(glyphForSkin('obsidian-neon', 'w', 'q')).not.toContain('stroke-width="1.5"')
     expect(glyphForSkin('obsidian-neon', 'w', 'q')).toContain('stroke-width="0.45"')
-    expect(glyphForSkin('alexandrine-ornate', 'w', 'q')).toContain('stroke-width="1.5"')
+    expect(glyphForSkin('alexandrine-ornate', 'w', 'q')).toContain('piece-carve')
+    expect(glyphForSkin('alexandrine-ornate', 'w', 'q')).toContain('stroke-width="2.4"')
+    expect(glyphForSkin('alexandrine-ornate', 'w', 'q')).not.toContain('stroke-width="1.5"')
+    expect(glyphForSkin('classic-royal', 'w', 'q')).toContain('stroke-width="1.5"')
   })
 
   it('leaves high-contrast glyphs uncarved for tournament readability', () => {

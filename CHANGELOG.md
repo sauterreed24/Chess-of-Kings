@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.99] — 2026-08-22
+
+Pass 107 — Alexandrine Ornate set on the phone instrument:
+
+- **Graphics** — ornate glyphs stay carved, then thicken the shared 1.5 outline to 2.4 so cream/gold and sapphire/gold still read on 390×844. Cup strokes stay 0.45. No new CSS.
+- **Playwright** — a post-Amara Chapter I seed with ornate selected resumes Lukas: `data-skin="alexandrine-ornate"`, carve overlays, cream/sapphire fills, gold strokes, civic silhouettes, `e2–e4` / `e5`, and 44px Hint/Reset.
+- No CSS budget change. Docs: [`docs/PASS107_PHONE_ORNATE.md`](docs/PASS107_PHONE_ORNATE.md).
+
 ## [0.5.98] — 2026-08-22
 
 Pass 106 — Obsidian Neon set on the phone instrument:
