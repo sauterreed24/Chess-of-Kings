@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.40] — 2026-08-22
+
+Pass 48 — Quiet puzzle coach:
+
+- **Teaching puzzles** omit move-insight coach lines after a sealing capture. Explicit Hint — lines still file. The marble already names the proof.
+- Playwright keeps `#coach-tip` hidden after hanging-knight Bxd4.
+- Docs: [`docs/PASS48_QUIET_PUZZLE_COACH.md`](docs/PASS48_QUIET_PUZZLE_COACH.md).
+
 ## [0.5.39] — 2026-08-22
 
 Pass 47 — Quiet puzzle draw:

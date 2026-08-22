@@ -12,13 +12,14 @@ vi.mock('./storage', () => ({
 import { GameFlow } from './gameFlow'
 import { writeSave } from './storage'
 
-function mockBoard(): Pick<BoardView, 'draw' | 'setInteraction' | 'setOrientation' | 'setCheckSquare' | 'setSkin'> {
+function mockBoard(): Pick<BoardView, 'draw' | 'setInteraction' | 'setOrientation' | 'setCheckSquare' | 'setSkin' | 'showLegalFrom'> {
   return {
     draw: vi.fn(),
     setInteraction: vi.fn(),
     setOrientation: vi.fn(),
     setCheckSquare: vi.fn(),
     setSkin: vi.fn(),
+    showLegalFrom: vi.fn(),
   }
 }
 
@@ -88,7 +89,27 @@ describe('GameFlow AI / puzzles', () => {
     expect(latest?.status ?? '').not.toMatch(/draw/i)
     expect(latest?.matchOutcome).toBeNull()
     expect(latest?.tacticalPulse).toBeNull()
+    expect(latest?.coachTip).toBeNull()
+    expect(latest?.mentorInsight).toBeNull()
     expect(latest?.boardGuide).toMatch(/proof sealed/i)
+  })
+
+  it('still files an explicit Hint line on teaching puzzles', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    flow.jumpToScene(1, 2)
+    expect(flow.currentScene().id).toBe('c1-tutorial-hanging')
+    onChessUpdate.mockClear()
+    flow.requestHint()
+    const latest = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(latest?.coachTip).toMatch(/^Hint — /)
   })
 
   it('undo in puzzle removes both player move and opponent reply', async () => {
