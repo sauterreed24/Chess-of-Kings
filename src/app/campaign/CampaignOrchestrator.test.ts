@@ -165,7 +165,7 @@ describe('CampaignOrchestrator', () => {
     }
   })
 
-  it('grants Chapter VII clear rewards when the final chapter seals', () => {
+  it('opens Chapter VIII when Chapter VII seals', () => {
     const ch7Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch7')
     expect(ch7Index).toBeGreaterThanOrEqual(0)
     const ch7 = PLAYABLE_CHAPTERS[ch7Index]!
@@ -182,10 +182,35 @@ describe('CampaignOrchestrator', () => {
     const result = campaign.advanceAfterLeaving(last)
     expect(result.kind).toBe('chapter-complete')
     if (result.kind === 'chapter-complete') {
-      expect(result.campaignFinished).toBe(true)
+      expect(result.campaignFinished).toBeFalsy()
       expect(result.chapter.id).toBe('ch7')
       expect(result.rewards.some((r) => r.id === 'rw-title-synthesis-seal')).toBe(true)
-      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch7')).toBe(true)
+      expect(campaign.progress.chapterIndex).toBe(ch7Index + 1)
+      expect(PLAYABLE_CHAPTERS[campaign.progress.chapterIndex]?.id).toBe('ch8')
+    }
+  })
+
+  it('grants Chapter VIII clear rewards when the final chapter seals', () => {
+    const ch8Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch8')
+    expect(ch8Index).toBeGreaterThanOrEqual(0)
+    const ch8 = PLAYABLE_CHAPTERS[ch8Index]!
+    const campaign = new CampaignOrchestrator(PLAYABLE_CHAPTERS, {
+      ...defaultCampaignProgress(),
+      chapterIndex: ch8Index,
+      sceneIndex: ch8.scenes.length - 1,
+      highestUnlockedChapter: ch8Index,
+      chapter1Complete: true,
+      chapter2Complete: true,
+    })
+    const last = campaign.currentScene()
+    expect(last.id).toBe('c8-freeplay')
+    const result = campaign.advanceAfterLeaving(last)
+    expect(result.kind).toBe('chapter-complete')
+    if (result.kind === 'chapter-complete') {
+      expect(result.campaignFinished).toBe(true)
+      expect(result.chapter.id).toBe('ch8')
+      expect(result.rewards.some((r) => r.id === 'rw-title-alexandrine-seal')).toBe(true)
+      expect(result.rewards.some((r) => r.id === 'rw-chronicle-echo-ch8')).toBe(true)
     }
   })
 
@@ -360,6 +385,47 @@ describe('CampaignOrchestrator', () => {
     }
     backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
     expect(progress.highestUnlockedChapter).toBe(6)
+  })
+
+  it('unlocks Chapter VIII for chronicles that sealed Chapter VII before the Alexandrine age existed', () => {
+    const ch8Index = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch8')
+    expect(ch8Index).toBeGreaterThanOrEqual(0)
+    const campaign = CampaignOrchestrator.hydrateFromSave(PLAYABLE_CHAPTERS, {
+      version: 3,
+      chapterIndex: 7,
+      sceneIndex: 0,
+      highestUnlockedChapter: 7,
+      lastScreen: 'title',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: ['c7-reflection', 'c7-freeplay'],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: [],
+      unlockedDuelVariantIds: [],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 0,
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: defaultLadderRating(),
+      inProgress: null,
+    })
+    expect(campaign.progress.highestUnlockedChapter).toBe(ch8Index)
+    expect(campaign.canJumpToChapter(ch8Index)).toBe(true)
+  })
+
+  it('does not invent an Alexandrine unlock from an unfinished synthesis chapter', () => {
+    const progress = {
+      ...defaultCampaignProgress(),
+      highestUnlockedChapter: 7,
+      completedSceneIds: ['c7-intro'],
+    }
+    backfillSuccessorUnlocks(progress, PLAYABLE_CHAPTERS)
+    expect(progress.highestUnlockedChapter).toBe(7)
   })
 
   it('gates chapter jumps by highest unlocked chapter', () => {

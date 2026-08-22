@@ -99,7 +99,7 @@ describe('Chapter VII playtest', () => {
     expect(flow.currentScene().type === 'match' && flow.currentScene().scriptedBlackSans?.[0]).toBe('g6')
   })
 
-  it('seals the synthesis age and finishes the compiled campaign', () => {
+  it('seals the synthesis age and opens the Alexandrine Board', () => {
     const { flow, ch7, onChapterComplete, onCampaignFinished } = chapterSevenFlow()
     const freeIdx = PLAYABLE_CHAPTERS[ch7]!.scenes.findIndex((scene) => scene.id === 'c7-freeplay')
     flow.jumpToScene(ch7, freeIdx)
@@ -107,7 +107,8 @@ describe('Chapter VII playtest', () => {
     expect(flow.canAdvance()).toBe(true)
     flow.advanceScene()
     expect(onChapterComplete).toHaveBeenCalled()
-    expect(onCampaignFinished).toHaveBeenCalled()
+    expect(onCampaignFinished).not.toHaveBeenCalled()
     expect(flow.chapter7Complete).toBe(true)
+    expect(flow.currentScene().id).toBe('c8-intro')
   })
 })

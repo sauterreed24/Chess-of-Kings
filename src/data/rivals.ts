@@ -689,6 +689,80 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  voss: {
+    opponentId: 'voss',
+    displayName: 'Voss',
+    blend: {
+      primary: { school: 'Achaemenid Patience', weight: 60 },
+      secondary: { school: 'Macedonian Phalanx', weight: 40 },
+    },
+    counterPrep: [
+      'If a queen hangs, take it — Voss files both courts in session as a civil war you volunteered to budget.',
+      'Meet d5 with development and castle before the queen-pawn wall names a hole; hanging pieces are vacant offices.',
+      'When he offers an exchange the board already paid for, take it. Refusing the stamp is how the harvest dries.',
+    ],
+    whiteOpenings: ['Queen-pawn exchange structures', 'Quiet d4 with an offered trade', 'Closed-court middle games'],
+    blackOpenings: ['Queen\'s Gambit declined walls', 'e6-Be7 patience', 'c5 breaks after the office closes'],
+    signature: 'Take the hanging crown, then refuse to keep a second court on the payroll.',
+    talk: {
+      opening: [
+        'An office that hangs is already vacant.',
+        'Show me the court you were about to keep open.',
+      ],
+      punished: [
+        'You closed a court. Correct.',
+        'My second queen lost its lawsuit. Earned.',
+      ],
+      rattled: [
+        'You are treating succession like weather. Rare, and irritating.',
+        'I filed you as a siege. Amend the file.',
+      ],
+      audacious: [
+        'You kept both courts. I collect civil wars as tax.',
+        'A hanging crown is still a leak. Watch.',
+      ],
+      draw: [
+        'A draw can be two offices that refused to close.',
+      ],
+    },
+  },
+  elara: {
+    opponentId: 'elara',
+    displayName: 'Elara',
+    blend: {
+      primary: { school: 'Indic Combinatorics', weight: 55 },
+      secondary: { school: 'Bactrian Frontier', weight: 45 },
+    },
+    counterPrep: [
+      'When a knight can name king and rook at once, land there — Elara files a single check as a clerk who missed the second office.',
+      'Meet c5 with development and castle before the Sicilian wall forks the uncastled king; two futures share one square.',
+      'If she forks, name both claims. Treating the check as the whole stamp is how the rook walks.',
+    ],
+    whiteOpenings: ['Sicilian structures as White pressure', 'Knight-fork middle games', 'Notarized-file finishes'],
+    blackOpenings: ['Sicilian c5-d6', 'Dragon-quiet walls', 'Fork-first knight landings'],
+    signature: 'Land on the square that files two futures, then finish if the opponent names only one.',
+    talk: {
+      opening: [
+        'Two futures. One square. If you file only the king, the rook walks.',
+        'Show me which claim you were about to leave unstamped.',
+      ],
+      punished: [
+        'You named both. The registry notices.',
+        'My second office never walked. Well seen.',
+      ],
+      rattled: [
+        'You treated my fork as weather, then changed the weather. Rare.',
+        'I filed you as a single check. Amend the file.',
+      ],
+      audacious: [
+        'You answered only the king. Watch the rook leave.',
+        'A fork is not a speech. I will demonstrate the difference.',
+      ],
+      draw: [
+        'A draw can be two futures that refused to share a square.',
+      ],
+    },
+  },
 }
 
 /**

@@ -70,7 +70,7 @@ export const ARCHIVE_RATING_BAND_LABELS = {
 
 export const PLATEAU_COPY = {
   heading: 'Mastery plateau',
-  lede: 'Chapters I–VII are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
+  lede: 'Chapters I–VIII are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
   dailyCta: 'Daily Calculus',
   duelCta: 'Duel Archive',
   resumeCta: 'Resume Recovered Session',
@@ -103,7 +103,13 @@ export const PLATEAU_PENDING_CH6_COPY = {
 /** Hub after Chapter VII reflection while freeplay / clear rewards are still outstanding. */
 export const PLATEAU_PENDING_CH7_COPY = {
   heading: 'Almost sealed',
-  lede: 'The Human Synthesis reflection is inscribed. Finish the Chapter VII rehearsal to claim the synthesis seal, then the mastery plateau opens fully.',
+  lede: 'The Human Synthesis reflection is inscribed. Finish the Chapter VII rehearsal to claim the synthesis seal, then the Alexandrine Board opens.',
+} as const
+
+/** Hub after Chapter VIII reflection while freeplay / clear rewards are still outstanding. */
+export const PLATEAU_PENDING_CH8_COPY = {
+  heading: 'Almost sealed',
+  lede: 'The Alexandrine Board reflection is inscribed. Finish the Chapter VIII rehearsal to claim the stratarchic seal, then the mastery plateau opens fully.',
 } as const
 
 /** Shown when Chapter III is sealed and Chapter IV is waiting, including migrated saves. */
@@ -132,6 +138,13 @@ export const SYNTHESIS_OPENED_COPY = {
   heading: 'A new age is open',
   lede: 'The Silicon Threshold is sealed. The Human Synthesis waits in the vestibule — switch schools, castle the safer wing, finish the tactic.',
   enterCta: 'Enter the Human Synthesis',
+} as const
+
+/** Shown when Chapter VII is sealed and Chapter VIII is waiting, including migrated saves. */
+export const ALEXANDRINE_OPENED_COPY = {
+  heading: 'A new age is open',
+  lede: 'The Human Synthesis is sealed. The Alexandrine Board waits in the vestibule — take the vacant office, fork two futures, file the mate.',
+  enterCta: 'Enter the Alexandrine Board',
 } as const
 
 export const ECHO_OUTCOME_LABELS = {

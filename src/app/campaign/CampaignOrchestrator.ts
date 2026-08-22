@@ -54,7 +54,7 @@ export function defaultCampaignProgress(): CampaignProgress {
 
 /**
  * Players who sealed an age when it was the last compiled chapter never
- * received a successor unlock. Opening Chapters IV–VII must not leave
+ * received a successor unlock. Opening Chapters IV–VIII must not leave
  * those chronicles locked out of the next door.
  */
 export function backfillSuccessorUnlocks(progress: CampaignProgress, chapters: Chapter[]): void {
@@ -62,6 +62,7 @@ export function backfillSuccessorUnlocks(progress: CampaignProgress, chapters: C
   const ch5Index = chapters.findIndex((chapter) => chapter.id === 'ch5')
   const ch6Index = chapters.findIndex((chapter) => chapter.id === 'ch6')
   const ch7Index = chapters.findIndex((chapter) => chapter.id === 'ch7')
+  const ch8Index = chapters.findIndex((chapter) => chapter.id === 'ch8')
   const sealedClassical =
     progress.completedSceneIds.includes('c3-reflection') ||
     progress.completedSceneIds.includes('c3-freeplay')
@@ -85,6 +86,12 @@ export function backfillSuccessorUnlocks(progress: CampaignProgress, chapters: C
     progress.completedSceneIds.includes('c6-freeplay')
   if (sealedLedger && ch7Index >= 0) {
     progress.highestUnlockedChapter = Math.max(progress.highestUnlockedChapter, ch7Index)
+  }
+  const sealedSynthesis =
+    progress.completedSceneIds.includes('c7-reflection') ||
+    progress.completedSceneIds.includes('c7-freeplay')
+  if (sealedSynthesis && ch8Index >= 0) {
+    progress.highestUnlockedChapter = Math.max(progress.highestUnlockedChapter, ch8Index)
   }
 }
 
@@ -165,6 +172,7 @@ export class CampaignOrchestrator {
   markReflectionFlags(sceneId: string) {
     if (sceneId === 'c1-reflection') this.progress.chapter1Complete = true
     if (sceneId === 'c2-reflection') this.progress.chapter2Complete = true
+    if (sceneId === 'c8-reflection') this.progress.stratarchiaUnlocked = true
   }
 
   /**

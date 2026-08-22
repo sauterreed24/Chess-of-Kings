@@ -44,6 +44,8 @@ describe('DUEL_ROSTER profile wiring', () => {
     expect(variantProfile('iota', 'iota-threshold')).toBe('iota_threshold')
     expect(variantProfile('mira', 'mira-practical')).toBe('mira_practical')
     expect(variantProfile('soren', 'soren-answer')).toBe('soren_answer')
+    expect(variantProfile('voss', 'voss-exchange')).toBe('voss_exchange')
+    expect(variantProfile('elara', 'elara-fork')).toBe('elara_fork')
   })
 
   it('feeds the Duel Archive opening watchlist from the intended rival books', () => {
@@ -57,6 +59,8 @@ describe('DUEL_ROSTER profile wiring', () => {
     const iotaLines = getBookTopLines(variantProfile('iota', 'iota-threshold'), 9)
     const miraLines = getBookTopLines(variantProfile('mira', 'mira-practical'), 9)
     const sorenLines = getBookTopLines(variantProfile('soren', 'soren-answer'), 9)
+    const vossLines = getBookTopLines(variantProfile('voss', 'voss-exchange'), 9)
+    const elaraLines = getBookTopLines(variantProfile('elara', 'elara-fork'), 9)
 
     expect(rowanLines.map((line) => line.san)).toContain('exf4')
     expect(vegaLines.map((line) => line.san)).toContain('Nf6')
@@ -68,6 +72,8 @@ describe('DUEL_ROSTER profile wiring', () => {
     expect(iotaLines.map((line) => line.san)).toContain('c6')
     expect(miraLines.map((line) => line.san)).toContain('e5')
     expect(sorenLines.map((line) => line.san)).toContain('g6')
+    expect(vossLines.map((line) => line.san)).toContain('d5')
+    expect(elaraLines.map((line) => line.san)).toContain('c5')
     expect(rowanLines.map((line) => line.san).join(' ')).not.toBe(
       vegaLines.map((line) => line.san).join(' '),
     )

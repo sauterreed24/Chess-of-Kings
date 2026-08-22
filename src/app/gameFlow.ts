@@ -95,7 +95,7 @@ import {
 
 /** Vitest runs with MODE=test — keep save/UI synchronous so tests stay deterministic. */
 const SYNC_IO = import.meta.env.MODE === 'test'
-const CHAPTER_LABELS = ['Prologue', 'Chapter I', 'Chapter II', 'Chapter III', 'Chapter IV', 'Chapter V', 'Chapter VI', 'Chapter VII']
+const CHAPTER_LABELS = ['Prologue', 'Chapter I', 'Chapter II', 'Chapter III', 'Chapter IV', 'Chapter V', 'Chapter VI', 'Chapter VII', 'Chapter VIII']
 
 function chapterLabel(index: number): string {
   return CHAPTER_LABELS[index] ?? `Chapter ${index}`
@@ -240,7 +240,7 @@ export class GameFlow {
     return this.completedSceneIds.includes('c6-reflection')
   }
 
-  /** True once Chapter VII freeplay is recorded — matches campaign-finish rewards. */
+  /** True once Chapter VII freeplay is recorded. */
   get chapter7Complete(): boolean {
     return this.completedSceneIds.includes('c7-freeplay')
   }
@@ -248,6 +248,16 @@ export class GameFlow {
   /** Chapter VII reflection sealed but freeplay / clear rewards may still be pending. */
   get chapter7ReflectionComplete(): boolean {
     return this.completedSceneIds.includes('c7-reflection')
+  }
+
+  /** True once Chapter VIII freeplay is recorded — matches campaign-finish rewards. */
+  get chapter8Complete(): boolean {
+    return this.completedSceneIds.includes('c8-freeplay')
+  }
+
+  /** Chapter VIII reflection sealed but freeplay / clear rewards may still be pending. */
+  get chapter8ReflectionComplete(): boolean {
+    return this.completedSceneIds.includes('c8-reflection')
   }
   get completedSceneIds(): string[] {
     return this.campaign.progress.completedSceneIds

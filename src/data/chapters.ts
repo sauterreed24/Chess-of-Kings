@@ -1,7 +1,7 @@
 import type { Chapter } from '../types'
 
 /**
- * Playable campaign: Prologue + Chapters I–VII.
+ * Playable campaign: Prologue + Chapters I–VIII.
  * Chapter I: six-rung ladder (Initiate → … → Counterpart).
  * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
  * Chapter III: compact Classical arc — Demetrios return + Kallistos + rehearsal.
@@ -9,6 +9,7 @@ import type { Chapter } from '../types'
  * Chapter V: Discipline colleges — Gage + Helia + rehearsal.
  * Chapter VI: Silicon Threshold — Prax + Iota + rehearsal.
  * Chapter VII: Human Synthesis — Mira + Soren + rehearsal.
+ * Chapter VIII: Alexandrine Board — Voss + Elara + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -2845,11 +2846,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'soren',
-            text: 'Remember the answer. Later ages will fork time faster than your fear — but they still punish loyalty to a dead school.',
+            text: 'Remember the answer. The next door will fork two offices onto one square and ask whether you file both.',
           },
           {
             speaker: 'narrator',
-            text: 'Chapter VII is sealed. Upstairs, the brief is rewritten again: Reed can switch schools without becoming a costume trunk. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Alexandrine Board and later schools wait — locked, not gone. The chronicle is a plateau with work left on it.',
+            text: 'Chapter VII is sealed. Upstairs, the brief is rewritten again: Reed can switch schools without becoming a costume trunk. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Alexandrine Board waits — civic chess as statecraft when succession is no longer a civil war. The chronicle has another age to inscribe.',
           },
         ],
       },
@@ -2872,6 +2873,338 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Synthesis is recognizing which school the board is paying, then changing tools before loyalty names you.',
           concept: 'Style becomes a tool only through quiet repetition.',
+        },
+      },
+    ],
+  },
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER VIII — The Alexandrine Board (compact ladder)
+     Sovereign exchange and temporal forks. Voss + Elara.
+     Reuses theme-classical (CSS gzip locked).
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch8',
+    index: 8,
+    title: 'Chapter VIII',
+    subtitle: 'The Alexandrine Board',
+    era: 'Stratarchia · Chronos dominance',
+    themeClass: 'theme-classical',
+    philosophy:
+      'Succession is a filing, not a civil war. Take the vacant office, put two futures on one square, and finish the mate the archive already notarized.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c8-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'The synthesis meets a board that files succession',
+          body: 'Switching schools taught Reed to change tools. The Alexandrine rooms ask whether he can exchange an office without starting a war, and whether two futures can share one square.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The vestibule is a registry, not a battlefield. One board shows two queens staring across an empty file. Another shows a knight that can land on a square that files both king and rook. Clerks have labeled neither. The lesson is succession without a siege.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'They filed you as flexible. That is not a compliment here. It is a warrant to test whether you can take a hanging crown instead of keeping both courts in session.',
+          },
+          {
+            speaker: 'soren',
+            text: 'I answered your school with another. Voss will ask whether you exchange the office that already hangs. Elara will fork two futures onto one square and wait to see if you file both. Neither is a villain. Drought taught the stratarchy that civil war is how cities miss the harvest.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So I become a clerk?',
+          },
+          {
+            speaker: 'mira',
+            text: 'You become the person who can drop a school, then take a queen, then fork a file. The tool is still there. It just carries a seal.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c8-codex-board',
+        heading: 'Alexandrine doctrine — exchange, fork, file',
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'Statecraft on sixty-four squares',
+          body: 'Civic registries under Chronos treat the board as succession law: exchange the vacant office, fork two claims onto one square, and file the mate the rook already notarized.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'Sovereign exchange',
+            body: 'A hanging queen is an office that already resigned. Take it. Keeping both courts in session is how a succession becomes a civil war.',
+          },
+          {
+            term: 'Temporal fork',
+            body: 'A knight that checks the king while attacking the rook files two futures on one square. Not time travel — a clerk\'s stamp that names both claims at once.',
+          },
+          {
+            term: 'Notarized finish',
+            body: 'If a rook already stares down the file, the queen may take the last pawn that boxed the king. The archive paid for this mate. File it.',
+          },
+          {
+            term: 'Stratarchia',
+            body: 'The civic argument of this age: when every school is already on file, government is the habit of exchanging offices without a siege.',
+          },
+          {
+            term: 'Alexandrine Board',
+            body: 'Voss answers take the vacant crown. Elara answers file both futures. Reed has to answer without turning succession into a second drought.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c8-puzzle-exchange',
+        title: 'Puzzle — take the vacant office',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'Both courts are still in session',
+          body: 'A queen hangs on a5. Leaving it is a civil war you did not budget. Exchange: take the office.',
+          tone: 'pressure',
+        },
+        fen: '4k2r/ppp3pp/8/q7/8/8/PPPQ2PP/4K2R w Kk - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'advantage', minCp: 800 },
+        lesson:
+          'Qxa5 files the vacant office. Keeping both queens is a succession speech. Alexandrine play takes the crown that already hangs.',
+        teaching: {
+          threat: 'If you develop instead of taking, the hanging queen stays a second court and the plus stays a rumor.',
+          goalPlain: 'Win the hanging queen on a5.',
+          whyItWorks:
+            'The queen on d2 already attacks the undefended queen. Taking it is not greed. It is closing a court.',
+          concept: 'Sovereign exchange: take the vacant office instead of keeping both courts.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c8-puzzle-fork',
+        title: 'Puzzle — file two futures',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'One square, two claims',
+          body: 'King and rook share a knight landing. A fork is not magic. It is two futures stamped on one square.',
+          tone: 'pressure',
+        },
+        fen: 'r3k3/pp6/8/3N4/8/8/PPP5/4K3 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'pieceOn', square: 'c7', color: 'w', pieceType: 'n' },
+        lesson:
+          'Nc7+ checks the king and attacks the rook. Temporal fork means filing both claims before either walks.',
+        teaching: {
+          threat: 'If you check from elsewhere, one office walks and the fork becomes a lecture about tempo.',
+          goalPlain: 'Land the knight on c7, forking king and rook.',
+          whyItWorks:
+            'c7 is the only square that names both the king and the a8 rook at once. Statecraft is the cheaper stamp.',
+          concept: 'Temporal fork: two futures, one square.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c8-puzzle-file',
+        title: 'Puzzle — notarized finish',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The archive already paid',
+          body: 'King boxed by his own pawns. The rook already stares down the g-file. The queen files g7. Finish; do not convene another court.',
+          tone: 'fire',
+        },
+        fen: '6k1/5ppp/8/8/8/2Q5/5P1P/6RK w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'Qxg7 is mate. The rook on g1 already notarized the square. Alexandrine play files the finish the structure bought.',
+        teaching: {
+          threat: 'If you take with the rook instead, the king wriggles to f8 and the plus becomes a committee.',
+          goalPlain: 'Deliver mate by taking g7 with the queen.',
+          whyItWorks:
+            'Qxg7# is protected by the rook on g1. The pawn wall stole the king\'s luft. File the mate; do not restamp it.',
+          concept: 'When the archive already notarized mate, take it with the queen.',
+        },
+      },
+      {
+        type: 'dialogue',
+        id: 'c8-after-puzzles',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'Habits before the registry',
+          body: 'Reed has the exchange, the fork, and the filed mate. Voss will ask whether he can close a court while his pulse wants both queens on the payroll.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'Three receipts: a queen taken instead of a siege, a knight that named two offices, a mate the rook had already stamped. Voss does not applaud. He changes the opening.',
+          },
+          {
+            speaker: 'voss',
+            text: 'You can exchange on a diagram. Now exchange while I am still talking.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c8-before-voss',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The exchange clerk',
+          body: 'Voss thrives when you keep both courts in session. Take the vacant office, or become the civil war.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'voss',
+            text: 'An office that hangs is already vacant. Begin.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I still need both queens?',
+          },
+          {
+            speaker: 'voss',
+            text: 'Then you are budgeting a war. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c8-match-voss',
+        title: 'Encounter 1 of 2 — The Exchange Clerk',
+        opponentName: 'Voss',
+        opponentNote:
+          'Alexandrine examiner — queen-pawn structures that close vacant offices without a speech. Take the hanging crown; do not keep both courts.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Do not keep both courts',
+          body: 'Voss wins when you refuse a queen trade the position already paid for. Develop, castle, and ask which office is already vacant.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'alexandrine',
+        scriptedBlackSans: ['d5', 'e6', 'Nf6', 'Be7', 'O-O', 'c5'],
+        ladderTier: 'veteran',
+        difficulty: 3,
+      },
+      {
+        type: 'dialogue',
+        id: 'c8-after-voss',
+        storyBeat: {
+          label: 'After-action quiet',
+          title: 'A closed court, not a siege',
+          body: 'Voss files whether Reed took the vacant office. Elara is waiting to put two futures on one square.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'voss',
+            text: 'You closed a court. That is the only medal this registry issues.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Elara is already setting a different opening. She will fork whatever Reed just filed and wait to see if he names both claims.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c8-before-elara',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The fork registrar',
+          body: 'Elara is strongest when you answer only one of the two futures. She lands on the square that names both and waits to see if you notice the second office.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'elara',
+            text: 'Two futures. One square. If you file only the king, the rook walks.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I file both?',
+          },
+          {
+            speaker: 'elara',
+            text: 'Then you are still in the registry. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c8-match-elara',
+        title: 'Encounter 2 of 2 — The Fork Registrar',
+        opponentName: 'Elara',
+        opponentNote:
+          'Alexandrine specialist — Sicilian walls that fork two offices onto one square. Castle, develop, and do not donate the second claim.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'File both futures',
+          body: 'Elara is strongest when you treat a fork as a single check. Meet c5 with development, castle before the second office walks, and stamp both claims.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'alexandrine',
+        scriptedBlackSans: ['c5', 'd6', 'Nf6', 'Nc6', 'g6', 'Bg7'],
+        ladderTier: 'boss',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c8-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Judgment after the filing',
+          body: 'The Alexandrine Board does not erase synthesis — it decides whether a human can still file succession once every school is on record.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You learned to take the vacant office, to fork two futures, and to file the notarized mate. That is the Alexandrine seal: a player who can close a court without starting a war.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Voss asked whether I would keep both queens. Elara asked whether I would name both claims.',
+          },
+          {
+            speaker: 'mira',
+            text: 'You kept the tool. The Board does not cancel it. It only punishes the court you left open while the harvest dried.',
+          },
+          {
+            speaker: 'elara',
+            text: 'Remember the stamp. Later ages will compile every school you survived — but they still punish a succession you refused to file.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter VIII is sealed. Upstairs, the brief is rewritten again: Reed can exchange an office without a siege. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Apotheosis Engine waits — locked, not gone. The chronicle is a plateau with work left on it.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c8-freeplay',
+        title: 'Free board — Registry rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice the filing',
+          body: 'Rehearse taking hanging queens, knight forks that name two offices, and notarized mates until succession feels like a stamp.',
+          tone: 'quiet',
+        },
+        lesson:
+          'Set up a simple structure and alternate sides. Practice queen exchanges that close a court, knight forks that file two claims, and mates a rook already notarized.',
+        teaching: {
+          threat: 'None — this is a sandbox after the Alexandrine ladder.',
+          goalPlain:
+            'Rehearse sovereign exchanges and temporal forks without a story timer. Return to the vestibule when finished.',
+          whyItWorks:
+            'Alexandrine skill is recognizing which office is already vacant, then filing both futures before either walks.',
+          concept: 'Succession becomes instinct only through quiet repetition.',
         },
       },
     ],
