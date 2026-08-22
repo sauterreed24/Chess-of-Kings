@@ -65,6 +65,7 @@ describe('mainUiFormatters', () => {
     const html = formatMoveLedger(['e4', 'c5'], [null, 'brilliant'])
     expect(html).toContain('ledger-b ledger-q--brilliant')
     expect(html).toContain('q-icon--brilliant')
+    expect(html).toContain('font-size:0.7rem')
   })
 
   it('keeps move ledger text readable when extracted from the DOM', () => {

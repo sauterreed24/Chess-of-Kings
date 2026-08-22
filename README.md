@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.123)
+## What's new in this release (v0.5.124)
+
+**Pass 132 — ledger quality** — move-quality marks render at 0.7rem so `!!` / `!` / `?` still read next to SAN on a 390×844 instrument. See [`docs/PASS132_LEDGER_QUALITY.md`](docs/PASS132_LEDGER_QUALITY.md).
+
+## Previous release (v0.5.123)
 
 **Pass 131 — lab caption** — the overlay era label renders at 0.7rem so Prologue and Chapter I still read on a 390×844 instrument bar. See [`docs/PASS131_LAB_CAPTION.md`](docs/PASS131_LAB_CAPTION.md).
 
