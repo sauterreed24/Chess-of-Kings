@@ -77,7 +77,7 @@ const NECK_CY: Record<PieceSymbol, number> = {
   k: 18.4,
 }
 
-/** Lamp-side flute on the turned stem (knight uses a cheek catch-light). */
+/** Lamp-side flute on the turned stem (knight uses a cheek catch-light). Shadow-side umbra mirrors this. */
 const FLUTE: Record<PieceSymbol, { cx: number; cy: number; rx: number; ry: number }> = {
   p: { cx: 18.2, cy: 26.4, rx: 1.35, ry: 5.8 },
   n: { cx: 19.6, cy: 16.8, rx: 1.15, ry: 3.1 },
@@ -190,13 +190,17 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const flute =
     `<ellipse class="piece-flute" cx="${fluteSpec.cx}" cy="${fluteSpec.cy}" ` +
     `rx="${fluteSpec.rx}" ry="${fluteSpec.ry}" fill="${fluteFill}"/>`
+  const umbraFill = color === 'w' ? 'rgba(42,22,8,0.32)' : 'rgba(0,2,10,0.42)'
+  const umbra =
+    `<ellipse class="piece-umbra" cx="${(45 - fluteSpec.cx).toFixed(1)}" cy="${fluteSpec.cy}" ` +
+    `rx="${(fluteSpec.rx * 0.92).toFixed(2)}" ry="${fluteSpec.ry}" fill="${umbraFill}"/>`
   return svg
     .replace(
       /<svg([^>]*)>/,
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${flute}${highlight}</svg>`)
+    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${flute}${umbra}${highlight}</svg>`)
 }
 
 export function glyphForSkin(

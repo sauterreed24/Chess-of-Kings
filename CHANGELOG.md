@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.27] — 2026-08-22
+
+Pass 35 — Stem umbra:
+
+- **Ivory/lapis glyphs** get a shadow-side stem umbra opposite the lamp flute (knight uses the far cheek) so the body has a dark core, not a one-sided highlight. Forced **Visual: Lean** keeps the umbra.
+- Playwright asserts `.piece-umbra` on the calibration pawn, hanging-knight bishop, and title honor.
+- Docs: [`docs/PASS35_STEM_UMBRA.md`](docs/PASS35_STEM_UMBRA.md).
+
 ## [0.5.26] — 2026-08-22
 
 Pass 34 — Phone lab caption:
