@@ -28,6 +28,8 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   expect(calPearl?.height ?? 0).toBeGreaterThanOrEqual(3.5)
   const calCross = await tallestCrossBox(page, 'e1')
   expect(calCross.w).toBeGreaterThanOrEqual(2)
+  const calCleft = await tallestOverlayBox(page, 'c1', '.piece-cleft')
+  expect(calCleft.w).toBeGreaterThanOrEqual(2)
   await expect(page.locator('[data-square="e2"] .piece-ferrule')).toBeVisible()
   await expect(page.locator('[data-square="e2"] feSpecularLighting')).toHaveCount(2)
   await expect(page.locator('[data-square="e2"] fePointLight')).toHaveCount(3)
@@ -66,8 +68,8 @@ async function playIfLegal(
   return true
 }
 
-async function tallestCrossBox(page: Page, square: string): Promise<{ w: number; h: number }> {
-  const boxes = await page.locator(`[data-square="${square}"] .piece-cross`).evaluateAll((els) =>
+async function tallestOverlayBox(page: Page, square: string, sel: string): Promise<{ w: number; h: number }> {
+  const boxes = await page.locator(`[data-square="${square}"] ${sel}`).evaluateAll((els) =>
     els.map((el) => {
       const r = el.getBoundingClientRect()
       return { w: r.width, h: r.height }
@@ -75,6 +77,10 @@ async function tallestCrossBox(page: Page, square: string): Promise<{ w: number;
   )
   const stem = boxes.filter((b) => b.h > b.w).sort((a, b) => b.h - a.h)[0]
   return stem ?? { w: 0, h: 0 }
+}
+
+async function tallestCrossBox(page: Page, square: string): Promise<{ w: number; h: number }> {
+  return tallestOverlayBox(page, square, '.piece-cross')
 }
 
 function seedChapterIUnlocked() {
@@ -264,6 +270,8 @@ test('compact calibration docks Prove and hides the duplicate manuscript', async
   expect(phonePearl?.height ?? 0).toBeGreaterThanOrEqual(3.5)
   const phoneCross = await tallestCrossBox(page, 'e1')
   expect(phoneCross.w).toBeGreaterThanOrEqual(2)
+  const phoneCleft = await tallestOverlayBox(page, 'c1', '.piece-cleft')
+  expect(phoneCleft.w).toBeGreaterThanOrEqual(2)
   await expect(page.locator('[data-square="e2"] .piece-spark')).toBeVisible()
   await expect(page.locator('.screen-play--board-scene .play-crawl .chapter-label')).toBeHidden()
   await expect(page.locator('#board-guide')).toBeVisible()
@@ -390,6 +398,8 @@ test('hanging knight goal stays short on the phone instrument', async ({ page })
   await expect(page.locator('[data-square="c3"] .piece-cup')).toBeVisible()
   await expect(page.locator('[data-square="c3"] .piece-ferrule')).toBeVisible()
   await expect(page.locator('[data-square="c3"] .piece-cleft').first()).toBeVisible()
+  const hkCleft = await tallestOverlayBox(page, 'c3', '.piece-cleft')
+  expect(hkCleft.w).toBeGreaterThanOrEqual(2)
   await expect(page.locator('[data-square="d1"] .piece-cross').first()).toBeVisible()
   const hkCross = await tallestCrossBox(page, 'd1')
   expect(hkCross.w).toBeGreaterThanOrEqual(2)

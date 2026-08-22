@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.48)
+## What's new in this release (v0.5.49)
+
+**Pass 57 — Bishop mitre cleft** — ivory and lapis bishops get a thicker mitre cut, instead of a 0.9px hairline. See [`docs/PASS57_BISHOP_MITRE.md`](docs/PASS57_BISHOP_MITRE.md).
+
+## Previous release (v0.5.48)
 
 **Pass 56 — King cross inlay** — ivory and lapis kings get a thicker gold/lapis plus on the crown, instead of a 1.4px hairline. See [`docs/PASS56_KING_INLAY.md`](docs/PASS56_KING_INLAY.md).
 

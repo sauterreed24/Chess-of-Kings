@@ -82,10 +82,10 @@ const ROOK_MERLONS: ReadonlyArray<{ x: number; y: number; w: number; h: number }
   { x: 25.3, y: 9.15, w: 4.4, h: 2.15 },
 ]
 
-/** Mitre cleft — vertical cut and crossbar on the bishop head. */
+/** Mitre cleft — vertical cut and crossbar, thick enough to read on a ~40px phone square. */
 const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
-  { x: 22.0, y: 8.05, w: 1.0, h: 12.7 },
-  { x: 20.05, y: 17.55, w: 4.9, h: 0.95 },
+  { x: 21.3, y: 8.0, w: 2.4, h: 12.7 },
+  { x: 19.85, y: 17.05, w: 5.3, h: 1.95 },
 ]
 
 /** Gold/lapis inlay on the king’s cross — thick enough to read on a ~40px phone square. */
@@ -290,7 +290,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     piece === 'b'
       ? BISHOP_CLEFT.map(
           (m) =>
-            `<rect class="piece-cleft" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.35" fill="${cleftFill}"/>`,
+            `<rect class="piece-cleft" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.45" fill="${cleftFill}"/>`,
         ).join('')
       : ''
   const crossFill = color === 'w' ? 'rgba(232,201,126,0.82)' : 'rgba(232,201,126,0.62)'
