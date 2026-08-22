@@ -132,8 +132,11 @@ describe('applyChessUi', () => {
     expect(dom.boardStage.classList.contains('board-stage--black-turn')).toBe(false)
     expect(dom.moveCounterEl.textContent).toBe('4/4 White moves')
     expect(dom.calibrationRail.classList.contains('hidden')).toBe(false)
-    expect(dom.calibrationRail.querySelector('.calibration-rail__label')?.textContent).toBe('4 / 4 inscribed')
+    const railLabel = dom.calibrationRail.querySelector('.calibration-rail__label') as HTMLElement | null
+    expect(railLabel?.textContent).toBe('4 / 4 inscribed')
+    expect(railLabel?.style.fontSize).toBe('0.7rem')
     expect(dom.calibrationTrack.querySelectorAll('.cal-dot--on')).toHaveLength(4)
+    expect((dom.calibrationTrack.querySelector('.cal-dot') as HTMLElement | null)?.style.width).toBe('16px')
     expect(dom.boardStatus.classList.contains('hidden')).toBe(false)
     expect(dom.boardStatus.closest('.instrument-header')?.classList.contains('hidden')).toBe(false)
   })

@@ -96,15 +96,20 @@ async function playIfLegal(
   from: string,
   to: string,
 ): Promise<boolean> {
-  await page.locator(`[data-square="${from}"]`).click()
-  const dest = page.locator(`[data-square="${to}"]`)
-  const cls = (await dest.getAttribute('class')) ?? ''
-  if (!/sq-legal-dot|sq-legal-capture/.test(cls)) {
+  const tryPlay = async (): Promise<boolean> => {
+    await expect(page.locator('.chess-grid')).not.toHaveClass(/chess-grid--locked/, { timeout: 20_000 })
     await page.locator(`[data-square="${from}"]`).click()
-    return false
+    const dest = page.locator(`[data-square="${to}"]`)
+    const cls = (await dest.getAttribute('class')) ?? ''
+    if (!/sq-legal-dot|sq-legal-capture/.test(cls)) {
+      await page.locator(`[data-square="${from}"]`).click()
+      return false
+    }
+    await dest.click()
+    return true
   }
-  await dest.click()
-  return true
+  if (await tryPlay()) return true
+  return tryPlay()
 }
 
 async function overlayBoxes(page: Page, square: string, sel: string): Promise<Array<{ w: number; h: number }>> {
@@ -3536,6 +3541,15 @@ test('file and rank labels stay readable on the phone marble', { timeout: 90_000
   const fileBox = await file.boundingBox()
   expect(fileBox).toBeTruthy()
   expect(fileBox!.height).toBeGreaterThanOrEqual(10)
+  const rail = page.locator('.calibration-rail__label')
+  await expect(rail).toBeVisible()
+  expect(await rail.evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  const dot = page.locator('.cal-dot').first()
+  await expect(dot).toBeVisible()
+  expect(await dot.evaluate((el) => (el as HTMLElement).style.width)).toBe('16px')
+  const dotBox = await dot.boundingBox()
+  expect(dotBox).toBeTruthy()
+  expect(dotBox!.width).toBeGreaterThanOrEqual(16)
 })
 
 test('legal aim pearls stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {
