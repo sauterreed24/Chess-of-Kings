@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.44] — 2026-08-22
+
+Pass 52 — Quiet calibration chrome:
+
+- **Calibration** keeps Archive-reply pulse and auto-coach off the instrument so the marble and rail stay the command. Explicit Hint — lines still file.
+- **Phone calibration** hides Hint so after e4, Prove and Reset share one row instead of Reset wrapping full-width.
+- Playwright keeps the hanging-knight seal on one row and, after calibration e4, hides the pulse/coach with Prove|Reset on one row.
+- Docs: [`docs/PASS52_QUIET_CAL_CHROME.md`](docs/PASS52_QUIET_CAL_CHROME.md).
+
 ## [0.5.43] — 2026-08-22
 
 Pass 51 — Sealed puzzle tool row:

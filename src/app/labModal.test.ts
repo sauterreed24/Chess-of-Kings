@@ -191,6 +191,34 @@ describe('setTopBarInertForLab', () => {
     expect(document.querySelector('#btn-next')?.parentElement?.classList.contains('narrative-actions')).toBe(true)
   })
 
+  it('hides Hint on phone calibration so Prove can share a row with Reset', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body" data-calibration-lesson></div>
+          <div class="narrative-actions"><button id="btn-next">Prove</button></div>
+        </article>
+        <div class="move-ledger-wrap"><div id="move-ledger"><div class="ledger-row">1. e4</div></div></div>
+        <div class="board-tools">
+          <button id="btn-hint">Hint</button>
+          <button id="btn-reset">Reset</button>
+        </div>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const hint = document.querySelector<HTMLButtonElement>('#btn-hint')!
+    const reset = document.querySelector<HTMLButtonElement>('#btn-reset')!
+    hint.hidden = false
+    reset.hidden = false
+    syncPhonePuzzleLesson(body)
+    expect(hint.hidden).toBe(true)
+    expect(reset.hidden).toBe(false)
+
+    stubPhoneLabNav(false)
+    syncPhonePuzzleLesson(body)
+    expect(hint.hidden).toBe(false)
+  })
+
   it('docks Prove and hides the empty ledger on phone calibration', () => {
     stubPhoneLabNav(true)
     document.body.innerHTML = `

@@ -910,17 +910,21 @@ export class GameFlow {
       inCheck: chessy && this.chess.inCheck() && !this.isSceneTerminalForCurrentMode(),
       aiThinking: this.aiThinking,
       coachTip:
-        this.mode === 'puzzle' && this.lastCoachTip && !this.lastCoachTip.startsWith('Hint — ')
+        (this.mode === 'puzzle' || this.mode === 'calibration') &&
+        this.lastCoachTip &&
+        !this.lastCoachTip.startsWith('Hint — ')
           ? null
           : this.lastCoachTip,
       matchOutcome,
       evalScore,
       evalTrace: [...this.evalTrace],
       playerColor: this.playerColor,
-      mentorInsight: this.mode === 'puzzle' ? null : this.computeMentorInsight(),
+      mentorInsight:
+        this.mode === 'puzzle' || this.mode === 'calibration' ? null : this.computeMentorInsight(),
       aiPersona: this.currentAiPersona(),
       aiFlavor: this.currentAiFlavor(),
-      tacticalPulse: this.mode === 'puzzle' ? null : this.lastTacticalPulse,
+      tacticalPulse:
+        this.mode === 'puzzle' || this.mode === 'calibration' ? null : this.lastTacticalPulse,
       sessionRecovered: this.sessionRecoveredNotice,
       canRestoreStable: this.history.length > 1 && !this.aiThinking,
       canRetry:

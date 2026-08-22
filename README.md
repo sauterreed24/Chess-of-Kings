@@ -109,9 +109,9 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.43)
+## What's new in this release (v0.5.44)
 
-**Pass 51 — Sealed puzzle tool row** — phone puzzles keep Advance and Take back on one row after a proof; Reset no longer wraps full-width. See [`docs/PASS51_SEALED_RESET_ROW.md`](docs/PASS51_SEALED_RESET_ROW.md).
+**Pass 52 — Quiet calibration chrome** — the opening board keeps Archive-reply pulse and auto-coach off the marble, and phone calibration parks Prove beside Reset after the first ply. See [`docs/PASS52_QUIET_CAL_CHROME.md`](docs/PASS52_QUIET_CAL_CHROME.md).
 
 ## Previous release (v0.5.40)
 
