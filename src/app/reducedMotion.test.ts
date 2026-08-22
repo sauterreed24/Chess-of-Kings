@@ -100,6 +100,12 @@ describe('Alexandrine Imperial state polish', () => {
     expect(IMPERIAL_CSS).toMatch(/\.chapters-wrap\s*\{[^}]*linear-gradient\(140deg, #3a2a17/s)
   })
 
+  it('collapses the chapter crawl on compact live boards', () => {
+    expect(CSS).toMatch(
+      /@media \(max-width: 960px\)[\s\S]*?\.screen-play--board-scene \.play-crawl \.chapter-label,/,
+    )
+  })
+
   it('hides redundant turn chips and crawl philosophy on the live board', () => {
     expect(CSS).toMatch(
       /\.screen-play--board-scene \.play-state-readouts,\s*\n\.screen-play--board-scene \.play-crawl \.philosophy\s*\{[^}]*display:\s*none/s,

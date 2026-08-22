@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.3)
+## What's new in this release (v0.5.4)
+
+**Pass 12 — Board-first compact** — phone labs drop the duplicate chapter label and shrink the crawl so the marble sits higher. Duel start is now in Playwright. See [`docs/PASS12_BOARD_FIRST.md`](docs/PASS12_BOARD_FIRST.md).
+
+## Previous release (v0.5.3)
 
 **Pass 11 — Play-surface clarity** — the live board is the hero. Redundant turn chips hide, calibration progress lives on the rail, and carved pieces plus the brass rim read richer. See [`docs/PASS11_PLAY_SURFACE.md`](docs/PASS11_PLAY_SURFACE.md).
 

@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.4] — 2026-08-22
+
+Pass 12 — Board-first compact:
+
+- **Phone lab crawl** shrinks to a single title row; the vestibule already names the passage.
+- **Board-fit** counts Sound / Move Guard under the tools so the grid does not overflow.
+- Playwright starts a duel and plays e2→e4 through an Archive reply.
+- Docs: [`docs/PASS12_BOARD_FIRST.md`](docs/PASS12_BOARD_FIRST.md).
+
 ## [0.5.3] — 2026-08-22
 
 Pass 11 — Play-surface clarity:

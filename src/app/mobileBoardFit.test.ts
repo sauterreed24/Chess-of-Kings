@@ -87,6 +87,7 @@ describe('mobileBoardFit', () => {
           </div>
           <div class="move-ledger-wrap"><div class="move-ledger"></div></div>
           <div class="board-tools"></div>
+          <div class="instrument-toggles"></div>
         </div>
       </section>
     `
@@ -97,11 +98,13 @@ describe('mobileBoardFit', () => {
     const boardWrap = boardStage.querySelector<HTMLElement>('.board-wrap')!
     const ledgerWrap = document.querySelector<HTMLElement>('.move-ledger-wrap')!
     const boardTools = document.querySelector<HTMLElement>('.board-tools')!
+    const toggles = document.querySelector<HTMLElement>('.instrument-toggles')!
     const capturedBot = boardStage.querySelector<HTMLElement>('.captured-row--bot')!
 
     mockRect(boardWrap, { top: 180, width: 320, height: 320 })
     mockRect(ledgerWrap, { height: 48 })
     mockRect(boardTools, { height: 36 })
+    mockRect(toggles, { height: 28 })
     mockRect(capturedBot, { height: 18 })
 
     vi.spyOn(window, 'getComputedStyle').mockImplementation((el: Element) => {

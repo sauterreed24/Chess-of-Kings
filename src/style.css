@@ -619,8 +619,23 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
     flex-direction: column;
   }
   .screen-play--board-scene .instrument-column { order: -1; max-width: min(40rem, 100%); }
+  .screen-play--board-scene .play-crawl {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.38rem;
+    padding: 0.28rem 0.55rem 0.3rem;
+  }
+  .screen-play--board-scene .play-crawl .chapter-label,
   .screen-play--board-scene .play-crawl .chapter-sub,
   .screen-play--board-scene .play-crawl .philosophy { display: none; }
+  .screen-play--board-scene .play-crawl__row {
+    width: 100%;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .screen-play--board-scene .chapter-title {
+    font-size: clamp(0.92rem, 4.6vw, 1.12rem);
+  }
   .duel-wrap { grid-template-columns: 1fr; }
   .duel-launch__actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2542,11 +2557,6 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   gap: clamp(1rem, 2.4vw, 2.1rem);
 }
 
-.screen-play--board-scene .play-crawl {
-  margin-bottom: 0.85rem;
-  padding: 0.72rem 0.9rem 0.82rem;
-}
-
 .screen-play--board-scene .chapter-label {
   margin-bottom: 0.18rem;
 }
@@ -2557,6 +2567,11 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 
 @media (min-width: 961px) {
+  .screen-play--board-scene .play-crawl {
+    margin-bottom: 0.85rem;
+    padding: 0.72rem 0.9rem 0.82rem;
+  }
+
   .screen-play--board-scene .play-atelier {
     grid-template-columns: minmax(0, 1fr) minmax(350px, 430px);
   }
@@ -3694,6 +3709,10 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
     flex: 0 0 auto;
     margin-bottom: 0.75rem;
     padding: 0.72rem 0.82rem 0.86rem;
+  }
+  .screen-play--board-scene .play-crawl {
+    margin-bottom: 0.32rem;
+    padding: 0.26rem 0.5rem;
   }
 
   .play-crawl__row {

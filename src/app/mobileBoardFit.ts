@@ -34,7 +34,7 @@ export function applyMobileBoardFit({ playScreen, boardStage, labOverlay }: Mobi
   let chromeBelow = 0
   const instrumentFrame = boardStage.closest<HTMLElement>('.instrument-frame')
   if (instrumentFrame) {
-    for (const selector of ['.move-ledger-wrap', '.board-tools', '.lesson-note', '.coach-tip']) {
+    for (const selector of ['.move-ledger-wrap', '.board-tools', '.instrument-toggles', '.lesson-note', '.coach-tip']) {
       const el = instrumentFrame.querySelector<HTMLElement>(selector)
       if (!el || el.classList.contains('hidden')) continue
       const rect = el.getBoundingClientRect()
