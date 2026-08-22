@@ -66,6 +66,7 @@ describe('campaign story beats', () => {
     const cassian = matches.find((scene) => scene.id === 'c4-match-cassian')
     expect(nysa?.type === 'match' && nysa.scriptedBlackSans?.[0]).toBe('g6')
     expect(cassian?.type === 'match' && cassian.scriptedBlackSans?.[0]).toBe('Nf6')
+    expect(ch4?.scenes.findIndex((scene) => scene.id === 'c4-before-cassian')).toBe(9)
     const puzzles = ch4?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
     expect(puzzles.map((scene) => scene.id)).toEqual(
       expect.arrayContaining(['c4-puzzle-fianchetto', 'c4-puzzle-overreach', 'c4-puzzle-battery']),

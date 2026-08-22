@@ -34,3 +34,4 @@ Sealing the chapter amends the committee file: Reed is no longer only a control 
 - Orchestrator: Ch III seal opens Ch IV; pre-Ch-IV saves that sealed the classical age unlock Ch IV on load
 - Duel roster / reward unlock ids for Nysa and Cassian
 - Plateau hub fixtures cover sealed Ch IV, pending Ch III, and paradox-opened Ch III survivors
+- Playwright: Chapter IV drills and first Nysa match on desktop and 390×844; Cassian from a mid-age resume (`e2–e4`, scripted `Nf6`)
