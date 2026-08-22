@@ -3519,6 +3519,25 @@ test('run-back and recovery stay tappable on the phone instrument', { timeout: 9
   }
 })
 
+test('file and rank labels stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-enter-archive').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn').first().click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="a1"]')).toBeVisible()
+  const file = page.locator('[data-square="a1"] .sq-label--file')
+  const rank = page.locator('[data-square="a1"] .sq-label--rank')
+  await expect(file).toHaveText('a')
+  await expect(rank).toHaveText('1')
+  expect(await file.evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await rank.evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  const fileBox = await file.boundingBox()
+  expect(fileBox).toBeTruthy()
+  expect(fileBox!.height).toBeGreaterThanOrEqual(10)
+})
+
 test('legal aim pearls stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
