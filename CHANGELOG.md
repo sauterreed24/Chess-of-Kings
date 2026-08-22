@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.77] — 2026-08-22
+
+Pass 85 — Chapter VII Mira match on the phone instrument:
+
+- **Playwright** — Chapter VII walks the Human Synthesis drills into the first Mira match. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `e5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS85_PHONE_CH7_MATCH.md`](docs/PASS85_PHONE_CH7_MATCH.md).
+
 ## [0.5.76] — 2026-08-22
 
 Pass 84 — Chapter VI Prax match on the phone instrument:

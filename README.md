@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.76)
+## What's new in this release (v0.5.77)
+
+**Pass 85 — Chapter VII Mira match** — the first Human Synthesis match stays board-first on a 390×844 instrument, with Hint/Reset at 44px after undock or resize. See [`docs/PASS85_PHONE_CH7_MATCH.md`](docs/PASS85_PHONE_CH7_MATCH.md).
+
+## Previous release (v0.5.76)
 
 **Pass 84 — Chapter VI Prax match** — the first Silicon Threshold match stays board-first on a 390×844 instrument, and phone Hint/Reset keep a 44px floor after undock or resize. See [`docs/PASS84_PHONE_CH6_MATCH.md`](docs/PASS84_PHONE_CH6_MATCH.md).
 
