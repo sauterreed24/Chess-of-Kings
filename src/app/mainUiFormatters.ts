@@ -7,6 +7,9 @@ import type { AiProfile, MatchHistoryEntry, MatchScene, PieceSkinId, PuzzleScene
 /** Compiled once — applied on every chess HUD tick when AI persona is present. */
 export const BOSS_PROFILE_RE = /(Apex|Advisor|Counterpart|Strategos|Boss)/i
 
+/** Shared phone-readable SAN / eval score floor. */
+export const EVAL_BAR_SCORE_SIZE = '0.78rem'
+
 type DialogueVoice = 'archive' | 'reed' | 'alexion' | 'system' | 'scholar' | 'fire' | 'rival'
 
 type SpeakerMeta = {
@@ -297,7 +300,7 @@ export function formatMoveLedger(sanLog: string[], sanQuality: MoveQuality[]): s
     const bIcon = bQ ? `<span class="q-icon q-icon--${bQ}">${QUALITY_ICON[bQ] ?? ''}</span>` : ''
     const latest = i + 2 >= sanLog.length
     rows.push(
-      `<div class="ledger-row${latest ? ' ledger-row--latest' : ''}">` +
+      `<div class="ledger-row${latest ? ' ledger-row--latest' : ''}" style="font-size:${EVAL_BAR_SCORE_SIZE}">` +
         `<span class="ledger-num">${n}. </span>` +
         `<span class="ledger-w ${wQ ? `ledger-q--${wQ}` : ''}">${escapeHtml(wSan)}${wIcon} </span>` +
         `<span class="ledger-b ${bQ ? `ledger-q--${bQ}` : ''}">${bSan ? escapeHtml(bSan) + bIcon : '…'}</span>` +
@@ -381,7 +384,6 @@ export function showsEvalHud(sceneType: Scene['type']): boolean {
 
 /** Rotated score must fit the tray; 8px + 0.38rem collapses on phone. */
 export const EVAL_BAR_WIDTH = '18px'
-export const EVAL_BAR_SCORE_SIZE = '0.78rem'
 export const EVAL_BAR_SCORE_COLOR = 'rgba(246,240,226,0.88)'
 
 export function syncEvalBarScale(

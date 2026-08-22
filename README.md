@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.121)
+## What's new in this release (v0.5.122)
+
+**Pass 130 — move ledger** — the match ledger heading renders at 0.7rem and SAN rows at 0.78rem so the file still reads on a 390×844 instrument. See [`docs/PASS130_LEDGER_READ.md`](docs/PASS130_LEDGER_READ.md).
+
+## Previous release (v0.5.121)
 
 **Pass 129 — last-move rings** — last-move, check, capture, and selection rings use a 5px inset so the route still reads on a 390×844 instrument. See [`docs/PASS129_LAST_MOVE_RING.md`](docs/PASS129_LAST_MOVE_RING.md).
 

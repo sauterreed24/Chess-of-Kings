@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.122] — 2026-08-22
+
+Pass 130 — move ledger readability:
+
+- **Graphics** — the match ledger heading renders at 0.7rem and SAN rows at 0.78rem so the file still reads on phone. No new CSS.
+- **Playwright** — 390×844 Amara asserts the heading and first row.
+- Docs: [`docs/PASS130_LEDGER_READ.md`](docs/PASS130_LEDGER_READ.md).
+
 ## [0.5.121] — 2026-08-22
 
 Pass 129 — last-move ring readability:

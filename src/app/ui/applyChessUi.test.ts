@@ -58,7 +58,16 @@ function refs(): MountDomRefs {
     btnUndo: node<HTMLButtonElement>('button'),
     btnRunBack: node<HTMLButtonElement>('button'),
     btnHint: node<HTMLButtonElement>('button'),
-    moveLedger: node(),
+    moveLedger: (() => {
+      const wrap = document.createElement('div')
+      const heading = document.createElement('span')
+      heading.className = 'ledger-heading'
+      heading.id = 'move-ledger-label'
+      heading.textContent = 'Move ledger'
+      const ledger = node()
+      wrap.append(heading, ledger)
+      return ledger
+    })(),
     calibrationRail,
     calibrationTrack: node(),
     evalBarWrap: node(),
@@ -131,6 +140,7 @@ describe('applyChessUi', () => {
     expect(dom.boardStatus.textContent).toBe('Proof sealed.')
     expect(dom.boardStage.classList.contains('board-stage--black-turn')).toBe(false)
     expect(dom.moveCounterEl.textContent).toBe('4/4 White moves')
+    expect((dom.moveLedger.previousElementSibling as HTMLElement | null)?.style.fontSize).toBe('0.7rem')
     expect(dom.calibrationRail.classList.contains('hidden')).toBe(false)
     const railLabel = dom.calibrationRail.querySelector('.calibration-rail__label') as HTMLElement | null
     expect(railLabel?.textContent).toBe('4 / 4 inscribed')
