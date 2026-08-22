@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.117] — 2026-08-22
+
+Pass 125 — square label readability:
+
+- **Graphics** — file and rank corner marks render at 0.7rem inline so they beat the 0.4rem CSS floor on a 17px phone root. No new CSS.
+- **Playwright** — 390×844 skip-ahead calibration asserts a1's file/rank marks are 0.7rem and at least 10px tall.
+- No CSS budget change. Docs: [`docs/PASS125_SQUARE_LABELS.md`](docs/PASS125_SQUARE_LABELS.md).
+
 ## [0.5.116] — 2026-08-22
 
 Pass 124 — phone run-back and recovery:

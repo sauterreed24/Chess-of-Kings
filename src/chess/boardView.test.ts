@@ -244,6 +244,12 @@ describe('BoardView square facets', () => {
     const chess = new Chess()
     view.draw(chess, null, { mode: 'free' })
     expect(root.querySelectorAll('.sq-facet')).toHaveLength(64)
+    const a1File = root.querySelector('[data-square="a1"] .sq-label--file') as HTMLElement | null
+    const a1Rank = root.querySelector('[data-square="a1"] .sq-label--rank') as HTMLElement | null
+    expect(a1File?.textContent).toBe('a')
+    expect(a1Rank?.textContent).toBe('1')
+    expect(a1File?.style.fontSize).toBe('0.7rem')
+    expect(a1Rank?.style.fontSize).toBe('0.7rem')
     const lightLamp = root.querySelector('.sq-light .sq-facet-lamp')?.getAttribute('fill')
     const darkLamp = root.querySelector('.sq-dark .sq-facet-lamp')?.getAttribute('fill')
     expect(lightLamp).toBeTruthy()

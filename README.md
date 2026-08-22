@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.116)
+## What's new in this release (v0.5.117)
+
+**Pass 125 — square labels** — file and rank corner marks render at 0.7rem so the marble still names its edges on a 390×844 instrument. See [`docs/PASS125_SQUARE_LABELS.md`](docs/PASS125_SQUARE_LABELS.md).
+
+## Previous release (v0.5.116)
 
 **Pass 124 — phone run-back** — Run it back and recovered-session Restore / Dismiss keep a 44px hit target on a 390×844 instrument. See [`docs/PASS124_PHONE_RUN_BACK.md`](docs/PASS124_PHONE_RUN_BACK.md).
 

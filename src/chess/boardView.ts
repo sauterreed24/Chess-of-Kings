@@ -28,6 +28,9 @@ const SQ_AIM_STYLE =
 
 const SQ_AIM_HTML = `<span class="sq-aim" aria-hidden="true" style="${SQ_AIM_STYLE}"></span>`
 
+/** Corner file/rank marks beat the 0.4rem CSS floor so phone marble still reads. */
+const SQ_LABEL_SIZE = '0.7rem'
+
 function syncLegalAim(btn: HTMLButtonElement, on: boolean): void {
   const mark = btn.querySelector(':scope > .sq-aim') as HTMLElement | null
   if (!on) {
@@ -259,6 +262,7 @@ export class BoardView {
           span.className = 'sq-label sq-label--rank'
           span.textContent = String(rankOrder[r])
           span.setAttribute('aria-hidden', 'true')
+          span.style.fontSize = SQ_LABEL_SIZE
           btn.appendChild(span)
         }
         if (r === 7) {
@@ -266,6 +270,7 @@ export class BoardView {
           span.className = 'sq-label sq-label--file'
           span.textContent = fileOrder[f]!
           span.setAttribute('aria-hidden', 'true')
+          span.style.fontSize = SQ_LABEL_SIZE
           btn.appendChild(span)
         }
       }
