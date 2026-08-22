@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.20)
+## What's new in this release (v0.5.21)
+
+**Pass 29 — Quiet puzzle chrome** — hanging-knight boards drop the chapter crawl, empty ledger, and Sound/Move Guard row so the command sits on the marble. See [`docs/PASS29_PUZZLE_CHROME.md`](docs/PASS29_PUZZLE_CHROME.md).
+
+## Previous release (v0.5.20)
 
 **Pass 28 — Idle instrument header** — teaching boards collapse the empty brass header so the command sits on the marble. See [`docs/PASS28_IDLE_HEADER.md`](docs/PASS28_IDLE_HEADER.md).
 

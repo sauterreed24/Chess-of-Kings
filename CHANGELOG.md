@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.21] — 2026-08-22
+
+Pass 29 — Quiet puzzle chrome:
+
+- **Teaching puzzles** drop the chapter crawl, empty move ledger, Sound/Move Guard row, and duplicate lesson line so the hanging-knight command sits on the marble. Hint, Take back, and Reset stay. Living matches restore the ledger and toggles.
+- Playwright hides that chrome on hanging knight and shows it again on Amara.
+- Docs: [`docs/PASS29_PUZZLE_CHROME.md`](docs/PASS29_PUZZLE_CHROME.md).
+
 ## [0.5.20] — 2026-08-22
 
 Pass 28 — Idle instrument header:

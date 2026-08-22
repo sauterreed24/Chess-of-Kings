@@ -8,11 +8,13 @@ function minimalDom(): MountDomRefs {
   document.body.innerHTML = `
     <div id="app">
       <section id="screen-play" data-theme="">
-        <p id="play-chapter-label"></p>
-        <h2 id="play-chapter-title"></h2>
-        <p id="play-chapter-sub"></p>
-        <p id="play-philosophy"></p>
-        <span id="scene-progress"></span>
+        <header class="play-crawl">
+          <p id="play-chapter-label"></p>
+          <h2 id="play-chapter-title"></h2>
+          <p id="play-chapter-sub"></p>
+          <p id="play-philosophy"></p>
+          <span id="scene-progress"></span>
+        </header>
         <p id="scene-tag"></p>
         <div id="play-atelier" class="play-atelier--solo"></div>
         <div id="narrative-body" class="narrative-body"></div>
@@ -23,7 +25,8 @@ function minimalDom(): MountDomRefs {
         <span id="board-status"></span>
         <span id="turn-pulse"></span>
         <span id="move-counter"></span>
-        <div id="move-ledger"></div>
+        <div class="move-ledger-wrap"><div id="move-ledger"></div></div>
+        <div class="instrument-toggles"></div>
         <div id="calibration-rail" class="hidden"></div>
         <div id="eval-bar-wrap" class="hidden"></div>
         <div id="captured-top" class="hidden"></div>
@@ -271,5 +274,51 @@ describe('renderScene', () => {
     expect(play.showEvalBar).toBe(true)
     expect(dom.evalBarWrap.classList.contains('hidden')).toBe(false)
     expect(dom.capturedTop.classList.contains('hidden')).toBe(false)
+  })
+
+  it('collapses match chrome on teaching puzzles and restores it on living boards', () => {
+    const dom = minimalDom()
+    const play = createMountPlayState()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.newGame()
+    const cbs = {
+      setBoardVisible: () => {},
+      updateAdvance: () => {},
+      syncNarrativeFade: () => {},
+      revealBoardScene: () => {},
+    }
+    const crawl = () => dom.app.querySelector('.play-crawl')
+    const ledgerWrap = () => dom.moveLedger.closest('.move-ledger-wrap')
+    const toggles = () => dom.app.querySelector('.instrument-toggles')
+
+    const chapterI = PLAYABLE_CHAPTERS.find((ch) => ch.id === 'ch1')!
+    flow.highestUnlockedChapter = chapterI.index
+    flow.jumpToChapter(chapterI.index)
+    const hangingIdx = chapterI.scenes.findIndex((scene) => scene.id === 'c1-tutorial-hanging')
+    renderScene(chapterI, chapterI.scenes[hangingIdx]!, hangingIdx, dom, play, flow, cbs)
+    expect(crawl()?.classList.contains('hidden')).toBe(true)
+    expect(ledgerWrap()?.classList.contains('hidden')).toBe(true)
+    expect(toggles()?.classList.contains('hidden')).toBe(true)
+    expect(dom.lessonNote.classList.contains('hidden')).toBe(true)
+
+    const amaraIdx = chapterI.scenes.findIndex((scene) => scene.id === 'c1-match-amara')
+    renderScene(chapterI, chapterI.scenes[amaraIdx]!, amaraIdx, dom, play, flow, cbs)
+    expect(crawl()?.classList.contains('hidden')).toBe(false)
+    expect(ledgerWrap()?.classList.contains('hidden')).toBe(false)
+    expect(toggles()?.classList.contains('hidden')).toBe(false)
+    expect(dom.lessonNote.classList.contains('hidden')).toBe(false)
+
+    const prologue = PLAYABLE_CHAPTERS[0]!
+    flow.jumpToChapter(0)
+    const calibIdx = prologue.scenes.findIndex((scene) => scene.type === 'calibration')
+    renderScene(prologue, prologue.scenes[calibIdx]!, calibIdx, dom, play, flow, cbs)
+    expect(crawl()?.classList.contains('hidden')).toBe(false)
+    expect(ledgerWrap()?.classList.contains('hidden')).toBe(false)
+    expect(toggles()?.classList.contains('hidden')).toBe(false)
   })
 })
