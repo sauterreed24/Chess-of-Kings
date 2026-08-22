@@ -3565,10 +3565,10 @@ test('last-move route rings stay readable on the phone marble', { timeout: 90_00
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('[data-square="e2"]')).toHaveClass(/sq-last-from/)
   await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-last-to/)
-  const destShadow = await page.locator('[data-square="e4"]').evaluate((el) => getComputedStyle(el).boxShadow)
-  expect(destShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
-  const originShadow = await page.locator('[data-square="e2"]').evaluate((el) => getComputedStyle(el).boxShadow)
-  expect(originShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
+  const ringPx = async (square: string) =>
+    page.locator(`[data-square="${square}"]`).evaluate((el) => getComputedStyle(el).boxShadow.replace(/\s/g, ''))
+  await expect.poll(() => ringPx('e4')).toMatch(/0px0px0px5px/)
+  await expect.poll(() => ringPx('e2')).toMatch(/0px0px0px5px/)
 })
 
 test('legal aim pearls stay readable on the phone marble', { timeout: 90_000 }, async ({ page }) => {
