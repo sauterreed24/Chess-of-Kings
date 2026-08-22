@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.13)
+## What's new in this release (v0.5.14)
+
+**Pass 22 — Lamp-lit ivory and the first mate** — pieces catch the brass lamp on their real outlines, and Chapter I's mate-in-one is playtested through queen to h8. See [`docs/PASS22_LAMP_LIT.md`](docs/PASS22_LAMP_LIT.md).
+
+## Previous release (v0.5.13)
 
 **Pass 21 — Castle destination cue** — selecting the king marks g1 as a castle square and names the order on the instrument. See [`docs/PASS21_CASTLE_CUE.md`](docs/PASS21_CASTLE_CUE.md).
 
