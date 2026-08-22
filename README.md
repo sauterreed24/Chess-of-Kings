@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.22)
+## What's new in this release (v0.5.23)
+
+**Pass 31 — Idle board tools** — Take back and Reset stay off the hanging-knight instrument until a ply exists, so Hint sits on one row. See [`docs/PASS31_IDLE_TOOLS.md`](docs/PASS31_IDLE_TOOLS.md).
+
+## Previous release (v0.5.22)
 
 **Pass 30 — Turned waist** — ivory and lapis get a waist ring and an inner plinth lip so the stem reads as turned wood. See [`docs/PASS30_TURNED_WAIST.md`](docs/PASS30_TURNED_WAIST.md).
 
