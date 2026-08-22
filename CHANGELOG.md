@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.98] — 2026-08-22
+
+Pass 106 — Obsidian Neon set on the phone instrument:
+
+- **Graphics** — neon glyphs stay carved, then thicken the shared 1.5 outline to 2.4 so cyan and pink sides read on the same `#09101a` fill at 390×844. Cup strokes stay 0.45. No new CSS.
+- **Playwright** — a post-Amara Chapter I seed with neon selected resumes Lukas: `data-skin="obsidian-neon"`, carve overlays, shared dark fill, cyan/pink strokes, civic silhouettes, `e2–e4` / `e5`, and 44px Hint/Reset.
+- No CSS budget change. Docs: [`docs/PASS106_PHONE_NEON.md`](docs/PASS106_PHONE_NEON.md).
+
 ## [0.5.97] — 2026-08-22
 
 Pass 105 — High Contrast Tournament set on the phone instrument:
