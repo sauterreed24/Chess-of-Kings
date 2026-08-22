@@ -498,7 +498,7 @@ export function glyphForSkin(
     return thickenOutline(raw)
   }
   const carved = carveGlyph(raw, color, piece)
-  if (skin === 'obsidian-neon') {
+  if (skin === 'obsidian-neon' || skin === 'alexandrine-ornate') {
     return thickenOutline(carved)
   }
   return carved

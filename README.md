@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.98)
+## What's new in this release (v0.5.99)
+
+**Pass 107 — Alexandrine Ornate** — Demetrios’s reward set stays carved and thick-stroked on a 390×844 instrument, so cream/gold and sapphire/gold still read. See [`docs/PASS107_PHONE_ORNATE.md`](docs/PASS107_PHONE_ORNATE.md).
+
+## Previous release (v0.5.98)
 
 **Pass 106 — Obsidian Neon** — the Counterpart reward set stays carved and thick-stroked on a 390×844 instrument, so cyan and pink sides still read on the shared obsidian fill. See [`docs/PASS106_PHONE_NEON.md`](docs/PASS106_PHONE_NEON.md).
 
