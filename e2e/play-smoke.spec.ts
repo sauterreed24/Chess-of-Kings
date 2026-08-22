@@ -2571,7 +2571,7 @@ test('obsidian-neon set reads on the phone instrument', { timeout: 120_000 }, as
   ).toMatch(/^(#09101a|rgb\(\s*9,\s*16,\s*26\s*\))$/i)
   expect(
     await page.locator('[data-square="e2"] .piece').evaluate((el) => getComputedStyle(el).getPropertyValue('--piece-stroke').trim()),
-  ).toMatch(/^(#00ffcc|rgb\(\s*0,\s*255,\s*204\s*\))$/i)
+  ).toMatch(/^(#0fc|#00ffcc|rgb\(\s*0,\s*255,\s*204\s*\))$/i)
   expect(
     await page.locator('[data-square="e7"] .piece').evaluate((el) => getComputedStyle(el).getPropertyValue('--piece-stroke').trim()),
   ).toMatch(/^(#ff007f|rgb\(\s*255,\s*0,\s*127\s*\))$/i)
