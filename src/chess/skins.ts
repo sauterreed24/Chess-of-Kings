@@ -87,6 +87,16 @@ const PLINTH_CY: Record<PieceSymbol, number> = {
   k: 38.2,
 }
 
+/** Belly waist between the collar and the plinth — the turned stem of the piece. */
+const WAIST_CY: Record<PieceSymbol, number> = {
+  p: 35.1,
+  n: 36.2,
+  b: 35.4,
+  r: 36.9,
+  q: 35.6,
+  k: 35.3,
+}
+
 const LAMP = {
   w: { hi: '#ffffff', lo: '#4a2e10', spec: '#fff6e0', diff: '#ffe4b0' },
   b: { hi: '#7aa8d4', lo: '#000105', spec: '#f0d28a', diff: '#3d6a96' },
@@ -147,6 +157,16 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
   const ringFill = color === 'w' ? 'rgba(160,110,40,0.4)' : 'rgba(6,16,28,0.6)'
   const ringStroke = color === 'w' ? 'rgba(255,255,255,0.46)' : 'rgba(232,201,126,0.4)'
   const plinth = latheRing('piece-plinth', PLINTH_CY[piece] ?? 38.4, rx * 0.92, 1.35, ringFill, ringStroke)
+  const rimFill = color === 'w' ? 'rgba(255,248,232,0.52)' : 'rgba(232,201,126,0.3)'
+  const rim = latheRing(
+    'piece-rim',
+    (PLINTH_CY[piece] ?? 38.4) - 0.2,
+    rx * 0.62,
+    0.72,
+    rimFill,
+    ringStroke,
+  )
+  const waist = latheRing('piece-waist', WAIST_CY[piece] ?? 35.4, rx * 0.86, 1.18, ringFill, ringStroke)
   const collar = latheRing('piece-collar', COLLAR_CY[piece] ?? 32.8, rx * 0.78, 1.25, ringFill, ringStroke)
   const neck =
     piece === 'n'
@@ -158,7 +178,7 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${plinth}${collar}${neck}${highlight}</svg>`)
+    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${highlight}</svg>`)
 }
 
 export function glyphForSkin(

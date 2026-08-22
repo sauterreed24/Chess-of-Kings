@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.22] — 2026-08-22
+
+Pass 30 — Turned waist:
+
+- **Ivory/lapis glyphs** get a waist ring between collar and plinth plus a bright inner plinth lip so the stem reads as turned wood, not a sticker on a disc. Knights keep the waist and skip the neck.
+- Playwright asserts waist and rim on the calibration pawn, hanging-knight bishop, and title honor guard.
+- Docs: [`docs/PASS30_TURNED_WAIST.md`](docs/PASS30_TURNED_WAIST.md).
+
 ## [0.5.21] — 2026-08-22
 
 Pass 29 — Quiet puzzle chrome:
