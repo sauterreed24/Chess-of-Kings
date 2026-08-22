@@ -98,7 +98,10 @@ export function renderScene(
   const teachingPuzzle = scene.type === 'puzzle'
   dom.app.querySelector('.play-crawl')?.classList.toggle('hidden', teachingPuzzle)
   dom.moveLedger.closest('.move-ledger-wrap')?.classList.toggle('hidden', teachingPuzzle)
-  dom.app.querySelector('.instrument-toggles')?.classList.toggle('hidden', teachingPuzzle)
+  const togglesHidden = teachingPuzzle
+  dom.app.querySelector('.instrument-toggles')?.classList.toggle('hidden', togglesHidden)
+  syncPhoneHitTarget(dom.app.querySelector('#btn-sfx'), !togglesHidden)
+  syncPhoneHitTarget(dom.app.querySelector('#btn-move-guard'), !togglesHidden)
   dom.lessonNote.classList.toggle('hidden', teachingPuzzle)
   if (teachingPuzzle) {
     dom.narrativeBody.setAttribute('data-puzzle-lesson', '')

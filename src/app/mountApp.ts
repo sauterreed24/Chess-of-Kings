@@ -348,6 +348,10 @@ export function mountApp(app: HTMLDivElement) {
     syncPhoneDossierFolds(app)
     syncPhoneTitleCtas()
     syncPhoneHitTarget(btnSkipAhead, !btnSkipAhead.classList.contains('hidden'))
+    const matchTogglesOn = !app.querySelector('.instrument-toggles')?.classList.contains('hidden')
+    syncPhoneHitTarget(btnSfx, matchTogglesOn)
+    syncPhoneHitTarget(btnMoveGuard, matchTogglesOn)
+    syncPhoneHitTarget(btnUndo, !btnUndo.hidden)
     for (const el of chapterQuickActions.querySelectorAll<HTMLElement>('.chapter-quick-actions__btn')) {
       syncPhoneHitTarget(el, !chapterQuickActions.classList.contains('hidden'))
     }

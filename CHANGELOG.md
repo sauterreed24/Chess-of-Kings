@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.113] — 2026-08-22
+
+Pass 121 — phone match tools:
+
+- **Playability** — Take back, Sound, and Move Guard keep a 44px hit target on `max-width: 700px`. The sound row was ~13px on the 17px phone root. No new CSS.
+- **Playwright** — 390×844 hanging knight asserts Take back is 44px; Amara asserts Sound and Move Guard.
+- No CSS budget change. Docs: [`docs/PASS121_PHONE_MATCH_TOOLS.md`](docs/PASS121_PHONE_MATCH_TOOLS.md).
+
 ## [0.5.112] — 2026-08-22
 
 Pass 120 — eval bar readability:

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.112)
+## What's new in this release (v0.5.113)
+
+**Pass 121 — phone match tools** — Take back, Sound, and Move Guard keep a 44px hit target on a 390×844 instrument. See [`docs/PASS121_PHONE_MATCH_TOOLS.md`](docs/PASS121_PHONE_MATCH_TOOLS.md).
+
+## Previous release (v0.5.112)
 
 **Pass 120 — eval bar readability** — the match/duel evaluation tray is 18px with a 0.78rem score so the number still reads on a 390×844 instrument. See [`docs/PASS120_EVAL_BAR.md`](docs/PASS120_EVAL_BAR.md).
 
