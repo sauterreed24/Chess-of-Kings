@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.74] — 2026-08-22
+
+Pass 82 — King crown silhouette:
+
+- **Ivory and lapis kings** replace the Wikipedia Staunton stroke-only plus and bow-tie flares with a civic crown: bowl, stem, and a thick cross in the glyph. Carved inlay, sheen, and neck follow the new brim.
+- **High-contrast** keeps the same silhouette (no carve overlays), so tournament kings still read as crowns with a plus.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS82_KING_CROWN_HEAD.md`](docs/PASS82_KING_CROWN_HEAD.md).
+
 ## [0.5.73] — 2026-08-22
 
 Pass 81 — Pawn globe silhouette:
