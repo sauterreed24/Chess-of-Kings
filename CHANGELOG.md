@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.55] — 2026-08-22
+
+Pass 63 — Rook battlement cup:
+
+- **Ivory/lapis rooks** deepen the lathe cup so calibration a1 is not a 2.4px dish under 4.2px merlon wells. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration a1 and castle-puzzle h1 cups are at least 3.5 CSS pixels tall.
+- Docs: [`docs/PASS63_ROOK_CUP.md`](docs/PASS63_ROOK_CUP.md).
+
 ## [0.5.54] — 2026-08-22
 
 Pass 62 — Pawn spark:
