@@ -1533,8 +1533,8 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   transition: transform 0.16s var(--ease-out), filter 0.16s var(--ease-out), opacity 0.06s;
 }
 .piece svg {
-  width: 90%;
-  height: 90%;
+  width: 93%;
+  height: 93%;
   display: block;
 }
 .piece--w {
@@ -1582,14 +1582,14 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 
 /* Custom Skin Variables & Filters */
 .chess-grid[data-skin='classic-royal'] .piece--w {
-  --piece-fill: #fff1cc;
-  --piece-stroke: #57431e;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.62));
+  --piece-fill: #fff6d8;
+  --piece-stroke: #3d2c12;
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.42)) drop-shadow(0 4px 7px rgba(0,0,0,0.64));
 }
 .chess-grid[data-skin='classic-royal'] .piece--b {
-  --piece-fill: #06182f;
-  --piece-stroke: #e8c97e;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.78));
+  --piece-fill: #071526;
+  --piece-stroke: #f0d28a;
+  filter: drop-shadow(0 1px 0 rgba(232,201,126,0.28)) drop-shadow(0 4px 7px rgba(0,0,0,0.8));
 }
 
 .chess-grid[data-skin='high-contrast'] .piece--w {
@@ -1640,8 +1640,8 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 /* The struck piece reads as knocked off — it sits just under the incoming mover. */
 .piece-capture { z-index: 1999; will-change: transform, opacity; }
 .piece-fly svg {
-  width: 82%;
-  height: 82%;
+  width: 90%;
+  height: 90%;
 }
 .piece-fly.piece--w {
   --piece-fill: #faf6ec;
@@ -1748,7 +1748,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
     radial-gradient(circle at 76% 82%, #0004, #0000 50%);
 }
 .sq-last-to {
-  box-shadow: inset 0 0 0 3px #e8c97ef0, 0 0 16px #e8c97e3d;
+  box-shadow: inset 0 0 0 3px #f0d28af5, 0 0 22px #e8c97e55;
 }
 .sq-last-to::before {
   background:
@@ -2556,11 +2556,6 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   font-size: 0.86rem;
 }
 
-.screen-play--board-scene .philosophy {
-  margin-top: 0.38rem;
-  font-size: 0.92rem;
-}
-
 @media (min-width: 961px) {
   .screen-play--board-scene .play-atelier {
     grid-template-columns: minmax(0, 1fr) minmax(350px, 430px);
@@ -2676,25 +2671,10 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   padding-bottom: 0.54rem;
 }
 
-.screen-play--board-scene .instrument-eyebrow {
-  margin-bottom: 0;
-}
-
-@media (min-width: 700px) {
-  .screen-play--board-scene .play-state-strip {
-    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
-    align-items: center;
-  }
-
-  .screen-play--board-scene .play-state-readouts {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.24rem;
-  }
-
-  .screen-play--board-scene .play-chip {
-    padding: 0.2rem 0.42rem;
-    font-size: 0.49rem;
-  }
+.screen-play--board-scene .instrument-eyebrow,
+.screen-play--board-scene .play-state-readouts,
+.screen-play--board-scene .play-crawl .philosophy {
+  display: none;
 }
 
 .status-pill-wrap {
@@ -2719,7 +2699,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 
 .screen-play--board-scene .instrument-toggles {
-  margin-top: 0;
+  margin-top: 0.2rem;
 }
 
 .screen-play--board-scene .ghost--sound {
@@ -2804,18 +2784,18 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   content: '';
   position: absolute;
   inset: 6px;
-  border: 1px solid rgba(232,201,126,0.14);
+  border: 1px solid rgba(232,201,126,0.28);
   border-radius: 8px;
   pointer-events: none;
 }
 
 .board-wrap {
-  border: 1px solid rgba(232, 201, 126, 0.42);
+  border: 1px solid rgba(232, 201, 126, 0.52);
   border-radius: 4px;
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.45),
-    0 20px 54px rgba(0, 0, 0, 0.58),
-    0 0 48px rgba(42, 96, 148, 0.18);
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 22px 58px rgba(0, 0, 0, 0.62),
+    0 0 56px rgba(42, 96, 148, 0.24);
 }
 
 .chess-grid {
@@ -3408,7 +3388,6 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
 
   .board-brass { padding: 7px; }
   .board-guide { display: none; }
-  .screen-play--board-scene .instrument-eyebrow { display: none; }
   .dossier-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .duel-launch {
     padding: 0.62rem;

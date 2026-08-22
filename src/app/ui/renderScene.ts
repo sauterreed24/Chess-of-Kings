@@ -211,7 +211,7 @@ export function renderScene(
     dom.narrativeBody.innerHTML = `${storyBeatBlock(scene.storyBeat)}<p class="lesson-lead">${escapeHtml(scene.lesson)}</p>${
       scene.teaching ? teachingBlock(scene.teaching) : ''
     }<p class="hint-block"><span class="hint-label">Target</span> ${scene.minMovesByPlayer} moves as White. The Archive answers at random.</p>`
-    dom.lessonNote.textContent = 'White moves are tallied at the right; the Lab is listening.'
+    dom.lessonNote.textContent = 'White moves are tallied on the rail; the Lab is listening.'
     dom.btnReset.disabled = false
     const left = scene.minMovesByPlayer
     dom.btnNextHint.textContent = left === 1 ? '1 remaining' : `${left} remaining`

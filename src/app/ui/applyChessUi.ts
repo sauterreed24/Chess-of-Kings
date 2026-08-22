@@ -161,6 +161,12 @@ export function applyChessUi(
         const left = target - current
         dom.btnNextHint.textContent = left === 1 ? '1 remaining' : `${left} remaining`
       }
+      const railLabel = dom.calibrationRail.querySelector('.calibration-rail__label')
+      if (railLabel) railLabel.textContent = `${current} / ${target} inscribed`
+      dom.calibrationRail.setAttribute(
+        'aria-label',
+        `${current} of ${target} White moves inscribed`,
+      )
       dom.calibrationTrack.innerHTML = Array.from({ length: target }, (_, i) => {
         const filled = i < current
         return `<span class="cal-dot ${filled ? 'cal-dot--on' : ''}" aria-hidden="true"></span>`
