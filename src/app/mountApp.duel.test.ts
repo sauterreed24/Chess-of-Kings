@@ -610,12 +610,12 @@ describe('mounted duel dossier', () => {
     expect(panel.textContent).not.toContain('wins, losses, and draws all count')
   })
 
-  it('confirms before chapter jump when a recoverable session exists', async () => {
+  it('confirms before jumping to a different chapter when a recoverable session exists', async () => {
     localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
       version: 3,
       chapterIndex: 0,
       sceneIndex: 4,
-      highestUnlockedChapter: 0,
+      highestUnlockedChapter: 1,
       lastScreen: 'chapters',
       completedSceneIds: [],
       unlockedDuelVariantIds: ['alexion-mentor'],
@@ -644,7 +644,7 @@ describe('mounted duel dossier', () => {
 
     app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
     expect(app.querySelector('#btn-resume-recovered')).not.toBeNull()
-    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn[data-idx="1"]')?.click()
     expect(app.querySelector('#confirm-overlay')?.classList.contains('hidden')).toBe(false)
     expect(app.querySelector('#confirm-overlay')?.textContent).toMatch(/Replace the recovered session/)
     app.querySelector<HTMLButtonElement>('#btn-confirm-cancel')?.click()
