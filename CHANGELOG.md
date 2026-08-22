@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.100] — 2026-08-22
+
+Pass 108 — phone title skin picker:
+
+- **Playability** — the title Piece skin select keeps a 44px hit target on `max-width: 700px` via the existing phone-tool inline floor (no new CSS). Changing the set persists and paints the next match.
+- **Playwright** — a post-Amara Chapter I seed with every set unlocked starts on classic-royal, switches to High Contrast Tournament on 390×844, then resumes Lukas with `data-skin="high-contrast"`.
+- No CSS budget change. Docs: [`docs/PASS108_PHONE_SKIN_PICK.md`](docs/PASS108_PHONE_SKIN_PICK.md).
+
 ## [0.5.99] — 2026-08-22
 
 Pass 107 — Alexandrine Ornate set on the phone instrument:

@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
-import { applyLabOverlayCaption, clearPhoneLessonMarkers, setTopBarInertForLab, syncLabOverlayCaption, syncPhonePuzzleLesson } from './labModal'
+import { applyLabOverlayCaption, clearPhoneLessonMarkers, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneHitTarget, syncPhonePuzzleLesson } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -347,6 +347,7 @@ export function mountApp(app: HTMLDivElement) {
     const skins = flowRef?.getUnlockedPieceSkins() ?? ['classic-royal']
     if (skins.length <= 1) {
       titleSkinField.classList.add('hidden')
+      syncPhoneHitTarget(titleSkinSelect, false)
       return
     }
     titleSkinField.classList.remove('hidden')
@@ -357,6 +358,7 @@ export function mountApp(app: HTMLDivElement) {
           `<option value="${s}" ${s === selected ? 'selected' : ''}>${escapeHtml(PIECE_SKIN_LABEL[s])}</option>`,
       )
       .join('')
+    syncPhoneHitTarget(titleSkinSelect, true)
   }
 
   /* ─── Chess UI updater ────────────────────────────────────────── */
@@ -1281,7 +1283,10 @@ export function mountApp(app: HTMLDivElement) {
     narrativeBody.classList.toggle('narrative-body--no-fade', !overflowing || atBottom)
   }
   narrativeBody.addEventListener('scroll', syncNarrativeFade, { passive: true })
-  window.addEventListener('resize', () => window.requestAnimationFrame(syncNarrativeFade), {
+  window.addEventListener('resize', () => window.requestAnimationFrame(() => {
+    syncNarrativeFade()
+    syncTitleSkinSelect()
+  }), {
     passive: true,
   })
 
