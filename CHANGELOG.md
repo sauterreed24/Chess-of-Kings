@@ -15,7 +15,7 @@ level (the save format has its own version field — see
 
 Pass 48 — Quiet puzzle coach:
 
-- **Teaching puzzles** omit move-insight coach lines after a sealing capture. Explicit Hint — lines still file. The marble already names the proof.
+- **Teaching puzzles** omit move-insight coach lines after a sealing capture. Explicit Hint — lines still file. The marble already names the proof. Screen readers hear the seal through the live announcer.
 - Playwright keeps `#coach-tip` hidden after hanging-knight Bxd4.
 - Docs: [`docs/PASS48_QUIET_PUZZLE_COACH.md`](docs/PASS48_QUIET_PUZZLE_COACH.md).
 

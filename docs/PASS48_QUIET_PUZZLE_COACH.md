@@ -11,7 +11,8 @@ After Bxd4 the Draw. pill is gone, but the instrument still printed **Material w
 
 1. **Puzzle move insights stay off** — `coachTip` and `mentorInsight` are omitted on teaching puzzles unless the line starts with `Hint — `.
 2. **Explicit Hint still files** so the Hint control can name the archive suggestion.
-3. **Playwright** — hanging-knight phone keeps `#coach-tip` hidden after Bxd4.
+3. **Playwright** — hanging-knight phone keeps `#coach-tip` hidden after Bxd4 and speaks `Proof sealed. Advance when ready.` through `#live-announcer`.
+4. **Screen readers** still hear the seal. The visual Draw. pill stays off; the existing polite announcer files the proof.
 
 ## Out of scope
 

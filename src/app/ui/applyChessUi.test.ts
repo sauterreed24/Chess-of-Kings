@@ -157,6 +157,40 @@ describe('applyChessUi', () => {
     expect(dom.boardStatus.closest('.instrument-header')?.classList.contains('hidden')).toBe(true)
   })
 
+  it('announces a quiet teaching seal without showing Draw', () => {
+    const chess = new Chess('8/8/8/4k3/3B4/8/8/3K4 b - - 0 1')
+    const dom = refs()
+    const announcer = { say: vi.fn(), clear: vi.fn() }
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: undefined,
+        status: '',
+        sanLog: ['Bxd4'],
+        canUndo: true,
+        boardGuide: 'Proof sealed. Continue when Advance appears.',
+      },
+      {
+        dom,
+        play: createMountPlayState(),
+        getFlow: () => null,
+        sfx: createSfxController({ enabled: false }),
+        announcer,
+      },
+      {
+        showRewardBundles: vi.fn(),
+        maybeShowPendingChapterPrompt: vi.fn(),
+        revealBoardScene: vi.fn(),
+      },
+    )
+    expect(chess.isGameOver()).toBe(true)
+    expect(dom.boardStatus.classList.contains('hidden')).toBe(true)
+    expect(dom.boardStatus.closest('.instrument-header')?.classList.contains('hidden')).toBe(true)
+    expect(dom.turnPulseEl.textContent).toBe('Sealed')
+    expect(dom.turnPulseEl.classList.contains('play-chip--black')).toBe(false)
+    expect(announcer.say).toHaveBeenCalledWith('Proof sealed. Advance when ready.')
+  })
+
   it('keeps check and thinking on the status pill', () => {
     const chess = new Chess()
     const dom = refs()

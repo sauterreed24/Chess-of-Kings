@@ -52,6 +52,7 @@ export function applyChessUi(
   const calibration = p.calibration
   const calibrationComplete = !!calibration && calibration.current >= calibration.target
 
+  const sealedQuiet = isGameOver && !p.matchOutcome
   dom.turnPulseEl.textContent = p.matchOutcome
     ? p.matchOutcome === 'win'
       ? 'Victory sealed'
@@ -60,13 +61,13 @@ export function applyChessUi(
         : 'Draw recorded'
     : p.aiThinking
       ? 'Rival pondering'
-      : calibrationComplete
+      : calibrationComplete || sealedQuiet
         ? 'Sealed'
       : `${sideToMove} turn`
-  dom.turnPulseEl.classList.toggle('play-chip--white', !p.aiThinking && !p.matchOutcome && !calibrationComplete && p.chess.turn() === 'w')
-  dom.turnPulseEl.classList.toggle('play-chip--black', !p.aiThinking && !p.matchOutcome && !calibrationComplete && p.chess.turn() === 'b')
+  dom.turnPulseEl.classList.toggle('play-chip--white', !p.aiThinking && !p.matchOutcome && !calibrationComplete && !sealedQuiet && p.chess.turn() === 'w')
+  dom.turnPulseEl.classList.toggle('play-chip--black', !p.aiThinking && !p.matchOutcome && !calibrationComplete && !sealedQuiet && p.chess.turn() === 'b')
   dom.turnPulseEl.classList.toggle('play-chip--thinking', p.aiThinking)
-  dom.turnPulseEl.classList.toggle('play-chip--done', Boolean(p.matchOutcome) || calibrationComplete)
+  dom.turnPulseEl.classList.toggle('play-chip--done', Boolean(p.matchOutcome) || calibrationComplete || sealedQuiet)
   dom.moveCounterEl.textContent = calibration
     ? `${Math.min(calibration.current, calibration.target)}/${calibration.target} White moves`
     : `Move ${fullMove} · ${p.sanLog.length} ply`
@@ -286,7 +287,13 @@ export function applyChessUi(
             : ANNOUNCE_TEMPLATES.matchDraw
       announcer.say(`${tmpl} ${rival}.`)
     }
-  } else if (!p.matchOutcome && play.announcedOutcomeKey) {
+  } else if (sealedQuiet) {
+    const key = `sealed|${p.ledgerFp}`
+    if (key !== play.announcedOutcomeKey) {
+      play.announcedOutcomeKey = key
+      announcer.say(ANNOUNCE_TEMPLATES.proofSealed)
+    }
+  } else if (play.announcedOutcomeKey) {
     play.announcedOutcomeKey = ''
   }
 
