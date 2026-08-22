@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.81)
+## What's new in this release (v0.5.82)
+
+**Pass 90 — Chapter IV Nysa match** — the first Paradox Masters match stays board-first on a 390×844 instrument, with the authored `g6` reply. See [`docs/PASS90_PHONE_CH4_MATCH.md`](docs/PASS90_PHONE_CH4_MATCH.md).
+
+## Previous release (v0.5.81)
 
 **Pass 89 — Chapter III Demetrios return** — the first Professor’s Law match stays board-first on a 390×844 instrument, with an authored classical `e5` reply. See [`docs/PASS89_PHONE_CH3_MATCH.md`](docs/PASS89_PHONE_CH3_MATCH.md).
 

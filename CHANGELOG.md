@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.82] — 2026-08-22
+
+Pass 90 — Chapter IV Nysa match on the phone instrument:
+
+- **Playwright** — Chapter IV walks the Paradox Masters drills into the first Nysa match. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `g6` reply, board-guide fit, Hint/Reset floors after resize. Phone drills hide the manuscript and dock Prove.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS90_PHONE_CH4_MATCH.md`](docs/PASS90_PHONE_CH4_MATCH.md).
+
 ## [0.5.81] — 2026-08-22
 
 Pass 89 — Chapter III Demetrios return on the phone instrument:
