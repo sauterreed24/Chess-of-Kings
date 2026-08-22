@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.52] — 2026-08-22
+
+Pass 60 — King cross bar:
+
+- **Ivory/lapis kings** thicken the crossbar so calibration e1 is not a 2px scratch after the bishop mitre plus grew. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration e1 and hanging-knight d1 bars are at least 2.6 CSS pixels tall.
+- Docs: [`docs/PASS60_CROSS_BAR.md`](docs/PASS60_CROSS_BAR.md).
+
 ## [0.5.51] — 2026-08-22
 
 Pass 59 — Bishop mitre bar:

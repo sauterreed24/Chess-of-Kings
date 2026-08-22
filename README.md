@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.51)
+## What's new in this release (v0.5.52)
+
+**Pass 60 — King cross bar** — ivory and lapis kings get a thicker plus on the crown, instead of a 2px scratch. See [`docs/PASS60_CROSS_BAR.md`](docs/PASS60_CROSS_BAR.md).
+
+## Previous release (v0.5.51)
 
 **Pass 59 — Bishop mitre bar** — ivory and lapis bishops get a thicker cleft crossbar, instead of a 1.7px scratch. See [`docs/PASS59_MITRE_BAR.md`](docs/PASS59_MITRE_BAR.md).
 

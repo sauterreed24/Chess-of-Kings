@@ -162,7 +162,7 @@ describe('carveGlyph', () => {
     const widths = [...kingGlyph.matchAll(/class="piece-cross"[^>]*width="([\d.]+)"/g)].map((m) => Number(m[1]))
     const heights = [...kingGlyph.matchAll(/class="piece-cross"[^>]*height="([\d.]+)"/g)].map((m) => Number(m[1]))
     expect(widths[0]).toBeGreaterThanOrEqual(2.5)
-    expect(heights[1]).toBeGreaterThanOrEqual(2.1)
+    expect(heights[1]).toBeGreaterThanOrEqual(3.2)
   })
 
   it('sizes the bishop mitre cleft to read on a phone square', () => {
