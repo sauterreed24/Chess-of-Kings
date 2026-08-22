@@ -3243,6 +3243,20 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-band-status')).toBeVisible()
 })
 
+test('title privacy links stay 44px on the phone instrument', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#title-privacy-policy')).toBeVisible({ timeout: 15_000 })
+  for (const id of ['#title-privacy-policy', '#title-privacy-a11y', '#btn-title-kbdhelp']) {
+    await expect(page.locator(id)).toBeVisible()
+    expect(await page.locator(id).evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+    expect(await page.locator(id).evaluate((el) => getComputedStyle(el).display)).toBe('inline-block')
+    const box = await page.locator(id).boundingBox()
+    expect(box).toBeTruthy()
+    expect(box!.height).toBeGreaterThanOrEqual(44)
+  }
+})
+
 test('duel archive setup stays 44px on the phone instrument', { timeout: 120_000 }, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')

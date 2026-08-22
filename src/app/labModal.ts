@@ -66,6 +66,20 @@ export function syncPhoneHitTarget(el: HTMLElement | null | undefined, visible: 
   stylePhoneHitTarget(el, isPhoneLabNav() && visible)
 }
 
+/** Title privacy anchors are `display:inline`; min-height only grows an inline-block box. */
+export function syncPhoneInlineHitTarget(el: HTMLElement | null | undefined, visible: boolean): void {
+  if (!el) return
+  const on = isPhoneLabNav() && visible
+  if (on) {
+    el.style.display = 'inline-block'
+    el.style.verticalAlign = 'middle'
+  } else {
+    el.style.display = ''
+    el.style.verticalAlign = ''
+  }
+  stylePhoneHitTarget(el, on)
+}
+
 /** `.primary--advance` is width:100% / column so it can sit under the manuscript.
  *  Inline overrides keep CSS gzip untouched while Prove shares the Hint row. */
 function styleDockedProve(next: HTMLButtonElement, docked: boolean): void {

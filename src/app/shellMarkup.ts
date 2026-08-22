@@ -71,9 +71,9 @@ export function getShellMarkup(): string {
               </div>
             </section>
             <p class="title-privacy">
-              <a class="title-privacy__link" href="./privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
+              <a class="title-privacy__link" id="title-privacy-policy" href="./privacy.html" target="_blank" rel="noopener noreferrer">Privacy policy</a>
               <span aria-hidden="true"> · </span>
-              <a class="title-privacy__link" href="./accessibility.html" target="_blank" rel="noopener noreferrer">Accessibility</a>
+              <a class="title-privacy__link" id="title-privacy-a11y" href="./accessibility.html" target="_blank" rel="noopener noreferrer">Accessibility</a>
               <span aria-hidden="true"> · </span>
               <button type="button" class="title-privacy__link title-privacy__kbd" id="btn-title-kbdhelp">Keyboard atlas</button>
             </p>

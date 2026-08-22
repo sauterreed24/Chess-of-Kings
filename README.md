@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.103)
+## What's new in this release (v0.5.104)
+
+**Pass 112 — phone title privacy links** — Privacy policy, Accessibility, and Keyboard atlas keep a 44px hit target on a 390×844 instrument. See [`docs/PASS112_PHONE_TITLE_PRIVACY.md`](docs/PASS112_PHONE_TITLE_PRIVACY.md).
+
+## Previous release (v0.5.103)
 
 **Pass 111 — phone Duel Archive setup** — dossier selects and launch actions keep a 44px hit target on a 390×844 instrument. See [`docs/PASS111_PHONE_DUEL_SETUP.md`](docs/PASS111_PHONE_DUEL_SETUP.md).
 

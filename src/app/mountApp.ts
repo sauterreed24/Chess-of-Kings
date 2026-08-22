@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
-import { applyLabOverlayCaption, clearPhoneLessonMarkers, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneHitTarget, syncPhonePuzzleLesson } from './labModal'
+import { applyLabOverlayCaption, clearPhoneLessonMarkers, setTopBarInertForLab, syncLabOverlayCaption, syncPhoneHitTarget, syncPhoneInlineHitTarget, syncPhonePuzzleLesson } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -160,6 +160,7 @@ export function mountApp(app: HTMLDivElement) {
   const titleSkinField = app.querySelector<HTMLLabelElement>('#title-skin-field')!
   const titleSkinSelect = app.querySelector<HTMLSelectElement>('#title-skin')!
   const btnTitleKbdhelp = app.querySelector<HTMLButtonElement>('#btn-title-kbdhelp')!
+  const titlePrivacyHits = [...app.querySelectorAll<HTMLElement>('.title-privacy__link')]
   const btnLabKbdhelp = app.querySelector<HTMLButtonElement>('#btn-lab-kbdhelp')!
   const liveAnnouncer = app.querySelector<HTMLDivElement>('#live-announcer')!
   const rewardInertRestore: HTMLElement[] = []
@@ -341,6 +342,7 @@ export function mountApp(app: HTMLDivElement) {
     syncPhoneHitTarget(btnTitleMotion, true)
     syncPhoneHitTarget(btnTitleAiWorker, true)
     syncPhoneHitTarget(btnTitleVisual, true)
+    for (const el of titlePrivacyHits) syncPhoneInlineHitTarget(el, true)
   }
 
   function applyMotionPreference() {

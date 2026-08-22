@@ -5,6 +5,7 @@ import {
   clearPhoneLessonMarkers,
   setTopBarInertForLab,
   syncLabOverlayCaption,
+  syncPhoneInlineHitTarget,
   syncPhonePuzzleLesson,
 } from './labModal'
 
@@ -377,5 +378,21 @@ describe('setTopBarInertForLab', () => {
     expect(reset.style.minHeight).toBe('')
     expect(hint.hidden).toBe(false)
     expect(hint.style.minHeight).toBe('44px')
+  })
+
+  it('floors inline title privacy links at 44px on phone', () => {
+    stubPhoneLabNav(true)
+    const link = document.createElement('a')
+    link.className = 'title-privacy__link'
+    document.body.append(link)
+    syncPhoneInlineHitTarget(link, true)
+    expect(link.style.minHeight).toBe('44px')
+    expect(link.style.minWidth).toBe('44px')
+    expect(link.style.display).toBe('inline-block')
+    expect(link.style.verticalAlign).toBe('middle')
+    stubPhoneLabNav(false)
+    syncPhoneInlineHitTarget(link, true)
+    expect(link.style.minHeight).toBe('')
+    expect(link.style.display).toBe('')
   })
 })

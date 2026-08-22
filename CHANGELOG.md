@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.104] — 2026-08-22
+
+Pass 112 — phone title privacy links:
+
+- **Playability** — Privacy policy, Accessibility, and Keyboard atlas keep a 44px hit target on `max-width: 700px`. Inline anchors become `inline-block` so min-height actually grows the box. No new CSS.
+- **Playwright** — 390×844 asserts those three controls are 44px tall.
+- No CSS budget change. Docs: [`docs/PASS112_PHONE_TITLE_PRIVACY.md`](docs/PASS112_PHONE_TITLE_PRIVACY.md).
+
 ## [0.5.103] — 2026-08-22
 
 Pass 111 — phone Duel Archive setup:

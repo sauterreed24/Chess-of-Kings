@@ -140,6 +140,9 @@ describe('shell markup structural integrity', () => {
     host.innerHTML = getShellMarkup()
     expect(host.innerHTML).toContain('href="./privacy.html"')
     expect(host.innerHTML).toContain('href="./accessibility.html"')
+    expect(host.querySelector('#title-privacy-policy')).not.toBeNull()
+    expect(host.querySelector('#title-privacy-a11y')).not.toBeNull()
+    expect(host.querySelector('#btn-title-kbdhelp')).not.toBeNull()
   })
 
   it('declares Long Reign world markers on the title and Chronicle Index', () => {
