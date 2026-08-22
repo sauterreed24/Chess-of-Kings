@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.86)
+## What's new in this release (v0.5.87)
+
+**Pass 95 — Chapter VII Soren match** — the Human Synthesis second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored `g6` reply. See [`docs/PASS95_PHONE_CH7_SOREN.md`](docs/PASS95_PHONE_CH7_SOREN.md).
+
+## Previous release (v0.5.86)
 
 **Pass 94 — Chapter VI Iota match** — the Silicon Threshold second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored `c6` reply. See [`docs/PASS94_PHONE_CH6_IOTA.md`](docs/PASS94_PHONE_CH6_IOTA.md).
 

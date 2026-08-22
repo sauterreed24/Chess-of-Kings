@@ -179,6 +179,7 @@ describe('campaign story beats', () => {
     const soren = matches.find((scene) => scene.id === 'c7-match-soren')
     expect(mira?.type === 'match' && mira.scriptedBlackSans?.[0]).toBe('e5')
     expect(soren?.type === 'match' && soren.scriptedBlackSans?.[0]).toBe('g6')
+    expect(ch7?.scenes.findIndex((scene) => scene.id === 'c7-before-soren')).toBe(9)
     const puzzles = ch7?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
     expect(puzzles.map((scene) => scene.id)).toEqual(
       expect.arrayContaining(['c7-puzzle-switch', 'c7-puzzle-wing', 'c7-puzzle-smother']),

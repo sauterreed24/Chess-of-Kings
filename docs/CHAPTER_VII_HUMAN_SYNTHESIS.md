@@ -36,4 +36,4 @@ Sealing the chapter amends the committee file again: Reed can switch schools wit
 - Orchestrator: Ch VI seal opens Ch VII; pre-Ch-VII saves that sealed the ledger age unlock Ch VII on load
 - Duel roster / reward unlock ids for Mira and Soren
 - Plateau hub fixtures cover sealed Ch VI (synthesis invite) and pending Ch VII
-- Playwright: Chapter VII drills (`e4-d5`, `e1-c1`, `e5-f7`) and post-VI hub copy
+- Playwright: Chapter VII drills (`e4-d5`, `e1-c1`, `e5-f7`) and first Mira match on desktop and 390×844; Soren from a mid-age resume (`e2–e4`, scripted `g6`); post-VI hub copy
