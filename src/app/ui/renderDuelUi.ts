@@ -121,7 +121,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
           </div>
           <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
           <div class="sealed-dossier__notice">
-            <span class="teach-label">Unlock path</span>
+            <span class="teach-label" style="font-size:0.7rem">Unlock path</span>
             <p>${escapeHtml(archiveEntry.unlockHint)}</p>
           </div>
           ${schoolPreview}
@@ -288,18 +288,18 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
         <div class="duel-launch" aria-label="Duel setup">
           <div class="duel-launch__grid">
             <div class="duel-launch__field">
-              <label class="teach-label" for="duel-variant">Variant</label>
+              <label class="teach-label" style="font-size:0.7rem" for="duel-variant">Variant</label>
               <select id="duel-variant" class="duel-select">${variantOptions}</select>
             </div>
             <div class="duel-launch__field">
-              <label class="teach-label" for="duel-color">Color</label>
+              <label class="teach-label" style="font-size:0.7rem" for="duel-color">Color</label>
               <select id="duel-color" class="duel-select">
                 <option value="w">White</option>
                 <option value="b">Black</option>
               </select>
             </div>
             <div class="duel-launch__field">
-              <label class="teach-label" for="duel-difficulty">Pressure Band</label>
+              <label class="teach-label" style="font-size:0.7rem" for="duel-difficulty">Pressure Band</label>
               <select id="duel-difficulty" class="duel-select">
                 <option value="novice">Forgiving band</option>
                 <option value="balanced" selected>Balanced band</option>
@@ -307,7 +307,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
               </select>
             </div>
             <div class="duel-launch__field">
-              <label class="teach-label" for="duel-skin">Piece Skin</label>
+              <label class="teach-label" style="font-size:0.7rem" for="duel-skin">Piece Skin</label>
               <select id="duel-skin" class="duel-select">${skinOptions}</select>
             </div>
           </div>

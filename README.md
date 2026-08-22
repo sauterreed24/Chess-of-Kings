@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.126)
+## What's new in this release (v0.5.127)
+
+**Pass 135 — duel labels** — Duel Archive field kickers render at 0.7rem so Variant / Color / Pressure Band still read on a 390×844 instrument. See [`docs/PASS135_DUEL_LABEL.md`](docs/PASS135_DUEL_LABEL.md).
+
+## Previous release (v0.5.126)
 
 **Pass 134 — beat labels** — story-beat and Court Dossier kickers render at 0.7rem so the match manuscript still reads on a 390×844 instrument. See [`docs/PASS134_BEAT_LABEL.md`](docs/PASS134_BEAT_LABEL.md).
 
