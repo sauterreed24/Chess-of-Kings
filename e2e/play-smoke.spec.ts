@@ -10,6 +10,8 @@ test('calibration board registers a pawn move from skip-ahead', async ({ page })
   await expect(page.locator('[data-square="e2"]')).toBeVisible()
   await expect(page.locator('[data-square="e2"] .piece-carve')).toBeVisible()
   await expect(page.locator('[data-square="e2"] .piece-shade')).toBeVisible()
+  await expect(page.locator('[data-square="e2"] .piece-rim')).toBeVisible()
+  await expect(page.locator('[data-square="e2"] .piece-ground')).toBeVisible()
   await expect(page.locator('.play-state-readouts')).toBeHidden()
   await expect(page.locator('#board-guide')).toContainText(/four White moves|Archive reply/)
   await page.locator('[data-square="e2"]').click()
@@ -112,11 +114,65 @@ test('compact calibration stacks the board above the manuscript', async ({ page 
   expect(crawlBox?.height ?? 99).toBeLessThan(72)
 })
 
+test('hanging knight goal stays short on the phone instrument', async ({ page }) => {
+  await page.addInitScript(() => {
+    const save = {
+      version: 3,
+      chapterIndex: 1,
+      sceneIndex: 0,
+      highestUnlockedChapter: 1,
+      lastScreen: 'title',
+      chapter1Complete: false,
+      chapter2Complete: false,
+      completedSceneIds: [],
+      completedPuzzleIds: [],
+      stratarchiaUnlocked: false,
+      duelUnlockedOpponentIds: ['alexion'],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      codexUnlocks: [],
+      titleUnlocks: [],
+      chronicleEchoes: [],
+      rankPoints: 0,
+      cosmetics: {
+        unlockedPieceSkins: ['classic-royal'],
+        selectedPieceSkin: 'classic-royal',
+      },
+      tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      matchHistory: [],
+      rivalMemory: {},
+      ladder: { rating: 1100, peak: 1100, rated: 0 },
+      inProgress: null,
+    }
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+  })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn[data-idx="1"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Develop your pieces|opening theory|Ancient Laws/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="d4"]')).toBeVisible()
+  const guide = page.locator('#board-guide')
+  await expect(guide).toBeVisible()
+  await expect(guide).toBeInViewport()
+  await expect(guide).toContainText(/loose knight on d4/i)
+  expect((await guide.innerText()).trim().length).toBeLessThan(80)
+  await expect(page.locator('[data-square="c3"] .piece-rim')).toBeVisible()
+  await page.locator('[data-square="c3"]').click()
+  await expect(page.locator('[data-square="d4"]')).toHaveClass(/sq-legal-capture/)
+  await page.locator('[data-square="d4"]').click()
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+})
+
 test('title honor guard shows carved ivory and lapis', async ({ page }) => {
   await page.goto('./')
   await expect(page.locator('#btn-enter-archive')).toBeVisible({ timeout: 15_000 })
   await expect(page.locator('#title-honor .title-honor__piece')).toHaveCount(10)
   await expect(page.locator('#title-honor .piece-carve').first()).toBeVisible()
+  await expect(page.locator('#title-honor .piece-rim').first()).toBeVisible()
+  await expect(page.locator('#title-honor .piece-ground').first()).toBeVisible()
   await expect(page.locator('#title-honor .piece--w')).toHaveCount(5)
   await expect(page.locator('#title-honor .piece--b')).toHaveCount(5)
 })

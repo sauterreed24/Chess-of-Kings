@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.11] — 2026-08-22
+
+Pass 19 — First-puzzle presence:
+
+- **Hanging knight** shows a short instrument command (`Take the loose knight on d4 with the bishop`) while the manuscript keeps the fuller goal.
+- **Carved volume** — ivory/lapis glyphs get a ground shadow and lamp-side rim so they sit on the marble instead of floating as flat cutouts.
+- Docs: [`docs/PASS19_FIRST_PUZZLE_PRESENCE.md`](docs/PASS19_FIRST_PUZZLE_PRESENCE.md).
+
 ## [0.5.10] — 2026-08-22
 
 Pass 18 — Wide short-lab board:

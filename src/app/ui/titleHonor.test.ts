@@ -7,6 +7,8 @@ describe('paintTitleHonor', () => {
     paintTitleHonor(root)
     expect(root.querySelectorAll('.title-honor__piece')).toHaveLength(10)
     expect(root.querySelectorAll('.piece-carve')).toHaveLength(10)
+    expect(root.querySelectorAll('.piece-rim')).toHaveLength(10)
+    expect(root.querySelectorAll('.piece-ground')).toHaveLength(10)
     expect(root.querySelectorAll('.piece--w')).toHaveLength(5)
     expect(root.querySelectorAll('.piece--b')).toHaveLength(5)
     paintTitleHonor(root)

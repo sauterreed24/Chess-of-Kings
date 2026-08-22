@@ -67,16 +67,29 @@ const SHADE_PATH: Record<PieceSymbol, string> = {
   k: 'M14.4 18.6c1.1 6.2 1.3 12.6.7 16.8-2.8-1.6-4.6-7.2-4.8-12.8 1.2-1.6 2.6-3.2 4.1-4z',
 }
 
+/** Right-edge rim light so ivory/lapis turn in the brass lamp. */
+const RIM_PATH: Record<PieceSymbol, string> = {
+  p: 'M28.8 16.4c1.5 4.6 1.7 11.4 1.1 16.6-1.9.3-2.6-6.4-2.3-12.8.3-1.5.7-2.8 1.2-3.8z',
+  n: 'M31.4 15.2c1.8 6.2 1.6 14.4.6 21-2.2.2-2.8-7.6-2.2-15.6.4-2 .9-3.8 1.6-5.4z',
+  b: 'M29.6 15.6c1.5 5.8 1.6 12.8.8 17.8-2 .3-2.6-6.8-2.2-13.6.3-1.6.8-3.1 1.4-4.2z',
+  r: 'M31.2 16.8c.6 5.6.6 11.2.1 15-2 .2-2.4-6.2-2.2-11.8.5-1.2 1.2-2.2 2.1-3.2z',
+  q: 'M32.2 17.2c1.4 6.2 1.4 13 .6 17.6-2.1.3-2.7-7-2.3-13.4.4-1.6 1-3.1 1.7-4.2z',
+  k: 'M31.6 17.6c1.4 6 1.4 12.6.7 17-2.1.3-2.8-6.8-2.4-13.2.4-1.5 1-3 1.7-3.8z',
+}
+
 /** Foot shadow + type-specific sheen so Staunton glyphs read as carved ivory/lapis. */
 export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'): string {
   if (svg.includes('piece-carve')) return svg
-  const sheen = color === 'w' ? 'rgba(255,255,255,0.36)' : 'rgba(232,201,126,0.26)'
-  const shade = color === 'w' ? 'rgba(72,48,16,0.2)' : 'rgba(0,0,0,0.34)'
+  const sheen = color === 'w' ? 'rgba(255,255,255,0.48)' : 'rgba(232,201,126,0.38)'
+  const shade = color === 'w' ? 'rgba(72,48,16,0.28)' : 'rgba(0,0,0,0.44)'
+  const rim = color === 'w' ? 'rgba(255,255,255,0.22)' : 'rgba(232,201,126,0.2)'
   const rx = FOOT_RX[piece] ?? 10.6
-  const foot = `<ellipse class="piece-foot" cx="22.5" cy="41.45" rx="${rx}" ry="2.05" fill="rgba(0,0,0,0.42)"/>`
+  const ground = `<ellipse class="piece-ground" cx="22.5" cy="42.15" rx="${(rx + 2.3).toFixed(1)}" ry="2.6" fill="rgba(0,0,0,0.28)"/>`
+  const foot = `<ellipse class="piece-foot" cx="22.5" cy="41.3" rx="${rx}" ry="1.65" fill="rgba(0,0,0,0.55)"/>`
   const shadeEl = `<path class="piece-shade" d="${SHADE_PATH[piece]}" fill="${shade}"/>`
+  const rimEl = `<path class="piece-rim" d="${RIM_PATH[piece]}" fill="${rim}"/>`
   const highlight = `<path class="piece-carve" d="${SHEEN_PATH[piece]}" fill="${sheen}"/>`
-  return svg.replace(/<svg([^>]*)>/, `<svg$1>${foot}`).replace('</svg>', `${shadeEl}${highlight}</svg>`)
+  return svg.replace(/<svg([^>]*)>/, `<svg$1>${ground}${foot}`).replace('</svg>', `${shadeEl}${rimEl}${highlight}</svg>`)
 }
 
 export function glyphForSkin(

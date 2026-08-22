@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.10)
+## What's new in this release (v0.5.11)
+
+**Pass 19 — First-puzzle presence** — the hanging knight names a short command on the instrument, and carved ivory/lapis sit on the marble with a ground shadow and rim light. See [`docs/PASS19_FIRST_PUZZLE_PRESENCE.md`](docs/PASS19_FIRST_PUZZLE_PRESENCE.md).
+
+## Previous release (v0.5.10)
 
 **Pass 18 — Wide short-lab board** — a 1280×500 lab keeps two columns so the marble can grow instead of stacking into a postage stamp. See [`docs/PASS18_WIDE_SHORT_BOARD.md`](docs/PASS18_WIDE_SHORT_BOARD.md).
 

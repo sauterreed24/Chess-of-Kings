@@ -599,7 +599,8 @@ describe('GameFlow depth systems', () => {
     expect(puzzleIdx).toBeGreaterThanOrEqual(0)
     flow.jumpToScene(ch1, puzzleIdx)
 
-    expect(latest?.boardGuide).toMatch(/undefended knight|bishop/i)
+    expect(latest?.boardGuide).toMatch(/loose knight|undefended knight|bishop/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
   })
 
   it('turns the board guide into check-defense coaching', () => {
