@@ -211,6 +211,37 @@ function seedChapterIIUnlocked() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+function seedChapterIIIUnlocked() {
+  const save = {
+    version: 3,
+    chapterIndex: 3,
+    sceneIndex: 0,
+    highestUnlockedChapter: 3,
+    lastScreen: 'title',
+    chapter1Complete: true,
+    chapter2Complete: true,
+    completedSceneIds: ['c2-reflection', 'c2-freeplay'],
+    completedPuzzleIds: [],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion'],
+    unlockedDuelVariantIds: ['alexion-mentor'],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 100,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1200, peak: 1200, rated: 2 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 function seedChapterVIUnlocked() {
   const save = {
     version: 3,
@@ -501,6 +532,30 @@ async function advanceToRowanMatch(page: Page) {
   await expect(page.locator('#narrative-body')).toContainText(/King's Gambit|messy|Fire spreads/i)
   await page.locator('#btn-next').click()
   await expect(page.locator('[data-square="f4"]')).toBeVisible()
+}
+
+async function enterChapterIII(page: Page) {
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn[data-idx="3"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toHaveText(/Chapter III\b/)
+}
+
+async function walkChapterIIIDrillToMate(page: Page) {
+  await enterChapterIII(page)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Professor's Law|prophylaxis|Weak squares/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e1"]')).toBeVisible()
+}
+
+async function advanceToDemetriosReturnMatch(page: Page) {
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Demetrios|waiting again|classical discipline/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Patience is the trap|nothing is on fire|writes law/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
 }
 
 async function enterChapterVI(page: Page) {
@@ -1191,6 +1246,132 @@ test('first Chapter II match stays board-first on the phone instrument', { timeo
   await page.locator('[data-square="f3"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3/i)
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*Nf3[!?]*\s+exf4/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+  await expect(page.locator('#btn-reset')).toBeVisible()
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('resize'))
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
+  })
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
+test('Chapter III prophylaxis solves on the live board', async ({ page }) => {
+  await page.addInitScript(seedChapterIIIUnlocked)
+  await page.goto('./')
+  await walkChapterIIIDrillToMate(page)
+  await playRe8Mate(page)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Demetrios|waiting again|classical discipline/i)
+})
+
+test('Chapter III prophylaxis stays board-first on the phone instrument', async ({ page }) => {
+  await page.addInitScript(seedChapterIIIUnlocked)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await page.locator('.chapter-btn[data-idx="3"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toHaveText(/Chapter III\b/)
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toContainText(/Professor's Law|prophylaxis|Weak squares/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e1"]')).toBeVisible()
+  await expect(page.locator('#manuscript-panel')).toBeHidden()
+  await expect(page.locator('#narrative-body')).toBeHidden()
+  await expect(page.locator('.teaching').first()).toBeHidden()
+  await expect(page.locator('.story-beat')).toBeHidden()
+  await expect(page.locator('.top-bar')).toBeHidden()
+  await expect(page.locator('#btn-vestibule')).toBeVisible()
+  await expect(page.locator('.board-tools #btn-next')).toBeVisible()
+  await expect(page.locator('#btn-next')).toBeInViewport()
+  await expect(page.locator('#btn-next-hint')).toBeHidden()
+  await expect(page.locator('#turn-pulse')).toBeHidden()
+  await expect(page.locator('.instrument-header')).toBeHidden()
+  await expect(page.locator('#board-guide')).toBeVisible()
+  await expect(page.locator('#board-guide')).toBeInViewport()
+  await expect(page.locator('#board-guide')).toContainText(/e-file/i)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  await expect(page.locator('#lab-era-label')).toHaveText(/chapter iii\b/i)
+  expect(
+    await page.locator('#lab-era-label').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  await expectPhoneHintProveHitTargets(page)
+  await expect(page.locator('[data-square="e1"] .rook-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="g8"] .king-silhouette')).toBeVisible()
+  await page.locator('[data-square="e1"]').click()
+  await page.locator('[data-square="e8"]').click()
+  await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
+  await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
+  await page.locator('#btn-next').click()
+  await expect(page.locator('#narrative-body')).toBeVisible()
+  await expect(page.locator('#narrative-body')).toContainText(/Demetrios|waiting again|classical discipline/i)
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#manuscript-panel #btn-next')).toBeVisible()
+})
+
+test('first Chapter III match lets Reed open against Demetrios', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIIIUnlocked)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await walkChapterIIIDrillToMate(page)
+  await playRe8Mate(page)
+  await advanceToDemetriosReturnMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Demetrios')
+  await expect(page.locator('[data-square="e2"] .piece-lit')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  await expect(page.locator('#board-guide')).toContainText(/quiet threats|pawn tempi/)
+  await expect(page.locator('#board-status')).toBeHidden()
+  await expect(page.locator('.play-crawl')).toBeVisible()
+  await expect(page.locator('.move-ledger-wrap')).toBeVisible()
+  await expect(page.locator('.instrument-toggles')).toBeVisible()
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('#board-guide')).toContainText(/quiet threats|pawn tempi/)
+  await expect(page.locator('#board-guide')).not.toContainText(/legal targets/i)
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+e5/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+})
+
+test('first Chapter III match stays board-first on the phone instrument', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterIIIUnlocked)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await walkChapterIIIDrillToMate(page)
+  await playRe8Mate(page)
+  await advanceToDemetriosReturnMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Demetrios')
+  await expect(page.locator('[data-square="e2"] .pawn-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e1"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  const boardBox = await page.locator('#board-panel').boundingBox()
+  expect(boardBox).toBeTruthy()
+  expect(boardBox!.width).toBeGreaterThan(300)
+  expect(boardBox!.y).toBeLessThan(220)
+  await expect(page.locator('#board-panel')).toBeInViewport()
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#board-guide')).toContainText(/quiet threats|pawn tempi/)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  expect(
+    await page.locator('#board-guide').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+e5/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')

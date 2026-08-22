@@ -19,6 +19,19 @@ describe('campaign story beats', () => {
     expect(overlong).toEqual([])
   })
 
+  it('authors Chapter III Demetrios return with a classical e5 reply', () => {
+    const ch3 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch3')
+    const drill = ch3?.scenes.find((scene) => scene.id === 'c3-puzzle-prophylaxis')
+    const demetrios = ch3?.scenes.find((scene) => scene.id === 'c3-match-demetrios-return')
+    expect(drill?.type === 'puzzle' && (drill.teaching.goalBrief ?? drill.teaching.goalPlain).length).toBeLessThan(80)
+    expect(drill?.type === 'puzzle' && drill.teaching.goalBrief).toMatch(/e-file/i)
+    expect(demetrios?.type === 'match' && demetrios.scriptedBlackSans?.[0]).toBe('e5')
+    expect(demetrios?.type === 'match' && !demetrios.fen).toBe(true)
+    const board = new Chess()
+    expect(board.move('e4')).toBeTruthy()
+    expect(board.move('e5')).toBeTruthy()
+  })
+
   it('authors Chapter II Rowan from a King\'s Gambit tabiya', () => {
     const ch2 = PLAYABLE_CHAPTERS.find((chapter) => chapter.id === 'ch2')
     const hunt = ch2?.scenes.find((scene) => scene.id === 'c2-puzzle-king-hunt')
