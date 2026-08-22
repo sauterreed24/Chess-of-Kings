@@ -21,6 +21,13 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     return app
   }
 
+  it('paints a carved honor guard on the title plate', () => {
+    const app = boot()
+    const honor = app.querySelector('#title-honor')!
+    expect(honor.querySelectorAll('.title-honor__piece')).toHaveLength(10)
+    expect(honor.querySelector('.piece-carve')).toBeTruthy()
+  })
+
   it('inerts shell chrome while lab is open except the lab overlay', { timeout: 10000 }, () => {
     const app = boot()
     const topBar = app.querySelector<HTMLElement>('.top-bar')!

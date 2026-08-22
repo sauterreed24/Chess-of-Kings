@@ -1,0 +1,19 @@
+import { describe, expect, it } from 'vitest'
+import { paintTitleHonor } from './titleHonor'
+
+describe('paintTitleHonor', () => {
+  it('plants ten carved classic-royal glyphs', () => {
+    const root = document.createElement('div')
+    paintTitleHonor(root)
+    expect(root.querySelectorAll('.title-honor__piece')).toHaveLength(10)
+    expect(root.querySelectorAll('.piece-carve')).toHaveLength(10)
+    expect(root.querySelectorAll('.piece--w')).toHaveLength(5)
+    expect(root.querySelectorAll('.piece--b')).toHaveLength(5)
+    paintTitleHonor(root)
+    expect(root.querySelectorAll('.title-honor__piece')).toHaveLength(10)
+  })
+
+  it('ignores a missing root', () => {
+    expect(() => paintTitleHonor(null)).not.toThrow()
+  })
+})

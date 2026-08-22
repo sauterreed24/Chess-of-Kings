@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.7)
+## What's new in this release (v0.5.8)
+
+**Pass 16 — Title honor + short nav** — carved ivory and lapis stand on the title plate, and short landscape labs keep Title / Chapters / Duel. See [`docs/PASS16_TITLE_HONOR.md`](docs/PASS16_TITLE_HONOR.md).
+
+## Previous release (v0.5.7)
 
 **Pass 15 — Phone goal + carved types** — the live goal sits on the instrument on phones, and each piece type gets its own ivory/lapis carve. See [`docs/PASS15_PHONE_GOAL_CARVE.md`](docs/PASS15_PHONE_GOAL_CARVE.md).
 
