@@ -333,25 +333,40 @@ describe('setTopBarInertForLab', () => {
         <div class="move-ledger-wrap"><div id="move-ledger"><div class="ledger-row">1. e4</div></div></div>
         <div class="board-tools">
           <button id="btn-hint">Hint</button>
+          <button id="btn-undo">Take back</button>
           <button id="btn-reset">Reset</button>
+        </div>
+        <div class="instrument-toggles">
+          <button id="btn-sfx">Sound: On</button>
+          <button id="btn-move-guard">Move Guard: Off</button>
         </div>
       </div>`
     const body = document.querySelector<HTMLElement>('#narrative-body')!
     const hint = document.querySelector<HTMLButtonElement>('#btn-hint')!
     const reset = document.querySelector<HTMLButtonElement>('#btn-reset')!
+    const undo = document.querySelector<HTMLButtonElement>('#btn-undo')!
+    const sfx = document.querySelector<HTMLButtonElement>('#btn-sfx')!
+    const moveGuard = document.querySelector<HTMLButtonElement>('#btn-move-guard')!
     const next = document.querySelector<HTMLButtonElement>('#btn-next')!
     hint.hidden = false
     reset.hidden = false
+    undo.hidden = false
     syncPhonePuzzleLesson(body)
     expect(document.querySelector('#manuscript-panel')?.classList.contains('hidden')).toBe(false)
     expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
     expect(hint.style.minHeight).toBe('44px')
     expect(reset.style.minHeight).toBe('44px')
+    expect(undo.style.minHeight).toBe('44px')
+    expect(sfx.style.minHeight).toBe('44px')
+    expect(moveGuard.style.minHeight).toBe('44px')
     expect(next.style.minHeight).toBe('')
 
     syncPhonePuzzleLesson(body)
     expect(hint.style.minHeight).toBe('44px')
     expect(reset.style.minHeight).toBe('44px')
+    expect(undo.style.minHeight).toBe('44px')
+    expect(sfx.style.minHeight).toBe('44px')
+    expect(moveGuard.style.minHeight).toBe('44px')
     expect(next.parentElement?.classList.contains('narrative-actions')).toBe(true)
   })
 

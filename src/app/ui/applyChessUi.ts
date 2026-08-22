@@ -188,6 +188,7 @@ export function applyChessUi(
   dom.btnReset.hidden = idleTools || puzzleDocked
   syncPhoneHitTarget(dom.btnHint, !dom.btnHint.hidden)
   syncPhoneHitTarget(dom.btnReset, !dom.btnReset.hidden)
+  syncPhoneHitTarget(dom.btnUndo, !dom.btnUndo.hidden)
   if (tools instanceof HTMLElement) {
     tools.classList.toggle(
       'hidden',

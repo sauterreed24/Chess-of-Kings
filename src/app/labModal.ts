@@ -141,9 +141,15 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
      A spent Hint (Archive reply / sealed) stays hidden when the lab widens. */
   const reset = scope.querySelector<HTMLButtonElement>('#btn-reset')
   const hintBtn = scope.querySelector<HTMLButtonElement>('#btn-hint')
+  const undo = scope.querySelector<HTMLButtonElement>('#btn-undo')
+  const sfx = scope.querySelector<HTMLButtonElement>('#btn-sfx')
+  const moveGuard = scope.querySelector<HTMLButtonElement>('#btn-move-guard')
   const idleTools = !scope.querySelector('#move-ledger .ledger-row')
   if (reset) reset.hidden = idleTools || (phone && puzzle)
   if (hintBtn && calibration) hintBtn.hidden = phone || hintBtn.disabled
+  const togglesOn = !scope.querySelector('.instrument-toggles')?.classList.contains('hidden')
+  stylePhoneHitTarget(sfx, phone && togglesOn)
+  stylePhoneHitTarget(moveGuard, phone && togglesOn)
   if (!next || !tools || !actions || !manuscript) return
   if (hide) {
     const hint = tools.querySelector('#btn-hint')
@@ -152,6 +158,7 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
     styleDockedProve(next, true)
     stylePhoneHitTarget(hintBtn, Boolean(hintBtn && !hintBtn.hidden))
     stylePhoneHitTarget(reset, Boolean(reset && !reset.hidden))
+    stylePhoneHitTarget(undo, Boolean(undo && !undo.hidden))
     tools.classList.remove('hidden')
     manuscript.classList.add('hidden')
   } else {
@@ -162,6 +169,7 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
     const phoneMatchTools = phone && !puzzle && !calibration
     stylePhoneHitTarget(hintBtn, phoneMatchTools && Boolean(hintBtn && !hintBtn.hidden))
     stylePhoneHitTarget(reset, phoneMatchTools && Boolean(reset && !reset.hidden))
+    stylePhoneHitTarget(undo, phoneMatchTools && Boolean(undo && !undo.hidden))
     actions.prepend(next)
     manuscript.classList.remove('hidden')
   }
