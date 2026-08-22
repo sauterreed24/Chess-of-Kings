@@ -14,6 +14,7 @@ describe('carveGlyph', () => {
     expect(carved).toContain('class="piece-waist"')
     expect(carved).toContain('class="piece-rim"')
     expect(carved).toContain('class="piece-neck"')
+    expect(carved).toContain('class="piece-flute"')
     expect(carved).toContain('feSpecularLighting')
     expect(carved).toContain('feDiffuseLighting')
     expect(carved).toContain('linearGradient')
@@ -29,8 +30,10 @@ describe('carveGlyph', () => {
     expect(host.querySelector('.piece-waist')).toBeTruthy()
     expect(host.querySelector('.piece-rim')).toBeTruthy()
     expect(host.querySelector('.piece-neck')).toBeTruthy()
+    expect(host.querySelector('.piece-flute')).toBeTruthy()
     expect(host.querySelector('feDiffuseLighting')).toBeTruthy()
-    expect(host.querySelector('feSpecularLighting')).toBeTruthy()
+    expect(host.querySelectorAll('fePointLight')).toHaveLength(3)
+    expect(host.querySelectorAll('feSpecularLighting')).toHaveLength(2)
   })
 
   it('uses a gold sheen on black pieces', () => {
@@ -51,10 +54,12 @@ describe('carveGlyph', () => {
     expect(pawn).toContain('class="piece-neck"')
     expect(pawn).toContain('class="piece-plinth"')
     expect(pawn).toContain('class="piece-waist"')
+    expect(pawn).toContain('class="piece-flute"')
     expect(pawn).toContain('cy="35.1"')
     const knight = carveGlyph('<svg></svg>', 'w', 'n')
     expect(knight).toContain('class="piece-plinth"')
     expect(knight).toContain('class="piece-waist"')
+    expect(knight).toContain('class="piece-flute"')
     expect(knight).not.toContain('class="piece-neck"')
   })
 
@@ -79,6 +84,7 @@ describe('carveGlyph', () => {
       expect(carved).not.toContain('feDiffuseLighting')
       expect(carved).toContain('class="piece-plinth"')
       expect(carved).toContain('class="piece-waist"')
+      expect(carved).toContain('class="piece-flute"')
       expect(carved).not.toContain(' filter=')
     } finally {
       if (prev == null) globalThis.localStorage?.removeItem('cok-visual-quality')
@@ -100,6 +106,7 @@ describe('glyphForSkin', () => {
     expect(pawn).toContain('piece-waist')
     expect(pawn).toContain('piece-rim')
     expect(pawn).toContain('piece-neck')
+    expect(pawn).toContain('piece-flute')
     expect(pawn).toContain('feSpecularLighting')
     expect(pawn).toContain('feDiffuseLighting')
     expect(glyphForSkin('alexandrine-ornate', 'b', 'k')).toContain('piece-carve')

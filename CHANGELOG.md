@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.25] — 2026-08-22
+
+Pass 33 — Lamp fill and stem flute:
+
+- **Ivory/lapis glyphs** get a fill lamp from the opposite side and a turned-stem flute (knight uses a cheek catch-light) so the body reads as a cylinder, not a sticker. Forced **Visual: Lean** keeps the flute and skips the extra filter lights.
+- Playwright asserts the flute and three point lights on the calibration pawn and hanging-knight bishop.
+- Docs: [`docs/PASS33_LAMP_FLUTE.md`](docs/PASS33_LAMP_FLUTE.md).
+
 ## [0.5.24] — 2026-08-22
 
 Pass 32 — Phone lab nav:

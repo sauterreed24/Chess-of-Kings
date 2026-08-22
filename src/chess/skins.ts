@@ -77,6 +77,16 @@ const NECK_CY: Record<PieceSymbol, number> = {
   k: 18.4,
 }
 
+/** Lamp-side flute on the turned stem (knight uses a cheek catch-light). */
+const FLUTE: Record<PieceSymbol, { cx: number; cy: number; rx: number; ry: number }> = {
+  p: { cx: 18.2, cy: 26.4, rx: 1.35, ry: 5.8 },
+  n: { cx: 19.6, cy: 16.8, rx: 1.15, ry: 3.1 },
+  b: { cx: 18.0, cy: 24.2, rx: 1.4, ry: 7.1 },
+  r: { cx: 17.6, cy: 23.8, rx: 1.5, ry: 6.3 },
+  q: { cx: 17.8, cy: 24.8, rx: 1.45, ry: 7.0 },
+  k: { cx: 17.8, cy: 24.1, rx: 1.45, ry: 6.7 },
+}
+
 /** Molded plinth just above the foot. */
 const PLINTH_CY: Record<PieceSymbol, number> = {
   p: 38.4,
@@ -147,7 +157,10 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
       `<feComposite in="d" in2="SourceGraphic" operator="arithmetic" k1=".55" k2=".7" k3="0" k4="0" result="sh"/>` +
       `<feSpecularLighting in="b" surfaceScale="2.8" specularConstant="1.05" specularExponent="14" lighting-color="${lamp.spec}" result="s">` +
       `<fePointLight x="-8" y="-14" z="30"/></feSpecularLighting>` +
-      `<feComposite in="sh" in2="s" operator="arithmetic" k1="0" k2="1" k3="1.12" k4="0"/>` +
+      `<feSpecularLighting in="b" surfaceScale="1.8" specularConstant=".55" specularExponent="10" lighting-color="${lamp.spec}" result="f">` +
+      `<fePointLight x="46" y="-6" z="22"/></feSpecularLighting>` +
+      `<feComposite in="s" in2="f" operator="arithmetic" k1="0" k2="1" k3=".62" k4="0" result="gl"/>` +
+      `<feComposite in="sh" in2="gl" operator="arithmetic" k1="0" k2="1" k3="1.12" k4="0"/>` +
       `</filter>`
   const filterAttr = lean ? '' : ` filter="url(#${id}f)"`
   const defs = `<defs>${gradient}${lampFilter}</defs>`
@@ -172,13 +185,18 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     piece === 'n'
       ? ''
       : latheRing('piece-neck', NECK_CY[piece] ?? 20, rx * 0.48, 1.05, ringFill, ringStroke)
+  const fluteSpec = FLUTE[piece] ?? FLUTE.p
+  const fluteFill = color === 'w' ? 'rgba(255,255,255,0.28)' : 'rgba(232,201,126,0.22)'
+  const flute =
+    `<ellipse class="piece-flute" cx="${fluteSpec.cx}" cy="${fluteSpec.cy}" ` +
+    `rx="${fluteSpec.rx}" ry="${fluteSpec.ry}" fill="${fluteFill}"/>`
   return svg
     .replace(
       /<svg([^>]*)>/,
       `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
     )
     .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
-    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${highlight}</svg>`)
+    .replace('</svg>', `</g>${plinth}${rim}${waist}${collar}${neck}${flute}${highlight}</svg>`)
 }
 
 export function glyphForSkin(
