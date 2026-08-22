@@ -305,6 +305,9 @@ describe('renderScene', () => {
     expect(ledgerWrap()?.classList.contains('hidden')).toBe(true)
     expect(toggles()?.classList.contains('hidden')).toBe(true)
     expect(dom.lessonNote.classList.contains('hidden')).toBe(true)
+    expect(dom.narrativeBody.hasAttribute('data-puzzle-lesson')).toBe(true)
+    expect(dom.narrativeBody.querySelector('.teaching-card')).toBeTruthy()
+    expect(dom.narrativeBody.querySelector('.teaching')?.classList.contains('hidden')).toBe(false)
 
     const amaraIdx = chapterI.scenes.findIndex((scene) => scene.id === 'c1-match-amara')
     renderScene(chapterI, chapterI.scenes[amaraIdx]!, amaraIdx, dom, play, flow, cbs)
@@ -312,6 +315,7 @@ describe('renderScene', () => {
     expect(ledgerWrap()?.classList.contains('hidden')).toBe(false)
     expect(toggles()?.classList.contains('hidden')).toBe(false)
     expect(dom.lessonNote.classList.contains('hidden')).toBe(false)
+    expect(dom.narrativeBody.hasAttribute('data-puzzle-lesson')).toBe(false)
 
     const prologue = PLAYABLE_CHAPTERS[0]!
     flow.jumpToChapter(0)

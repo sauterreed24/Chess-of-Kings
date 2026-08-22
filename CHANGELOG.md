@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.31] — 2026-08-22
+
+Pass 39 — Phone puzzle lesson:
+
+- **Narrow phones** hide Threat / Goal / Hint cards on teaching puzzles so the marble command is the lesson. Story beat and lesson lead stay. Wide labs keep the cards.
+- Playwright hides `.teaching` on the hanging-knight phone and shows Your goal on the 1280 castle puzzle.
+- Docs: [`docs/PASS39_PHONE_PUZZLE_LESSON.md`](docs/PASS39_PHONE_PUZZLE_LESSON.md).
+
 ## [0.5.30] — 2026-08-22
 
 Pass 38 — Knight mane:
