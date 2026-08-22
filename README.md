@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.19)
+## What's new in this release (v0.5.20)
+
+**Pass 28 — Idle instrument header** — teaching boards collapse the empty brass header so the command sits on the marble. See [`docs/PASS28_IDLE_HEADER.md`](docs/PASS28_IDLE_HEADER.md).
+
+## Previous release (v0.5.19)
 
 **Pass 27 — Quiet turn pill** — ordinary White-to-move leaves the instrument so the live command sits next to the marble. See [`docs/PASS27_QUIET_TURN.md`](docs/PASS27_QUIET_TURN.md).
 

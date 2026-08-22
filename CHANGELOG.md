@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.20] — 2026-08-22
+
+Pass 28 — Idle instrument header:
+
+- **Empty brass header collapses** on teaching boards once the turn pill is quiet and no court dossier is filed. Checkmate and living-rival dossiers keep the header.
+- Playwright hides the header on the hanging knight and shows it again after queen to h8.
+- Docs: [`docs/PASS28_IDLE_HEADER.md`](docs/PASS28_IDLE_HEADER.md).
+
 ## [0.5.19] — 2026-08-22
 
 Pass 27 — Quiet turn pill:
