@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.58)
+## What's new in this release (v0.5.59)
+
+**Pass 67 — Square lamp facets** — every marble and lapis square gets a carved lamp and shade, instead of a pillow balloon. See [`docs/PASS67_SQUARE_FACET.md`](docs/PASS67_SQUARE_FACET.md).
+
+## Previous release (v0.5.58)
 
 **Pass 66 — Queen coronet cup** — ivory and lapis queens get a deeper lathe bowl under the pearls, instead of a 3.6px dish. See [`docs/PASS66_QUEEN_BOWL.md`](docs/PASS66_QUEEN_BOWL.md).
 

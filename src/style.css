@@ -2831,9 +2831,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(135deg, #fff2, #0000 42%),
-    radial-gradient(circle at 76% 82%, #0004, #0000 50%);
+  background: linear-gradient(135deg, #fff2, #0000 42%);
   opacity: 0.7;
 }
 

@@ -18,6 +18,21 @@ const PROMO_NAMES: Record<PieceSymbol, string> = {
   q: 'Queen', r: 'Rook', b: 'Bishop', n: 'Knight', p: '', k: '',
 }
 
+/** Carved lamp + shade on every square — inline so CSS gzip stays put. */
+const SQ_FACET_STYLE =
+  'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0'
+
+function squareFacetSvg(light: boolean): string {
+  const lamp = light ? 'rgba(255,252,244,0.32)' : 'rgba(196,226,255,0.2)'
+  const shade = light ? 'rgba(42,22,8,0.2)' : 'rgba(0,4,16,0.3)'
+  return (
+    `<svg class="sq-facet" viewBox="0 0 40 40" aria-hidden="true" focusable="false" style="${SQ_FACET_STYLE}">` +
+    `<ellipse class="sq-facet-lamp" cx="8.4" cy="7" rx="13.2" ry="9.8" fill="${lamp}"/>` +
+    `<ellipse class="sq-facet-shade" cx="31.6" cy="33.2" rx="14" ry="10.6" fill="${shade}"/>` +
+    `</svg>`
+  )
+}
+
 export type BoardPickMode = 'off' | 'solo' | 'free'
 
 export interface BoardSelectionState {
@@ -145,6 +160,7 @@ export class BoardView {
       btn.tabIndex = -1
       btn.setAttribute('aria-label', `Square ${sq}`)
       btn.setAttribute('aria-pressed', 'false')
+      btn.insertAdjacentHTML('afterbegin', squareFacetSvg(light))
       btn.addEventListener('click', () => this.clickSquare(sq as Square))
       this.cells.set(sq as Square, btn)
       this.root.appendChild(btn)
@@ -487,11 +503,14 @@ export class BoardView {
       const prev = this.lastPieceSig.get(sq) ?? ''
       if (prevKnown && prev === sig) continue
       this.lastPieceSig.set(sq, sig)
-      const labels = [...btn.querySelectorAll('.sq-label')]
+      const keep = [...btn.querySelectorAll('.sq-label, .sq-facet')]
       btn.innerHTML = p ? this.pieceSpanHtml(p) : ''
       btn.dataset.piece = sig
       btn.setAttribute('aria-label', this.squareAriaLabel(sq, p ?? null))
-      for (const l of labels) btn.appendChild(l)
+      for (const el of keep) btn.appendChild(el)
+      if (!btn.querySelector('.sq-facet')) {
+        btn.insertAdjacentHTML('afterbegin', squareFacetSvg(btn.classList.contains('sq-light')))
+      }
     }
 
     if (doFly && last) this.animateMove(last, captureSnapshot, lean)
