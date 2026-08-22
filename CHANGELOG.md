@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.79] — 2026-08-22
+
+Pass 87 — Chapter IX Wren match on the phone instrument:
+
+- **Playwright** — Chapter IX walks the Apotheosis Engine drills into the first Wren match. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `e5` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS87_PHONE_CH9_MATCH.md`](docs/PASS87_PHONE_CH9_MATCH.md).
+
 ## [0.5.78] — 2026-08-22
 
 Pass 86 — Chapter VIII Voss match on the phone instrument:
