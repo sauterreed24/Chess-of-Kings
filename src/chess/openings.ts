@@ -93,6 +93,20 @@ const BOOKS: Record<string, OpeningBook> = {
     7: [{ san: 'O-O', weight: 8 }, { san: 'd6', weight: 5 }],
     9: [{ san: 'd6', weight: 6 }, { san: 'c5', weight: 5 }, { san: 'Nbd7', weight: 3 }],
   },
+  gage_discipline: {
+    1: [{ san: 'd6', weight: 9 }, { san: 'e5', weight: 4 }, { san: 'Nf6', weight: 2 }],
+    3: [{ san: 'Nf6', weight: 9 }, { san: 'Be7', weight: 3 }],
+    5: [{ san: 'Be7', weight: 8 }, { san: 'Nbd7', weight: 4 }],
+    7: [{ san: 'O-O', weight: 9 }, { san: 'c6', weight: 3 }],
+    9: [{ san: 'h6', weight: 8 }, { san: 'Re8', weight: 4 }],
+  },
+  helia_machine: {
+    1: [{ san: 'e6', weight: 9 }, { san: 'd5', weight: 5 }, { san: 'Nf6', weight: 2 }],
+    3: [{ san: 'd5', weight: 9 }, { san: 'Nf6', weight: 4 }],
+    5: [{ san: 'Nf6', weight: 8 }, { san: 'Be7', weight: 4 }],
+    7: [{ san: 'Be7', weight: 8 }, { san: 'O-O', weight: 4 }],
+    9: [{ san: 'O-O', weight: 8 }, { san: 'c5', weight: 4 }],
+  },
 }
 
 export function getBookTopLines(

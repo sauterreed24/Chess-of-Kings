@@ -18,6 +18,9 @@ describe('AI profile resolver', () => {
     expect(apex.id).toBe('alexion_apex')
     expect(rowan.id).toBe('rowan_gambit')
     expect(vega.id).toBe('vega_italian')
+    expect(resolveProfileByMatchId('c5-match-gage').id).toBe('gage_discipline')
+    expect(resolveProfileByDuelVariant('helia-machine').id).toBe('helia_machine')
+    expect(resolveProfileByMatchId('c5-match-gage').style).toBe('soviet')
   })
 
   it('detects game phase and adapts conversion/endgame values', () => {

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.59)
+## What's new in this release (v0.5.60)
+
+**Pass 68 — Chapter V playable** — The Machine of Discipline is a full campaign age after the Paradox Masters: luft, conversion, Gage, and Helia. See [`docs/PASS68_CHAPTER_V.md`](docs/PASS68_CHAPTER_V.md).
+
+## Previous release (v0.5.59)
 
 **Pass 67 — Square lamp facets** — every marble and lapis square gets a carved lamp and shade, instead of a pillow balloon. See [`docs/PASS67_SQUARE_FACET.md`](docs/PASS67_SQUARE_FACET.md).
 

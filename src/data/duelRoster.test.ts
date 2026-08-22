@@ -38,6 +38,8 @@ describe('DUEL_ROSTER profile wiring', () => {
     expect(variantProfile('kallistos', 'kallistos-law')).toBe('kallistos_classical')
     expect(variantProfile('nysa', 'nysa-frontier')).toBe('nysa_frontier')
     expect(variantProfile('cassian', 'cassian-paradox')).toBe('cassian_paradox')
+    expect(variantProfile('gage', 'gage-discipline')).toBe('gage_discipline')
+    expect(variantProfile('helia', 'helia-machine')).toBe('helia_machine')
   })
 
   it('feeds the Duel Archive opening watchlist from the intended rival books', () => {
@@ -45,11 +47,15 @@ describe('DUEL_ROSTER profile wiring', () => {
     const vegaLines = getBookTopLines(variantProfile('vega', 'vega-italian'), 9)
     const nysaLines = getBookTopLines(variantProfile('nysa', 'nysa-frontier'), 9)
     const cassianLines = getBookTopLines(variantProfile('cassian', 'cassian-paradox'), 9)
+    const gageLines = getBookTopLines(variantProfile('gage', 'gage-discipline'), 9)
+    const heliaLines = getBookTopLines(variantProfile('helia', 'helia-machine'), 9)
 
     expect(rowanLines.map((line) => line.san)).toContain('exf4')
     expect(vegaLines.map((line) => line.san)).toContain('Nf6')
     expect(nysaLines.map((line) => line.san)).toContain('g6')
     expect(cassianLines.map((line) => line.san)).toContain('Nf6')
+    expect(gageLines.map((line) => line.san)).toContain('d6')
+    expect(heliaLines.map((line) => line.san)).toContain('e6')
     expect(rowanLines.map((line) => line.san).join(' ')).not.toBe(
       vegaLines.map((line) => line.san).join(' '),
     )

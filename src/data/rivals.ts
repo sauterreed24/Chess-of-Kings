@@ -467,6 +467,80 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  gage: {
+    opponentId: 'gage',
+    displayName: 'Gage',
+    blend: {
+      primary: { school: 'Achaemenid Patience', weight: 75 },
+      secondary: { school: 'Macedonian Phalanx', weight: 25 },
+    },
+    counterPrep: [
+      'Castle before you hunt a hole — Gage files unmade luft as a confession, then names the back rank.',
+      'Do not push the pawn that gifts him a square; ask which idea you are about to baptize for him.',
+      'If he plays a quiet waiting move, improve a piece instead of inventing an attack; donated tempi are how the pause becomes a squeeze.',
+    ],
+    whiteOpenings: ['Quiet king-pawn with restraint', 'Closed structures against overreach', 'Prophylactic rook lifts'],
+    blackOpenings: ['Philidor-quiet d6 systems', 'Solid e5 with Be7', 'Luft-first king safety'],
+    signature: 'Refuse the gifted square, then make luft before the file earns a name.',
+    talk: {
+      opening: [
+        'A pause is not fear. It is a refusal to gift the opponent a name.',
+        'Show me the square you were about to donate.',
+      ],
+      punished: [
+        'You stopped the idea one square early. Correct.',
+        'My pause lost its lawsuit. Annoying, and earned.',
+      ],
+      rattled: [
+        'You are treating squares like a ledger. Rare for a tourist.',
+        'I filed you as impatient. Amend the file.',
+      ],
+      audacious: [
+        'You attacked a hole that was never the idea. I accept the gift.',
+        'Drama spends water. You spent a river.',
+      ],
+      draw: [
+        'A draw can be two correctly refused gifts.',
+      ],
+    },
+  },
+  helia: {
+    opponentId: 'helia',
+    displayName: 'Helia',
+    blend: {
+      primary: { school: 'Achaemenid Patience', weight: 80 },
+      secondary: { school: 'Indic Combinatorics', weight: 20 },
+    },
+    counterPrep: [
+      'When you win a piece, take it — Helia treats unconverted advantage as a leak in the hull.',
+      'Keep the position messy if you are behind; her squeeze wants a quiet file and a simplified ledger.',
+      'If she offers a queen trade while ahead, decline only with a concrete break; courtesy toward her extra piece is how rumors stay rumors.',
+    ],
+    whiteOpenings: ['Queen-pawn squeezes', 'French structures as White pressure', 'Technical rook endings'],
+    blackOpenings: ['French e6-d5 walls', "Queen's Gambit Declined spirit", 'Conversion-first simplifications'],
+    signature: 'Cash hanging pieces, then squeeze until useful squares run out.',
+    talk: {
+      opening: [
+        'Advantage that is not converted is a rumor. Make it a fact.',
+        'Ugly facts still feed cities. Pretty rumors do not.',
+      ],
+      punished: [
+        'You cashed the file. The machine notices.',
+        'My squeeze never closed. Well seen.',
+      ],
+      rattled: [
+        'You treated a won piece as weather, then changed the weather. Rare.',
+        'I filed you as courteous. Courtesy is a leak. Amend the file.',
+      ],
+      audacious: [
+        'You left a queen on the table and called it atmosphere. I collect atmosphere.',
+        'A rumor is not a win. I will demonstrate the difference.',
+      ],
+      draw: [
+        'A draw is a conversion that stayed a rumor. Acceptable, barely.',
+      ],
+    },
+  },
 }
 
 /**

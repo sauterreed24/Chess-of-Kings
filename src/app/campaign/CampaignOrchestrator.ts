@@ -53,18 +53,24 @@ export function defaultCampaignProgress(): CampaignProgress {
 }
 
 /**
- * Players who sealed Chapter III when it was the last compiled age never
- * received a successor unlock. Opening Chapter IV must not leave those
- * chronicles locked out of the paradox door.
+ * Players who sealed an age when it was the last compiled chapter never
+ * received a successor unlock. Opening Chapters IV and V must not leave
+ * those chronicles locked out of the next door.
  */
 export function backfillSuccessorUnlocks(progress: CampaignProgress, chapters: Chapter[]): void {
   const ch4Index = chapters.findIndex((chapter) => chapter.id === 'ch4')
-  if (ch4Index < 0) return
+  const ch5Index = chapters.findIndex((chapter) => chapter.id === 'ch5')
   const sealedClassical =
     progress.completedSceneIds.includes('c3-reflection') ||
     progress.completedSceneIds.includes('c3-freeplay')
-  if (sealedClassical) {
+  if (sealedClassical && ch4Index >= 0) {
     progress.highestUnlockedChapter = Math.max(progress.highestUnlockedChapter, ch4Index)
+  }
+  const sealedParadox =
+    progress.completedSceneIds.includes('c4-reflection') ||
+    progress.completedSceneIds.includes('c4-freeplay')
+  if (sealedParadox && ch5Index >= 0) {
+    progress.highestUnlockedChapter = Math.max(progress.highestUnlockedChapter, ch5Index)
   }
 }
 

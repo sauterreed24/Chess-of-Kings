@@ -70,6 +70,20 @@ export const RIVAL_OPENING_SAN_BIAS: Record<string, Record<number, Record<string
     7: { 'O-O': 7, d6: 4 },
     9: { d6: 5, c5: 5 },
   },
+  gage: {
+    1: { d6: 8, e5: 4, Nf6: 2 },
+    3: { Nf6: 8, Be7: 3 },
+    5: { Be7: 7, Nbd7: 4 },
+    7: { 'O-O': 8, c6: 3 },
+    9: { h6: 7, Re8: 4 },
+  },
+  helia: {
+    1: { e6: 8, d5: 5, Nf6: 2 },
+    3: { d5: 8, Nf6: 4 },
+    5: { Nf6: 7, Be7: 4 },
+    7: { Be7: 7, 'O-O': 4 },
+    9: { 'O-O': 7, c5: 4 },
+  },
 }
 
 export function rivalOpeningWeightBoost(

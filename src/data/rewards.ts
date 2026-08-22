@@ -137,6 +137,38 @@ export const BASE_VICTORY_REWARDS: Record<string, RewardDefinition[]> = {
       titleId: 'paradox-analyst',
     },
   ],
+  'c5-match-gage': [
+    {
+      id: 'rw-variant-gage-discipline',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Gage Discipline Pause',
+      description: "Replay Gage's prophylactic pause doctrine from Chapter V in Duel mode.",
+      duelVariantId: 'gage-discipline',
+    },
+    {
+      id: 'rw-codex-gage-pause',
+      kind: 'codex',
+      label: 'Archive Note: The Pause',
+      description: 'Gage files that a donated square is how plans earn names, and that you learned to refuse the gift.',
+      codexId: 'codex-gage-pause',
+    },
+  ],
+  'c5-match-helia': [
+    {
+      id: 'rw-variant-helia-machine',
+      kind: 'duel-variant',
+      label: 'Duel Variant Unlocked: Helia Conversion Machine',
+      description: "Replay Helia's conversion doctrine from Chapter V in Duel mode.",
+      duelVariantId: 'helia-machine',
+    },
+    {
+      id: 'rw-title-discipline',
+      kind: 'title',
+      label: 'Title Earned: Discipline Analyst',
+      description: 'Recognized for making luft, refusing gifts, and converting advantage into fact.',
+      titleId: 'discipline-analyst',
+    },
+  ],
 }
 
 export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
@@ -198,6 +230,21 @@ export const CHAPTER_CLEAR_REWARDS: Record<string, RewardDefinition[]> = {
       kind: 'chronicle',
       label: 'Chronicle Echo Unlocked',
       description: 'A fourth echo joins your archive: fianchetto pressure, provocation, and the slow squeeze.',
+    },
+  ],
+  ch5: [
+    {
+      id: 'rw-title-discipline-seal',
+      kind: 'title',
+      label: 'Title Earned: Seal of the Machine of Discipline',
+      description: 'Chapter V completed. Your chronicle carries prophylaxis and conversion as civic virtues.',
+      titleId: 'seal-machine-discipline',
+    },
+    {
+      id: 'rw-chronicle-echo-ch5',
+      kind: 'chronicle',
+      label: 'Chronicle Echo Unlocked',
+      description: 'A fifth echo joins your archive: luft, the pause, and technical conversion.',
     },
   ],
 }

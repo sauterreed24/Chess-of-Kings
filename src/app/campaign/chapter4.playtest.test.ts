@@ -99,7 +99,7 @@ describe('Chapter IV playtest', () => {
     expect(flow.currentScene().type === 'match' && flow.currentScene().scriptedBlackSans?.[0]).toBe('Nf6')
   })
 
-  it('seals the paradox age and finishes the compiled campaign', () => {
+  it('seals the paradox age and opens the Machine of Discipline', () => {
     const { flow, ch4, onChapterComplete, onCampaignFinished } = chapterFourFlow()
     const freeIdx = PLAYABLE_CHAPTERS[ch4]!.scenes.findIndex((scene) => scene.id === 'c4-freeplay')
     flow.jumpToScene(ch4, freeIdx)
@@ -107,7 +107,8 @@ describe('Chapter IV playtest', () => {
     expect(flow.canAdvance()).toBe(true)
     flow.advanceScene()
     expect(onChapterComplete).toHaveBeenCalled()
-    expect(onCampaignFinished).toHaveBeenCalled()
+    expect(onCampaignFinished).not.toHaveBeenCalled()
     expect(flow.chapter4Complete).toBe(true)
+    expect(flow.currentScene().id).toBe('c5-intro')
   })
 })

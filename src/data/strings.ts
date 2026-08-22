@@ -70,7 +70,7 @@ export const ARCHIVE_RATING_BAND_LABELS = {
 
 export const PLATEAU_COPY = {
   heading: 'Mastery plateau',
-  lede: 'Chapters I–IV are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
+  lede: 'Chapters I–V are sealed. Keep the ledger sharp with Daily Calculus, or reopen every doctrine in the Duel Archive while later ages wait.',
   dailyCta: 'Daily Calculus',
   duelCta: 'Duel Archive',
   resumeCta: 'Resume Recovered Session',
@@ -85,7 +85,13 @@ export const PLATEAU_PENDING_COPY = {
 /** Hub after Chapter IV reflection while freeplay / clear rewards are still outstanding. */
 export const PLATEAU_PENDING_CH4_COPY = {
   heading: 'Almost sealed',
-  lede: 'The Paradox Masters reflection is inscribed. Finish the Chapter IV rehearsal to claim the hypermodern seal, then the mastery plateau opens fully.',
+  lede: 'The Paradox Masters reflection is inscribed. Finish the Chapter IV rehearsal to claim the hypermodern seal, then the Machine of Discipline opens.',
+} as const
+
+/** Hub after Chapter V reflection while freeplay / clear rewards are still outstanding. */
+export const PLATEAU_PENDING_CH5_COPY = {
+  heading: 'Almost sealed',
+  lede: 'The Machine of Discipline reflection is inscribed. Finish the Chapter V rehearsal to claim the discipline seal, then the mastery plateau opens fully.',
 } as const
 
 /** Shown when Chapter III is sealed and Chapter IV is waiting, including migrated saves. */
@@ -93,6 +99,13 @@ export const PARADOX_OPENED_COPY = {
   heading: 'A new age is open',
   lede: 'The Professor\'s Law is sealed. The Paradox Masters wait in the vestibule — refuse the center to own it later.',
   enterCta: 'Enter the Paradox Masters',
+} as const
+
+/** Shown when Chapter IV is sealed and Chapter V is waiting, including migrated saves. */
+export const MACHINE_OPENED_COPY = {
+  heading: 'A new age is open',
+  lede: 'The Paradox Masters are sealed. The Machine of Discipline waits in the vestibule — prophylaxis, luft, and the long squeeze.',
+  enterCta: 'Enter the Machine of Discipline',
 } as const
 
 export const ECHO_OUTCOME_LABELS = {
