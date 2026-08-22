@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.29] — 2026-08-22
+
+Pass 37 — Foot ferrule:
+
+- **Ivory/lapis glyphs** get a gold/lapis ferrule between the foot and the plinth so every type, including the knight, sits on a turned band. Forced **Visual: Lean** keeps the ferrule.
+- Playwright asserts `.piece-ferrule` on the calibration pawn, hanging-knight bishop and d4 knight, and title honor.
+- Docs: [`docs/PASS37_FOOT_FERRULE.md`](docs/PASS37_FOOT_FERRULE.md).
+
 ## [0.5.28] — 2026-08-22
 
 Pass 36 — Crown cup:

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.28)
+## What's new in this release (v0.5.29)
+
+**Pass 37 — Foot ferrule** — ivory and lapis sit on a gold/lapis band above the foot, including knights. See [`docs/PASS37_FOOT_FERRULE.md`](docs/PASS37_FOOT_FERRULE.md).
+
+## Previous release (v0.5.28)
 
 **Pass 36 — Crown cup** — ivory and lapis heads get a turned hollow so mitre, crown, and battlement read as carved bowls. See [`docs/PASS36_CROWN_CUP.md`](docs/PASS36_CROWN_CUP.md).
 
