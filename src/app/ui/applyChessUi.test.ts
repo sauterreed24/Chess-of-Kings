@@ -18,6 +18,17 @@ function refs(): MountDomRefs {
   calibrationLabel.className = 'calibration-rail__label'
   calibrationLabel.textContent = 'White moves inscribed'
   calibrationRail.appendChild(calibrationLabel)
+  const boardStatus = node<HTMLSpanElement>('span')
+  const wrap = document.createElement('div')
+  wrap.className = 'status-pill-wrap'
+  wrap.appendChild(boardStatus)
+  const aiPersonaEl = node<HTMLParagraphElement>('p')
+  const aiFlavorEl = node<HTMLParagraphElement>('p')
+  const tacticalPulseEl = node<HTMLParagraphElement>('p')
+  const recoveryControls = node()
+  const header = document.createElement('div')
+  header.className = 'instrument-header'
+  header.append(wrap, aiPersonaEl, aiFlavorEl, tacticalPulseEl, recoveryControls)
   return {
     app,
     playScreen: node(),
@@ -33,15 +44,15 @@ function refs(): MountDomRefs {
     btnReset: node<HTMLButtonElement>('button'),
     btnNext: node<HTMLButtonElement>('button'),
     btnNextHint: node<HTMLSpanElement>('span'),
-    boardStatus: node<HTMLSpanElement>('span'),
+    boardStatus,
     turnPulseEl: node<HTMLSpanElement>('span'),
     moveCounterEl: node<HTMLSpanElement>('span'),
-    aiPersonaEl: node<HTMLParagraphElement>('p'),
-    aiFlavorEl: node<HTMLParagraphElement>('p'),
-    tacticalPulseEl: node<HTMLParagraphElement>('p'),
+    aiPersonaEl,
+    aiFlavorEl,
+    tacticalPulseEl,
     boardGuide: node<HTMLParagraphElement>('p'),
     mobileBoardGuide: node<HTMLParagraphElement>('p'),
-    recoveryControls: node(),
+    recoveryControls,
     btnRecoveryRestore: node<HTMLButtonElement>('button'),
     btnUndo: node<HTMLButtonElement>('button'),
     btnRunBack: node<HTMLButtonElement>('button'),
@@ -119,13 +130,12 @@ describe('applyChessUi', () => {
     expect(dom.calibrationRail.querySelector('.calibration-rail__label')?.textContent).toBe('4 / 4 inscribed')
     expect(dom.calibrationTrack.querySelectorAll('.cal-dot--on')).toHaveLength(4)
     expect(dom.boardStatus.classList.contains('hidden')).toBe(false)
+    expect(dom.boardStatus.closest('.instrument-header')?.classList.contains('hidden')).toBe(false)
   })
 
   it('hides the ordinary side-to-move pill so the instrument command leads', () => {
     const chess = new Chess()
     const dom = refs()
-    const wrap = document.createElement('div')
-    wrap.appendChild(dom.boardStatus)
     applyChessUi(
       { ...payload(chess), calibration: undefined, status: 'White to move.', boardGuide: 'Open the center' },
       {
@@ -143,7 +153,8 @@ describe('applyChessUi', () => {
     )
     expect(dom.boardStatus.textContent).toBe('White to move.')
     expect(dom.boardStatus.classList.contains('hidden')).toBe(true)
-    expect(wrap.classList.contains('hidden')).toBe(true)
+    expect(dom.boardStatus.parentElement?.classList.contains('hidden')).toBe(true)
+    expect(dom.boardStatus.closest('.instrument-header')?.classList.contains('hidden')).toBe(true)
   })
 
   it('keeps check and thinking on the status pill', () => {
@@ -165,6 +176,7 @@ describe('applyChessUi', () => {
     applyChessUi({ ...payload(chess), calibration: undefined, status: 'Check.', inCheck: true }, rt, cbs)
     expect(dom.boardStatus.textContent).toBe('Check.')
     expect(dom.boardStatus.classList.contains('hidden')).toBe(false)
+    expect(dom.boardStatus.closest('.instrument-header')?.classList.contains('hidden')).toBe(false)
 
     applyChessUi({ ...payload(chess), calibration: undefined, aiThinking: true, status: 'White to move.' }, rt, cbs)
     expect(dom.boardStatus.textContent).toBe('Thinking…')
@@ -190,6 +202,7 @@ describe('applyChessUi', () => {
     applyChessUi({ ...payload(chess), aiPersona: 'Lukas · Phalanx · ledger school' }, rt, cbs)
     expect(dom.aiPersonaEl.classList.contains('hidden')).toBe(false)
     expect(dom.aiPersonaEl.textContent).toBe('Court dossier — Lukas · Phalanx · ledger school')
+    expect(dom.boardStatus.closest('.instrument-header')?.classList.contains('hidden')).toBe(false)
 
     applyChessUi({ ...payload(chess), aiPersona: null }, rt, cbs)
     expect(dom.aiPersonaEl.classList.contains('hidden')).toBe(true)

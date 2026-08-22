@@ -15,6 +15,23 @@ export type ApplyChessUiCallbacks = {
   revealBoardScene: () => void
 }
 
+function isDomHidden(el: HTMLElement | null | undefined): boolean {
+  return !el || el.classList.contains('hidden')
+}
+
+/** Collapse the empty brass header once the turn pill is quiet and no dossier is filed. */
+function syncIdleInstrumentHeader(rtDom: MountRuntime['dom']): void {
+  const header = rtDom.boardStatus.closest('.instrument-header')
+  if (!(header instanceof HTMLElement)) return
+  const idle =
+    isDomHidden(rtDom.boardStatus) &&
+    isDomHidden(rtDom.aiPersonaEl) &&
+    isDomHidden(rtDom.aiFlavorEl) &&
+    isDomHidden(rtDom.tacticalPulseEl) &&
+    isDomHidden(rtDom.recoveryControls)
+  header.classList.toggle('hidden', idle)
+}
+
 export function applyChessUi(
   p: ChessUiPayload,
   rt: MountRuntime,
@@ -148,6 +165,7 @@ export function applyChessUi(
   } else {
     dom.recoveryControls.classList.add('hidden')
   }
+  syncIdleInstrumentHeader(dom)
 
   dom.btnUndo.disabled = !p.canUndo
   dom.btnRunBack.hidden = !p.canRetry
