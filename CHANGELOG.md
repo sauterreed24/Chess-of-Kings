@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.128] — 2026-08-22
+
+Pass 136 — chapter index stamps:
+
+- **Graphics** — chapter Open/Resume stamps, chapter index, and Sealed passage badges render at 0.7rem so the hub still reads on phone (CSS was 0.5–0.6rem). No new CSS.
+- **Playwright** — 390×844 title top-nav asserts the first chapter stamp and index.
+- Docs: [`docs/PASS136_CHAPTER_STAMP.md`](docs/PASS136_CHAPTER_STAMP.md).
+
 ## [0.5.127] — 2026-08-22
 
 Pass 135 — Duel Archive field labels:
