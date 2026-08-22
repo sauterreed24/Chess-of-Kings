@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.54)
+## What's new in this release (v0.5.55)
+
+**Pass 63 — Rook battlement cup** — ivory and lapis rooks get a deeper lathe bowl in the battlement, instead of a 2.4px dish. See [`docs/PASS63_ROOK_CUP.md`](docs/PASS63_ROOK_CUP.md).
+
+## Previous release (v0.5.54)
 
 **Pass 62 — Pawn spark** — ivory and lapis pawns get a larger globe spark, instead of a 1.8px speck. See [`docs/PASS62_PAWN_SPARK.md`](docs/PASS62_PAWN_SPARK.md).
 

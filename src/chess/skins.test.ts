@@ -180,6 +180,12 @@ describe('carveGlyph', () => {
     expect(heights[1]).toBeGreaterThanOrEqual(4.5)
   })
 
+  it('sizes the rook battlement cup to read on a phone square', () => {
+    const rook = carveGlyph('<svg></svg>', 'w', 'r')
+    const ry = Number(rook.match(/class="piece-cup"[^>]*ry="([\d.]+)"/)?.[1])
+    expect(ry).toBeGreaterThanOrEqual(2.2)
+  })
+
   it('sizes the foot ferrule to read on a phone square', () => {
     const pawn = carveGlyph('<svg></svg>', 'w', 'p')
     const ry = Number(pawn.match(/class="piece-ferrule"[^>]*ry="([\d.]+)"/)?.[1])
