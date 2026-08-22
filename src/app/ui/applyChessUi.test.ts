@@ -118,6 +118,57 @@ describe('applyChessUi', () => {
     expect(dom.calibrationRail.classList.contains('hidden')).toBe(false)
     expect(dom.calibrationRail.querySelector('.calibration-rail__label')?.textContent).toBe('4 / 4 inscribed')
     expect(dom.calibrationTrack.querySelectorAll('.cal-dot--on')).toHaveLength(4)
+    expect(dom.boardStatus.classList.contains('hidden')).toBe(false)
+  })
+
+  it('hides the ordinary side-to-move pill so the instrument command leads', () => {
+    const chess = new Chess()
+    const dom = refs()
+    const wrap = document.createElement('div')
+    wrap.appendChild(dom.boardStatus)
+    applyChessUi(
+      { ...payload(chess), calibration: undefined, status: 'White to move.', boardGuide: 'Open the center' },
+      {
+        dom,
+        play: createMountPlayState(),
+        getFlow: () => null,
+        sfx: createSfxController({ enabled: false }),
+        announcer: createAnnouncer(node()),
+      },
+      {
+        showRewardBundles: vi.fn(),
+        maybeShowPendingChapterPrompt: vi.fn(),
+        revealBoardScene: vi.fn(),
+      },
+    )
+    expect(dom.boardStatus.textContent).toBe('White to move.')
+    expect(dom.boardStatus.classList.contains('hidden')).toBe(true)
+    expect(wrap.classList.contains('hidden')).toBe(true)
+  })
+
+  it('keeps check and thinking on the status pill', () => {
+    const chess = new Chess()
+    const dom = refs()
+    const rt = {
+      dom,
+      play: createMountPlayState(),
+      getFlow: () => null,
+      sfx: createSfxController({ enabled: false }),
+      announcer: createAnnouncer(node()),
+    }
+    const cbs = {
+      showRewardBundles: vi.fn(),
+      maybeShowPendingChapterPrompt: vi.fn(),
+      revealBoardScene: vi.fn(),
+    }
+
+    applyChessUi({ ...payload(chess), calibration: undefined, status: 'Check.', inCheck: true }, rt, cbs)
+    expect(dom.boardStatus.textContent).toBe('Check.')
+    expect(dom.boardStatus.classList.contains('hidden')).toBe(false)
+
+    applyChessUi({ ...payload(chess), calibration: undefined, aiThinking: true, status: 'White to move.' }, rt, cbs)
+    expect(dom.boardStatus.textContent).toBe('Thinking…')
+    expect(dom.boardStatus.classList.contains('hidden')).toBe(false)
   })
 
   it('files a court dossier for living rivals, not teaching puzzles', () => {
