@@ -91,7 +91,7 @@ const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }
 /** Gold/lapis inlay on the king’s cross — thick enough to read on a ~40px phone square. */
 const KING_CROSS: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
   { x: 21.15, y: 5.9, w: 2.7, h: 5.95 },
-  { x: 19.55, y: 6.85, w: 5.9, h: 2.3 },
+  { x: 19.15, y: 6.25, w: 6.7, h: 3.45 },
 ]
 
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
