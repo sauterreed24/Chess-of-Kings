@@ -149,6 +149,20 @@ const BOOKS: Record<string, OpeningBook> = {
     7: [{ san: 'Nc6', weight: 8 }, { san: 'g6', weight: 4 }],
     9: [{ san: 'g6', weight: 7 }, { san: 'Bg7', weight: 5 }],
   },
+  wren_census: {
+    1: [{ san: 'e5', weight: 9 }, { san: 'e6', weight: 3 }, { san: 'c6', weight: 2 }],
+    3: [{ san: 'Nf6', weight: 9 }, { san: 'Nc6', weight: 4 }],
+    5: [{ san: 'Nc6', weight: 8 }, { san: 'd6', weight: 5 }],
+    7: [{ san: 'd6', weight: 8 }, { san: 'Be7', weight: 4 }],
+    9: [{ san: 'Be7', weight: 7 }, { san: 'O-O', weight: 5 }],
+  },
+  bram_fused: {
+    1: [{ san: 'Nf6', weight: 9 }, { san: 'g6', weight: 4 }, { san: 'd6', weight: 2 }],
+    3: [{ san: 'g6', weight: 9 }, { san: 'd6', weight: 3 }],
+    5: [{ san: 'Bg7', weight: 8 }, { san: 'O-O', weight: 5 }],
+    7: [{ san: 'O-O', weight: 8 }, { san: 'd6', weight: 4 }],
+    9: [{ san: 'd6', weight: 7 }, { san: 'c5', weight: 5 }],
+  },
 }
 
 export function getBookTopLines(

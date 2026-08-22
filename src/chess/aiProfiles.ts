@@ -354,6 +354,38 @@ export const AI_PROFILES: Record<string, AiProfile> = {
     weights: { tactical: 0.88, positional: 0.86, sacrificial: 0.3, prophylactic: 0.84 },
     motifBias: { fork: 0.96, pin: 0.7, skewer: 0.78, kingHunt: 0.38 },
   },
+  wren_census: {
+    id: 'wren_census',
+    label: 'Wren Census Clerk',
+    style: 'apotheosis',
+    searchDepth: 4,
+    thinkTimeMs: 1480,
+    blunderRate: 0.018,
+    riskAppetite: 0.24,
+    tacticalAlertness: 0.94,
+    openingDiscipline: 0.96,
+    kingSafetyUrgency: 0.92,
+    conversionStrictness: 0.96,
+    conversionPersona: 'technical',
+    weights: { tactical: 0.82, positional: 0.96, sacrificial: 0.22, prophylactic: 0.94 },
+    motifBias: { fork: 0.7, pin: 0.98, skewer: 0.9, kingHunt: 0.34 },
+  },
+  bram_fused: {
+    id: 'bram_fused',
+    label: 'Bram Compiled Reply',
+    style: 'apotheosis',
+    searchDepth: 5,
+    thinkTimeMs: 1600,
+    blunderRate: 0.016,
+    riskAppetite: 0.32,
+    tacticalAlertness: 0.94,
+    openingDiscipline: 0.92,
+    kingSafetyUrgency: 0.9,
+    conversionStrictness: 0.95,
+    conversionPersona: 'universal',
+    weights: { tactical: 0.86, positional: 0.94, sacrificial: 0.36, prophylactic: 0.9 },
+    motifBias: { fork: 0.88, pin: 0.86, skewer: 0.84, kingHunt: 0.42 },
+  },
 }
 
 export function detectGamePhase(chess: Chess): GamePhase {
@@ -384,6 +416,8 @@ export function resolveProfileByMatchId(matchId: string): AiProfile {
   if (matchId.includes('soren')) return AI_PROFILES.soren_answer
   if (matchId.includes('voss')) return AI_PROFILES.voss_exchange
   if (matchId.includes('elara')) return AI_PROFILES.elara_fork
+  if (matchId.includes('wren')) return AI_PROFILES.wren_census
+  if (matchId.includes('bram')) return AI_PROFILES.bram_fused
   if (matchId.includes('demetrios')) return AI_PROFILES.advisor_boss
   if (matchId.includes('boss') || matchId.includes('counterpart')) return AI_PROFILES.counterpart_apex
   return AI_PROFILES.apprentice_court
@@ -407,6 +441,8 @@ export function resolveProfileByDuelVariant(variantId: string): AiProfile {
   if (variantId.includes('soren')) return AI_PROFILES.soren_answer
   if (variantId.includes('voss')) return AI_PROFILES.voss_exchange
   if (variantId.includes('elara')) return AI_PROFILES.elara_fork
+  if (variantId.includes('wren')) return AI_PROFILES.wren_census
+  if (variantId.includes('bram')) return AI_PROFILES.bram_fused
   return AI_PROFILES.apprentice_court
 }
 

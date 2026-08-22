@@ -259,7 +259,7 @@ describe('mounted duel dossier', () => {
     expect(hub?.textContent).toMatch(/Machine of Discipline/)
     expect(app.querySelector('#btn-plateau-machine')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Final synthesis|Apotheosis/i)
+    expect(app.querySelector('.roadmap-teaser')).toBeNull()
     expect(app.textContent).toMatch(/The Paradox Masters/)
     expect(app.textContent).toMatch(/The Machine of Discipline/)
     expect(app.textContent).toMatch(/The Silicon Threshold/)
@@ -310,7 +310,7 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#btn-plateau-silicon')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-machine')).toBeNull()
     expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Final synthesis|Apotheosis/i)
+    expect(app.querySelector('.roadmap-teaser')).toBeNull()
     expect(app.textContent).toMatch(/The Machine of Discipline/)
     expect(app.textContent).toMatch(/The Silicon Threshold/)
 
@@ -364,7 +364,7 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#btn-plateau-synthesis')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-silicon')).toBeNull()
     expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Final synthesis|Apotheosis/i)
+    expect(app.querySelector('.roadmap-teaser')).toBeNull()
     expect(app.textContent).toMatch(/The Silicon Threshold/)
     expect(app.textContent).toMatch(/The Human Synthesis/)
 
@@ -422,7 +422,7 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#btn-plateau-alexandrine')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-synthesis')).toBeNull()
     expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Final synthesis|Apotheosis/i)
+    expect(app.querySelector('.roadmap-teaser')).toBeNull()
     expect(app.textContent).toMatch(/The Human Synthesis/)
     expect(app.textContent).toMatch(/The Alexandrine Board/)
 
@@ -431,7 +431,7 @@ describe('mounted duel dossier', () => {
     expect(app.querySelector('#play-chapter-label')?.textContent).toMatch(/Chapter VIII|Alexandrine/)
   })
 
-  it('shows a mastery plateau hub after Chapter VIII is sealed', () => {
+  it('shows an Apotheosis Engine hub after Chapter VIII is sealed', () => {
     localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
       version: 3,
       chapterIndex: 8,
@@ -479,11 +479,77 @@ describe('mounted duel dossier', () => {
     app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
     const hub = app.querySelector('.plateau-hub')
     expect(hub).not.toBeNull()
-    expect(hub?.textContent).toMatch(/Mastery plateau/)
-    expect(hub?.textContent).toMatch(/I–VIII are sealed/)
-    expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
+    expect(hub?.textContent).toMatch(/A new age is open/)
+    expect(hub?.textContent).toMatch(/Apotheosis Engine/)
+    expect(app.querySelector('#btn-plateau-apotheosis')).not.toBeNull()
     expect(app.querySelector('#btn-plateau-alexandrine')).toBeNull()
-    expect(app.querySelector('.roadmap-teaser')?.textContent).toMatch(/Final synthesis|Apotheosis/i)
+    expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
+    expect(app.querySelector('.roadmap-teaser')).toBeNull()
+    expect(app.textContent).toMatch(/The Alexandrine Board/)
+    expect(app.textContent).toMatch(/The Apotheosis Engine/)
+
+    app.querySelector<HTMLButtonElement>('#btn-plateau-apotheosis')?.click()
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(app.querySelector('#play-chapter-label')?.textContent).toMatch(/Chapter IX|Apotheosis/)
+  })
+
+  it('shows a mastery plateau hub after Chapter IX is sealed', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 9,
+      sceneIndex: 0,
+      highestUnlockedChapter: 9,
+      lastScreen: 'chapters',
+      chapter1Complete: true,
+      chapter2Complete: true,
+      completedSceneIds: [
+        'c3-reflection',
+        'c3-freeplay',
+        'c4-reflection',
+        'c4-freeplay',
+        'c5-reflection',
+        'c5-freeplay',
+        'c6-reflection',
+        'c6-freeplay',
+        'c7-reflection',
+        'c7-freeplay',
+        'c8-reflection',
+        'c8-freeplay',
+        'c9-reflection',
+        'c9-match-bram',
+        'c9-freeplay',
+      ],
+      completedPuzzleIds: [],
+      duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax', 'iota', 'mira', 'soren', 'voss', 'elara', 'wren', 'bram'],
+      unlockedDuelVariantIds: [
+        'alexion-mentor',
+        'kallistos-law',
+        'nysa-frontier',
+        'cassian-paradox',
+        'gage-discipline',
+        'helia-machine',
+        'prax-precision',
+        'iota-threshold',
+        'mira-practical',
+        'soren-answer',
+        'voss-exchange',
+        'elara-fork',
+        'wren-census',
+        'bram-fused',
+      ],
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    const hub = app.querySelector('.plateau-hub')
+    expect(hub).not.toBeNull()
+    expect(hub?.textContent).toMatch(/Mastery plateau/)
+    expect(hub?.textContent).toMatch(/I–IX are sealed/)
+    expect(app.querySelector('#btn-plateau-duel')).not.toBeNull()
+    expect(app.querySelector('#btn-plateau-apotheosis')).toBeNull()
+    expect(app.querySelector('.roadmap-teaser')).toBeNull()
 
     app.querySelector<HTMLButtonElement>('#btn-plateau-duel')?.click()
     expect(app.querySelector('#screen-duel')?.classList.contains('hidden')).toBe(false)

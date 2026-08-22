@@ -38,6 +38,8 @@ const SPEAKER_META: Record<string, SpeakerMeta> = {
   soren: { label: 'Soren', sigil: 'SO', voice: 'rival', cadenceMs: 8 },
   voss: { label: 'Voss', sigil: 'VO', voice: 'scholar', cadenceMs: 8 },
   elara: { label: 'Elara', sigil: 'EL', voice: 'rival', cadenceMs: 8 },
+  wren: { label: 'Wren', sigil: 'WR', voice: 'scholar', cadenceMs: 8 },
+  bram: { label: 'Bram', sigil: 'BR', voice: 'rival', cadenceMs: 8 },
   rowan: { label: 'Rowan Vale', sigil: 'RO', voice: 'fire', cadenceMs: 7 },
   vega: { label: 'Vega Sorn', sigil: 'VE', voice: 'rival', cadenceMs: 8 },
 }

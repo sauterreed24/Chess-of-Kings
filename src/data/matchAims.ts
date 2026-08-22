@@ -25,6 +25,8 @@ export const MATCH_AIM_BY_SCENE_ID: Record<string, string> = {
   'c7-match-soren': 'Meet the reply school; do not keep the first costume.',
   'c8-match-voss': 'Take the vacant office; do not keep both courts.',
   'c8-match-elara': 'File both futures; do not let the second office walk.',
+  'c9-match-wren': 'Take the pin the census circled; do not delay it.',
+  'c9-match-bram': 'Meet the compiled school; do not keep the first costume.',
 }
 
 export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
@@ -46,6 +48,8 @@ export const DUEL_AIM_BY_OPPONENT_ID: Record<string, string> = {
   soren: MATCH_AIM_BY_SCENE_ID['c7-match-soren']!,
   voss: MATCH_AIM_BY_SCENE_ID['c8-match-voss']!,
   elara: MATCH_AIM_BY_SCENE_ID['c8-match-elara']!,
+  wren: MATCH_AIM_BY_SCENE_ID['c9-match-wren']!,
+  bram: MATCH_AIM_BY_SCENE_ID['c9-match-bram']!,
 }
 
 export function matchAimForSceneId(sceneId: string): string {

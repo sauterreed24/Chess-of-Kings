@@ -763,6 +763,80 @@ export const RIVAL_PROFILES: Record<string, RivalProfile> = {
       ],
     },
   },
+  wren: {
+    opponentId: 'wren',
+    displayName: 'Wren',
+    blend: {
+      primary: { school: 'Achaemenid Patience', weight: 55 },
+      secondary: { school: 'Macedonian Phalanx', weight: 45 },
+    },
+    counterPrep: [
+      'If a piece is pinned, take it — Wren files delayed captures as the habit her census already underlined.',
+      'Meet e5 with development and castle before the census names a hanging file; she taxes the check you prefer to the piece.',
+      'When she reads your last delay aloud, change the line. Staying in the underlined capture is how the last rank waits.',
+    ],
+    whiteOpenings: ['Petroff structures as White pressure', 'Quiet king-pawn with a circled pin', 'Last-rank conversion drills'],
+    blackOpenings: ['Open-game e5 systems', 'Two Knights / Petroff replies', 'Census-first development'],
+    signature: 'Take the pinned piece the census already circled, then refuse to replay the underlined delay.',
+    talk: {
+      opening: [
+        'I have your census. The captures you delay are already underlined.',
+        'Show me the habit you were about to keep wearing.',
+      ],
+      punished: [
+        'You changed a line I had underlined. Correct.',
+        'My census missed. Earned.',
+      ],
+      rattled: [
+        'You are treating the file like weather. Rare, and irritating.',
+        'I filed you as predictable. Amend the file.',
+      ],
+      audacious: [
+        'You delayed the capture I circled. I collect hesitation as tax.',
+        'A habit is still a leak. Watch.',
+      ],
+      draw: [
+        'A draw can be a census that refused to finish the last rank.',
+      ],
+    },
+  },
+  bram: {
+    opponentId: 'bram',
+    displayName: 'Bram',
+    blend: {
+      primary: { school: 'Indic Combinatorics', weight: 60 },
+      secondary: { school: 'Bactrian Frontier', weight: 40 },
+    },
+    counterPrep: [
+      'When he answers with a school you already sealed, switch with him — staying in the first compiled costume is how the last rank waits.',
+      'Meet Nf6 with development and castle before the Indian wall bites; Bram files undeveloped kings as announced doctrine.',
+      'If the stacked school changes wings, change with it. His favorite finish is the last rank you donated while narrating memory.',
+    ],
+    whiteOpenings: ['Indian structures as White pressure', 'Compiled-school middle games', 'Last-rank conversion'],
+    blackOpenings: ['King\'s Indian Nf6-g6', 'Gruenfeld-quiet walls', 'Compiled c5 breaks'],
+    signature: 'Answer the named school with one you already survived, then finish if the opponent keeps the first costume.',
+    talk: {
+      opening: [
+        'Every school you sealed is in this drawer.',
+        'I will answer you with the one you are not wearing.',
+      ],
+      punished: [
+        'You noticed the stacked school. The halls notice.',
+        'My compiled reply never landed. Well seen.',
+      ],
+      rattled: [
+        'You treated my drawer as weather, then changed the weather. Rare.',
+        'I filed you as a hymn. Amend the file.',
+      ],
+      audacious: [
+        'You announced a doctrine and wore it into the stack. Watch.',
+        'A compiled costume is not a plan. I will demonstrate the difference.',
+      ],
+      draw: [
+        'A draw can be two compiled schools that refused to finish.',
+      ],
+    },
+  },
 }
 
 /**

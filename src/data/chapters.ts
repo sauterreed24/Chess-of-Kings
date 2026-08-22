@@ -1,7 +1,7 @@
 import type { Chapter } from '../types'
 
 /**
- * Playable campaign: Prologue + Chapters I–VIII.
+ * Playable campaign: Prologue + Chapters I–IX.
  * Chapter I: six-rung ladder (Initiate → … → Counterpart).
  * Chapter II: shorter Romantic ladder — two rated encounters + rehearsal.
  * Chapter III: compact Classical arc — Demetrios return + Kallistos + rehearsal.
@@ -10,6 +10,7 @@ import type { Chapter } from '../types'
  * Chapter VI: Silicon Threshold — Prax + Iota + rehearsal.
  * Chapter VII: Human Synthesis — Mira + Soren + rehearsal.
  * Chapter VIII: Alexandrine Board — Voss + Elara + rehearsal.
+ * Chapter IX: Apotheosis Engine — Wren + Bram + rehearsal.
  */
 export const PLAYABLE_CHAPTERS: Chapter[] = [
   /* ═══════════════════════════════════════════════════════════════
@@ -3178,11 +3179,11 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'elara',
-            text: 'Remember the stamp. Later ages will compile every school you survived — but they still punish a succession you refused to file.',
+            text: 'Remember the stamp. The next door has already compiled every school you survived and will ask whether you still choose.',
           },
           {
             speaker: 'narrator',
-            text: 'Chapter VIII is sealed. Upstairs, the brief is rewritten again: Reed can exchange an office without a siege. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Apotheosis Engine waits — locked, not gone. The chronicle is a plateau with work left on it.',
+            text: 'Chapter VIII is sealed. Upstairs, the brief is rewritten again: Reed can exchange an office without a siege. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. Beyond these doors, the Apotheosis Engine waits — a civic archive that remembers how you play. The chronicle has one last age to inscribe.',
           },
         ],
       },
@@ -3205,6 +3206,338 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           whyItWorks:
             'Alexandrine skill is recognizing which office is already vacant, then filing both futures before either walks.',
           concept: 'Succession becomes instinct only through quiet repetition.',
+        },
+      },
+    ],
+  },
+  /* ═══════════════════════════════════════════════════════════════
+     CHAPTER IX — The Apotheosis Engine (compact ladder)
+     Habit census and compiled schools. Wren + Bram.
+     Reuses theme-classical (CSS gzip locked).
+     ═══════════════════════════════════════════════════════════════ */
+  {
+    id: 'ch9',
+    index: 9,
+    title: 'Chapter IX',
+    subtitle: 'The Apotheosis Engine',
+    era: 'Fused prediction stack',
+    themeClass: 'theme-classical',
+    philosophy:
+      'Every school you survived is already on file. Pin what your habits leave hanging, fork the census that remembers you, and file the last rank without a speech.',
+    scenes: [
+      {
+        type: 'dialogue',
+        id: 'c9-intro',
+        storyBeat: {
+          label: 'Chapter pressure',
+          title: 'The registry meets a file that already knows you',
+          body: 'Succession taught Reed to close a court. The last rooms ask whether he can still choose once every school he used is compiled into one doctrine that remembers his habits.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'The vestibule is a census hall, not a temple. One board shows a knight pinned to its king. Another shows a fork that names a queen the file already expected. Clerks have not labeled a villain. They have labeled Reed.',
+          },
+          {
+            speaker: 'alexion',
+            text: 'They filed you as a stratarch. That is not a crown. It is a warrant to test whether you can still pin, fork, and finish after the archive has watched you do it eight ages running.',
+          },
+          {
+            speaker: 'elara',
+            text: 'I asked you to file two futures. Wren will read the census of how you actually move. Bram will answer with every school you survived, compiled. Neither is a god. Drought taught the last hall that worship is how a file becomes a famine.',
+          },
+          {
+            speaker: 'reed',
+            text: 'So I play myself?',
+          },
+          {
+            speaker: 'voss',
+            text: 'You play a clerk who kept notes. The vacant office is still vacant. The last rank is still a rank. Begin without a hymn.',
+          },
+        ],
+      },
+      {
+        type: 'codex',
+        id: 'c9-codex-engine',
+        heading: 'Apotheosis doctrine — census, compile, file',
+        storyBeat: {
+          label: 'Doctrine tension',
+          title: 'A doctrine that remembers',
+          body: 'The last civic archive under Chronos treats Reed\'s habits as a public line: pin what the census says he leaves hanging, fork the piece the file already named, and finish the last rank.',
+          tone: 'quiet',
+        },
+        entries: [
+          {
+            term: 'Habit census',
+            body: 'The archive does not guess. It lists the captures you delay and the checks you prefer. Apotheosis begins when you take the pinned piece the census already circled.',
+          },
+          {
+            term: 'Compiled school',
+            body: 'Every doctrine you survived is in the same drawer. Bram answers Italian with Modern, ledger with fork. The test is noticing which compiled reply is on the board.',
+          },
+          {
+            term: 'Last rank',
+            body: 'A rook on the back rank is not a miracle. It is the finish the pawn wall already paid for. File it before the census writes that you hesitated.',
+          },
+          {
+            term: 'Fused prediction stack',
+            body: 'Clerks, brass, and lapis — not a spirit. They compile. They remember. They do not dream. A stratarch who worships the file drowns on a Tuesday.',
+          },
+          {
+            term: 'Apotheosis Engine',
+            body: 'Wren answers I have your census. Bram answers I play what you survived. Reed has to answer without becoming a hymn to his own archive.',
+          },
+        ],
+      },
+      {
+        type: 'puzzle',
+        id: 'c9-puzzle-census',
+        title: 'Puzzle — take what the census circled',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The pin you always delay',
+          body: 'A knight hangs on the file of its king. The census already marked it. Take it.',
+          tone: 'pressure',
+        },
+        fen: '4k3/ppp5/4n3/8/8/8/PPP1R3/4K3 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'advantage', minCp: 250 },
+        lesson:
+          'Rxe6 takes the pinned knight. Checking from elsewhere is the habit the census already named. Apotheosis is cheaper than your reputation.',
+        teaching: {
+          threat: 'If you wait, the knight unpins and the plus the archive predicted stays a rumor.',
+          goalPlain: 'Win the pinned knight on e6 with the rook.',
+          whyItWorks:
+            'The knight cannot leave the e-file without abandoning the king. Taking it is not a guess. It is reading your own file.',
+          concept: 'Habit census: take the pin you usually narrate.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c9-puzzle-compile',
+        title: 'Puzzle — fork the compiled queen',
+        storyBeat: {
+          label: 'Drill pressure',
+          title: 'The file already named both',
+          body: 'King and queen share a knight landing. The compiled school expects you to check the king only. Name both.',
+          tone: 'pressure',
+        },
+        fen: '4k3/pqp5/8/8/4N3/8/PPP5/4K3 w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'pieceOn', square: 'd6', color: 'w', pieceType: 'n' },
+        lesson:
+          'Nd6+ checks the king and attacks the queen. Compiled play files both claims the census already held.',
+        teaching: {
+          threat: 'If you check from elsewhere, the queen walks and the compiled reply laughs.',
+          goalPlain: 'Land the knight on d6, forking king and queen.',
+          whyItWorks:
+            'd6 is the square that names e8 and b7 at once. The stack compiled this fork before you sat down.',
+          concept: 'Compiled school: fork both pieces the file already named.',
+        },
+      },
+      {
+        type: 'puzzle',
+        id: 'c9-puzzle-last-rank',
+        title: 'Puzzle — file the last rank',
+        storyBeat: {
+          label: 'Tactical pressure',
+          title: 'The pawn wall already paid',
+          body: 'King boxed in the corner. The a-file is empty. The census wrote that you sometimes look for a prettier mate. File this one.',
+          tone: 'fire',
+        },
+        fen: '7k/6pp/8/8/8/8/6PP/R6K w - - 0 1',
+        playerColor: 'w',
+        goal: { kind: 'mate' },
+        lesson:
+          'Ra8 is mate. The pawns stole luft. Apotheosis finishes the last rank without a hymn.',
+        teaching: {
+          threat: 'If you hunt a slower mate, the king wriggles and the census files hesitation.',
+          goalPlain: 'Deliver back-rank mate with the rook on a8.',
+          whyItWorks:
+            'Ra8# seals a king trapped by g7 and h7. The empty file was the cheaper stamp.',
+          concept: 'When the last rank is already paid for, file it.',
+        },
+      },
+      {
+        type: 'dialogue',
+        id: 'c9-after-puzzles',
+        storyBeat: {
+          label: 'After-action pressure',
+          title: 'Habits before the census hall',
+          body: 'Reed has the pin, the compiled fork, and the last rank. Wren will ask whether he can still choose after the archive has watched him choose.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'narrator',
+            text: 'Three receipts: a pinned knight taken, a fork that named a queen, a rook that filed a8. Wren does not applaud. She opens his census.',
+          },
+          {
+            speaker: 'wren',
+            text: 'You can finish on a diagram. Now finish while I am reading you aloud.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c9-before-wren',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The census clerk',
+          body: 'Wren thrives when you replay the habit she already circled. Play the board, or become the file.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'wren',
+            text: 'I have your census. The captures you delay are already underlined. Begin.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I change?',
+          },
+          {
+            speaker: 'wren',
+            text: 'Then the file is wrong, which is the only medal this hall issues. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c9-match-wren',
+        title: 'Encounter 1 of 2 — The Census Clerk',
+        opponentName: 'Wren',
+        opponentNote:
+          'Apotheosis examiner — open-game structures drawn from your census. Take the pin; do not donate the habit she already named.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Do not replay the underlined line',
+          body: 'Wren wins when you delay the capture her file already circled. Develop, castle, and ask which habit this position is taxing.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 4,
+        aiStyle: 'apotheosis',
+        scriptedBlackSans: ['e5', 'Nf6', 'Nc6', 'd6', 'Be7', 'O-O'],
+        ladderTier: 'veteran',
+        difficulty: 4,
+      },
+      {
+        type: 'dialogue',
+        id: 'c9-after-wren',
+        storyBeat: {
+          label: 'After-action quiet',
+          title: 'A file, not a hymn',
+          body: 'Wren files whether Reed still chose. Bram is waiting with every school Reed survived, compiled into one reply.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'wren',
+            text: 'You changed a line I had underlined. That is the only surprise this hall allows.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Bram is already setting a different opening. He will answer whatever Reed just played with a school Reed already beat, stacked.',
+          },
+        ],
+      },
+      {
+        type: 'dialogue',
+        id: 'c9-before-bram',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'The compiled reply',
+          body: 'Bram is strongest when you recognize only one of the schools in the stack. He replies with another you survived and waits to see if you notice.',
+          tone: 'pressure',
+        },
+        lines: [
+          {
+            speaker: 'bram',
+            text: 'Every school you sealed is in this drawer. I will answer you with the one you are not wearing.',
+          },
+          {
+            speaker: 'reed',
+            text: 'And if I switch when you switch?',
+          },
+          {
+            speaker: 'bram',
+            text: 'Then you are still a person, not a hymn. Begin.',
+          },
+        ],
+      },
+      {
+        type: 'match',
+        id: 'c9-match-bram',
+        title: 'Encounter 2 of 2 — The Compiled Reply',
+        opponentName: 'Bram',
+        opponentNote:
+          'Apotheosis specialist — Indian walls that compile every school you survived. Castle, occupy, and do not donate the last rank.',
+        storyBeat: {
+          label: 'Match pressure',
+          title: 'Survive the stacked school',
+          body: 'Bram is strongest when you stay in the opening you named. Meet Nf6 with development, castle before the fianchetto bites, and finish the plus the census already counted.',
+          tone: 'pressure',
+        },
+        playerColor: 'w',
+        aiDepth: 5,
+        aiStyle: 'apotheosis',
+        scriptedBlackSans: ['Nf6', 'g6', 'Bg7', 'O-O', 'd6', 'c5'],
+        ladderTier: 'boss',
+        difficulty: 5,
+      },
+      {
+        type: 'dialogue',
+        id: 'c9-reflection',
+        storyBeat: {
+          label: 'Chapter seal',
+          title: 'Judgment after the census',
+          body: 'The Apotheosis Engine does not erase the Board — it decides whether a human can still choose once every school is compiled.',
+          tone: 'quiet',
+        },
+        lines: [
+          {
+            speaker: 'alexion',
+            text: 'You learned to take the pinned piece, to fork the compiled queen, and to file the last rank. That is the Apotheosis seal: a player who can still choose after the archive has watched.',
+          },
+          {
+            speaker: 'reed',
+            text: 'Wren asked whether I would delay the capture she underlined. Bram asked whether I would notice the stacked school.',
+          },
+          {
+            speaker: 'elara',
+            text: 'You kept the stamp. The Engine does not cancel it. It only punishes the hymn you sang while the last rank waited.',
+          },
+          {
+            speaker: 'bram',
+            text: 'Remember the drawer. There is no later age in this building. Daily Calculus still opens. The Duel Archive still summons. The file is yours to keep sharp.',
+          },
+          {
+            speaker: 'narrator',
+            text: 'Chapter IX is sealed. Upstairs, the brief is rewritten a last time: Reed can still choose after the census. Daily Calculus still opens each morning; the Duel Archive still summons every doctrine you have beaten. The chronicle is a plateau with work left on it — not a wall, and not a god.',
+          },
+        ],
+      },
+      {
+        type: 'freeplay',
+        id: 'c9-freeplay',
+        title: 'Free board — Census rehearsal',
+        storyBeat: {
+          label: 'Rehearsal',
+          title: 'Practice the last filing',
+          body: 'Rehearse taking pinned pieces, knight forks that name a queen, and last-rank mates until the census feels like a tool.',
+          tone: 'quiet',
+        },
+        lesson:
+          'Set up a simple structure and alternate sides. Practice pinned captures, compiled forks, and back-rank finishes without a hymn.',
+        teaching: {
+          threat: 'None — this is a sandbox after the last compiled ladder.',
+          goalPlain:
+            'Rehearse census pins and last-rank mates without a story timer. Return to the vestibule when finished.',
+          whyItWorks:
+            'Apotheosis is recognizing which habit the file already named, then choosing anyway.',
+          concept: 'A compiled doctrine stays a tool only through quiet repetition.',
         },
       },
     ],

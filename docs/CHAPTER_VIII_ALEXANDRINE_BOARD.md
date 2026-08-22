@@ -2,7 +2,7 @@
 
 ## Summary
 
-Playable stratarchic chapter after Chapter VII. Sealing the Human Synthesis opens the Alexandrine Board. The mastery plateau moves to Chapter VIII freeplay completion. Existing chronicles that already sealed Chapter VII receive the new age through a successor-unlock backfill.
+Playable stratarchic chapter after Chapter VII. Sealing the Human Synthesis opens the Alexandrine Board. Sealing Chapter VIII opens the Apotheosis Engine; the mastery plateau moves to Chapter IX freeplay completion. Existing chronicles that already sealed Chapter VII receive the Alexandrine age through a successor-unlock backfill.
 
 ## Lore
 
@@ -37,5 +37,5 @@ Sealing the chapter amends the committee file again: Reed can exchange an office
 - Chapter FEN/goal validation covers hanging-queen advantage, knight `pieceOn c7`, and queen-file mate
 - Orchestrator: Ch VII seal opens Ch VIII; pre-Ch-VIII saves that sealed the synthesis age unlock Ch VIII on load
 - Duel roster / reward unlock ids for Voss and Elara
-- Plateau hub fixtures cover sealed Ch VII (Alexandrine invite), pending Ch VIII, and sealed Ch VIII mastery plateau
-- Playwright: Chapter VIII drills (`d2-a5`, `d5-c7`, `c3-g7`) and post-VII / post-VIII hub copy
+- Plateau hub fixtures cover sealed Ch VII (Alexandrine invite) and pending Ch VIII
+- Playwright: Chapter VIII drills (`d2-a5`, `d5-c7`, `c3-g7`) and post-VII Alexandrine invite copy
