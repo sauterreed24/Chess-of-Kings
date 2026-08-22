@@ -1006,9 +1006,6 @@ export class GameFlow {
       const tuned = this.tuneProfileForMatch(adaptProfileToPhase(base, phase, this.tendencies), this.matchScene)
       return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}`
     }
-    if (this.mode === 'puzzle' && this.puzzleScene) {
-      return 'Puzzle Counterplay Engine'
-    }
     return null
   }
 

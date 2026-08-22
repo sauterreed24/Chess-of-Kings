@@ -119,4 +119,28 @@ describe('applyChessUi', () => {
     expect(dom.calibrationRail.querySelector('.calibration-rail__label')?.textContent).toBe('4 / 4 inscribed')
     expect(dom.calibrationTrack.querySelectorAll('.cal-dot--on')).toHaveLength(4)
   })
+
+  it('files a court dossier for living rivals, not teaching puzzles', () => {
+    const chess = new Chess()
+    const dom = refs()
+    const rt = {
+      dom,
+      play: createMountPlayState(),
+      getFlow: () => null,
+      sfx: createSfxController({ enabled: false }),
+      announcer: createAnnouncer(node()),
+    }
+    const cbs = {
+      showRewardBundles: vi.fn(),
+      maybeShowPendingChapterPrompt: vi.fn(),
+      revealBoardScene: vi.fn(),
+    }
+
+    applyChessUi({ ...payload(chess), aiPersona: 'Lukas · Phalanx · ledger school' }, rt, cbs)
+    expect(dom.aiPersonaEl.classList.contains('hidden')).toBe(false)
+    expect(dom.aiPersonaEl.textContent).toBe('Court dossier — Lukas · Phalanx · ledger school')
+
+    applyChessUi({ ...payload(chess), aiPersona: null }, rt, cbs)
+    expect(dom.aiPersonaEl.classList.contains('hidden')).toBe(true)
+  })
 })

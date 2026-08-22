@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.12] — 2026-08-22
+
+Pass 20 — Puzzle instrument focus:
+
+- **Teaching puzzles** no longer file a "Court dossier — Puzzle Counterplay Engine" above the goal. The hanging knight keeps the short d4 command next to the marble.
+- **Carved glyphs sit in the square** — pieces fill 98% of the square and no longer hover 2px off the marble.
+- Docs: [`docs/PASS20_PUZZLE_INSTRUMENT.md`](docs/PASS20_PUZZLE_INSTRUMENT.md).
+
 ## [0.5.11] — 2026-08-22
 
 Pass 19 — First-puzzle presence:
