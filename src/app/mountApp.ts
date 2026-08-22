@@ -336,6 +336,11 @@ export function mountApp(app: HTMLDivElement) {
           ? 'Visual quality lean'
           : 'Visual quality auto',
     )
+    syncPhoneHitTarget(btnTitleSfx, true)
+    syncPhoneHitTarget(btnTitleMoveGuard, true)
+    syncPhoneHitTarget(btnTitleMotion, true)
+    syncPhoneHitTarget(btnTitleAiWorker, true)
+    syncPhoneHitTarget(btnTitleVisual, true)
   }
 
   function applyMotionPreference() {
@@ -1286,6 +1291,7 @@ export function mountApp(app: HTMLDivElement) {
   window.addEventListener('resize', () => window.requestAnimationFrame(() => {
     syncNarrativeFade()
     syncTitleSkinSelect()
+    syncPreferenceButtons()
   }), {
     passive: true,
   })
