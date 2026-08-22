@@ -120,7 +120,11 @@ describe('mainUiFormatters', () => {
     expect(html).toContain('piece--b')
     expect(html).not.toMatch(/[♕♛♙♟]/)
     expect(html).toContain('viewBox="0 0 45 45"')
+    expect(html).toContain('width:2rem')
+    expect(html).toContain('height:2rem')
+    expect(html).not.toContain('stroke-width="1.5"')
     expect(capturedRow(['q'], 'w', 'alexandrine-ornate')).toContain('--piece-stroke:#6b4e14')
+    expect(capturedRow(['q'], 'w', 'alexandrine-ornate')).toContain('width:2rem')
     expect(capturedRow(['q'], 'b', 'alexandrine-ornate')).not.toContain('--piece-stroke:#6b4e14')
   })
 
