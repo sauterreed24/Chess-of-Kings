@@ -1751,10 +1751,12 @@ export class GameFlow {
     const selectionGuide = this.boardSelectionGuide()
     if (selectionGuide) return selectionGuide
     if (scene.type === 'calibration' && this.calibrationScene) {
-      return this.calibrationScene.teaching?.goalPlain ?? 'Develop center; guard king.'
+      const teaching = this.calibrationScene.teaching
+      return teaching?.goalBrief ?? teaching?.goalPlain ?? 'Develop center; guard king.'
     }
     if (scene.type === 'puzzle') {
-      return scene.teaching?.goalPlain ?? 'Goal: solve proof. Advance when sealed.'
+      const teaching = scene.teaching
+      return teaching?.goalBrief ?? teaching?.goalPlain ?? 'Goal: solve proof. Advance when sealed.'
     }
     if (scene.type === 'freeplay') {
       return 'Select side. Targets glow; captures bronze, check crimson.'

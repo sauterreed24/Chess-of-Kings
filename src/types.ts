@@ -15,7 +15,10 @@ export type PuzzleGoal =
 
 export interface TeachingLayer {
   threat: string
+  /** Full goal for the manuscript teaching card. */
   goalPlain: string
+  /** Optional short command for the instrument board-guide. */
+  goalBrief?: string
   whyItWorks: string
   concept: string
 }

@@ -331,6 +331,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
             'If you do nothing, the knight can retreat or create counterplay. Loose pieces do not stay loose forever.',
           goalPlain:
             'Win material by capturing the undefended knight with your bishop — the check forces the king away before it can recapture.',
+          goalBrief: 'Take the loose knight on d4 with the bishop.',
           whyItWorks:
             'A checking capture is a "free" capture: the opponent must answer the check first, and by the time they do, you have already kept the piece.',
           concept:
@@ -380,6 +381,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           threat:
             'Black has developed both knights and the bishop. The center can open at any moment, and an uncastled king in the center is the first target.',
           goalPlain: 'Castle kingside — place your king safely on g1 behind the pawns.',
+          goalBrief: 'Castle kingside — king to g1.',
           whyItWorks:
             'Castling simultaneously moves the king to safety and connects the rooks along the back rank. Two goals, one move.',
           concept:
@@ -429,6 +431,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           threat: 'Delay, and the king may slip to another file. The court does not wait.',
           goalPlain:
             'Deliver checkmate in one move. The queen commands the whole diagonal and rank — find the square that seals every escape.',
+          goalBrief: 'Checkmate in one with the queen.',
           whyItWorks:
             'Back-rank and corner mates are verdicts of coverage: every flight square must be denied or the king must be unable to capture the attacker.',
           concept:
