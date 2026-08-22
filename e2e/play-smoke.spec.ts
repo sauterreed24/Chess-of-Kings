@@ -3243,6 +3243,29 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-band-status')).toBeVisible()
 })
 
+test('duel archive setup stays 44px on the phone instrument', { timeout: 120_000 }, async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await page.locator('#btn-enter-archive').click({ timeout: 15_000 })
+  await page.locator('#btn-duel').click()
+  await expect(page.locator('.duel-row').first()).toBeVisible()
+  await page.locator('.duel-row').first().click()
+  await expect(page.locator('#duel-panel .duel-launch')).toBeVisible()
+  for (const id of [
+    '#duel-variant',
+    '#duel-color',
+    '#duel-difficulty',
+    '#duel-skin',
+    '#btn-auto-duel',
+    '#btn-preview-skin',
+    '#btn-start-duel',
+    '#btn-mastery-trial',
+  ]) {
+    await expect(page.locator(id)).toBeVisible()
+    expect(await page.locator(id).evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  }
+})
+
 test('starting a duel registers e2-e4 and an archive reply', { timeout: 90_000 }, async ({ page }) => {
   await page.goto('./')
   await page.locator('#btn-enter-archive').click({ timeout: 15_000 })
