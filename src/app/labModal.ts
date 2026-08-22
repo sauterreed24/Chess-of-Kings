@@ -34,9 +34,9 @@ export function syncLabOverlayCaption(el: HTMLElement | null | undefined): void 
   }
 }
 
-const PHONE_PUZZLE_DEPTH = '.story-beat, .teaching, .teaching-more, .hint-block'
+const PHONE_PUZZLE_DEPTH = '.story-beat, .teaching, .teaching-more, .hint-block, .lesson-lead'
 
-/** Phone puzzles already put the command on the marble; story-beat and Threat / Goal / Hint cards duplicate it. */
+/** Phone puzzles already put the command on the marble; story-beat, lesson lead, and Threat / Goal / Hint cards duplicate it. */
 export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefined): void {
   if (!narrativeBody) return
   const hide = isPhoneLabNav() && narrativeBody.hasAttribute('data-puzzle-lesson')
