@@ -88,10 +88,10 @@ const BISHOP_CLEFT: ReadonlyArray<{ x: number; y: number; w: number; h: number }
   { x: 20.05, y: 17.55, w: 4.9, h: 0.95 },
 ]
 
-/** Gold/lapis inlay on the king’s cross. */
+/** Gold/lapis inlay on the king’s cross — thick enough to read on a ~40px phone square. */
 const KING_CROSS: ReadonlyArray<{ x: number; y: number; w: number; h: number }> = [
-  { x: 21.7, y: 6.05, w: 1.6, h: 5.7 },
-  { x: 19.85, y: 7.85, w: 5.3, h: 1.45 },
+  { x: 21.15, y: 5.9, w: 2.7, h: 5.95 },
+  { x: 19.55, y: 6.85, w: 5.9, h: 2.3 },
 ]
 
 /** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
@@ -293,12 +293,12 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
             `<rect class="piece-cleft" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.35" fill="${cleftFill}"/>`,
         ).join('')
       : ''
-  const crossFill = color === 'w' ? 'rgba(232,201,126,0.72)' : 'rgba(232,201,126,0.5)'
+  const crossFill = color === 'w' ? 'rgba(232,201,126,0.82)' : 'rgba(232,201,126,0.62)'
   const cross =
     piece === 'k'
       ? KING_CROSS.map(
           (m) =>
-            `<rect class="piece-cross" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.28" fill="${crossFill}"/>`,
+            `<rect class="piece-cross" x="${m.x}" y="${m.y}" width="${m.w}" height="${m.h}" rx="0.45" fill="${crossFill}"/>`,
         ).join('')
       : ''
   return svg

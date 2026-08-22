@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.47)
+## What's new in this release (v0.5.48)
+
+**Pass 56 — King cross inlay** — ivory and lapis kings get a thicker gold/lapis plus on the crown, instead of a 1.4px hairline. See [`docs/PASS56_KING_INLAY.md`](docs/PASS56_KING_INLAY.md).
+
+## Previous release (v0.5.47)
 
 **Pass 55 — Queen coronet pearls** — ivory and lapis queens get readable coronet catch-lights on the first board, instead of 2.8px specks. See [`docs/PASS55_QUEEN_PEARL.md`](docs/PASS55_QUEEN_PEARL.md).
 
