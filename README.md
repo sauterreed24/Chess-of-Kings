@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.80)
+## What's new in this release (v0.5.81)
+
+**Pass 89 — Chapter III Demetrios return** — the first Professor’s Law match stays board-first on a 390×844 instrument, with an authored classical `e5` reply. See [`docs/PASS89_PHONE_CH3_MATCH.md`](docs/PASS89_PHONE_CH3_MATCH.md).
+
+## Previous release (v0.5.80)
 
 **Pass 88 — Chapter II Rowan match** — the first Age of Fire match stays board-first on a 390×844 instrument from the King’s Gambit tabiya, with `Nf3` and the authored `exf4` reply. See [`docs/PASS88_PHONE_CH2_MATCH.md`](docs/PASS88_PHONE_CH2_MATCH.md).
 

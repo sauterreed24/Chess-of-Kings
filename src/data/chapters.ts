@@ -1354,10 +1354,12 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         teaching: {
           threat: 'If you dawdle, Black can make luft with ...h6 or ...g6 and the geometry evaporates.',
           goalPlain: 'Deliver checkmate in one move using the open e-file.',
+          goalBrief: 'Checkmate on the open e-file.',
           whyItWorks:
             'Classical mating patterns punish neglected back ranks. Prophylaxis for Black would have been a pawn move; you punish the omission.',
           concept: 'Geometry over noise — the file was the plan.',
         },
+        hint: 'The e-file is already loaded. Occupying e8 ends it.',
       },
       {
         type: 'dialogue',
@@ -1423,6 +1425,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         playerColor: 'w',
         aiDepth: 4,
         aiStyle: 'classical',
+        scriptedBlackSans: ['e5', 'Nc6', 'Nf6', 'Bc5', 'd6', 'O-O'],
         ladderTier: 'veteran',
         difficulty: 3,
       },

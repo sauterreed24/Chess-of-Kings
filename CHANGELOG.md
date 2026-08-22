@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.81] — 2026-08-22
+
+Pass 89 — Chapter III Demetrios return on the phone instrument:
+
+- **Authored first reply** — the returning examiner now answers `1. e4` with scripted `e5` (Pass 85 first-ply honor), instead of an unscripted book roll.
+- **Playwright** — Chapter III walks the Professor’s Law back-rank drill into the first Demetrios match. Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `e5`, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS89_PHONE_CH3_MATCH.md`](docs/PASS89_PHONE_CH3_MATCH.md).
+
 ## [0.5.80] — 2026-08-22
 
 Pass 88 — Chapter II Rowan match on the phone instrument:
