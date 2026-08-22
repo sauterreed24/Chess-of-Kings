@@ -80,7 +80,7 @@ test('starting a duel registers e2-e4 and an archive reply', async ({ page }) =>
   await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('#move-ledger')).toContainText('e4')
-  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4\s+\S+/, { timeout: 25_000 })
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+\S+/, { timeout: 25_000 })
 })
 
 test('settings toggles for AI thread and visual quality persist', async ({ page }) => {
