@@ -483,6 +483,11 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
     )
 }
 
+/** Phone squares need a thicker outline than the shared 1.5 civic stroke. Cups stay 0.45. */
+function thickenOutline(svg: string): string {
+  return svg.replace(/stroke-width="1.5"/g, 'stroke-width="2.4"')
+}
+
 export function glyphForSkin(
   skin: PieceSkinId,
   color: Color,
@@ -490,7 +495,11 @@ export function glyphForSkin(
 ): string {
   const raw = PIECE_SKIN_MAP[skin]?.[color]?.[piece] ?? PIECE_SKIN_MAP['classic-royal'][color][piece]
   if (skin === 'high-contrast') {
-    return raw.replace(/stroke-width="1.5"/g, 'stroke-width="2.4"')
+    return thickenOutline(raw)
   }
-  return carveGlyph(raw, color, piece)
+  const carved = carveGlyph(raw, color, piece)
+  if (skin === 'obsidian-neon') {
+    return thickenOutline(carved)
+  }
+  return carved
 }

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.97)
+## What's new in this release (v0.5.98)
+
+**Pass 106 — Obsidian Neon** — the Counterpart reward set stays carved and thick-stroked on a 390×844 instrument, so cyan and pink sides still read on the shared obsidian fill. See [`docs/PASS106_PHONE_NEON.md`](docs/PASS106_PHONE_NEON.md).
+
+## Previous release (v0.5.97)
 
 **Pass 105 — High Contrast Tournament** — Edred’s tournament set stays uncarved and thick-stroked on a 390×844 instrument, so ivory and ink still read without lamp overlays. See [`docs/PASS105_PHONE_HC_TOURNEY.md`](docs/PASS105_PHONE_HC_TOURNEY.md).
 
