@@ -22,6 +22,25 @@ const PROMO_NAMES: Record<PieceSymbol, string> = {
 const SQ_FACET_STYLE =
   'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0'
 
+/** Quiet-move pearl sits above the 36%/22px ::after so phone squares still read. */
+const SQ_AIM_STYLE =
+  'position:absolute;left:50%;top:50%;width:58%;min-width:20px;max-width:28px;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;z-index:4;background:radial-gradient(circle,#fff6e0 0 40%,#e8c97ed9 58%,transparent 72%);box-shadow:0 0 0 2px #08070599,0 0 16px #e8c97e99'
+
+const SQ_AIM_HTML = `<span class="sq-aim" aria-hidden="true" style="${SQ_AIM_STYLE}"></span>`
+
+function syncLegalAim(btn: HTMLButtonElement, on: boolean): void {
+  const mark = btn.querySelector(':scope > .sq-aim') as HTMLElement | null
+  if (!on) {
+    if (mark) mark.hidden = true
+    return
+  }
+  if (!mark) {
+    btn.insertAdjacentHTML('beforeend', SQ_AIM_HTML)
+    return
+  }
+  mark.hidden = false
+}
+
 export function squareFacetSvg(light: boolean): string {
   const lamp = light ? 'rgba(255,252,244,0.32)' : 'rgba(196,226,255,0.2)'
   const shade = light ? 'rgba(42,22,8,0.2)' : 'rgba(0,4,16,0.3)'
@@ -503,7 +522,7 @@ export class BoardView {
       const prev = this.lastPieceSig.get(sq) ?? ''
       if (prevKnown && prev === sig) continue
       this.lastPieceSig.set(sq, sig)
-      const keep = [...btn.querySelectorAll('.sq-label, .sq-facet')]
+      const keep = [...btn.querySelectorAll('.sq-label, .sq-facet, .sq-aim')]
       btn.innerHTML = p ? this.pieceSpanHtml(p) : ''
       btn.dataset.piece = sig
       btn.setAttribute('aria-label', this.squareAriaLabel(sq, p ?? null))
@@ -716,6 +735,7 @@ export class BoardView {
         btn.classList.add('sq-selected')
         labels.push(`selected; ${this.legalTargets.size} legal target${this.legalTargets.size === 1 ? '' : 's'}`)
       }
+      let quietAim = false
       if (this.legalTargets.has(sq)) {
         btn.classList.add('sq-legal')
         const occ = piece
@@ -728,8 +748,10 @@ export class BoardView {
         } else {
           btn.classList.add('sq-legal-dot')
           labels.push('legal move target')
+          quietAim = true
         }
       }
+      syncLegalAim(btn, quietAim)
       if (this.guardTo === sq && this.guardFrom && this.guardFrom === this.selected) {
         btn.classList.add('sq-guard')
         labels.push('confirm move target; activate again to move')

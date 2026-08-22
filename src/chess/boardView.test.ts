@@ -92,6 +92,14 @@ describe('BoardView keyboard navigation', () => {
     expect(e2.getAttribute('aria-pressed')).toBe('true')
     expect(e2.getAttribute('aria-label')).toContain('selected')
     expect(e4.getAttribute('aria-label')).toContain('legal move target')
+    const e4Aim = e4.querySelector(':scope > .sq-aim') as HTMLElement | null
+    expect(e4Aim).toBeTruthy()
+    expect(e4Aim?.hidden).toBe(false)
+    expect(e4Aim?.style.width).toBe('58%')
+    expect(e4Aim?.style.minWidth).toBe('20px')
+    expect(e2.querySelector(':scope > .sq-aim')?.hidden ?? true).toBe(true)
+    view.clearSelection()
+    expect(e4Aim?.hidden).toBe(true)
     root.remove()
   })
 
@@ -189,6 +197,7 @@ describe('BoardView keyboard navigation', () => {
     const g1 = root.querySelector<HTMLButtonElement>('[data-square="g1"]')!
     expect(g1.classList.contains('sq-legal-castle')).toBe(true)
     expect(g1.classList.contains('sq-legal-dot')).toBe(false)
+    expect(g1.querySelector(':scope > .sq-aim')?.hidden ?? true).toBe(true)
     expect(g1.getAttribute('aria-label')).toContain('legal castle destination')
     expect(states[states.length - 1]?.castleSquares).toEqual(['g1'])
     root.remove()
