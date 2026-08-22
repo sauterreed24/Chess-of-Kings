@@ -57,39 +57,47 @@ const SHEEN_PATH: Record<PieceSymbol, string> = {
   k: 'M20.4 6.4h4.2v1.7h2.1v2.2h-2.1v2.4h-4.2v-2.4h-2.1V8.1h2.1z',
 }
 
-/** Left-rim shade so the glyph reads as a carved volume, not a flat cutout. */
-const SHADE_PATH: Record<PieceSymbol, string> = {
-  p: 'M16.6 18.5c.9 5.8 1 12.2.6 16.4-2.4-1.8-3.8-6.4-4-11.6.9-1.8 2.2-3.5 3.4-4.8z',
-  n: 'M13.2 16c1.2 6.4 2.4 14.2 2.8 20.2-3.6-2-5.6-8.4-6.2-14.8 1-2 2.2-3.8 3.4-5.4z',
-  b: 'M16.8 16.8c1.1 6.2 1.4 13 .8 17.6-2.6-1.6-4.2-7-4.4-12.6 1-1.8 2.3-3.6 3.6-5z',
-  r: 'M13.6 17.2c.4 5.8.4 11.2 0 14.8-2.2-1.2-3.2-6.4-3.2-11.8 1-1.2 2.1-2.2 3.2-3z',
-  q: 'M13.8 18c1 6.4 1.2 13.2.6 17.8-2.8-1.8-4.4-7.4-4.6-13.2 1.1-1.7 2.5-3.4 4-4.6z',
-  k: 'M14.4 18.6c1.1 6.2 1.3 12.6.7 16.8-2.8-1.6-4.6-7.2-4.8-12.8 1.2-1.6 2.6-3.2 4.1-4z',
-}
+/** Ivory/lapis body turn — highlight and umber keyed to the side, mid-stop follows the skin. */
+const LAMP = {
+  w: { hi: '#fffef8', lo: '#7a5424', spec: '#fff4dc' },
+  b: { hi: '#4a7aa8', lo: '#01040a', spec: '#e8c97e' },
+} as const
 
-/** Right-edge rim light so ivory/lapis turn in the brass lamp. */
-const RIM_PATH: Record<PieceSymbol, string> = {
-  p: 'M28.8 16.4c1.5 4.6 1.7 11.4 1.1 16.6-1.9.3-2.6-6.4-2.3-12.8.3-1.5.7-2.8 1.2-3.8z',
-  n: 'M31.4 15.2c1.8 6.2 1.6 14.4.6 21-2.2.2-2.8-7.6-2.2-15.6.4-2 .9-3.8 1.6-5.4z',
-  b: 'M29.6 15.6c1.5 5.8 1.6 12.8.8 17.8-2 .3-2.6-6.8-2.2-13.6.3-1.6.8-3.1 1.4-4.2z',
-  r: 'M31.2 16.8c.6 5.6.6 11.2.1 15-2 .2-2.4-6.2-2.2-11.8.5-1.2 1.2-2.2 2.1-3.2z',
-  q: 'M32.2 17.2c1.4 6.2 1.4 13 .6 17.6-2.1.3-2.7-7-2.3-13.4.4-1.6 1-3.1 1.7-4.2z',
-  k: 'M31.6 17.6c1.4 6 1.4 12.6.7 17-2.1.3-2.8-6.8-2.4-13.2.4-1.5 1-3 1.7-3.8z',
-}
+let carveSeq = 0
 
-/** Foot shadow + type-specific sheen so Staunton glyphs read as carved ivory/lapis. */
+/** Foot shadow + lamp-lit body so Staunton glyphs read as carved ivory/lapis, not flat cutouts. */
 export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'): string {
-  if (svg.includes('piece-carve')) return svg
-  const sheen = color === 'w' ? 'rgba(255,255,255,0.48)' : 'rgba(232,201,126,0.38)'
-  const shade = color === 'w' ? 'rgba(72,48,16,0.28)' : 'rgba(0,0,0,0.44)'
-  const rim = color === 'w' ? 'rgba(255,255,255,0.22)' : 'rgba(232,201,126,0.2)'
+  if (svg.includes('piece-lit') || svg.includes('piece-carve')) return svg
+  const id = `pl${(carveSeq += 1)}`
+  const lamp = LAMP[color]
+  const sheen = color === 'w' ? 'rgba(255,255,255,0.32)' : 'rgba(232,201,126,0.28)'
   const rx = FOOT_RX[piece] ?? 10.6
+  const lean =
+    typeof document !== 'undefined' && document.documentElement.classList.contains('perf-lean')
+  const gradient =
+    `<linearGradient id="${id}g" x1=".16" y1=".04" x2=".88" y2=".96">` +
+    `<stop offset="0" stop-color="${lamp.hi}"/><stop offset=".4" stop-color="var(--piece-fill)"/>` +
+    `<stop offset="1" stop-color="${lamp.lo}"/></linearGradient>`
+  const lampFilter = lean
+    ? ''
+    : `<filter id="${id}f" x="-.15" y="-.15" width="1.3" height="1.3" color-interpolation-filters="sRGB">` +
+      `<feGaussianBlur in="SourceAlpha" stdDeviation=".4" result="b"/>` +
+      `<feSpecularLighting in="b" surfaceScale="2.6" specularConstant=".85" specularExponent="18" lighting-color="${lamp.spec}" result="s">` +
+      `<fePointLight x="-8" y="-14" z="28"/></feSpecularLighting>` +
+      `<feComposite in="SourceGraphic" in2="s" operator="arithmetic" k1="0" k2="1" k3=".95" k4="0"/>` +
+      `</filter>`
+  const filterAttr = lean ? '' : ` filter="url(#${id}f)"`
+  const defs = `<defs>${gradient}${lampFilter}</defs>`
   const ground = `<ellipse class="piece-ground" cx="22.5" cy="42.15" rx="${(rx + 2.3).toFixed(1)}" ry="2.6" fill="rgba(0,0,0,0.28)"/>`
   const foot = `<ellipse class="piece-foot" cx="22.5" cy="41.3" rx="${rx}" ry="1.65" fill="rgba(0,0,0,0.55)"/>`
-  const shadeEl = `<path class="piece-shade" d="${SHADE_PATH[piece]}" fill="${shade}"/>`
-  const rimEl = `<path class="piece-rim" d="${RIM_PATH[piece]}" fill="${rim}"/>`
   const highlight = `<path class="piece-carve" d="${SHEEN_PATH[piece]}" fill="${sheen}"/>`
-  return svg.replace(/<svg([^>]*)>/, `<svg$1>${ground}${foot}`).replace('</svg>', `${shadeEl}${rimEl}${highlight}</svg>`)
+  return svg
+    .replace(
+      /<svg([^>]*)>/,
+      `<svg$1>${defs}${ground}${foot}<g class="piece-lit"${filterAttr}>`,
+    )
+    .replace(/fill="var\(--piece-fill\)"/g, `fill="url(#${id}g)"`)
+    .replace('</svg>', `</g>${highlight}</svg>`)
 }
 
 export function glyphForSkin(

@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.14] — 2026-08-22
+
+Pass 22 — Lamp-lit ivory and the first mate:
+
+- **Ivory/lapis glyphs** take brass-lamp lighting on the real Staunton silhouette (gradient fill + specular), not overlay shade blobs. Lean mode keeps the gradient without the filter.
+- Playwright seals Chapter I's mate-in-one with queen to h8, and the live duel plays e4, Nf3, and d4 against archive replies.
+- Docs: [`docs/PASS22_LAMP_LIT.md`](docs/PASS22_LAMP_LIT.md).
+
 ## [0.5.13] — 2026-08-22
 
 Pass 21 — Castle destination cue:
