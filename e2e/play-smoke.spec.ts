@@ -35,12 +35,16 @@ test('compact calibration stacks the board above the manuscript', async ({ page 
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
   await page.locator('#btn-skip-ahead').click()
   await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await expect(page.locator('.screen-play--board-scene .play-crawl .chapter-label')).toBeHidden()
   const boardBox = await page.locator('#board-panel').boundingBox()
   const manuscriptBox = await page.locator('#manuscript-panel').boundingBox()
+  const crawlBox = await page.locator('.play-crawl').boundingBox()
   expect(boardBox).toBeTruthy()
   expect(manuscriptBox).toBeTruthy()
   expect(boardBox!.y).toBeLessThan(manuscriptBox!.y)
   expect(boardBox!.width).toBeGreaterThan(300)
+  expect(boardBox!.y).toBeLessThan(220)
+  expect(crawlBox?.height ?? 99).toBeLessThan(72)
 })
 
 test('title → chapter → advance opens the lab simulation', async ({ page }) => {
@@ -62,6 +66,21 @@ test('duel archive lists rivals after entering the archive', async ({ page }) =>
   await expect(page.locator('#duel-panel .duel-launch')).toBeVisible()
   await expect(page.locator('#duel-panel')).toContainText('Archive rating:')
   await expect(page.locator('#duel-band-status')).toBeVisible()
+})
+
+test('starting a duel registers e2-e4 and an archive reply', async ({ page }) => {
+  await page.goto('./')
+  await page.locator('#btn-enter-archive').click({ timeout: 15_000 })
+  await page.locator('#btn-duel').click()
+  await page.locator('.duel-row').first().click()
+  await page.locator('#btn-start-duel').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText('e4')
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+\S+/, { timeout: 25_000 })
 })
 
 test('settings toggles for AI thread and visual quality persist', async ({ page }) => {
