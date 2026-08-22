@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.68] — 2026-08-22
+
+Pass 76 — Chapter VII phone lab:
+
+- **390×844 Synthesis drills** prove hanging-knight / safer-wing castle / smothered-mate on the phone instrument: manuscript hidden, Prove docked beside Hint, `#turn-pulse` stays hidden, overlay caption is `Chapter VII`.
+- After the f7 mate, Mira’s briefing restores the manuscript. Theme untouched (CSS gzip locked). Docs: [`docs/PASS76_PHONE_CH7_LAB.md`](docs/PASS76_PHONE_CH7_LAB.md).
+
 ## [0.5.67] — 2026-08-22
 
 Pass 75 — Chapter VIII phone lab:
