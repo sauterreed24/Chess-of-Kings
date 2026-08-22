@@ -136,6 +136,7 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(/\.sq::before\s*\{[^}]*linear-gradient\(135deg, #fff2/s)
     expect(CSS).toMatch(/\.speaker-seal\s*\{[^}]*0 0 22px rgba\(var\(--v\),\.3\)/s)
     expect(CSS).toMatch(/\.spoken-char\s*\{[^}]*text-shadow:\s*0 0 \.85em rgba\(var\(--v\),\.28\)/s)
+    expect(CSS).toMatch(/\.piece svg\s*\{[^}]*width:\s*98%/s)
   })
 
   it('keeps command buttons readable as inlaid Alexandrine controls', () => {

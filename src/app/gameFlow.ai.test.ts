@@ -53,6 +53,23 @@ describe('GameFlow AI / puzzles', () => {
     expect(flow.chess.turn()).toBe('w')
   })
 
+  it('does not file a court dossier on teaching puzzles', () => {
+    let latest: { aiPersona: string | null } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    flow.jumpToScene(1, 2)
+    expect(flow.currentScene().id).toBe('c1-tutorial-hanging')
+    expect(latest?.aiPersona).toBeNull()
+  })
+
   it('undo in puzzle removes both player move and opponent reply', async () => {
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
       onSceneChange: vi.fn(),

@@ -1546,14 +1546,13 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   height: 100%;
   position: relative;
   z-index: 2;
-  transform: translateY(-2px);
   user-select: none;
   pointer-events: none;
   transition: transform 0.16s var(--ease-out), filter 0.16s var(--ease-out), opacity 0.06s;
 }
 .piece svg {
-  width: 93%;
-  height: 93%;
+  width: 98%;
+  height: 98%;
   display: block;
 }
 .piece--w {
