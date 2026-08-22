@@ -9,6 +9,7 @@ Playtest after Pass 97: compact-ladder second examiners through Bram are proven 
 ## Shipped
 
 1. **Playwright** — a post-Rowan seed resumes `c2-before-vega` (scene index 7), then two desktop/phone tests open against Vega: civic silhouettes on `c4`/`e4`/`e1`/`e8`, board-first layout, “castle early”, kingside `O-O`, scripted `Bc5` reply (Pass 85 first-ply honor), board-guide fit, and Hint/Reset floors after resize.
+2. **Match command** — if the king can castle, the instrument still shows the match aim. Castle squares stay marked. The Chapter I castle drill still names `g1`.
 
 ## Out of scope
 

@@ -1814,8 +1814,8 @@ export class GameFlow {
     if (selectionGuide) {
       if (
         liveCommand &&
-        !this.boardSelection.castleSquares.length &&
-        !this.boardSelection.guardTarget
+        !this.boardSelection.guardTarget &&
+        (scene.type === 'match' || this.mode === 'duel' || this.boardSelection.castleSquares.length === 0)
       ) {
         return liveCommand
       }
