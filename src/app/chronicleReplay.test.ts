@@ -44,6 +44,7 @@ describe('chronicleReplay', () => {
     )
     expect(html).toContain('&lt;script&gt;')
     expect(html).not.toContain('<script>')
+    expect(html).toContain('font-size:0.7rem')
   })
 
   it('renderEchoBoardFen renders 64 cells', () => {

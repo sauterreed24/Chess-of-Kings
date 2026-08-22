@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.119] — 2026-08-22
+
+Pass 127 — echo timeline chips:
+
+- **Graphics** — chronicle echo SAN chips render at 0.7rem with roomier padding so the replay line matches the labeled board. No new CSS.
+- **Playwright** — 390×844 Alexion echo asserts the first timeline chip is 0.7rem.
+- No CSS budget change. Docs: [`docs/PASS127_ECHO_LINE.md`](docs/PASS127_ECHO_LINE.md).
+
 ## [0.5.118] — 2026-08-22
 
 Pass 126 — echo board labels:

@@ -31,7 +31,7 @@ export function formatEchoTimeline(entry: MatchHistoryEntry, plyIndex: number): 
   const rows = moves.map((san, i) => {
     const marker = san === entry.turningPointSan ? ' echo-turning' : ''
     const active = i === plyIndex ? ' echo-active' : ''
-    return `<span class="echo-move${marker}${active}">${i + 1}. ${escapeHtml(san)}</span>`
+    return `<span class="echo-move${marker}${active}" style="font-size:0.7rem;padding:0.32rem 0.48rem">${i + 1}. ${escapeHtml(san)}</span>`
   }).join('')
   return `<div class="echo-line">${rows}</div>`
 }
