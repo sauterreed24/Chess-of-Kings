@@ -1279,6 +1279,7 @@ export function mountApp(app: HTMLDivElement) {
     }
     sfx.playEventSfx('advance')
     flow.jumpToScene(flow.chapterIndex, target)
+    window.requestAnimationFrame(() => mobileBoardFit.apply())
   })
   btnUndo.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.undo(); updateAdvance(flow) })
   btnRunBack.addEventListener('click', () => {

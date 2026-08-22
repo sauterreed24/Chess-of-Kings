@@ -11,7 +11,9 @@ Playtest of the title-honor lab at 1280×500 kept Title / Chapters / Duel, but t
 
 1. **Compact query** — `COMPACT_MEDIA_QUERY` includes `(max-height: 620px)` at any width so board-fit runs on short laptops and landscape phones.
 2. **Stacked instrument** — the 960px board-first stack also applies below 620px tall, and the instrument column stops sticking over the marble.
-3. **Playwright lock** — the 1280×500 skip-ahead lab asserts e2 and e4 stay in the viewport.
+3. **Fit floor** — board-fit sizes the marble to the remaining viewport under the wrap, with a 160px floor, so starting ranks are not clipped.
+4. **Hidden crawl** — board-scene chapter crawl hides below 620px tall; the lab bar already names the passage.
+5. **Playwright lock** — the 1280×500 skip-ahead lab asserts e2 and e4 stay in the viewport.
 
 ## Out of scope
 

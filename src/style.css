@@ -3844,7 +3844,8 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
   }
 
   .screen-play--board-scene :is(.board-brass, .board-wrap) {
-    max-width: var(--mobile-board-max, 100%);
+    max-width: var(--mobile-board-max, 42vh);
+    max-height: 42vh;
     margin-inline: auto;
   }
 }
@@ -3854,7 +3855,7 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
    Compress the chapter crawl so prose + the Advance button fit without a
    hunt. Applies on top of the bounded-narrative layout at any width.
    ═══════════════════════════════ */
-@media (max-height: 560px) {
+@media (max-height: 620px) {
   /* The lab is modal and carries its own "← Chapters" exit, so reclaim the
      global nav bar's height — vital when only ~360px tall in landscape. */
   .shell--lab .top-bar {
@@ -3883,6 +3884,7 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
     margin-bottom: 0.4rem;
     padding: 0.42rem 0.7rem 0.46rem;
   }
+  .screen-play--board-scene .play-crawl { display: none; }
   .play-crawl .chapter-sub,
   .play-crawl .philosophy {
     display: none;
