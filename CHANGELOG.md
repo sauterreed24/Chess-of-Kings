@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.49] — 2026-08-22
+
+Pass 57 — Bishop mitre cleft:
+
+- **Ivory/lapis bishops** thicken the mitre cleft so calibration c1 is not a 0.9px hairline after the king cross grew. Forced **Visual: Lean** keeps the geometry.
+- Playwright asserts the calibration c1 and hanging-knight c3 stems are at least 2 CSS pixels wide.
+- Docs: [`docs/PASS57_BISHOP_MITRE.md`](docs/PASS57_BISHOP_MITRE.md).
+
 ## [0.5.48] — 2026-08-22
 
 Pass 56 — King cross inlay:

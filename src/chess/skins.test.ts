@@ -165,6 +165,14 @@ describe('carveGlyph', () => {
     expect(heights[1]).toBeGreaterThanOrEqual(2.1)
   })
 
+  it('sizes the bishop mitre cleft to read on a phone square', () => {
+    const bishop = carveGlyph('<svg></svg>', 'w', 'b')
+    const widths = [...bishop.matchAll(/class="piece-cleft"[^>]*width="([\d.]+)"/g)].map((m) => Number(m[1]))
+    const heights = [...bishop.matchAll(/class="piece-cleft"[^>]*height="([\d.]+)"/g)].map((m) => Number(m[1]))
+    expect(widths[0]).toBeGreaterThanOrEqual(2.3)
+    expect(heights[1]).toBeGreaterThanOrEqual(1.8)
+  })
+
   it('assigns unique lamp ids so neighboring glyphs do not clash', () => {
     const a = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')
     const b = carveGlyph('<svg fill="var(--piece-fill)"></svg>', 'w', 'p')
