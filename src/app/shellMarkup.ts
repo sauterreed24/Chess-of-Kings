@@ -45,11 +45,16 @@ export function getShellMarkup(): string {
               <span><strong>Duel Archive</strong><small>living rivals</small></span>
               <span><strong>Stratarchia</strong><small>rated judgment</small></span>
             </div>
-            <div class="title-stats title-world-panel" aria-label="Modern Alexandrine world markers">
-              <span><strong>Alexandrine Reckoning</strong><small>2341 A.S.</small></span>
-              <span><strong>Commonwealth Terminal</strong><small>brass civic mesh</small></span>
-              <span><strong>Archive University</strong><small>seed access pending</small></span>
-            </div>
+            <details class="dossier-fold title-lore-fold">
+              <summary class="dossier-fold__summary">World of the Long Reign</summary>
+              <div class="dossier-fold__body">
+                <div class="title-stats title-world-panel" aria-label="Modern Alexandrine world markers">
+                  <span><strong>Alexandrine Reckoning</strong><small>2341 A.S.</small></span>
+                  <span><strong>Commonwealth Terminal</strong><small>brass civic mesh</small></span>
+                  <span><strong>Archive University</strong><small>seed access pending</small></span>
+                </div>
+              </div>
+            </details>
             <div class="title-actions" id="title-actions-save">
               <button type="button" class="primary" id="btn-resume">Resume expedition</button>
               <button type="button" class="secondary" id="btn-new">New chronicle</button>
@@ -91,11 +96,16 @@ export function getShellMarkup(): string {
           <h2 class="section-heading">Chronicle index</h2>
           <div id="chapter-progress-slot"></div>
           <p class="chapters-lede">Choose an open passage. Each chamber is a school of rule: ancient duty, Romantic fire, and the later doctrines Alexander's surviving commonwealth taught the modern world to inherit.</p>
-          <div class="title-stats chronicle-index-codex" aria-label="Long Reign thread">
-            <span><strong>Long Reign</strong><small>Alexander lives into his eighties; succession stabilizes instead of shattering.</small></span>
-            <span><strong>Civic Chess</strong><small>Chaturanga travels west early and becomes the calculus of public judgment.</small></span>
-            <span><strong>Reed's Present</strong><small>A normal apartment in a world of archive schools, stratarchic ratings, and brass public tech.</small></span>
-          </div>
+          <details class="dossier-fold chronicle-lore-fold">
+            <summary class="dossier-fold__summary">Long Reign thread</summary>
+            <div class="dossier-fold__body">
+              <div class="title-stats chronicle-index-codex" aria-label="Long Reign thread">
+                <span><strong>Long Reign</strong><small>Alexander lives into his eighties; succession stabilizes instead of shattering.</small></span>
+                <span><strong>Civic Chess</strong><small>Chaturanga travels west early and becomes the calculus of public judgment.</small></span>
+                <span><strong>Reed's Present</strong><small>A normal apartment in a world of archive schools, stratarchic ratings, and brass public tech.</small></span>
+              </div>
+            </div>
+          </details>
           <div class="chapter-quick-actions" id="chapter-quick-actions"></div>
           <ul id="chapter-list" class="chapter-list"></ul>
         </div>

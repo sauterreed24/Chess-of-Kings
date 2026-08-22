@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.1)
+## What's new in this release (v0.5.2)
+
+**Pass 10 — First-session play feel** — Title / Chapters / Duel now work from a live board (they used to look enabled while `inert` swallowed clicks). Leave confirms name the destination. Long Reign lore on title and Chapters starts collapsed. See [`docs/PASS10_PLAY_FEEL.md`](docs/PASS10_PLAY_FEEL.md).
+
+## Previous release (v0.5.1)
 
 **Pass 9 — Board presence** — the live board is the surface you stare at. Legal-move dots are larger, last-move cues sit on the marble instead of painting over it, captured pieces use the board SVGs, and compact viewports put the board above the manuscript. See [`docs/PASS9_BOARD_PRESENCE.md`](docs/PASS9_BOARD_PRESENCE.md) and [`CHANGELOG.md`](./CHANGELOG.md).
 

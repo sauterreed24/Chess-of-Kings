@@ -67,7 +67,7 @@ export function createScreenController(opts: ScreenControllerOptions): ScreenCon
   let labOpen = false
 
   function labExemptNodes(): HTMLElement[] {
-    return [labOverlay, ...modalExempt]
+    return [labOverlay, topBar, ...modalExempt]
   }
 
   return {

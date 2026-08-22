@@ -157,7 +157,10 @@ export function applyChessUi(
       const rawCurrent = Math.floor(Number(calibration.current))
       const target = Number.isFinite(rawTarget) ? Math.max(0, Math.min(120, rawTarget)) : 0
       const current = Number.isFinite(rawCurrent) ? Math.max(0, Math.min(target, rawCurrent)) : 0
-      if (dom.btnNext.disabled) dom.btnNextHint.textContent = `${target - current} White moves`
+      if (dom.btnNext.disabled) {
+        const left = target - current
+        dom.btnNextHint.textContent = left === 1 ? '1 remaining' : `${left} remaining`
+      }
       dom.calibrationTrack.innerHTML = Array.from({ length: target }, (_, i) => {
         const filled = i < current
         return `<span class="cal-dot ${filled ? 'cal-dot--on' : ''}" aria-hidden="true"></span>`

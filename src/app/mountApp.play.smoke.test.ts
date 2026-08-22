@@ -30,13 +30,13 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
 
     expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
-    expect(topBar.inert).toBe(true)
+    expect(topBar.inert).toBe(false)
     expect(title.inert).toBe(true)
     expect(app.querySelector('#lab-overlay')?.hasAttribute('inert')).toBe(false)
-    expect(app.querySelector('#btn-title')?.closest('.top-bar')?.hasAttribute('inert')).toBe(true)
+    expect(app.querySelector('#btn-title')?.closest('.top-bar')?.hasAttribute('inert')).toBe(false)
   })
 
-  it('inerts top bar while lab is open and restores on exit', () => {
+  it('keeps top nav usable while lab is open and still restores it on exit', () => {
     const app = boot()
     const topBar = app.querySelector<HTMLElement>('.top-bar')!
 
@@ -44,12 +44,14 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
 
     expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
-    expect(topBar.inert).toBe(true)
-    expect(topBar.getAttribute('aria-hidden')).toBe('true')
+    expect(topBar.inert).toBe(false)
+    expect(topBar.getAttribute('aria-hidden')).toBe('false')
+    expect(topBar.classList.contains('top-bar--over-lab')).toBe(true)
 
     app.querySelector<HTMLButtonElement>('#btn-vestibule')?.click()
     expect(topBar.inert).toBe(false)
     expect(topBar.getAttribute('aria-hidden')).toBe('false')
+    expect(topBar.classList.contains('top-bar--over-lab')).toBe(false)
   })
 
   it('shows chapter progress on the chronicle index', () => {
@@ -194,11 +196,35 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     expect(next.disabled).toBe(true)
     expect(app.querySelector('.btn-advance-label')?.textContent).toBe('Prove')
     expect(next.getAttribute('aria-label')).toBe('Finish proof')
-    expect(app.querySelector('#btn-next-hint')?.textContent).toContain('4 White moves')
+    expect(app.querySelector('#btn-next-hint')?.textContent).toContain('4 remaining')
 
     app.querySelector<HTMLButtonElement>('[data-square="e2"]')?.click()
     app.querySelector<HTMLButtonElement>('[data-square="e4"]')?.click()
-    expect(app.querySelector('#btn-next-hint')?.textContent).toContain('3 White moves')
+    expect(app.querySelector('#btn-next-hint')?.textContent).toContain('3 remaining')
+  })
+
+  it('opens a destination-named confirm when Duel is used from a live board', async () => {
+    const app = boot()
+    app.querySelector<HTMLButtonElement>('#btn-enter-archive')?.click()
+    app.querySelector<HTMLButtonElement>('.chapter-btn')?.click()
+    const next = app.querySelector<HTMLButtonElement>('#btn-next')!
+    const tag = app.querySelector<HTMLElement>('#scene-tag')!
+    for (let i = 0; i < 8 && !tag.textContent?.startsWith('Calibration'); i += 1) {
+      next.click()
+    }
+    app.querySelector<HTMLButtonElement>('[data-square="e2"]')?.click()
+    app.querySelector<HTMLButtonElement>('[data-square="e4"]')?.click()
+
+    app.querySelector<HTMLButtonElement>('#btn-duel')?.click()
+    await vi.waitFor(() => {
+      expect(app.querySelector('#confirm-overlay')?.classList.contains('hidden')).toBe(false)
+    })
+    expect(app.querySelector('#confirm-overlay')?.textContent).toContain(CONFIRM_COPY.leaveLabToDuel.title)
+    app.querySelector<HTMLButtonElement>('#btn-confirm-ok')?.click()
+    await vi.waitFor(() => {
+      expect(app.querySelector('#screen-duel')?.classList.contains('hidden')).toBe(false)
+    })
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(false)
   })
 
   it('reveals active dialogue before advancing to the next passage', async () => {

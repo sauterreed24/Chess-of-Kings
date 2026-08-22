@@ -147,6 +147,8 @@ describe('shell markup structural integrity', () => {
     expect(host.querySelector('.title-ornament__map')).not.toBeNull()
     expect(host.querySelector('.title-world-panel')?.textContent).toContain('Alexandrine Reckoning')
     expect(host.querySelector('.chronicle-index-codex')?.textContent).toContain('Civic Chess')
+    expect(host.querySelector('.title-lore-fold')?.querySelector('summary')?.textContent).toContain('World of the Long Reign')
+    expect(host.querySelector('.chronicle-lore-fold')?.querySelector('summary')?.textContent).toContain('Long Reign thread')
     expect(host.textContent).toContain('Alexander III')
   })
 

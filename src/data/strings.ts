@@ -116,10 +116,20 @@ export const CONFIRM_COPY = {
     message: 'You have a recoverable board position. Continuing here will discard that recovery.',
     confirmLabel: 'Continue and discard',
   },
-  leaveLabSession: {
-    title: 'Leave the simulation?',
-    message: 'Your current board position will be saved for Resume, but this passage will close.',
-    confirmLabel: 'Leave simulation',
+  leaveLabToChapters: {
+    title: 'Return to Chapters?',
+    message: 'Your board will be saved for Resume. This passage will close.',
+    confirmLabel: 'Open Chapters',
+  },
+  leaveLabToTitle: {
+    title: 'Return to Title?',
+    message: 'Your board will be saved for Resume. This passage will close.',
+    confirmLabel: 'Open Title',
+  },
+  leaveLabToDuel: {
+    title: 'Open the Duel Archive?',
+    message: 'Your board will be saved for Resume. This passage will close.',
+    confirmLabel: 'Open Duel Archive',
   },
   replaceWithDuel: {
     title: 'Replace the recovered session?',
@@ -132,6 +142,15 @@ export const CONFIRM_COPY = {
     confirmLabel: 'New chronicle',
   },
 } as const
+
+export type LabExitDest = 'title' | 'chapters' | 'duel'
+
+export function confirmCopyForLabExit(dest: LabExitDest, inDuel: boolean) {
+  if (inDuel) return CONFIRM_COPY.replaceRecoveredSession
+  if (dest === 'duel') return CONFIRM_COPY.leaveLabToDuel
+  if (dest === 'title') return CONFIRM_COPY.leaveLabToTitle
+  return CONFIRM_COPY.leaveLabToChapters
+}
 
 export const STORAGE_FAILURE_MESSAGE =
   'Progress could not be saved in this browser. Check storage settings or exit private mode.'
