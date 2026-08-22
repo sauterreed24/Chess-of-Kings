@@ -146,6 +146,7 @@ describe('renderScene', () => {
        jump to the first board (the calibration). */
     expect(dom.btnSkipAhead.classList.contains('hidden')).toBe(false)
     expect(dom.btnSkipAhead.dataset.target).toBe('4')
+    expect(dom.sceneProgress.style.fontSize).toBe('0.7rem')
   })
 
   it('hides the skip-ahead affordance on board scenes and outside the prologue', () => {

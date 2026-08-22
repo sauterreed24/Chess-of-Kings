@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.130] — 2026-08-22
+
+Pass 138 — passage chips:
+
+- **Graphics** — `#scene-progress` renders at 0.7rem so Passage N · total and Duel · color still read on phone (CSS was 0.5rem). No new CSS.
+- **Playwright** — 390×844 skip-ahead prose asserts `#scene-progress` is 0.7rem.
+- Docs: [`docs/PASS138_PASSAGE_STAMP.md`](docs/PASS138_PASSAGE_STAMP.md).
+
 ## [0.5.129] — 2026-08-22
 
 Pass 137 — Duel Archive list stamps:
