@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.39)
+## What's new in this release (v0.5.40)
+
+**Pass 48 — Quiet puzzle coach** — hanging-knight capture no longer prints Material won under the marble seal. See [`docs/PASS48_QUIET_PUZZLE_COACH.md`](docs/PASS48_QUIET_PUZZLE_COACH.md).
+
+## Previous release (v0.5.39)
 
 **Pass 47 — Quiet puzzle draw** — hanging-knight capture no longer unhides a Draw. pill over the marble seal. See [`docs/PASS47_QUIET_PUZZLE_DRAW.md`](docs/PASS47_QUIET_PUZZLE_DRAW.md).
 

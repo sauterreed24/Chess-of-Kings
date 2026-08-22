@@ -28,6 +28,7 @@ export const ANNOUNCE_TEMPLATES = {
   matchWin: 'Match won against',
   matchLoss: 'Match lost to',
   matchDraw: 'Match drawn with',
+  proofSealed: 'Proof sealed. Advance when ready.',
   rewardsInscribed: 'New rewards inscribed.',
   chapterThreshold: 'Chapter threshold crossed.',
   rankUp: 'Rank advanced.',
