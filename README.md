@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.100)
+## What's new in this release (v0.5.101)
+
+**Pass 109 — phone title settings** — Sound, Move Guard, Motion, AI Thread, and Visual keep a 44px hit target on a 390×844 instrument. See [`docs/PASS109_PHONE_TITLE_SETTINGS.md`](docs/PASS109_PHONE_TITLE_SETTINGS.md).
+
+## Previous release (v0.5.100)
 
 **Pass 108 — phone skin picker** — the title Piece skin control is a 44px hit target on a 390×844 instrument, and switching sets paints the next match. See [`docs/PASS108_PHONE_SKIN_PICK.md`](docs/PASS108_PHONE_SKIN_PICK.md).
 

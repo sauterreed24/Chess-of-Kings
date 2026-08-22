@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.101] — 2026-08-22
+
+Pass 109 — phone title settings hit targets:
+
+- **Playability** — Sound, Move Guard, Motion, AI Thread, and Visual on the title Settings row keep a 44px hit target on `max-width: 700px` via the existing phone-tool inline floor. No new CSS.
+- **Playwright** — the title skin-picker seed also asserts those five controls are 44px on 390×844.
+- No CSS budget change. Docs: [`docs/PASS109_PHONE_TITLE_SETTINGS.md`](docs/PASS109_PHONE_TITLE_SETTINGS.md).
+
 ## [0.5.100] — 2026-08-22
 
 Pass 108 — phone title skin picker:
