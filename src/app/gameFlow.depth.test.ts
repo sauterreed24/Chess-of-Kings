@@ -697,6 +697,63 @@ describe('GameFlow depth systems', () => {
     expect(latest?.boardGuide).toContain('Save king: move, block, capture.')
   })
 
+  it('keeps the Chapter II king-hunt command when the queen is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 2
+    const ch2 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch2')
+    const huntIdx = PLAYABLE_CHAPTERS[ch2]!.scenes.findIndex((s) => s.id === 'c2-puzzle-king-hunt')
+    expect(huntIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch2, huntIdx)
+    expect(latest?.boardGuide).toMatch(/eighth rank/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+    flow.board?.showLegalFrom(flow.chess, 'g7')
+    expect(latest?.boardGuide).toMatch(/eighth rank/i)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    root.remove()
+  })
+
+  it('keeps Rowan\'s gambit aim when a knight is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 2
+    const ch2 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch2')
+    const matchIdx = PLAYABLE_CHAPTERS[ch2]!.scenes.findIndex((s) => s.id === 'c2-match-rowan')
+    expect(matchIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch2, matchIdx)
+    expect(latest?.boardGuide).toMatch(/poisoned pawn/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+    flow.board?.showLegalFrom(flow.chess, 'g1')
+    expect(latest?.boardGuide).toMatch(/poisoned pawn/i)
+    expect(latest?.boardGuide).not.toMatch(/g1 knight selected/)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    expect(flow.chess.get('f4')?.type).toBe('p')
+    expect(flow.chess.get('e2')).toBeUndefined()
+    root.remove()
+  })
+
   it('keeps Amara\'s opening aim when a pawn is selected', () => {
     let latest: { boardGuide: string } | null = null
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {
