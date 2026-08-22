@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.127] — 2026-08-22
+
+Pass 135 — Duel Archive field labels:
+
+- **Graphics** — Variant / Color / Pressure Band / Piece Skin / Unlock path kickers render at 0.7rem so the dossier still reads on phone (CSS was 0.5rem). No new CSS.
+- **Playwright** — 390×844 Duel Archive setup asserts the first `label.teach-label`.
+- Docs: [`docs/PASS135_DUEL_LABEL.md`](docs/PASS135_DUEL_LABEL.md).
+
 ## [0.5.126] — 2026-08-22
 
 Pass 134 — story and dossier kickers:

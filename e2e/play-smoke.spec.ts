@@ -3478,6 +3478,7 @@ test('duel archive setup stays 44px on the phone instrument', { timeout: 120_000
   await expect(page.locator('.duel-row').first()).toBeVisible()
   await page.locator('.duel-row').first().click()
   await expect(page.locator('#duel-panel .duel-launch')).toBeVisible()
+  expect(await page.locator('#duel-panel label.teach-label').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   for (const id of [
     '#duel-variant',
     '#duel-color',

@@ -53,6 +53,7 @@ describe('renderDuelUi', () => {
     expect(panelText).toContain('Vigil')
     expect(panelText).toContain('Pressure band')
     expect(panelText).toContain('Pressure Band')
+    expect(duelPanel.querySelector<HTMLElement>('.teach-label')?.style.fontSize).toBe('0.7rem')
     expect(panelText).toContain('Recommended pressure band')
     expect(panelText).toContain('Balanced pressure')
     expect(panelText).toContain('Archive rating:')
