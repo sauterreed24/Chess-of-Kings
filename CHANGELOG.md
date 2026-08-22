@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.124] — 2026-08-22
+
+Pass 132 — ledger quality marks:
+
+- **Graphics** — move-quality `!!` / `!` / `?` marks render at 0.7rem so the grade still reads next to SAN on phone (CSS was 0.48rem). No new CSS.
+- **Playwright** — 390×844 Amara asserts the first `.q-icon` after e4.
+- Docs: [`docs/PASS132_LEDGER_QUALITY.md`](docs/PASS132_LEDGER_QUALITY.md).
+
 ## [0.5.123] — 2026-08-22
 
 Pass 131 — lab overlay caption:
