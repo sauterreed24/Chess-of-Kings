@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.129] — 2026-08-22
+
+Pass 137 — Duel Archive list stamps:
+
+- **Graphics** — roster file-count stamps, sealed-file chips, and dossier Pressure band stamps render at 0.7rem so the archive still reads on phone (CSS was 0.5rem). No new CSS.
+- **Playwright** — 390×844 Duel Archive asserts the first list stamp and the open-dossier Pressure band stamp.
+- Docs: [`docs/PASS137_DUEL_STAMP.md`](docs/PASS137_DUEL_STAMP.md).
+
 ## [0.5.128] — 2026-08-22
 
 Pass 136 — chapter index stamps:
