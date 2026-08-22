@@ -111,6 +111,9 @@ describe('Alexandrine Imperial state polish', () => {
     expect(CSS).toMatch(
       /@media \(max-height: 620px\)[\s\S]*?@media \(min-width: 961px\)[\s\S]*?--mobile-board-max, 72vh/,
     )
+    expect(CSS).toMatch(
+      /@media \(max-height: 620px\)[\s\S]*?@media \(min-width: 961px\)[\s\S]*?\.board-stage \{ order: -1; \}/,
+    )
   })
 
   it('hides redundant turn chips and crawl philosophy on the live board', () => {

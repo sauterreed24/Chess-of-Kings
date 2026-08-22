@@ -3889,8 +3889,14 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
   .play-crawl .philosophy {
     display: none;
   }
+  .instrument-eyebrow { display: none; }
 
   @media (min-width: 961px) {
+    .screen-play--board-scene .instrument-frame {
+      display: flex;
+      flex-direction: column;
+    }
+    .screen-play--board-scene .board-stage { order: -1; }
     .screen-play--board-scene :is(.board-brass, .board-wrap) {
       max-width: var(--mobile-board-max, 72vh);
       max-height: var(--mobile-board-max, 72vh);
