@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.9] — 2026-08-22
+
+Pass 17 — Short-lab board fit:
+
+- **Short landscape labs** stack the instrument first and shrink the marble so e2 stays on screen.
+- Compact board-fit now runs below 620px tall at any width.
+- Docs: [`docs/PASS17_SHORT_BOARD_FIT.md`](docs/PASS17_SHORT_BOARD_FIT.md).
+
 ## [0.5.8] — 2026-08-22
 
 Pass 16 — Title honor + short nav:

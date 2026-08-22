@@ -48,6 +48,10 @@ describe('mobileBoardFit', () => {
     if (originalMatchMedia) Object.defineProperty(window, 'matchMedia', originalMatchMedia)
   })
 
+  it('treats short landscape windows as compact', () => {
+    expect(COMPACT_MEDIA_QUERY).toContain('(max-height: 620px)')
+  })
+
   it('isCompactViewport reflects matchMedia', () => {
     vi.mocked(window.matchMedia).mockReturnValue({
       matches: true,

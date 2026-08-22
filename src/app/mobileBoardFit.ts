@@ -1,6 +1,6 @@
 /** Shared compact-viewport query used by play layout and board-fit logic. */
 export const COMPACT_MEDIA_QUERY =
-  '(max-width: 700px), (max-width: 1024px) and (max-height: 700px)'
+  '(max-width: 700px), (max-width: 1024px) and (max-height: 700px), (max-height: 620px)'
 
 export function isCompactViewport(): boolean {
   return window.matchMedia?.(COMPACT_MEDIA_QUERY)?.matches ?? false

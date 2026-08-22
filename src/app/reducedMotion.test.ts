@@ -102,7 +102,7 @@ describe('Alexandrine Imperial state polish', () => {
 
   it('collapses the chapter crawl on compact live boards', () => {
     expect(CSS).toMatch(
-      /@media \(max-width: 960px\)[\s\S]*?\.screen-play--board-scene \.play-crawl \.chapter-label,/,
+      /@media \(max-width: 960px\), \(max-height: 620px\)[\s\S]*?\.screen-play--board-scene \.play-crawl \.chapter-label,/,
     )
   })
 

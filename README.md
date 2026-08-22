@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.8)
+## What's new in this release (v0.5.9)
+
+**Pass 17 — Short-lab board fit** — a 500px-tall lab stacks the marble first so e2 stays reachable. See [`docs/PASS17_SHORT_BOARD_FIT.md`](docs/PASS17_SHORT_BOARD_FIT.md).
+
+## Previous release (v0.5.8)
 
 **Pass 16 — Title honor + short nav** — carved ivory and lapis stand on the title plate, and short landscape labs keep Title / Chapters / Duel. See [`docs/PASS16_TITLE_HONOR.md`](docs/PASS16_TITLE_HONOR.md).
 
