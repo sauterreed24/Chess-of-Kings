@@ -38,4 +38,4 @@ Sealing the chapter amends the committee file again: Reed can follow a public li
 - Orchestrator: Ch V seal opens Ch VI; pre-Ch-VI saves that sealed the discipline age unlock Ch VI on load
 - Duel roster / reward unlock ids for Prax and Iota
 - Plateau hub fixtures cover sealed Ch V (silicon invite), pending Ch VI, and sealed Ch VI synthesis invite
-- Playwright: Chapter VI drills (`c3-d5`, `e3-d5`, `e1-e8`) and post-V / post-VI hub copy
+- Playwright: Chapter VI drills (`c3-d5`, `e3-d5`, `e1-e8`) and first Prax match on desktop and 390×844; Iota from a mid-age resume (`e2–e4`, scripted `c6`); post-V / post-VI hub copy
