@@ -809,6 +809,34 @@ describe('GameFlow depth systems', () => {
     root.remove()
   })
 
+  it('keeps Iota\'s finish aim when a pawn is selected', () => {
+    let latest: { boardGuide: string } | null = null
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: (payload) => {
+        latest = payload
+      },
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    flow.mountBoard(root)
+    const f = flow as unknown as { highestUnlockedChapter: number }
+    f.highestUnlockedChapter = 6
+    const ch6 = PLAYABLE_CHAPTERS.findIndex((c) => c.id === 'ch6')
+    const matchIdx = PLAYABLE_CHAPTERS[ch6]!.scenes.findIndex((s) => s.id === 'c6-match-iota')
+    expect(matchIdx).toBeGreaterThanOrEqual(0)
+    flow.jumpToScene(ch6, matchIdx)
+    expect(latest?.boardGuide).toMatch(/Finish the plus|back rank/i)
+    expect(latest?.boardGuide.length).toBeLessThan(80)
+    flow.board?.showLegalFrom(flow.chess, 'e2')
+    expect(latest?.boardGuide).toMatch(/Finish the plus|back rank/i)
+    expect(latest?.boardGuide).not.toMatch(/e2 pawn selected/)
+    expect(latest?.boardGuide).not.toMatch(/legal targets/i)
+    root.remove()
+  })
+
   it('keeps Demetrios-return aim when a pawn is selected', () => {
     let latest: { boardGuide: string } | null = null
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {

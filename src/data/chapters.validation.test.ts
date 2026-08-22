@@ -141,6 +141,7 @@ describe('campaign story beats', () => {
     const iota = matches.find((scene) => scene.id === 'c6-match-iota')
     expect(prax?.type === 'match' && prax.scriptedBlackSans?.[0]).toBe('c5')
     expect(iota?.type === 'match' && iota.scriptedBlackSans?.[0]).toBe('c6')
+    expect(ch6?.scenes.findIndex((scene) => scene.id === 'c6-before-iota')).toBe(9)
     const puzzles = ch6?.scenes.filter((scene) => scene.type === 'puzzle') ?? []
     expect(puzzles.map((scene) => scene.id)).toEqual(
       expect.arrayContaining(['c6-puzzle-outpost', 'c6-puzzle-precision', 'c6-puzzle-backrank']),

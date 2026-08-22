@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.85)
+## What's new in this release (v0.5.86)
+
+**Pass 94 — Chapter VI Iota match** — the Silicon Threshold second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored `c6` reply. See [`docs/PASS94_PHONE_CH6_IOTA.md`](docs/PASS94_PHONE_CH6_IOTA.md).
+
+## Previous release (v0.5.85)
 
 **Pass 93 — Chapter IV Cassian match** — the Paradox Masters second examiner stays board-first on a 390×844 instrument from a mid-age resume, with the authored `Nf6` reply. See [`docs/PASS93_PHONE_CH4_CASSIAN.md`](docs/PASS93_PHONE_CH4_CASSIAN.md).
 

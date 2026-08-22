@@ -438,6 +438,62 @@ function seedChapterVIUnlocked() {
   localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
 }
 
+/** Mid-age Chapter VI save: after Prax, parked on `c6-before-iota` (scene 9). */
+function seedChapterVIAfterPrax() {
+  const save = {
+    version: 3,
+    chapterIndex: 6,
+    sceneIndex: 9,
+    highestUnlockedChapter: 6,
+    lastScreen: 'title',
+    chapter1Complete: true,
+    chapter2Complete: true,
+    completedSceneIds: [
+      'c3-reflection',
+      'c3-freeplay',
+      'c4-reflection',
+      'c4-freeplay',
+      'c5-reflection',
+      'c5-freeplay',
+      'c6-intro',
+      'c6-codex-ledger',
+      'c6-puzzle-outpost',
+      'c6-puzzle-precision',
+      'c6-puzzle-backrank',
+      'c6-after-puzzles',
+      'c6-before-prax',
+      'c6-match-prax',
+      'c6-after-prax',
+    ],
+    completedPuzzleIds: ['c6-puzzle-outpost', 'c6-puzzle-precision', 'c6-puzzle-backrank'],
+    stratarchiaUnlocked: false,
+    duelUnlockedOpponentIds: ['alexion', 'kallistos', 'nysa', 'cassian', 'gage', 'helia', 'prax'],
+    unlockedDuelVariantIds: [
+      'alexion-mentor',
+      'kallistos-law',
+      'nysa-frontier',
+      'cassian-paradox',
+      'gage-discipline',
+      'helia-machine',
+      'prax-precision',
+    ],
+    codexUnlocks: [],
+    titleUnlocks: [],
+    chronicleEchoes: [],
+    rankPoints: 165,
+    cosmetics: {
+      unlockedPieceSkins: ['classic-royal'],
+      selectedPieceSkin: 'classic-royal',
+    },
+    tendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+    matchHistory: [],
+    rivalMemory: {},
+    ladder: { rating: 1290, peak: 1290, rated: 5 },
+    inProgress: null,
+  }
+  localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify(save))
+}
+
 function seedChapterVIIUnlocked() {
   const save = {
     version: 3,
@@ -840,6 +896,12 @@ async function advanceToPraxMatch(page: Page) {
   await expect(page.locator('#narrative-body')).toContainText(/Prax|public line|hole/i)
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/line is already there|Follow it|ugly lines/i)
+  await page.locator('#btn-next').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+}
+
+async function advanceToIotaMatch(page: Page) {
+  await expect(page.locator('#narrative-body')).toContainText(/plus of one pawn|finish it uglier|Begin/i)
   await page.locator('#btn-next').click()
   await expect(page.locator('[data-square="e2"]')).toBeVisible()
 }
@@ -2797,6 +2859,79 @@ test('first Chapter VI match stays board-first on the phone instrument', { timeo
   await page.locator('[data-square="e4"]').click()
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
   await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4!?\s+c5/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+  await expect(page.locator('#btn-reset')).toBeVisible()
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.evaluate(async () => {
+    window.dispatchEvent(new Event('resize'))
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    })
+  })
+  expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+})
+
+test('second Chapter VI match lets Reed open against Iota', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterVIAfterPrax)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('./')
+  await page.locator('#btn-chapters').click({ timeout: 15_000 })
+  await expect(page.locator('.chapter-btn[data-idx="6"] .chapter-btn__state')).toHaveText('Resume')
+  await page.locator('.chapter-btn[data-idx="6"]').click()
+  await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
+  await expect(page.locator('#play-chapter-label')).toHaveText(/Chapter VI\b/)
+  await advanceToIotaMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Iota')
+  await expect(page.locator('[data-square="e2"] .piece-lit')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  await expect(page.locator('#board-guide')).toContainText(/Finish the plus|back rank/i)
+  await expect(page.locator('#board-status')).toBeHidden()
+  await expect(page.locator('.play-crawl')).toBeVisible()
+  await expect(page.locator('.move-ledger-wrap')).toBeVisible()
+  await expect(page.locator('.instrument-toggles')).toBeVisible()
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('#board-guide')).toContainText(/Finish the plus|back rank/i)
+  await expect(page.locator('#board-guide')).not.toContainText(/legal targets/i)
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+c6/i, { timeout: 25_000 })
+  await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
+})
+
+test('second Chapter VI match stays board-first on the phone instrument', { timeout: 120_000 }, async ({ page }) => {
+  await page.addInitScript(seedChapterVIAfterPrax)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await enterChapterVI(page)
+  await advanceToIotaMatch(page)
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Iota')
+  await expect(page.locator('[data-square="e2"] .pawn-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e1"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('[data-square="e8"] .king-silhouette')).toBeVisible()
+  await expect(page.locator('#chess-root .piece')).toHaveCount(32)
+  const boardBox = await page.locator('#board-panel').boundingBox()
+  expect(boardBox).toBeTruthy()
+  expect(boardBox!.width).toBeGreaterThan(300)
+  expect(boardBox!.y).toBeLessThan(220)
+  await expect(page.locator('#board-panel')).toBeInViewport()
+  await expect(page.locator('#manuscript-panel')).toBeVisible()
+  await expect(page.locator('#board-guide')).toContainText(/Finish the plus|back rank/i)
+  expect((await page.locator('#board-guide').innerText()).trim().length).toBeLessThan(80)
+  expect(
+    await page.locator('#board-guide').evaluate((el) => el.scrollWidth > el.clientWidth + 1),
+  ).toBe(false)
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  expect(await page.locator('#btn-hint').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
+  await page.locator('[data-square="e2"]').click()
+  await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-legal-dot/)
+  await page.locator('[data-square="e4"]').click()
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4/i)
+  await expect(page.locator('#move-ledger')).toContainText(/1\.\s*e4[!?]*\s+c6/i, { timeout: 25_000 })
   await expect(page.locator('#turn-pulse')).toContainText(/White turn/i, { timeout: 25_000 })
   await expect(page.locator('#btn-reset')).toBeVisible()
   expect(await page.locator('#btn-reset').evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')

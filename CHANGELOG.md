@@ -11,6 +11,13 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.86] — 2026-08-22
+
+Pass 94 — Chapter VI Iota match on the phone instrument:
+
+- **Playwright** — a post-Prax Chapter VI seed resumes `c6-before-iota` (Pass 92 current-age resume). Desktop and 390×844: civic silhouettes, board-first, `e2–e4`, scripted `c6` reply, board-guide fit, Hint/Reset floors after resize.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS94_PHONE_CH6_IOTA.md`](docs/PASS94_PHONE_CH6_IOTA.md).
+
 ## [0.5.85] — 2026-08-22
 
 Pass 93 — Chapter IV Cassian match on the phone instrument:
