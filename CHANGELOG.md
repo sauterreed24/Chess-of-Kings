@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.32] — 2026-08-22
+
+Pass 40 — Phone puzzle story-beat:
+
+- **Narrow phones** hide the FIRST LESSON story-beat box on teaching puzzles so the lesson lead under the marble is the only manuscript copy. Wide labs keep the beat.
+- Playwright hides `.story-beat` on the hanging-knight phone and still shows it on the 1280 castle puzzle.
+- Docs: [`docs/PASS40_PHONE_STORY_BEAT.md`](docs/PASS40_PHONE_STORY_BEAT.md).
+
 ## [0.5.31] — 2026-08-22
 
 Pass 39 — Phone puzzle lesson:
