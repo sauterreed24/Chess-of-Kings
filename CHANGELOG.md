@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.72] — 2026-08-22
+
+Pass 80 — Rook battlement silhouette:
+
+- **Ivory and lapis rooks** replace the Wikipedia Staunton roof notches with a civic battlement: three merlons and two deep crenels in the glyph. Carved merlons, sheen, and neck follow the new roof.
+- **High-contrast** keeps the same silhouette (no carve overlays), so tournament rooks still read as towers.
+- Theme reuses existing piece CSS (gzip locked). Docs: [`docs/PASS80_ROOK_CRENEL_HEAD.md`](docs/PASS80_ROOK_CRENEL_HEAD.md).
+
 ## [0.5.71] — 2026-08-22
 
 Pass 79 — Queen coronet silhouette:
