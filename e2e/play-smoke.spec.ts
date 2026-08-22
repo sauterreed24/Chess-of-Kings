@@ -269,7 +269,7 @@ test('first Chapter I match lets Reed open against Amara', { timeout: 120_000 },
   await walkChapterITeachingToMate(page)
   await playQh8Mate(page)
   await advanceToAmaraMatch(page)
-  await expect(page.locator('.match-card__name')).toContainText('Amara')
+  await expect(page.locator('#narrative-body .match-card__name')).toContainText('Amara')
   await expect(page.locator('[data-square="e2"] .piece-lit')).toBeVisible()
   await expect(page.locator('[data-square="e8"] .piece-lit')).toBeVisible()
   await expect(page.locator('#chess-root .piece')).toHaveCount(32)
