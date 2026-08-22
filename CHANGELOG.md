@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.26] — 2026-08-22
+
+Pass 34 — Phone lab caption:
+
+- **Narrow phones** show the chapter title on the lab overlay bar instead of clipping `Early chess — scholarly court`. Wide and short-landscape labs keep the era. The full string stays on `title` / `aria-label`.
+- Playwright asserts `Chapter I` on the hanging-knight phone (no overflow) and `Prologue · Present` on a 1280×500 lab.
+- Docs: [`docs/PASS34_LAB_CAPTION.md`](docs/PASS34_LAB_CAPTION.md).
+
 ## [0.5.25] — 2026-08-22
 
 Pass 33 — Lamp fill and stem flute:

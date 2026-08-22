@@ -11,7 +11,7 @@ import { escapeHtml } from './htmlEscape'
 import { createRewardOverlayController } from './rewardOverlayController'
 import { createConfirmDialogController } from './overlays/confirmDialogController'
 import { createScreenController } from './screenController'
-import { setTopBarInertForLab } from './labModal'
+import { applyLabOverlayCaption, setTopBarInertForLab, syncLabOverlayCaption } from './labModal'
 import { renderChapterProgressHtml } from './play/chapterProgress'
 import { aiTraitBars, sceneTypeLabel } from './mainUiFormatters'
 import { getShellMarkup } from './shellMarkup'
@@ -183,7 +183,10 @@ export function mountApp(app: HTMLDivElement) {
     playScreen,
     boardStage,
     labOverlay,
-    syncLabNav: (open) => setTopBarInertForLab(topBar, open),
+    syncLabNav: (open) => {
+      setTopBarInertForLab(topBar, open)
+      syncLabOverlayCaption(labEraLabel)
+    },
   })
   mobileBoardFit.attach()
   let storageFailureAnnounced = false
@@ -362,7 +365,7 @@ export function mountApp(app: HTMLDivElement) {
       flowRef = flow
       currentSceneType = scene.type
       renderScene(chapter, scene, sceneIndex)
-      labEraLabel.textContent = `${chapter.title} · ${chapter.era}`
+      applyLabOverlayCaption(labEraLabel, `${chapter.title} · ${chapter.era}`, chapter.title)
     },
     onChessUpdate(p) {
       applyChessUi(p)
@@ -878,7 +881,7 @@ export function mountApp(app: HTMLDivElement) {
     app.querySelector('#play-chapter-title')!.textContent = rival.opponentName
     app.querySelector('#play-chapter-sub')!.textContent = variant.label
     app.querySelector('#play-philosophy')!.textContent = rival.quote
-    labEraLabel.textContent = `Duel Archive · ${rival.era}`
+    applyLabOverlayCaption(labEraLabel, `Duel Archive · ${rival.era}`, 'Duel Archive')
     playScreen.setAttribute('data-theme', 'theme-ancient')
     playScreen.classList.add('screen-play--board-scene')
     document.getElementById('play-atelier')?.classList.toggle('play-atelier--solo', false)
