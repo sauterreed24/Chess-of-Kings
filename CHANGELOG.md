@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.35] — 2026-08-22
+
+Pass 43 — Phone puzzle manuscript body:
+
+- **Narrow phones** hide the empty `#narrative-body` on teaching puzzles so the 3rem min-height hole under the title collapses. The scene tag and Prove stay. Phone labs also hide the desktop keyboard hint (Playwright/desktop-narrow still use a fine pointer).
+- Playwright hides `#narrative-body` and `#narrative-kbd-hint` on the hanging-knight phone; castle 1280 still shows the body and Your goal.
+- Docs: [`docs/PASS43_PHONE_PUZZLE_BODY.md`](docs/PASS43_PHONE_PUZZLE_BODY.md).
+
 ## [0.5.34] — 2026-08-22
 
 Pass 42 — Coronet pearls and rook merlons:
