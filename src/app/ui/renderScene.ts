@@ -38,7 +38,9 @@ export function renderScene(
   flow: GameFlow,
   callbacks: RenderSceneCallbacks,
 ): void {
-  dom.app.querySelector('#play-chapter-label')!.textContent = `${chapter.title} · ${chapter.era}`
+  const chapterLabel = dom.app.querySelector<HTMLElement>('#play-chapter-label')!
+  chapterLabel.textContent = `${chapter.title} · ${chapter.era}`
+  chapterLabel.style.fontSize = '0.7rem'
   dom.app.querySelector('#play-chapter-title')!.textContent = chapter.subtitle
   dom.app.querySelector('#play-chapter-sub')!.textContent = chapter.title
   dom.app.querySelector('#play-philosophy')!.textContent = chapter.philosophy

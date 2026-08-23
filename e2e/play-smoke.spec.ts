@@ -3410,6 +3410,7 @@ test('skip ahead stays 44px on the phone instrument', { timeout: 90_000 }, async
   await page.locator('.chapter-btn').first().click()
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
   expect(await page.locator('#scene-progress').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('#play-chapter-label').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   const skip = page.locator('#btn-skip-ahead')
   await expect(skip).toBeVisible()
   expect(await skip.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')

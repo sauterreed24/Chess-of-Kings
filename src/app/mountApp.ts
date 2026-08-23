@@ -1101,7 +1101,9 @@ export function mountApp(app: HTMLDivElement) {
     play.announcedOutcomeKey = ''
   play.recapShownForKey = ''
 
-    app.querySelector('#play-chapter-label')!.textContent = `Duel Archive · ${rival.era}`
+    const chapterLabel = app.querySelector<HTMLElement>('#play-chapter-label')!
+    chapterLabel.textContent = `Duel Archive · ${rival.era}`
+    chapterLabel.style.fontSize = '0.7rem'
     app.querySelector('#play-chapter-title')!.textContent = rival.opponentName
     app.querySelector('#play-chapter-sub')!.textContent = variant.label
     app.querySelector('#play-philosophy')!.textContent = rival.quote
