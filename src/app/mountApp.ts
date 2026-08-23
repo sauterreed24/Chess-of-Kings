@@ -1110,6 +1110,7 @@ export function mountApp(app: HTMLDivElement) {
     playScreen.classList.add('screen-play--board-scene')
     document.getElementById('play-atelier')?.classList.toggle('play-atelier--solo', false)
     sceneProgress.textContent = `Duel · ${colorLabel}`
+    sceneProgress.style.fontSize = '0.7rem'
     sceneTag.textContent = `${variant.label} duel`
 
     narrativeBody.classList.remove('narrative-body--dialogue', 'narrative-body--interlude', 'narrative-body--no-fade')

@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.129)
+## What's new in this release (v0.5.130)
+
+**Pass 138 — passage chips** — `#scene-progress` renders at 0.7rem so Passage N · total still reads on a 390×844 prose instrument. See [`docs/PASS138_PASSAGE_STAMP.md`](docs/PASS138_PASSAGE_STAMP.md).
+
+## Previous release (v0.5.129)
 
 **Pass 137 — duel stamps** — Duel Archive file-count and Pressure band stamps render at 0.7rem so the roster still reads on a 390×844 instrument. See [`docs/PASS137_DUEL_STAMP.md`](docs/PASS137_DUEL_STAMP.md).
 

@@ -245,6 +245,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
 
     expect(label.textContent).toBe('Reveal')
     expect(progress.textContent).toContain('Passage 1')
+    expect(progress.style.fontSize).toBe('0.7rem')
 
     next.click()
     expect(label.textContent).toBe('Advance')
