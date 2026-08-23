@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.131] — 2026-08-23
+
+Pass 139 — crawl chapter label:
+
+- **Graphics** — `#play-chapter-label` renders at 0.7rem so Prologue · era still reads on phone (CSS was 0.55rem). No new CSS.
+- **Playwright** — 390×844 skip-ahead prose asserts `#play-chapter-label` is 0.7rem.
+- Docs: [`docs/PASS139_CHAPTER_LABEL.md`](docs/PASS139_CHAPTER_LABEL.md).
+
 ## [0.5.130] — 2026-08-22
 
 Pass 138 — passage chips:
