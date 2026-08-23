@@ -49,6 +49,7 @@ export function renderScene(
   const total = chapter.scenes.length
   dom.sceneProgress.textContent = `Passage ${sceneIndex + 1} · ${total}`
   dom.sceneProgress.style.fontSize = '0.7rem'
+  dom.sceneTag.style.fontSize = '0.7rem'
   
   dom.lessonNote.textContent = ''
   dom.coachTipEl.classList.add('hidden')

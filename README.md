@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.131)
+## What's new in this release (v0.5.132)
+
+**Pass 140 — scene tag** — `#scene-tag` renders at 0.7rem so Dialogue / Calibration still read on a 390×844 instrument. See [`docs/PASS140_SCENE_TAG.md`](docs/PASS140_SCENE_TAG.md).
+
+## Previous release (v0.5.131)
 
 **Pass 139 — chapter label** — `#play-chapter-label` renders at 0.7rem so Prologue · era still reads on a 390×844 prose instrument. See [`docs/PASS139_CHAPTER_LABEL.md`](docs/PASS139_CHAPTER_LABEL.md).
 

@@ -423,6 +423,7 @@ export function mountApp(app: HTMLDivElement) {
     },
     onChapterComplete(ch) {
       sceneTag.textContent = `${ch.title} — threshold crossed`
+      sceneTag.style.fontSize = '0.7rem'
       const idx = PLAYABLE_CHAPTERS.findIndex((x) => x.id === ch.id)
       const next = idx >= 0 && idx < PLAYABLE_CHAPTERS.length - 1 ? PLAYABLE_CHAPTERS[idx + 1] : null
       pendingChapterPrompt = { completedTitle: ch.title, nextTitle: next?.title ?? null }
@@ -1114,6 +1115,7 @@ export function mountApp(app: HTMLDivElement) {
     sceneProgress.textContent = `Duel · ${colorLabel}`
     sceneProgress.style.fontSize = '0.7rem'
     sceneTag.textContent = `${variant.label} duel`
+    sceneTag.style.fontSize = '0.7rem'
 
     narrativeBody.classList.remove('narrative-body--dialogue', 'narrative-body--interlude', 'narrative-body--no-fade')
     narrativeBody.scrollTop = 0

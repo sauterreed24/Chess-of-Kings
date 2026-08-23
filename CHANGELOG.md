@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.132] — 2026-08-23
+
+Pass 140 — scene tag:
+
+- **Graphics** — `#scene-tag` renders at 0.7rem so Dialogue / Calibration still read on phone (CSS was 0.55rem). No new CSS.
+- **Playwright** — 390×844 skip-ahead prose asserts `#scene-tag` is 0.7rem.
+- Docs: [`docs/PASS140_SCENE_TAG.md`](docs/PASS140_SCENE_TAG.md).
+
 ## [0.5.131] — 2026-08-23
 
 Pass 139 — crawl chapter label:
