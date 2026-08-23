@@ -2823,7 +2823,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 }
 
 .sq {
-  overflow: hidden;
+  overflow:visible;
 }
 
 .sq::before {

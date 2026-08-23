@@ -3588,6 +3588,8 @@ test('last-move route rings stay readable on the phone marble', { timeout: 90_00
   await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-last-to/)
   const destShadow = await page.locator('[data-square="e4"]').evaluate((el) => getComputedStyle(el).boxShadow)
   expect(destShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
+  expect(await page.locator('[data-square="e4"]').evaluate((el) => (el as HTMLElement).style.zIndex)).toBe('2')
+  expect(await page.locator('[data-square="e4"]').evaluate((el) => getComputedStyle(el).overflow)).toBe('visible')
   const originShadow = await page.locator('[data-square="e2"]').evaluate((el) => getComputedStyle(el).boxShadow)
   expect(originShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
 })

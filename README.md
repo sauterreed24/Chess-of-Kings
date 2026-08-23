@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.133)
+## What's new in this release (v0.5.134)
+
+**Pass 142 — last-to glow** — the destination square lets its 22px halo paint above the marble so the last-move route still reads on a 390×844 instrument. See [`docs/PASS142_LAST_TO_GLOW.md`](docs/PASS142_LAST_TO_GLOW.md).
+
+## Previous release (v0.5.133)
 
 **Pass 141 — duel era and history** — Duel Archive era chips and Wins / Losses / Draws labels render at 0.7rem so the roster still reads on a 390×844 instrument. See [`docs/PASS141_DUEL_ERA.md`](docs/PASS141_DUEL_ERA.md).
 

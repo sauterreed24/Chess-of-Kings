@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.134] — 2026-08-23
+
+Pass 142 — last-move destination glow:
+
+- **Graphics** — squares allow overflow so the last-to 22px halo can paint; the destination lifts to z-index 2 so the route still reads on phone. No new CSS rules.
+- **Playwright** — 390×844 last-move test asserts the destination overflow and z-index.
+- Docs: [`docs/PASS142_LAST_TO_GLOW.md`](docs/PASS142_LAST_TO_GLOW.md).
+
 ## [0.5.133] — 2026-08-23
 
 Pass 141 — Duel Archive era chips and history labels:

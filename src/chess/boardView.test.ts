@@ -122,6 +122,8 @@ describe('BoardView keyboard navigation', () => {
     expect(e2.getAttribute('aria-label')).toContain('last move origin')
     expect(e4.classList.contains('sq-last')).toBe(true)
     expect(e4.classList.contains('sq-last-to')).toBe(true)
+    expect(e4.style.zIndex).toBe('2')
+    expect(e2.style.zIndex).toBe('')
     expect(e4.getAttribute('aria-label')).toContain('last move destination')
     root.remove()
   })

@@ -744,6 +744,7 @@ export class BoardView {
         btn.classList.add('sq-last', 'sq-last-to')
         labels.push('last move destination')
       }
+      btn.style.zIndex = this.lastMove && sq === this.lastMove.to ? '2' : ''
       if (this.checkSquare === sq) {
         btn.classList.add('sq-check')
         labels.push('king in check')
