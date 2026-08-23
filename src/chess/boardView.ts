@@ -113,7 +113,7 @@ export class BoardView {
   private legalTargets = new Set<Square>()
   private castleTargets = new Set<Square>()
   private checkSquare: Square | null = null
-  private lastMove: { from: Square; to: Square } | null = null
+  private lastMove: Move | null = null
   private pendingChess: Chess | null = null
   private pickMode: BoardPickMode = 'off'
   private soloColor: 'w' | 'b' = 'w'
@@ -509,7 +509,7 @@ export class BoardView {
       this.pickMode = pick.mode
       if (pick.soloColor) this.soloColor = pick.soloColor
     }
-    if (last) this.lastMove = { from: last.from, to: last.to }
+    this.lastMove = last ?? null
 
     /* Clean up any leftover fly/capture sprites or pending promotions */
     for (const el of this.pieceFlyEls) el.remove()

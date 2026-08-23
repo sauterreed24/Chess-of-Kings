@@ -11,6 +11,17 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.135] — 2026-08-23
+
+Pass 143 — board continuity and phone presence:
+
+- **Resume integrity** — opening a recovered campaign board no longer refreshes the scene a second time and silently replaces the saved position with the starting setup.
+- **Board feedback** — explicit reset/redraw calls clear stale last-move origin, destination, accessible labels, and destination stacking.
+- **Phone graphics** — compact labs measure after the board-first stack settles, preventing the 390×844 board from remaining at the 160px emergency floor until rotation or resize.
+- **Regression coverage** — mounted recovery, last-move clearing, and two-pass compact measurement now have focused Vitest locks.
+- **Dependency hygiene** — refreshed the lockfile within declared ranges, clearing all production `npm audit` advisories without a forced major upgrade.
+- Docs: [`docs/PASS143_RESUME_BOARD_PRESENCE.md`](docs/PASS143_RESUME_BOARD_PRESENCE.md).
+
 ## [0.5.134] — 2026-08-23
 
 Pass 142 — last-move destination glow:

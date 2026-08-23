@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.134)
+## What's new in this release (v0.5.135)
+
+**Pass 143 — board continuity and phone presence** — Resume preserves the exact campaign position, resets clear old route highlights, and the first 390×844 lab render grows the marble after the compact layout settles instead of leaving a postage-stamp board. The synchronized lockfile also clears all production dependency advisories. See [`docs/PASS143_RESUME_BOARD_PRESENCE.md`](docs/PASS143_RESUME_BOARD_PRESENCE.md).
+
+## Previous release (v0.5.134)
 
 **Pass 142 — last-to glow** — the destination square lets its 22px halo paint above the marble so the last-move route still reads on a 390×844 instrument. See [`docs/PASS142_LAST_TO_GLOW.md`](docs/PASS142_LAST_TO_GLOW.md).
 

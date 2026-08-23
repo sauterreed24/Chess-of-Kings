@@ -593,12 +593,11 @@ export function mountApp(app: HTMLDivElement) {
     labOverlay.setAttribute('aria-label', 'Archive simulation')
     const chessRoot = app.querySelector<HTMLDivElement>('#chess-root')!
     if (!flow.board) flow.mountBoard(chessRoot)
-    else if (!flow.isInDuelMode()) flow.refreshScene()
     renderActiveDuelLabBrief()
     flow.board?.setMoveGuard(moveGuardEnabled)
     syncTitleButtons()
     focusWithoutScroll(btnVestibule)
-    window.requestAnimationFrame(() => mobileBoardFit.apply())
+    mobileBoardFit.apply()
   }
 
   function closeLab() {

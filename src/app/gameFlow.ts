@@ -499,7 +499,7 @@ export class GameFlow {
     this.history = recovery.history
     this.sanLog = recovery.sanLog
     this.sanQuality = recovery.sanQuality
-      this.evalTrace = [] /* session-only; recap falls back gracefully */
+    this.evalTrace = [] /* session-only; recap falls back gracefully */
     this.calibrationMoves = snap.calibrationMoves
     this.scriptedMoveIndex = snap.scriptedMoveIndex
     this.sceneTendencies = { ...snap.sceneTendencies }
@@ -821,12 +821,17 @@ export class GameFlow {
       },
     })
     this.board.setSkin(this.selectedPieceSkin)
-    if (this.mode === 'duel' && this.duelSession) {
+    if (this.history.length) {
+      const freeplay = this.mode === 'freeplay'
       this.board.setOrientation(this.playerColor)
-      this.board.draw(this.chess, null, { mode: 'solo', soloColor: this.playerColor })
-      this.board.setInteraction(true)
+      this.board.draw(this.chess, null, {
+        mode: freeplay ? 'free' : 'solo',
+        soloColor: this.playerColor,
+      })
       this.emitChess()
-      if (this.chess.turn() !== this.playerColor) this.scheduleAiMove()
+      if (!freeplay && this.chess.turn() !== this.playerColor) {
+        this.scheduleAiMove()
+      }
       return
     }
     this.refreshScene()
