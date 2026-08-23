@@ -148,6 +148,7 @@ describe('renderScene', () => {
     expect(dom.btnSkipAhead.dataset.target).toBe('4')
     expect(dom.sceneProgress.style.fontSize).toBe('0.7rem')
     expect(dom.app.querySelector<HTMLElement>('#play-chapter-label')?.style.fontSize).toBe('0.7rem')
+    expect(dom.sceneTag.style.fontSize).toBe('0.7rem')
   })
 
   it('hides the skip-ahead affordance on board scenes and outside the prologue', () => {

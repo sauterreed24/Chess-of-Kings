@@ -3411,6 +3411,7 @@ test('skip ahead stays 44px on the phone instrument', { timeout: 90_000 }, async
   await expect(page.locator('#lab-overlay')).toHaveClass(/lab-overlay--active/)
   expect(await page.locator('#scene-progress').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   expect(await page.locator('#play-chapter-label').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('#scene-tag').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   const skip = page.locator('#btn-skip-ahead')
   await expect(skip).toBeVisible()
   expect(await skip.evaluate((el) => getComputedStyle(el).minHeight)).toBe('44px')
@@ -3481,10 +3482,12 @@ test('duel archive setup stays 44px on the phone instrument', { timeout: 120_000
   await page.locator('#btn-duel').click()
   await expect(page.locator('.duel-row').first()).toBeVisible()
   expect(await page.locator('.duel-row__stamp').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('.duel-row .ch-idx').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   await page.locator('.duel-row').first().click()
   await expect(page.locator('#duel-panel .duel-launch')).toBeVisible()
   expect(await page.locator('#duel-panel label.teach-label').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   expect(await page.locator('#duel-panel .duel-row__stamp').evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
+  expect(await page.locator('#duel-panel .dossier-stat-grid small').first().evaluate((el) => (el as HTMLElement).style.fontSize)).toBe('0.7rem')
   for (const id of [
     '#duel-variant',
     '#duel-color',
@@ -3585,6 +3588,8 @@ test('last-move route rings stay readable on the phone marble', { timeout: 90_00
   await expect(page.locator('[data-square="e4"]')).toHaveClass(/sq-last-to/)
   const destShadow = await page.locator('[data-square="e4"]').evaluate((el) => getComputedStyle(el).boxShadow)
   expect(destShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
+  expect(await page.locator('[data-square="e4"]').evaluate((el) => (el as HTMLElement).style.zIndex)).toBe('2')
+  expect(await page.locator('[data-square="e4"]').evaluate((el) => getComputedStyle(el).overflow)).toBe('visible')
   const originShadow = await page.locator('[data-square="e2"]').evaluate((el) => getComputedStyle(el).boxShadow)
   expect(originShadow.replace(/\s/g, '')).toMatch(/0px0px0px5px/)
 })

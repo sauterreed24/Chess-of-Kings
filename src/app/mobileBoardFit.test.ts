@@ -157,6 +157,58 @@ describe('mobileBoardFit', () => {
     expect(playScreen.style.getPropertyValue('--mobile-board-max')).toBe('')
   })
 
+  it('remeasures after the compact board stack settles', () => {
+    vi.mocked(window.matchMedia).mockReturnValue({
+      matches: true,
+      media: COMPACT_MEDIA_QUERY,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      onchange: null,
+    } as MediaQueryList)
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 844 })
+
+    document.body.innerHTML = `
+      <div id="lab-overlay" class="lab-overlay lab-overlay--active"></div>
+      <section id="screen-play" class="screen-play--board-scene">
+        <div id="board-stage"><div class="board-wrap"></div></div>
+      </section>
+    `
+    const playScreen = document.querySelector<HTMLElement>('#screen-play')!
+    const boardStage = document.querySelector<HTMLElement>('#board-stage')!
+    const boardWrap = boardStage.querySelector<HTMLElement>('.board-wrap')!
+    const labOverlay = document.querySelector<HTMLElement>('#lab-overlay')!
+    let boardTop = 700
+    vi.spyOn(boardWrap, 'getBoundingClientRect').mockImplementation(() => ({
+      x: 20,
+      y: boardTop,
+      width: 350,
+      height: 350,
+      top: boardTop,
+      left: 20,
+      right: 370,
+      bottom: boardTop + 350,
+      toJSON: () => ({}),
+    }))
+    const frames: FrameRequestCallback[] = []
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+      frames.push(callback)
+      return frames.length
+    })
+
+    const controller = createMobileBoardFitController({ playScreen, boardStage, labOverlay })
+    controller.apply()
+    frames.shift()?.(0)
+    expect(playScreen.style.getPropertyValue('--mobile-board-max')).toBe('')
+
+    boardTop = 180
+    frames.shift()?.(16)
+    expect(playScreen.style.getPropertyValue('--mobile-board-max')).toBe('350px')
+  })
+
   it('detach removes listeners and clears board max variable', () => {
     const playScreen = document.createElement('section')
     playScreen.id = 'screen-play'

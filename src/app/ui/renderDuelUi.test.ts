@@ -56,6 +56,8 @@ describe('renderDuelUi', () => {
     expect(duelPanel.querySelector<HTMLElement>('.teach-label')?.style.fontSize).toBe('0.7rem')
     expect(duelList.querySelector<HTMLElement>('.duel-row__stamp')?.style.fontSize).toBe('0.7rem')
     expect(duelPanel.querySelector<HTMLElement>('.duel-row__stamp')?.style.fontSize).toBe('0.7rem')
+    expect(duelList.querySelector<HTMLElement>('.ch-idx')?.style.fontSize).toBe('0.7rem')
+    expect(duelPanel.querySelector<HTMLElement>('.dossier-stat-grid small')?.style.fontSize).toBe('0.7rem')
     expect(panelText).toContain('Recommended pressure band')
     expect(panelText).toContain('Balanced pressure')
     expect(panelText).toContain('Archive rating:')

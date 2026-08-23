@@ -122,7 +122,15 @@ describe('BoardView keyboard navigation', () => {
     expect(e2.getAttribute('aria-label')).toContain('last move origin')
     expect(e4.classList.contains('sq-last')).toBe(true)
     expect(e4.classList.contains('sq-last-to')).toBe(true)
+    expect(e4.style.zIndex).toBe('2')
+    expect(e2.style.zIndex).toBe('')
     expect(e4.getAttribute('aria-label')).toContain('last move destination')
+
+    view.draw(new Chess(), null, { mode: 'free' })
+    expect(root.querySelector('.sq-last')).toBeNull()
+    expect(e2.getAttribute('aria-label')).not.toContain('last move origin')
+    expect(e4.getAttribute('aria-label')).not.toContain('last move destination')
+    expect(e4.style.zIndex).toBe('')
     root.remove()
   })
 

@@ -73,7 +73,7 @@ export function renderDuelUi(host: RenderDuelUiHost): void {
     : `Sealed dossier for ${r.opponentName}. ${entry.unlockHint}`
   return `<button type="button" class="chapter-btn duel-row ${entry.isOpen ? '' : 'duel-row--sealed'}" data-op="${escapeHtml(r.opponentId)}" aria-label="${escapeHtml(label)}">
     <span class="chapter-btn__main">
-      <span class="ch-idx">${escapeHtml(r.era)}</span>
+      <span class="ch-idx" style="font-size:0.7rem">${escapeHtml(r.era)}</span>
       <span class="ch-name">${escapeHtml(r.opponentName)}</span>
       <span class="ch-era">${escapeHtml(r.styleTags.join(' / '))}</span>
       ${entry.isOpen ? '' : `<span class="duel-row__hint">${escapeHtml(entry.unlockHint)}</span>`}
@@ -324,10 +324,10 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
           <p class="mastery-trial-hint opponent-note">Mastery Trial locks the Relentless band for one match and the highest-tier skin unlock path.</p>
         </div>
         <div class="dossier-stat-grid" aria-label="Duel history">
-          <span><strong>${wins}</strong><small>Wins</small></span>
-          <span><strong>${losses}</strong><small>Losses</small></span>
-          <span><strong>${draws}</strong><small>Draws</small></span>
-          <span><strong>${dominantGrade}</strong><small>Common grade</small></span>
+          <span><strong>${wins}</strong><small style="font-size:0.7rem">Wins</small></span>
+          <span><strong>${losses}</strong><small style="font-size:0.7rem">Losses</small></span>
+          <span><strong>${draws}</strong><small style="font-size:0.7rem">Draws</small></span>
+          <span><strong>${dominantGrade}</strong><small style="font-size:0.7rem">Common grade</small></span>
         </div>
         <div class="cal-lens" role="group" aria-label="Calibration Lens for ${escapeHtml(rival.opponentName)}">
           <div class="cal-lens__head">

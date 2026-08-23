@@ -11,6 +11,41 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.135] — 2026-08-23
+
+Pass 143 — board continuity and phone presence:
+
+- **Resume integrity** — opening a recovered campaign board no longer refreshes the scene a second time and silently replaces the saved position with the starting setup.
+- **Board feedback** — explicit reset/redraw calls clear stale last-move origin, destination, accessible labels, and destination stacking.
+- **Phone graphics** — compact labs measure after the board-first stack settles, preventing the 390×844 board from remaining at the 160px emergency floor until rotation or resize.
+- **Regression coverage** — mounted recovery, last-move clearing, and two-pass compact measurement now have focused Vitest locks.
+- **Dependency hygiene** — refreshed the lockfile within declared ranges, clearing all production `npm audit` advisories without a forced major upgrade.
+- Docs: [`docs/PASS143_RESUME_BOARD_PRESENCE.md`](docs/PASS143_RESUME_BOARD_PRESENCE.md).
+
+## [0.5.134] — 2026-08-23
+
+Pass 142 — last-move destination glow:
+
+- **Graphics** — squares allow overflow so the last-to 22px halo can paint; the destination lifts to z-index 2 so the route still reads on phone. No new CSS rules.
+- **Playwright** — 390×844 last-move test asserts the destination overflow and z-index.
+- Docs: [`docs/PASS142_LAST_TO_GLOW.md`](docs/PASS142_LAST_TO_GLOW.md).
+
+## [0.5.133] — 2026-08-23
+
+Pass 141 — Duel Archive era chips and history labels:
+
+- **Graphics** — roster era chips and Wins / Losses / Draws / Common grade labels render at 0.7rem so the dossier still reads on phone (CSS was 0.48–0.6rem). No new CSS.
+- **Playwright** — 390×844 Duel Archive asserts the first `.ch-idx` and the first history `<small>`.
+- Docs: [`docs/PASS141_DUEL_ERA.md`](docs/PASS141_DUEL_ERA.md).
+
+## [0.5.132] — 2026-08-23
+
+Pass 140 — scene tag:
+
+- **Graphics** — `#scene-tag` renders at 0.7rem so Dialogue / Calibration still read on phone (CSS was 0.55rem). No new CSS.
+- **Playwright** — 390×844 skip-ahead prose asserts `#scene-tag` is 0.7rem.
+- Docs: [`docs/PASS140_SCENE_TAG.md`](docs/PASS140_SCENE_TAG.md).
+
 ## [0.5.131] — 2026-08-23
 
 Pass 139 — crawl chapter label:

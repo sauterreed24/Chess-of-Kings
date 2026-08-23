@@ -36,8 +36,7 @@ export function applyMobileBoardFit({
     return
   }
 
-  const wrapRect = boardWrap.getBoundingClientRect()
-  const chromeAbove = Math.max(0, wrapRect.top)
+  const chromeAbove = Math.max(0, boardWrap.getBoundingClientRect().top)
 
   const viewportW = window.visualViewport?.width ?? window.innerWidth
   const viewportH = window.visualViewport?.height ?? window.innerHeight
@@ -55,22 +54,22 @@ export function applyMobileBoardFit({
 }
 
 export function createMobileBoardFitController(elements: MobileBoardFitElements) {
-  const apply = () => applyMobileBoardFit(elements)
-
-  const scheduleApply = () => {
-    window.requestAnimationFrame(apply)
+  const fit = () => applyMobileBoardFit(elements)
+  const apply = () => {
+    /* Wait through the opening layout before measuring the compact stack. */
+    window.requestAnimationFrame(() => window.requestAnimationFrame(fit))
   }
 
   const attach = () => {
-    window.visualViewport?.addEventListener('resize', scheduleApply)
-    window.addEventListener('orientationchange', scheduleApply)
-    window.addEventListener('resize', scheduleApply)
+    window.visualViewport?.addEventListener('resize', apply)
+    window.addEventListener('orientationchange', apply)
+    window.addEventListener('resize', apply)
   }
 
   const detach = () => {
-    window.visualViewport?.removeEventListener('resize', scheduleApply)
-    window.removeEventListener('orientationchange', scheduleApply)
-    window.removeEventListener('resize', scheduleApply)
+    window.visualViewport?.removeEventListener('resize', apply)
+    window.removeEventListener('orientationchange', apply)
+    window.removeEventListener('resize', apply)
     elements.playScreen.style.removeProperty('--mobile-board-max')
   }
 

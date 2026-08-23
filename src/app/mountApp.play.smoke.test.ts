@@ -200,6 +200,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     }
 
     expect(tag.textContent).toContain('Calibration')
+    expect(tag.style.fontSize).toBe('0.7rem')
     expect(next.disabled).toBe(true)
     expect(app.querySelector('.btn-advance-label')?.textContent).toBe('Prove')
     expect(next.getAttribute('aria-label')).toBe('Finish proof')

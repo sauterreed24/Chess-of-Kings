@@ -653,6 +653,50 @@ describe('mounted duel dossier', () => {
     expect(afterCancel.inProgress).toBeTruthy()
   })
 
+  it('opens a recovered board without resetting the restored position', () => {
+    localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
+      version: 3,
+      chapterIndex: 0,
+      sceneIndex: 4,
+      highestUnlockedChapter: 0,
+      lastScreen: 'chapters',
+      completedSceneIds: [],
+      unlockedDuelVariantIds: ['alexion-mentor'],
+      cosmetics: { unlockedPieceSkins: ['classic-royal'], selectedPieceSkin: 'classic-royal' },
+      inProgress: {
+        mode: 'calibration',
+        chapterIndex: 0,
+        sceneIndex: 4,
+        fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+        history: [
+          'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+          'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+        ],
+        sanLog: ['e4', 'e5'],
+        sanQuality: ['good', 'ok'],
+        playerColor: 'w',
+        calibrationMoves: 1,
+        scriptedMoveIndex: 0,
+        sceneTendencies: { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 },
+      },
+    }))
+    const app = document.createElement('div')
+    document.body.appendChild(app)
+    mountApp(app)
+
+    app.querySelector<HTMLButtonElement>('#btn-chapters')?.click()
+    app.querySelector<HTMLButtonElement>('#btn-resume-recovered')?.click()
+
+    expect(app.querySelector('#lab-overlay')?.classList.contains('lab-overlay--active')).toBe(true)
+    expect(app.querySelector<HTMLElement>('[data-square="e4"]')?.dataset.piece).toBe('wp')
+    expect(app.querySelector<HTMLElement>('[data-square="e5"]')?.dataset.piece).toBe('bp')
+    expect(app.querySelector<HTMLElement>('[data-square="e2"]')?.dataset.piece).toBe('')
+    expect(app.querySelector('#calibration-rail')?.getAttribute('aria-label')).toBe(
+      '1 of 4 White moves inscribed',
+    )
+  })
+
   it('shows soft almost-sealed copy after reflection before freeplay finish', () => {
     localStorage.setItem('calculus-of-kings-progress-v3', JSON.stringify({
       version: 3,
