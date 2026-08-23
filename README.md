@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.132)
+## What's new in this release (v0.5.133)
+
+**Pass 141 — duel era and history** — Duel Archive era chips and Wins / Losses / Draws labels render at 0.7rem so the roster still reads on a 390×844 instrument. See [`docs/PASS141_DUEL_ERA.md`](docs/PASS141_DUEL_ERA.md).
+
+## Previous release (v0.5.132)
 
 **Pass 140 — scene tag** — `#scene-tag` renders at 0.7rem so Dialogue / Calibration still read on a 390×844 instrument. See [`docs/PASS140_SCENE_TAG.md`](docs/PASS140_SCENE_TAG.md).
 

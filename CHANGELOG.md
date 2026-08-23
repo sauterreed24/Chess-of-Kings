@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.133] — 2026-08-23
+
+Pass 141 — Duel Archive era chips and history labels:
+
+- **Graphics** — roster era chips and Wins / Losses / Draws / Common grade labels render at 0.7rem so the dossier still reads on phone (CSS was 0.48–0.6rem). No new CSS.
+- **Playwright** — 390×844 Duel Archive asserts the first `.ch-idx` and the first history `<small>`.
+- Docs: [`docs/PASS141_DUEL_ERA.md`](docs/PASS141_DUEL_ERA.md).
+
 ## [0.5.132] — 2026-08-23
 
 Pass 140 — scene tag:
