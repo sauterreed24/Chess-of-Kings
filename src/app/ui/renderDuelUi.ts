@@ -78,7 +78,7 @@ export function renderDuelUi(host: RenderDuelUiHost): void {
       <span class="ch-era">${escapeHtml(r.styleTags.join(' / '))}</span>
       ${entry.isOpen ? '' : `<span class="duel-row__hint">${escapeHtml(entry.unlockHint)}</span>`}
     </span>
-    <span class="duel-row__stamp ${entry.isOpen ? '' : 'duel-row__stamp--sealed'}">${escapeHtml(stamp)}</span>
+    <span class="duel-row__stamp ${entry.isOpen ? '' : 'duel-row__stamp--sealed'}" style="font-size:0.7rem">${escapeHtml(stamp)}</span>
   </button>`
 }).join('')
 
@@ -117,7 +117,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
               <span class="match-card__vs">Sealed dossier</span>
               <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
             </div>
-            <span class="duel-row__stamp duel-row__stamp--sealed">${archiveEntry.totalVariantCount} sealed files</span>
+            <span class="duel-row__stamp duel-row__stamp--sealed" style="font-size:0.7rem">${archiveEntry.totalVariantCount} sealed files</span>
           </div>
           <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
           <div class="sealed-dossier__notice">
@@ -281,7 +281,7 @@ for (const btn of [...duelList.querySelectorAll<HTMLButtonElement>('.duel-row')]
             <span class="match-card__vs">Dossier</span>
             <strong class="match-card__name">${escapeHtml(rival.opponentName)}</strong>
           </div>
-          <span class="duel-row__stamp">Pressure band: ${recommendedDifficulty}</span>
+          <span class="duel-row__stamp" style="font-size:0.7rem">Pressure band: ${recommendedDifficulty}</span>
         </div>
         <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
         ${primaryVariant ? `<p class="opponent-note">${escapeHtml(primaryVariant.bio)}</p>` : ''}

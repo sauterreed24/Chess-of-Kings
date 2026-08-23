@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.128)
+## What's new in this release (v0.5.129)
+
+**Pass 137 — duel stamps** — Duel Archive file-count and Pressure band stamps render at 0.7rem so the roster still reads on a 390×844 instrument. See [`docs/PASS137_DUEL_STAMP.md`](docs/PASS137_DUEL_STAMP.md).
+
+## Previous release (v0.5.128)
 
 **Pass 136 — chapter stamps** — Open/Resume stamps and chapter indexes render at 0.7rem so the chronicle hub still reads on a 390×844 instrument. See [`docs/PASS136_CHAPTER_STAMP.md`](docs/PASS136_CHAPTER_STAMP.md).
 
