@@ -1,8 +1,8 @@
 /**
  * Turns the engine's recommended move into a short, teaching hint — a
  * nudge toward the idea, not engine notation. Pure and deterministic so
- * it can be unit-tested; the board separately highlights the piece to
- * move, so the words explain *why* rather than spelling out the square.
+ * it can be unit-tested; the board marks the recommended square, so
+ * the words explain why rather than repeating the coordinate.
  */
 export interface HintMove {
   san: string

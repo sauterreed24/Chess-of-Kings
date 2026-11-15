@@ -11,6 +11,16 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.136] — 2026-11-15
+
+Pass 144 — archive hint square:
+
+- **Hint** — asking the archive marks only the recommended destination. Other legal squares of that piece stay dark, and the selected piece is announced with one legal target.
+- **Sound** — Hint plays the advance cue. Take back keeps the lower undo tone.
+- **Graphics** — Hint / Target kickers, phone Title / Chapters / Duel labels, and Sound / Move Guard toggles render at 0.7rem. Existing rules only; no new CSS.
+- **Playwright** — 390×844 title checks the chapter nav and sound labels, then the desktop calibration hint asserts a single recommended square.
+- Docs: [`docs/PASS144_HINT_SQUARE.md`](docs/PASS144_HINT_SQUARE.md).
+
 ## [0.5.135] — 2026-08-23
 
 Pass 143 — board continuity and phone presence:

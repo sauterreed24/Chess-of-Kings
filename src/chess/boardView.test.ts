@@ -103,6 +103,36 @@ describe('BoardView keyboard navigation', () => {
     root.remove()
   })
 
+  it('marks only the archive recommendation, then restores the full legal set', () => {
+    const root = document.createElement('div')
+    document.body.appendChild(root)
+    const view = new BoardView({
+      root,
+      orientation: 'w',
+      onMove() {},
+    })
+    const chess = new Chess()
+    view.draw(chess, null, { mode: 'solo', soloColor: 'w' })
+
+    view.showLegalFrom(chess, 'd2', 'd4')
+
+    const d2 = root.querySelector<HTMLButtonElement>('[data-square="d2"]')!
+    const d3 = root.querySelector<HTMLButtonElement>('[data-square="d3"]')!
+    const d4 = root.querySelector<HTMLButtonElement>('[data-square="d4"]')!
+    expect(d2.getAttribute('aria-pressed')).toBe('true')
+    expect(d2.getAttribute('aria-label')).toContain('1 legal target')
+    expect(d4.classList.contains('sq-legal-dot')).toBe(true)
+    expect(d3.classList.contains('sq-legal')).toBe(false)
+    expect(root.querySelectorAll('.sq-legal').length).toBe(1)
+
+    view.showLegalFrom(chess, 'd2', 'd5')
+    expect(root.querySelector('.sq-legal')).toBeNull()
+
+    view.draw(chess, null, { mode: 'free' })
+    expect(root.querySelector('.sq-legal')).toBeNull()
+    root.remove()
+  })
+
   it('distinguishes last-move origin and destination for visual and screen-reader feedback', () => {
     const root = document.createElement('div')
     document.body.appendChild(root)
