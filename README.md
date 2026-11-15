@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.135)
+## What's new in this release (v0.5.136)
+
+**Pass 144 — archive hint square** — Hint marks the one square the archive would play, instead of every legal square of that piece, and plays the advance cue rather than the Take back tone. Hint / Target kickers, phone Title / Chapters / Duel labels, and Sound / Move Guard toggles render at 0.7rem. See [`docs/PASS144_HINT_SQUARE.md`](docs/PASS144_HINT_SQUARE.md).
+
+## Previous release (v0.5.135)
 
 **Pass 143 — board continuity and phone presence** — Resume preserves the exact campaign position, resets clear old route highlights, and the first 390×844 lab render grows the marble after the compact layout settles instead of leaving a postage-stamp board. The synchronized lockfile also clears all production dependency advisories. See [`docs/PASS143_RESUME_BOARD_PRESENCE.md`](docs/PASS143_RESUME_BOARD_PRESENCE.md).
 

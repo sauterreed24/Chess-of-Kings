@@ -5494,3 +5494,45 @@ test('seeded save unlocks Lukas in the duel archive and shows Chapter III', asyn
   await expect(page.locator('#duel-panel')).toContainText('Lukas')
   await expect(page.locator('#duel-panel')).toContainText('Lens suggests')
 })
+
+test('hint marks one archive square and phone chrome stays readable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('./')
+  await expect(page.locator('#btn-chapters')).toBeVisible({ timeout: 15_000 })
+  const nav = await page.locator('#btn-chapters').evaluate((el) => {
+    const box = el.getBoundingClientRect()
+    const style = getComputedStyle(el)
+    return {
+      fontSize: parseFloat(style.fontSize),
+      width: box.width,
+      height: box.height,
+      right: box.right,
+    }
+  })
+  expect(nav.fontSize).toBeGreaterThanOrEqual(11)
+  expect(nav.height).toBeGreaterThanOrEqual(44)
+  expect(nav.right).toBeLessThanOrEqual(390)
+  const soundSize = await page.locator('#btn-title-sfx').evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+  expect(soundSize).toBeGreaterThanOrEqual(11)
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.locator('#btn-enter-archive').click()
+  await page.locator('.chapter-btn').first().click()
+  await page.locator('#btn-skip-ahead').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  await expect(page.locator('.hint-label')).toHaveText('Target')
+  expect(await page.locator('.hint-label').evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(11)
+  await expect(page.locator('#btn-hint')).toBeVisible()
+  await page.locator('#btn-hint').click()
+  await expect(page.locator('#coach-tip')).toContainText(/^Hint — /, { timeout: 10_000 })
+  const marked = page.locator('.sq-legal-dot, .sq-legal-capture, .sq-legal-castle')
+  await expect(marked).toHaveCount(1)
+  await expect(page.locator('.sq-selected')).toHaveAttribute('aria-label', /1 legal target/)
+  const from = await page.locator('.sq-selected').getAttribute('data-square')
+  const to = await marked.getAttribute('data-square')
+  expect(from).toBeTruthy()
+  expect(to).toBeTruthy()
+  expect(from).not.toBe(to)
+  await marked.click()
+  await expect(page.locator('#move-ledger')).not.toContainText('No moves yet')
+})

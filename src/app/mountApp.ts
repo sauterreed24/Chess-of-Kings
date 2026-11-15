@@ -1532,7 +1532,7 @@ export function mountApp(app: HTMLDivElement) {
     if (flow.retryCurrentBattle()) updateAdvance(flow)
   })
   btnReset.addEventListener('click', () => { flow.resetChessScene(); updateAdvance(flow) })
-  btnHint.addEventListener('click', () => { sfx.playEventSfx('undo'); flow.requestHint() })
+  btnHint.addEventListener('click', () => { sfx.playEventSfx('advance'); flow.requestHint() })
 
   let advanceTicker = 0
   const scheduleAdvanceTick = () => {

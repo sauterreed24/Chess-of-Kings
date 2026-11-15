@@ -1537,11 +1537,8 @@ export class GameFlow {
   }
 
   /**
-   * On-demand learning hint: highlights the piece the archive would move
-   * and explains the idea in the coach line — a nudge toward the plan, not
-   * a spelled-out answer. A bounded engine probe, off the hot path; safe to
-   * call repeatedly. No effect on the rating (the move you finally play is
-   * still graded normally).
+   * Marks the archive's one square and explains the idea. Bounded probe,
+   * off the hot path. No effect when it is not the player's turn.
    */
   requestHint(): void {
     if (this.aiThinking || this.chess.turn() !== this.playerColor || this.chess.isGameOver()) return
@@ -1550,7 +1547,8 @@ export class GameFlow {
     if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return
 
     let fromSquare: Square | null = null
-    let reason = 'This is the move the archive would choose.'
+    let toSquare: Square | null = null
+    let reason = "Try the archive's idea."
     try {
       const result = searchFen(this.chess.fen(), { maxDepth: 6, maxTimeMs: 80, freshTable: true })
       if (result.move) {
@@ -1562,6 +1560,7 @@ export class GameFlow {
         })
         if (played) {
           fromSquare = played.from as Square
+          toSquare = played.to as Square
           const opp: Color = this.playerColor === 'w' ? 'b' : 'w'
           const underAttack = this.chess.attackers(played.from as Square, opp).length > 0
           reason = describeHint(
@@ -1574,7 +1573,7 @@ export class GameFlow {
       /* engine unavailable — fall back to the generic nudge */
     }
 
-    if (fromSquare) this.board?.showLegalFrom(this.chess, fromSquare)
+    if (fromSquare) this.board?.showLegalFrom(this.chess, fromSquare, toSquare)
     this.lastCoachTip = `Hint — ${reason}`
     this.emitChess()
   }

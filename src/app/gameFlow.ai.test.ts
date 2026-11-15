@@ -107,9 +107,15 @@ describe('GameFlow AI / puzzles', () => {
     flow.jumpToScene(1, 2)
     expect(flow.currentScene().id).toBe('c1-tutorial-hanging')
     onChessUpdate.mockClear()
+    const board = flow.board as unknown as ReturnType<typeof mockBoard>
     flow.requestHint()
     const latest = onChessUpdate.mock.calls.at(-1)?.[0]
     expect(latest?.coachTip).toMatch(/^Hint — /)
+    expect(board.showLegalFrom).toHaveBeenCalledTimes(1)
+    const hinted = board.showLegalFrom.mock.calls[0]
+    expect(hinted?.[1]).not.toBe(hinted?.[2])
+    const legalTos = flow.chess.moves({ square: hinted![1], verbose: true }).map((m) => m.to)
+    expect(legalTos).toContain(hinted?.[2])
   })
 
   it('undo in puzzle removes both player move and opponent reply', async () => {
@@ -306,9 +312,15 @@ describe('GameFlow AI / puzzles', () => {
     const calibrationIdx = PLAYABLE_CHAPTERS[0]!.scenes.findIndex((s) => s.id === 'pr-calibration')
     flow.jumpToScene(0, calibrationIdx)
     onChessUpdate.mockClear()
+    const board = flow.board as unknown as ReturnType<typeof mockBoard>
     flow.requestHint()
     const latest = onChessUpdate.mock.calls.at(-1)?.[0]
     expect(latest?.coachTip).toMatch(/^Hint — /)
+    expect(board.showLegalFrom).toHaveBeenCalledTimes(1)
+    const hinted = board.showLegalFrom.mock.calls[0]
+    const legalTos = flow.chess.moves({ square: hinted![1], verbose: true }).map((m) => m.to)
+    expect(legalTos.length).toBeGreaterThan(1)
+    expect(legalTos).toContain(hinted?.[2])
   })
 
   it('seals canHint after four calibration moves', async () => {

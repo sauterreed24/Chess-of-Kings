@@ -706,12 +706,12 @@ export class BoardView {
     this.root.classList.toggle('chess-grid--locked', !enabled)
   }
 
-  showLegalFrom(chess: Chess, from: Square) {
+  showLegalFrom(chess: Chess, from: Square, onlyTo?: Square | null) {
     this.selected = from
     this.legalTargets.clear()
     this.castleTargets.clear()
-    const moves = chess.moves({ square: from, verbose: true })
-    for (const m of moves) {
+    for (const m of chess.moves({ square: from, verbose: true })) {
+      if (onlyTo && m.to !== onlyTo) continue
       this.legalTargets.add(m.to)
       if (m.flags.includes('k') || m.flags.includes('q')) this.castleTargets.add(m.to)
     }

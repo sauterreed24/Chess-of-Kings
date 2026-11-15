@@ -259,6 +259,7 @@ describe('renderScene', () => {
     })
 
     expect(dom.sceneTag.textContent).toContain('archive lens')
+    expect(dom.narrativeBody.querySelector('.hint-label')?.textContent).toBe('Target')
     expect(dom.narrativeBody.textContent).toContain('The Archive replies')
     expect(dom.narrativeBody.textContent).toContain('The Archive answers')
     expect(dom.narrativeBody.textContent).not.toContain('adaptive trainer')
