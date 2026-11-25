@@ -209,6 +209,49 @@ describe('applyChessUi', () => {
     expect(announcer.say).toHaveBeenCalledWith('Proof sealed. Advance when ready.')
   })
 
+  it("speaks the rival's reply for screen-reader players, but not the player's own move", () => {
+    const chess = new Chess()
+    chess.move('e4')
+    const dom = refs()
+    const announcer = { say: vi.fn(), clear: vi.fn() }
+    const rt = {
+      dom,
+      play: createMountPlayState(),
+      getFlow: () => null,
+      sfx: createSfxController({ enabled: false }),
+      announcer,
+    }
+    const cb = { showRewardBundles: vi.fn(), maybeShowPendingChapterPrompt: vi.fn(), revealBoardScene: vi.fn() }
+    applyChessUi({ ...payload(chess), playerColor: 'w', calibration: undefined, sanLog: ['e4'] }, rt, cb)
+    expect(announcer.say).not.toHaveBeenCalled()
+
+    chess.move('d5')
+    applyChessUi({ ...payload(chess), playerColor: 'w', calibration: undefined, sanLog: ['e4', 'd5'] }, rt, cb)
+    expect(announcer.say).toHaveBeenCalledWith('Black pawn d7 to d5.')
+
+    /* A re-render without a new move does not repeat it. */
+    announcer.say.mockClear()
+    applyChessUi({ ...payload(chess), playerColor: 'w', calibration: undefined, sanLog: ['e4', 'd5'] }, rt, cb)
+    expect(announcer.say).not.toHaveBeenCalled()
+  })
+
+  it('folds a mating reply into the single outcome announcement', () => {
+    const chess = new Chess()
+    for (const san of ['f3', 'e5', 'g4']) chess.move(san)
+    const dom = refs()
+    const announcer = { say: vi.fn(), clear: vi.fn() }
+    const play = createMountPlayState()
+    play.prevSanLen = 3
+    chess.move('Qh4#')
+    applyChessUi(
+      { ...payload(chess), playerColor: 'w', calibration: undefined, sanLog: ['f3', 'e5', 'g4', 'Qh4#'], matchOutcome: 'loss', aiPersona: 'Amara' },
+      { dom, play, getFlow: () => null, sfx: createSfxController({ enabled: false }), announcer },
+      { showRewardBundles: vi.fn(), maybeShowPendingChapterPrompt: vi.fn(), revealBoardScene: vi.fn() },
+    )
+    expect(announcer.say).toHaveBeenCalledTimes(1)
+    expect(announcer.say.mock.calls[0]![0]).toMatch(/^Black queen d8 to h4, checkmate\. .*Amara\.$/)
+  })
+
   it('keeps check and thinking on the status pill', () => {
     const chess = new Chess()
     const dom = refs()

@@ -1,6 +1,7 @@
 import type { ChessUiPayload } from '../gameFlow'
 import type { RewardBundle } from '../../types'
 import { ANNOUNCE_TEMPLATES, STATUS_LABELS } from '../../data/strings'
+import { describeMove } from '../a11y/moveSpeech'
 import { syncPhoneHitTarget } from '../labModal'
 import {
   BOSS_PROFILE_RE,
@@ -40,10 +41,15 @@ export function applyChessUi(
 ): void {
   const { dom, play, getFlow, sfx, announcer } = rt
   const flowRef = getFlow()
+  /* Speak the opponent's reply: screen-reader players otherwise hear only whose
+     turn it is and must explore the board to find what moved. */
+  let spokenMove = ''
   if (p.sanLog.length > play.prevSanLen) {
     for (let i = play.prevSanLen; i < p.sanLog.length; i++) {
       sfx.playMoveSfx(p.sanLog[i] ?? '', p.sanQuality[i] ?? null)
     }
+    const last = p.chess.history({ verbose: true }).at(-1)
+    if (last && last.color !== p.playerColor) spokenMove = describeMove(last)
   }
   play.prevSanLen = p.sanLog.length
 
@@ -306,17 +312,21 @@ export function applyChessUi(
           : p.matchOutcome === 'loss'
             ? ANNOUNCE_TEMPLATES.matchLoss
             : ANNOUNCE_TEMPLATES.matchDraw
-      announcer.say(`${tmpl} ${rival}.`)
+      /* One message: a second say() in the same render replaces the first. */
+      announcer.say(`${spokenMove ? `${spokenMove} ` : ''}${tmpl} ${rival}.`)
+      spokenMove = ''
     }
   } else if (sealedQuiet) {
     const key = `sealed|${p.ledgerFp}`
     if (key !== play.announcedOutcomeKey) {
       play.announcedOutcomeKey = key
-      announcer.say(ANNOUNCE_TEMPLATES.proofSealed)
+      announcer.say(`${spokenMove ? `${spokenMove} ` : ''}${ANNOUNCE_TEMPLATES.proofSealed}`)
+      spokenMove = ''
     }
   } else if (play.announcedOutcomeKey) {
     play.announcedOutcomeKey = ''
   }
+  if (spokenMove) announcer.say(spokenMove)
 
   const rewards = flowRef?.consumePendingRewards() ?? []
   if (rewards.length) {

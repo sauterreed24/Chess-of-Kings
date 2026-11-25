@@ -11,6 +11,14 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.141] — 2026-11-25
+
+Pass 149 — hear the rival's move:
+
+- **Screen readers** — the opponent's reply was never announced: live regions said only "Thinking…" and "White to move.", so a screen-reader player had to explore the board square by square after every move. The rival's (or Archive's) move is now spoken through the live announcer, e.g. "Black pawn d7 to d5.", "White bishop c4 takes pawn on f7, check.", "Black castles queenside." A move that ends the game is folded into the single outcome announcement so it is not overwritten. The player's own moves are not repeated.
+- **Tests** — `moveSpeech.test.ts` (quiet, capture, check, castling, en passant, promotion, mate) and two `applyChessUi` cases (reply spoken once, own move silent; mating reply folded into the outcome) that fail without the hook.
+- Docs: [`docs/PASS149_SPOKEN_REPLIES.md`](docs/PASS149_SPOKEN_REPLIES.md).
+
 ## [0.5.140] — 2026-11-25
 
 Pass 148 — offline after one visit:

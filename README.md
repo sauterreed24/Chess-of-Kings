@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.140)
+## What's new in this release (v0.5.141)
+
+**Pass 149 — hear the rival's move** — screen readers now announce the opponent's reply ("Black pawn d7 to d5.", captures, checks, castling, promotion, mate) instead of only whose turn it is. See [`docs/PASS149_SPOKEN_REPLIES.md`](docs/PASS149_SPOKEN_REPLIES.md).
+
+## Previous release (v0.5.140)
 
 **Pass 148 — offline after one visit** — the installed app now starts offline after a single online visit (previously the first visit cached only the HTML), the AI search worker is cached ahead of play, and a failed worker no longer stalls every other AI move for several seconds. See [`docs/PASS148_OFFLINE_FIRST_VISIT.md`](docs/PASS148_OFFLINE_FIRST_VISIT.md).
 
