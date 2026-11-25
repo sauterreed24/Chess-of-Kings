@@ -83,10 +83,10 @@
   /* Gold — the Alexandrine constant */
   --gold:       #c9a96a;
   --gold-bright:#e8c97e;
-  --gold-dim:   #7d6a38;
+  --gold-dim:   #a38b56;
 
   /* Text utility */
-  --muted:  #8a8275;
+  --muted:  #9d9686;
   --accent: #d4c4a0;
   /* Typography */
   --font-display:     'Cinzel', serif;
@@ -328,7 +328,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .kicker {
   font-family: var(--font-display);
   font-size: 0.62rem; letter-spacing: 0.42em; text-transform: uppercase;
-  color: var(--gold-dim); margin: 0 0 .78rem;
+  color: var(--gold-bright); margin: 0 0 .78rem;
+  text-shadow: 0 1px 3px #000;
 }
 
 .display-title {
@@ -416,6 +417,8 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   border: 1px solid rgba(201,169,98,0.3);
   border-radius: 3px;
   font-family: var(--font-body);
+  /* Readable in Cormorant, and at least 16px so iOS does not zoom on focus. */
+  font-size: 1rem;
 }
 
 .section-heading {
@@ -1040,7 +1043,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 .line[data-voice='system'] { --v: 122,180,140; }
 .line[data-voice='scholar'] { --v: 196,144,96; }
 .line[data-voice='fire'] { --v: 214,94,66; }
-.line[data-voice='archive'] { --v: 138,130,117; }
+.line[data-voice='archive'] { --v: 157,150,134; }
 .line--stagger {
   animation: line-in 0.55s var(--ease-out) both;
   animation-delay: var(--line-delay, calc(var(--d) * 0.06s));
@@ -1056,8 +1059,9 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   letter-spacing: 0.24em; text-transform: uppercase;
   color: var(--gold-dim); margin-bottom: 0.28rem;
 }
-/* Speaker identity colors — Hellenistic cast */
-.line .who { color: rgb(var(--v)); }
+/* Speaker identity colors — Hellenistic cast. Lifted toward white: the line is
+   tinted with the same voice, so the pure hue read at ~2:1 on it. */
+.line .who { color: color-mix(in srgb, rgb(var(--v)) 55%, #fff); text-shadow: 0 1px 2px #000; }
 
 .said { margin: 0; font-size: 1.08rem; color: var(--marble); line-height: 1.52; }
 
@@ -1085,7 +1089,7 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
   border: 1px solid rgba(var(--v),0.56);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(var(--v),0.38), #0006 66%);
-  color: rgb(var(--v));
+  color: color-mix(in srgb, rgb(var(--v)) 55%, #fff);
   font-size: 0.52rem;
   box-shadow: 0 0 0 3px #0007, 0 0 22px rgba(var(--v),.3), inset 0 0 9px rgba(var(--v),.22);
   text-shadow: 0 0 18px rgba(var(--v),0.46);
@@ -2339,7 +2343,7 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
 .chapter-btn__state,
 .duel-row__stamp {
   align-self: center;
-  justify-self: end;
+  justify-self: start;
   padding: 0.22rem 0.46rem;
   border: 1px solid rgba(201,169,98,0.26);
   border-radius: 999px;
@@ -2368,8 +2372,9 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   top: 1rem;
 }
 
+/* One column: a stamp beside the text squeezed rival names into three lines. */
 .duel-row {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   min-height: 4.2rem;
 }
 

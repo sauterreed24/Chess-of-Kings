@@ -372,7 +372,10 @@ export function carveGlyph(svg: string, color: Color, piece: PieceSymbol = 'p'):
       `<feSpecularLighting in="b" surfaceScale="1.8" specularConstant=".55" specularExponent="10" lighting-color="${lamp.spec}" result="f">` +
       `<fePointLight x="46" y="-6" z="22"/></feSpecularLighting>` +
       `<feComposite in="s" in2="f" operator="arithmetic" k1="0" k2="1" k3=".62" k4="0" result="gl"/>` +
-      `<feComposite in="sh" in2="gl" operator="arithmetic" k1="0" k2="1" k3="1.12" k4="0"/>` +
+      `<feComposite in="sh" in2="gl" operator="arithmetic" k1="0" k2="1" k3="1.12" k4="0" result="o"/>` +
+      /* Lighting maps are opaque across the whole filter region; clip the lit
+         result to the piece so it is not drawn on a rectangular plate. */
+      `<feComposite in="o" in2="SourceAlpha" operator="in"/>` +
       `</filter>`
   const filterAttr = lean ? '' : ` filter="url(#${id}f)"`
   const defs = `<defs>${gradient}${lampFilter}</defs>`

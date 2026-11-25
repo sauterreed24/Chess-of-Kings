@@ -11,6 +11,18 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.139] — 2026-11-25
+
+Pass 147 — pieces on the marble, readable labels:
+
+- **Pieces** — every carved piece, on the board and in the title row, was drawn on a translucent rectangular plate (grey behind Black, cream behind White) that hid the rank marks. The lamp filter's diffuse term added the opaque lighting map over the whole filter region; the lit result is now clipped to the piece's alpha. Piece shading is unchanged.
+- **Text tokens** — `--gold-dim` #7d6a38 → #a38b56 and `--muted` #8a8275 → #9d9686: kickers, chapter indices, era labels, ledger and story-beat labels, captions, and speaker names go from ~3–3.8:1 to ≥4.5:1 on the panels while staying dimmer than `--gold`. Text below AA in a two-device scan of title, chapters, scene, board, and duel dropped from 121 elements to 30, mostly locked/sealed states.
+- **Dialogue** — speaker names and seals are lifted toward white (with a dark text-shadow on the names) so they read over their own voice tint; the Archive voice uses the new muted tone.
+- **Title** — the kicker is bright gold with a dark lift over the hero glow (1.1–1.8:1 → legible).
+- **Duel Archive** — rival rows stack their stamp under the text, so names and era kickers no longer wrap into three or four lines; selects render at 1rem (readable, and iOS no longer zooms on focus).
+- **Tests** — carveGlyph's final primitive must clip to `SourceAlpha`; `textContrastCss.test.ts` checks the text tokens at AA on `--ink`/`--panel`/`--panel-elevated` and pins the label, row, and select rules.
+- Docs: [`docs/PASS147_PIECES_ON_MARBLE.md`](docs/PASS147_PIECES_ON_MARBLE.md).
+
 ## [0.5.138] — 2026-11-25
 
 Pass 146 — honest puzzles, truthful recap, landscape board:
