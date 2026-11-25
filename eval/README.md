@@ -27,6 +27,7 @@ achieves a "castle / piece on square / mate" goal they play it, as a player read
 - Env: `EVAL_ONLY=<scene id substring>`, `EVAL_BOTS=club,skilled`, `EVAL_ATTEMPTS` (default 3),
   `EVAL_SERIES`, `EVAL_VERBOSE=1` (per-series lines).
 - `node eval/run.mjs --compare eval/results/a.json eval/results/b.json`.
+- `node eval/rescore.mjs <label> [newLabel]` — re-score saved records after fixing a check.
 
 ## Not covered (needs a human or device)
 Feel, look, sound, touch controls, real phone engine speed, and whether a rival *feels* fair.

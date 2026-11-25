@@ -62,9 +62,9 @@ for (let i = 0; i < shards; i++) {
 const scorecard = scoreRun(records)
 mkdirSync('eval/results', { recursive: true })
 const resultFile = `eval/results/${label}.json`
-writeFileSync(
-  resultFile,
-  JSON.stringify({ seedset, series: env.EVAL_SERIES, attempts: env.EVAL_ATTEMPTS, scorecard, records }, null, 1),
-)
+const meta = { seedset, series: env.EVAL_SERIES, attempts: env.EVAL_ATTEMPTS }
+/* Compact scorecard is committed; full game records stay in eval/out (gitignored). */
+writeFileSync(resultFile, JSON.stringify({ ...meta, scorecard }, null, 1))
+writeFileSync(`eval/out/${label}-records.json`, JSON.stringify({ ...meta, records }))
 console.log(formatScorecard(scorecard))
 console.log(`\nwrote ${resultFile} in ${((Date.now() - t0) / 1000).toFixed(0)}s`)
