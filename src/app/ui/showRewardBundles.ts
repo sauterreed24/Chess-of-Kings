@@ -114,11 +114,10 @@ export function buildRewardOverlayHtml(
           <ul>${deltaLines}</ul>
         </div>
         <p class="chapters-lede">Rank: ${rankLabel(rp)} · ${rp} RP</p>
-        <p class="chapters-lede reward-rating">Next seal: <strong>${escapeHtml(next.nextLabel)}</strong> in ${rpToNext} RP.</p>
         ${buildRatingSummaryLine(flow)}
         <div class="reward-progress">
-          <div class="reward-progress__label">Next seal: ${escapeHtml(next.nextLabel)} at ${next.next} RP</div>
-          <div class="reward-progress__bar"><div class="reward-progress__fill" style="width:${progress.toFixed(1)}%"></div></div>
+          <div class="reward-progress__label" id="reward-progress-label">Next seal: <strong>${escapeHtml(next.nextLabel)}</strong> · ${rpToNext} RP to go (${next.next} RP)</div>
+          <div class="reward-progress__bar" role="progressbar" aria-labelledby="reward-progress-label" aria-valuemin="${next.currentFloor}" aria-valuemax="${next.next}" aria-valuenow="${Math.min(rp, next.next)}"><div class="reward-progress__fill" style="width:${progress.toFixed(1)}%"></div></div>
         </div>
         <div class="echo-controls">
           ${canQuickRematch ? '<button type="button" class="ghost" id="btn-reward-rematch">Quick Rematch</button>' : ''}

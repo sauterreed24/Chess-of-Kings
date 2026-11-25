@@ -81,6 +81,19 @@ describe('turningPointLine', () => {
     expect(turningPointLine({ sanLog, sanQuality })).toBe('3. Bb5')
   })
 
+  it('names the first blunder before the first good move when no trace survives', () => {
+    /* A resumed session: the trace is gone, so the rival's 3...Nf6?? decides it, not 1. e4. */
+    const sanLog = ['e4', 'e5', 'Bc4', 'Nc6', 'Qh5', 'Nf6', 'Qxf7#']
+    const sanQuality: MoveQuality[] = ['good', 'good', 'good', 'good', 'ok', 'blunder', 'good']
+    expect(turningPointLine({ sanLog, sanQuality })).toBe('3... Nf6')
+  })
+
+  it('names the first mistake when there is no blunder or brilliancy', () => {
+    const sanLog = ['d4', 'd5', 'c4', 'e5']
+    const sanQuality: MoveQuality[] = ['good', 'ok', 'good', 'mistake']
+    expect(turningPointLine({ sanLog, sanQuality })).toBe('2... e5')
+  })
+
   it('falls back to first good move when no brilliancy', () => {
     const sanLog = ['e4', 'e5', 'Nf3', 'Nc6']
     const sanQuality: MoveQuality[] = ['ok', null, 'good', null]

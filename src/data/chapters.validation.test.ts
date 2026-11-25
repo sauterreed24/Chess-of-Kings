@@ -390,6 +390,33 @@ describe('PLAYABLE_CHAPTERS — FENs & solvable goals', () => {
             })
             expect(reached).toBe(true)
           })
+
+          /* The game seals an advantage puzzle the moment the player's move
+             crosses the threshold, before the reply. A solution the opponent
+             can immediately win back teaches the opposite of the lesson. */
+          it(`${ch.id} / ${sc.id}: every accepted move keeps the threshold after the best reply`, () => {
+            const c = new Chess(sc.fen)
+            const accepted = c.moves({ verbose: true }).filter((m) => {
+              const t = new Chess(sc.fen)
+              t.move(m.san)
+              return materialAdvantage(t, sc.playerColor) >= goal.minCp
+            })
+            expect(accepted.length).toBeGreaterThan(0)
+            const refuted = accepted.flatMap((m) => {
+              const t = new Chess(sc.fen)
+              t.move(m.san)
+              const replies = t.moves()
+              const worst = Math.min(
+                ...replies.map((r) => {
+                  const u = new Chess(t.fen())
+                  u.move(r)
+                  return materialAdvantage(u, sc.playerColor)
+                }),
+              )
+              return replies.length > 0 && worst < goal.minCp ? [`${m.san} (${Math.round(worst)})`] : []
+            })
+            expect(refuted).toEqual([])
+          })
         }
 
         if (sc.goal.kind === 'pieceOn') {
@@ -405,6 +432,24 @@ describe('PLAYABLE_CHAPTERS — FENs & solvable goals', () => {
             )
             expect(hits.length).toBeGreaterThan(0)
           })
+
+          /* A fork or outpost that the reply simply captures teaches the
+             opposite of its lesson, even though the goal square was reached. */
+          if (goal.pieceType !== 'k') {
+            it(`${ch.id} / ${sc.id}: no reply captures the placed piece`, () => {
+              const placements = new Chess(sc.fen)
+                .moves({ verbose: true })
+                .filter((m) => m.to === goal.square && m.piece === goal.pieceType)
+              const lost = placements.flatMap((m) => {
+                const t = new Chess(sc.fen)
+                t.move(m.san)
+                return t.moves({ verbose: true }).some((r) => r.to === goal.square && r.captured)
+                  ? [m.san]
+                  : []
+              })
+              expect(lost).toEqual([])
+            })
+          }
         }
       }
 

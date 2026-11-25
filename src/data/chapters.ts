@@ -326,7 +326,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           body: 'Before Reed can plan, he has to learn attention. A loose piece is the board admitting where discipline has failed.',
           tone: 'quiet',
         },
-        fen: '8/8/8/4k3/3n4/2B5/8/3K4 w - - 0 1',
+        fen: '8/8/5k2/8/3n4/2B5/8/3K4 w - - 0 1',
         playerColor: 'w',
         goal: { kind: 'advantage', minCp: 250 },
         lesson:
@@ -335,10 +335,10 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           threat:
             'If you do nothing, the knight can retreat or create counterplay. Loose pieces do not stay loose forever.',
           goalPlain:
-            'Win material by capturing the undefended knight with your bishop — the check forces the king away before it can recapture.',
+            'Win material by capturing the undefended knight with your bishop. The capture is also check, and nothing can take back.',
           goalBrief: 'Take the loose knight on d4 with the bishop.',
           whyItWorks:
-            'A checking capture is a "free" capture: the opponent must answer the check first, and by the time they do, you have already kept the piece.',
+            'A capture is free only when nothing can take back. No black piece guards d4, and the king on f6 is too far to recapture. The check also forces Black to spend the reply on the king.',
           concept:
             'Undefended pieces are invitations. Always ask: what is loose on the other side?',
         },
@@ -357,7 +357,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           },
           {
             speaker: 'reed',
-            text: 'A check buys the move. The king has to move before it can recapture.',
+            text: 'Nothing guarded it, and the king stood too far away to take back. The check meant Black had to answer the king first.',
           },
           {
             speaker: 'alexion',
@@ -1676,19 +1676,20 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         storyBeat: {
           label: 'Tactical pressure',
           title: 'The long diagonal finishes loud',
-          body: 'Hypermodern geometry is patient until the battery arrives. Then the empty back rank becomes a verdict.',
+          body: 'Hypermodern geometry is patient until the battery arrives. Then the cornered king becomes a verdict.',
           tone: 'fire',
         },
-        fen: '6k1/5ppp/8/8/8/6PQ/5PBP/6K1 w - - 0 1',
+        fen: 'k2r4/pp6/8/8/8/5QP1/5PBP/6K1 w - - 0 1',
         playerColor: 'w',
         goal: { kind: 'mate' },
         lesson:
-          'Queen and fianchetto bishop share the long diagonal. One quiet-looking geometry ends the game.',
+          'Queen on f3, bishop on g2: both stand on the long diagonal, aimed at b7. One capture there ends the game.',
         teaching: {
-          threat: 'If you shuffle without using the diagonal, Black makes luft and the battery loses its lawsuit.',
+          threat: 'If you shuffle without using the diagonal, Black plays ...b6 and the battery loses its target.',
           goalPlain: 'Deliver checkmate using the queen-and-bishop battery.',
+          goalBrief: 'Mate on b7 with the queen, backed by the bishop.',
           whyItWorks:
-            'Qc8# seals the back rank while the g2-bishop owns the escape geometry — paradox ending as force.',
+            'Qxb7# works because the g2-bishop stands behind the queen: the king cannot take back, and the queen covers b8. The fianchetto waited all game to matter.',
           concept: 'Delayed ownership can still mate.',
         },
       },
@@ -3019,7 +3020,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           body: 'King boxed by his own pawns. The rook already stares down the g-file. The queen files g7. Finish; do not convene another court.',
           tone: 'fire',
         },
-        fen: '6k1/5ppp/8/8/8/2Q5/5P1P/6RK w - - 0 1',
+        fen: '3r2k1/5ppp/8/8/8/2Q5/5P1P/6RK w - - 0 1',
         playerColor: 'w',
         goal: { kind: 'mate' },
         lesson:
@@ -3328,7 +3329,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           body: 'King and queen share a knight landing. The compiled school expects you to check the king only. Name both.',
           tone: 'pressure',
         },
-        fen: '4k3/pqp5/8/8/4N3/8/PPP5/4K3 w - - 0 1',
+        fen: '4k3/pq6/2p5/8/4N3/8/PPP5/4K3 w - - 0 1',
         playerColor: 'w',
         goal: { kind: 'pieceOn', square: 'd6', color: 'w', pieceType: 'n' },
         lesson:

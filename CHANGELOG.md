@@ -11,6 +11,22 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.138] — 2026-11-25
+
+Pass 146 — honest puzzles, truthful recap, landscape board:
+
+- **Story / puzzles** — four teaching puzzles taught something the board contradicted:
+  - *The hanging knight* (Chapter I's first puzzle): after Bxd4+ the king on e5 simply took back, leaving king vs king. The king now starts on f6, so the capture really is free; the lesson and Reed's line now say why.
+  - *Diagonal battery* (IV): claimed a queen-and-bishop battery, but Qc8# was a plain back-rank mate with the bishop idle. Rebuilt so Qf3xb7# is mate only because the g2-bishop guards b7.
+  - *Notarized finish* (VIII): Qc8# also mated, bypassing the lesson; a black rook on d8 leaves Qxg7# as the only mate.
+  - *Fork the compiled queen* (IX): the c7 pawn captured the forking knight (cxd6). The pawn now stands on c6.
+- **Validation** — every advantage puzzle must keep its threshold after the opponent's best reply, and no piece-placement puzzle may leave the placed piece capturable. Both locks fail on the old data.
+- **Recap** — "Next seal" appears once, with RP to go and the target, and the bar is a labelled `progressbar`. When the eval trace is unavailable (resumed games), the turning point names the first blunder or mistake instead of the first "good" move (usually 1. e4).
+- **Landscape phones** — the board takes the left column at the full visible height, with the guide, ledger, and tools beside it (calibration 146 → 203px; duel no longer clipped behind the lab bar). Compact board fit now measures the visible scroll band at rest (ignoring the lab slide-in transform), sizes the board before revealing it, and reveals the marble rather than the whole stage.
+- **Bundle** — `duelRoster` and `rewards` (pure data) join the preloaded `game-data` chunk: index JS 101,374 → 94,606 gzip. Fourteen unused palette tokens removed: CSS 18,327 / 18,400.
+- **Tests** — puzzle invariants, recap progressbar and turning-point cases, scroll-band fit, and Playwright landscape tests for calibration and duel.
+- Docs: [`docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md`](docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md).
+
 ## [0.5.137] — 2026-11-25
 
 Pass 145 — full board on touch phones:

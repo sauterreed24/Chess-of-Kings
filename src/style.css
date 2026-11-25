@@ -69,44 +69,25 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Core stone / dark palette */
+  /* Core palette. Unused lapis / verdigris / crimson / stone tokens were
+     removed in Pass 146; the inline hex values in rules remain the source. */
   --ink:            #080706;
-  --ink-mid:        #0f0d0a;
-  --stone:          #181410;
   --panel:          #131109;
   --panel-elevated: #1a1710;
-  --stone-light:    #252018;
 
   /* Marble & ivory */
   --ivory:      #e8e4d8;
   --ivory-dim:  #c4c0b4;
   --marble:     #ede9de;
-  --marble-dim: #c8c3b5;
 
   /* Gold — the Alexandrine constant */
   --gold:       #c9a96a;
   --gold-bright:#e8c97e;
   --gold-dim:   #7d6a38;
-  --gold-pale:  rgba(201, 169, 98, 0.18);
-
-  /* Lapis lazuli — the Egyptian pigment */
-  --lapis:        #1a3a5c;
-  --lapis-mid:    #1e4470;
-  --lapis-bright: #2a6094;
-  --lapis-pale:   rgba(26, 58, 92, 0.55);
-
-  /* Verdigris — oxidised bronze */
-  --verdigris:    #3a6858;
-  --verdigris-dim:#2a4a40;
-
-  /* Crimson — Tyrian purple / Rhodes red */
-  --ember:   #8c2c1e;
-  --crimson: #6e2016;
 
   /* Text utility */
   --muted:  #8a8275;
   --accent: #d4c4a0;
-  --brass:  #6b5c36;
   /* Typography */
   --font-display:     'Cinzel', serif;
   --font-display-dec: 'Cinzel Decorative', serif;
@@ -3391,7 +3372,6 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
   .play-atelier { gap: 1rem; }
   .manuscript-panel,
   .manuscript-panel--with-rail { padding: 1rem 1rem 1.25rem 1.25rem; }
-  .chapter-rail { display: none; }
 
   .instrument-frame { padding: 0.75rem 0.75rem 1rem; }
 
@@ -3896,6 +3876,18 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
       max-width: var(--mobile-board-max, 72vh);
       max-height: var(--mobile-board-max, 72vh);
     }
+  }
+  /* Landscape phones: the board takes the full height on the left and the
+     guide, ledger, and tools sit beside it instead of pushing it below. */
+  @media (max-width: 960px) and (orientation: landscape) {
+    .screen-play--board-scene .instrument-column { width: 100%; max-width: none; }
+    .screen-play--board-scene .instrument-frame {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0 0.8rem;
+    }
+    .screen-play--board-scene .board-stage { grid-area: 1 / 1 / span 9; }
+    .screen-play--board-scene .board-brass { width: var(--mobile-board-max, 60vh); }
   }
   .chapter-title {
     font-size: clamp(1rem, 3.4vw, 1.25rem);

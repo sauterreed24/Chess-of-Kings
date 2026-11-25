@@ -14,6 +14,31 @@ export type MobileBoardFitElements = {
   syncLabNav?: (labOpen: boolean) => void
 }
 
+/** Vertical translation still applied by `el` and its ancestors (e.g. the lab
+ *  sheet sliding in), so a measurement taken mid-transition reads the resting
+ *  position instead. */
+function pendingTranslateY(el: HTMLElement): number {
+  let ty = 0
+  for (let p: HTMLElement | null = el; p; p = p.parentElement) {
+    const m = /^matrix\(([^)]+)\)$/.exec(window.getComputedStyle(p).transform ?? '')
+    if (m) ty += Number(m[1]!.split(',')[5]) || 0
+  }
+  return ty
+}
+
+/** Top and bottom of the nearest scrolling ancestor at rest, clipped to the viewport. */
+function visibleScrollBand(el: HTMLElement, viewportH: number): [number, number] {
+  for (let p = el.parentElement; p; p = p.parentElement) {
+    const overflowY = window.getComputedStyle(p).overflowY
+    if (overflowY === 'auto' || overflowY === 'scroll') {
+      const r = p.getBoundingClientRect()
+      const ty = pendingTranslateY(p)
+      return [Math.max(0, r.top - ty), Math.min(viewportH, r.bottom - ty)]
+    }
+  }
+  return [0, viewportH]
+}
+
 /** Measures non-board chrome and sets `--mobile-board-max` so the grid fits the viewport. */
 export function applyMobileBoardFit({
   playScreen,
@@ -36,14 +61,14 @@ export function applyMobileBoardFit({
     return
   }
 
-  const chromeAbove = Math.max(0, boardWrap.getBoundingClientRect().top)
-
   const viewportW = window.visualViewport?.width ?? window.innerWidth
   const viewportH = window.visualViewport?.height ?? window.innerHeight
   const widthCap = Math.max(0, viewportW - 40)
-  /* Tools under the marble can scroll. Size the grid so the starting ranks
-     stay on screen even when wrap.top is already deep in a short window. */
-  const heightCap = viewportH - chromeAbove - 16
+  /* Fit the marble inside the visible band of its scroll container (below the
+     lab bar), not below wherever it currently sits: Duel labs scroll it into
+     view first, and landscape phones have room only once it is at the top. */
+  const [bandTop, bandBottom] = visibleScrollBand(boardWrap, viewportH)
+  const heightCap = bandBottom - bandTop - 16
   const boardMax = Math.min(widthCap, Math.max(160, heightCap))
 
   if (boardMax > 0) {
@@ -55,21 +80,29 @@ export function applyMobileBoardFit({
 
 export function createMobileBoardFitController(elements: MobileBoardFitElements) {
   const fit = () => applyMobileBoardFit(elements)
-  const apply = () => {
+  /** `afterFit` runs once the new size is set, e.g. to scroll the resized board into view. */
+  const apply = (afterFit?: () => void) => {
     /* Wait through the opening layout before measuring the compact stack. */
-    window.requestAnimationFrame(() => window.requestAnimationFrame(fit))
+    window.requestAnimationFrame(() =>
+      window.requestAnimationFrame(() => {
+        fit()
+        afterFit?.()
+      }),
+    )
   }
 
+  const onResize = () => apply()
+
   const attach = () => {
-    window.visualViewport?.addEventListener('resize', apply)
-    window.addEventListener('orientationchange', apply)
-    window.addEventListener('resize', apply)
+    window.visualViewport?.addEventListener('resize', onResize)
+    window.addEventListener('orientationchange', onResize)
+    window.addEventListener('resize', onResize)
   }
 
   const detach = () => {
-    window.visualViewport?.removeEventListener('resize', apply)
-    window.removeEventListener('orientationchange', apply)
-    window.removeEventListener('resize', apply)
+    window.visualViewport?.removeEventListener('resize', onResize)
+    window.removeEventListener('orientationchange', onResize)
+    window.removeEventListener('resize', onResize)
     elements.playScreen.style.removeProperty('--mobile-board-max')
   }
 

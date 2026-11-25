@@ -1264,15 +1264,26 @@ export function mountApp(app: HTMLDivElement) {
     window.requestAnimationFrame(() => {
       const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
       const compact = window.matchMedia?.(COMPACT_MEDIA_QUERY).matches
-      if (!compact) playScreen.scrollTop = 0
-      const target = compact ? boardStage : moveLedger
-      if (!target || typeof target.scrollIntoView !== 'function') return
-      try {
-        target.scrollIntoView({ block: compact ? 'nearest' : 'end', behavior: reduce ? 'auto' : 'smooth' })
-      } catch {
-        target.scrollIntoView(true)
+      const reveal = (target: HTMLElement | null, block: ScrollLogicalPosition) => {
+        if (!target || typeof target.scrollIntoView !== 'function') return
+        try {
+          target.scrollIntoView({ block, behavior: reduce ? 'auto' : 'smooth' })
+        } catch {
+          target.scrollIntoView(true)
+        }
       }
-      window.requestAnimationFrame(() => mobileBoardFit.apply())
+      if (!compact) {
+        playScreen.scrollTop = 0
+        reveal(moveLedger, 'end')
+        window.requestAnimationFrame(() => mobileBoardFit.apply())
+        return
+      }
+      /* Compact: size the marble first, then reveal the marble itself. The
+         stage adds captured rows; when it outgrew a landscape band, 'nearest'
+         aligned its bottom and hid the top ranks behind the lab bar. */
+      mobileBoardFit.apply(() =>
+        reveal(boardStage.querySelector<HTMLElement>('.board-brass') ?? boardStage, 'nearest'),
+      )
     })
   }
 

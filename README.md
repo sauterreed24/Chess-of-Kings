@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.137)
+## What's new in this release (v0.5.138)
+
+**Pass 146 — honest puzzles, truthful recap, landscape board** — four teaching puzzles whose positions contradicted their lessons are rebuilt (Chapter I's first puzzle let the king simply take back), and new validation keeps every puzzle's solution standing after the best reply. The victory recap states the next seal once and names the real turning point after a resume. Landscape phones get the board at full height beside the tools. See [`docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md`](docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md).
+
+## Previous release (v0.5.137)
 
 **Pass 145 — full board on touch phones** — on a real phone-height Safari viewport the board is square again and shows all eight ranks; the touch-target floor for buttons no longer stretches the 64 board squares past the marble. The calibration "inscribed" counter is readable on its brass backdrop. See [`docs/PASS145_TOUCH_BOARD_FIT.md`](docs/PASS145_TOUCH_BOARD_FIT.md).
 

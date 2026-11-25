@@ -209,6 +209,42 @@ describe('mobileBoardFit', () => {
     expect(playScreen.style.getPropertyValue('--mobile-board-max')).toBe('350px')
   })
 
+  it('fits the board inside the visible scroll band, wherever it is scrolled', () => {
+    vi.mocked(window.matchMedia).mockReturnValue({
+      matches: true,
+      media: COMPACT_MEDIA_QUERY,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      onchange: null,
+    } as MediaQueryList)
+    /* Landscape phone: the play screen scrolls between the lab bar (y=109) and
+       the bottom of a 342px viewport. The duel lab had scrolled the board to
+       y=0, which used to read as "no chrome above" and sized it 326px. */
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 750 })
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 342 })
+    document.body.innerHTML = `
+      <div id="lab-overlay" class="lab-overlay lab-overlay--active"></div>
+      <section id="screen-play" class="screen-play--board-scene" style="overflow-y: auto">
+        <div id="board-stage"><div class="board-wrap"></div></div>
+      </section>
+    `
+    const playScreen = document.querySelector<HTMLElement>('#screen-play')!
+    const boardStage = document.querySelector<HTMLElement>('#board-stage')!
+    const boardWrap = boardStage.querySelector<HTMLElement>('.board-wrap')!
+    const labOverlay = document.querySelector<HTMLElement>('#lab-overlay')!
+    mockRect(playScreen, { top: 109, height: 233, width: 750 })
+
+    for (const top of [0, 116, 300]) {
+      mockRect(boardWrap, { top, width: 312, height: 312 })
+      applyMobileBoardFit({ playScreen, boardStage, labOverlay })
+      /* 342 - 109 - 16 */
+      expect(playScreen.style.getPropertyValue('--mobile-board-max')).toBe('217px')
+    }
+  })
+
   it('detach removes listeners and clears board max variable', () => {
     const playScreen = document.createElement('section')
     playScreen.id = 'screen-play'

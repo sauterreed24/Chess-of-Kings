@@ -79,7 +79,7 @@ describe('Chapter IV playtest', () => {
 
     expect(flow.currentScene().id).toBe('c4-puzzle-battery')
     expect(flow.canAdvance()).toBe(false)
-    flow.tryPlayerMove('h3', 'c8')
+    flow.tryPlayerMove('f3', 'b7')
     expect(flow.chess.isCheckmate()).toBe(true)
     expect(flow.canAdvance()).toBe(true)
     flow.advanceScene()

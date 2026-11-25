@@ -1670,12 +1670,13 @@ async function walkChapterIVDrillsToMate(page: Page) {
   await page.locator('[data-square="d5"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
   await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="h3"]')).toBeVisible()
+  await expect(page.locator('[data-square="f3"]')).toBeVisible()
 }
 
-async function playQc8Mate(page: Page) {
-  await page.locator('[data-square="h3"]').click()
-  await page.locator('[data-square="c8"]').click()
+/** The diagonal battery: Qf3xb7#, guarded from behind by the g2-bishop. */
+async function playBatteryMate(page: Page) {
+  await page.locator('[data-square="f3"]').click()
+  await page.locator('[data-square="b7"]').click()
   await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
 }
@@ -4172,7 +4173,7 @@ test('Chapter IV drills solve on the live board', async ({ page }) => {
   await page.addInitScript(seedChapterIVUnlocked)
   await page.goto('./')
   await walkChapterIVDrillsToMate(page)
-  await playQc8Mate(page)
+  await playBatteryMate(page)
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/Nysa|frontier/i)
 })
@@ -4224,11 +4225,11 @@ test('Chapter IV drills stay board-first on the phone instrument', async ({ page
   await page.locator('[data-square="d5"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
   await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="h3"]')).toBeVisible()
+  await expect(page.locator('[data-square="f3"]')).toBeVisible()
   await expect(page.locator('#manuscript-panel')).toBeHidden()
   await expect(page.locator('#turn-pulse')).toBeHidden()
-  await page.locator('[data-square="h3"]').click()
-  await page.locator('[data-square="c8"]').click()
+  await page.locator('[data-square="f3"]').click()
+  await page.locator('[data-square="b7"]').click()
   await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
   await page.locator('#btn-next').click()
@@ -4243,7 +4244,7 @@ test('first Chapter IV match lets Reed open against Nysa', { timeout: 120_000 },
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('./')
   await walkChapterIVDrillsToMate(page)
-  await playQc8Mate(page)
+  await playBatteryMate(page)
   await advanceToNysaMatch(page)
   await expect(page.locator('#narrative-body .match-card__name')).toContainText('Nysa')
   await expect(page.locator('[data-square="e2"] .piece-lit')).toBeVisible()
@@ -4269,7 +4270,7 @@ test('first Chapter IV match stays board-first on the phone instrument', { timeo
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
   await walkChapterIVDrillsToMate(page)
-  await playQc8Mate(page)
+  await playBatteryMate(page)
   await advanceToNysaMatch(page)
   await expect(page.locator('#narrative-body .match-card__name')).toContainText('Nysa')
   await expect(page.locator('[data-square="e2"] .pawn-silhouette')).toBeVisible()
@@ -5566,5 +5567,47 @@ test.describe('touch phone at Safari height', () => {
     await expect(page.locator('#move-ledger')).toContainText('e4')
     const after = await fit()
     expect(after.a8.top).toBeGreaterThanOrEqual(after.grid.top - 1)
+  })
+})
+
+test.describe('touch phone in landscape', () => {
+  test.use({ viewport: { width: 750, height: 342 }, hasTouch: true, isMobile: true })
+
+  async function boardInsideBand(page: Page) {
+    return page.evaluate(() => {
+      const band = document.querySelector('#screen-play')!.getBoundingClientRect()
+      const grid = document.querySelector('.chess-grid')!.getBoundingClientRect()
+      return { band, grid }
+    })
+  }
+
+  async function boardFits(page: Page) {
+    const { band, grid } = await boardInsideBand(page)
+    /* Sized by the fit (not the pre-fit frame) and settled after the smooth reveal. */
+    return grid.width > 180 && grid.top >= band.top - 1 && grid.bottom <= band.bottom + 1
+  }
+
+  test('calibration board sits fully inside the visible band beside the tools', async ({ page }) => {
+    await page.goto('./')
+    await page.locator('#btn-enter-archive').click()
+    await page.locator('.chapter-btn').first().click()
+    await page.locator('#btn-skip-ahead').click()
+    await expect(page.locator('[data-square="e2"]')).toBeVisible()
+    await expect.poll(() => boardFits(page)).toBe(true)
+    const { grid } = await boardInsideBand(page)
+    expect(grid.width).toBeGreaterThan(180)
+    const guide = await page.locator('#board-guide').boundingBox()
+    expect(guide!.x).toBeGreaterThan(grid.right)
+  })
+
+  test('duel board sits fully inside the visible band, not behind the lab bar', async ({ page }) => {
+    await page.goto('./')
+    await page.locator('#btn-duel').click()
+    await page.locator('.duel-row').first().click()
+    await page.locator('#btn-start-duel').click()
+    await expect(page.locator('[data-square="e2"]')).toBeVisible()
+    /* The reveal scrolls smoothly, so wait for the board to settle in the band. */
+    await expect.poll(() => boardFits(page)).toBe(true)
+    expect((await boardInsideBand(page)).grid.width).toBeGreaterThan(180)
   })
 })
