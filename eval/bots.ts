@@ -6,7 +6,8 @@
              someone who just learned the rules.
    club    — shallow calculator: 3-ply spectrum search, samples among moves
              within ~a pawn of its best with a soft preference. Plays
-             sensibly, misses deeper tactics.
+             sensibly, misses deeper tactics; knows basic mating technique
+             (deeper best-move search once clearly won with ≤ 8 pieces).
    skilled — node-limited engine (40k nodes, ~5-6 plies), always its best
              move. A strong club player who rarely drops material. */
 
@@ -48,11 +49,21 @@ function pick(chess: Chess, uci: string): Move | null {
   return chess.moves({ verbose: true }).find((m) => `${m.from}${m.to}${m.promotion ?? ''}` === uci) ?? null
 }
 
+function pieceCount(chess: Chess): number {
+  return chess.board().flat().filter((p) => p && p.type !== 'k').length
+}
+
 function clubMove(chess: Chess, historyFens: string[]): Move | null {
   const result = searchFen(chess.fen(), { maxDepth: 3, maxNodes: 20_000, spectrum: true, freshTable: true, historyFens })
   const roots = result.rootMoves
   if (roots.length === 0) return chess.moves({ verbose: true })[0] ?? null
   const top = roots[0]!.score
+  /* Technique: a club player knows the basic mates. Clearly won with few
+     pieces left, they play purposefully instead of sampling. */
+  if (top >= 500 && pieceCount(chess) <= 8) {
+    const deep = searchFen(chess.fen(), { maxDepth: 9, maxNodes: 60_000, freshTable: true, historyFens })
+    if (deep.move) return pick(chess, deep.move.uci)
+  }
   const band = roots.filter((r) => r.score >= top - 90)
   const weights = band.map((r) => Math.exp((r.score - top) / 35))
   const total = weights.reduce((a, b) => a + b, 0)
