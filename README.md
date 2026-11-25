@@ -109,7 +109,27 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.136)
+## What's new in this release (v0.5.141)
+
+**Pass 149 — hear the rival's move** — screen readers now announce the opponent's reply ("Black pawn d7 to d5.", captures, checks, castling, promotion, mate) instead of only whose turn it is. See [`docs/PASS149_SPOKEN_REPLIES.md`](docs/PASS149_SPOKEN_REPLIES.md).
+
+## Previous release (v0.5.140)
+
+**Pass 148 — offline after one visit** — the installed app now starts offline after a single online visit (previously the first visit cached only the HTML), the AI search worker is cached ahead of play, and a failed worker no longer stalls every other AI move for several seconds. See [`docs/PASS148_OFFLINE_FIRST_VISIT.md`](docs/PASS148_OFFLINE_FIRST_VISIT.md).
+
+## Previous release (v0.5.139)
+
+**Pass 147 — pieces on the marble, readable labels** — the carved pieces no longer sit on rectangular plates (the lamp filter painted its whole region), dim gold and muted labels now meet WCAG AA on the panels, dialogue speaker names read over their voice tint, and the Duel Archive rows and selects are easier to read. See [`docs/PASS147_PIECES_ON_MARBLE.md`](docs/PASS147_PIECES_ON_MARBLE.md).
+
+## Previous release (v0.5.138)
+
+**Pass 146 — honest puzzles, truthful recap, landscape board** — four teaching puzzles whose positions contradicted their lessons are rebuilt (Chapter I's first puzzle let the king simply take back), and new validation keeps every puzzle's solution standing after the best reply. The victory recap states the next seal once and names the real turning point after a resume. Landscape phones get the board at full height beside the tools. See [`docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md`](docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md).
+
+## Previous release (v0.5.137)
+
+**Pass 145 — full board on touch phones** — on a real phone-height Safari viewport the board is square again and shows all eight ranks; the touch-target floor for buttons no longer stretches the 64 board squares past the marble. The calibration "inscribed" counter is readable on its brass backdrop. See [`docs/PASS145_TOUCH_BOARD_FIT.md`](docs/PASS145_TOUCH_BOARD_FIT.md).
+
+## Previous release (v0.5.136)
 
 **Pass 144 — archive hint square** — Hint marks the one square the archive would play, instead of every legal square of that piece, and plays the advance cue rather than the Take back tone. Hint / Target kickers, phone Title / Chapters / Duel labels, and Sound / Move Guard toggles render at 0.7rem. See [`docs/PASS144_HINT_SQUARE.md`](docs/PASS144_HINT_SQUARE.md).
 

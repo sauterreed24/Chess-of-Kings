@@ -1670,12 +1670,13 @@ async function walkChapterIVDrillsToMate(page: Page) {
   await page.locator('[data-square="d5"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
   await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="h3"]')).toBeVisible()
+  await expect(page.locator('[data-square="f3"]')).toBeVisible()
 }
 
-async function playQc8Mate(page: Page) {
-  await page.locator('[data-square="h3"]').click()
-  await page.locator('[data-square="c8"]').click()
+/** The diagonal battery: Qf3xb7#, guarded from behind by the g2-bishop. */
+async function playBatteryMate(page: Page) {
+  await page.locator('[data-square="f3"]').click()
+  await page.locator('[data-square="b7"]').click()
   await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
 }
@@ -4172,7 +4173,7 @@ test('Chapter IV drills solve on the live board', async ({ page }) => {
   await page.addInitScript(seedChapterIVUnlocked)
   await page.goto('./')
   await walkChapterIVDrillsToMate(page)
-  await playQc8Mate(page)
+  await playBatteryMate(page)
   await page.locator('#btn-next').click()
   await expect(page.locator('#narrative-body')).toContainText(/Nysa|frontier/i)
 })
@@ -4224,11 +4225,11 @@ test('Chapter IV drills stay board-first on the phone instrument', async ({ page
   await page.locator('[data-square="d5"]').click()
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
   await page.locator('#btn-next').click()
-  await expect(page.locator('[data-square="h3"]')).toBeVisible()
+  await expect(page.locator('[data-square="f3"]')).toBeVisible()
   await expect(page.locator('#manuscript-panel')).toBeHidden()
   await expect(page.locator('#turn-pulse')).toBeHidden()
-  await page.locator('[data-square="h3"]').click()
-  await page.locator('[data-square="c8"]').click()
+  await page.locator('[data-square="f3"]').click()
+  await page.locator('[data-square="b7"]').click()
   await expect(page.locator('#board-status')).toContainText(/Checkmate/i)
   await expect(page.locator('#btn-next')).toBeEnabled({ timeout: 20_000 })
   await page.locator('#btn-next').click()
@@ -4243,7 +4244,7 @@ test('first Chapter IV match lets Reed open against Nysa', { timeout: 120_000 },
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('./')
   await walkChapterIVDrillsToMate(page)
-  await playQc8Mate(page)
+  await playBatteryMate(page)
   await advanceToNysaMatch(page)
   await expect(page.locator('#narrative-body .match-card__name')).toContainText('Nysa')
   await expect(page.locator('[data-square="e2"] .piece-lit')).toBeVisible()
@@ -4269,7 +4270,7 @@ test('first Chapter IV match stays board-first on the phone instrument', { timeo
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('./')
   await walkChapterIVDrillsToMate(page)
-  await playQc8Mate(page)
+  await playBatteryMate(page)
   await advanceToNysaMatch(page)
   await expect(page.locator('#narrative-body .match-card__name')).toContainText('Nysa')
   await expect(page.locator('[data-square="e2"] .pawn-silhouette')).toBeVisible()
@@ -5535,4 +5536,113 @@ test('hint marks one archive square and phone chrome stays readable', async ({ p
   expect(from).not.toBe(to)
   await marked.click()
   await expect(page.locator('#move-ledger')).not.toContainText('No moves yet')
+})
+
+test.describe('touch phone at Safari height', () => {
+  test.use({ viewport: { width: 390, height: 664 }, hasTouch: true, isMobile: true })
+
+  test('calibration board stays square with all eight ranks on the marble', async ({ page }) => {
+    await page.goto('./')
+    await page.locator('#btn-enter-archive').click()
+    await page.locator('.chapter-btn').first().click()
+    await page.locator('#btn-skip-ahead').click()
+    await expect(page.locator('[data-square="e2"]')).toBeVisible()
+    await expect(page.locator('html')).toHaveClass(/coarse-pointer/)
+    const fit = async () =>
+      page.evaluate(() => {
+        const grid = document.querySelector('.chess-grid')!.getBoundingClientRect()
+        const a8 = document.querySelector('[data-square="a8"]')!.getBoundingClientRect()
+        const h1 = document.querySelector('[data-square="h1"]')!.getBoundingClientRect()
+        return { grid, a8, h1 }
+      })
+    await expect.poll(async () => Math.round((await fit()).a8.width)).toBeGreaterThan(30)
+    const { grid, a8, h1 } = await fit()
+    expect(Math.abs(grid.width - grid.height)).toBeLessThanOrEqual(1)
+    expect(Math.abs(a8.width - a8.height)).toBeLessThanOrEqual(1)
+    expect(a8.top).toBeGreaterThanOrEqual(grid.top - 1)
+    expect(h1.bottom).toBeLessThanOrEqual(grid.bottom + 1)
+    await expect(page.locator('.calibration-rail__label')).toBeVisible()
+    await page.locator('[data-square="e2"]').tap()
+    await page.locator('[data-square="e4"]').tap()
+    await expect(page.locator('#move-ledger')).toContainText('e4')
+    const after = await fit()
+    expect(after.a8.top).toBeGreaterThanOrEqual(after.grid.top - 1)
+  })
+})
+
+test.describe('touch phone in landscape', () => {
+  test.use({ viewport: { width: 750, height: 342 }, hasTouch: true, isMobile: true })
+
+  async function boardInsideBand(page: Page) {
+    return page.evaluate(() => {
+      const band = document.querySelector('#screen-play')!.getBoundingClientRect()
+      const grid = document.querySelector('.chess-grid')!.getBoundingClientRect()
+      return { band, grid }
+    })
+  }
+
+  async function boardFits(page: Page) {
+    const { band, grid } = await boardInsideBand(page)
+    /* Sized by the fit (not the pre-fit frame) and settled after the smooth reveal. */
+    return grid.width > 180 && grid.top >= band.top - 1 && grid.bottom <= band.bottom + 1
+  }
+
+  test('calibration board sits fully inside the visible band beside the tools', async ({ page }) => {
+    await page.goto('./')
+    await page.locator('#btn-enter-archive').click()
+    await page.locator('.chapter-btn').first().click()
+    await page.locator('#btn-skip-ahead').click()
+    await expect(page.locator('[data-square="e2"]')).toBeVisible()
+    await expect.poll(() => boardFits(page)).toBe(true)
+    const { grid } = await boardInsideBand(page)
+    expect(grid.width).toBeGreaterThan(180)
+    const guide = await page.locator('#board-guide').boundingBox()
+    expect(guide!.x).toBeGreaterThan(grid.right)
+  })
+
+  test('duel board sits fully inside the visible band, not behind the lab bar', async ({ page }) => {
+    await page.goto('./')
+    await page.locator('#btn-duel').click()
+    await page.locator('.duel-row').first().click()
+    await page.locator('#btn-start-duel').click()
+    await expect(page.locator('[data-square="e2"]')).toBeVisible()
+    /* The reveal scrolls smoothly, so wait for the board to settle in the band. */
+    await expect.poll(() => boardFits(page)).toBe(true)
+    expect((await boardInsideBand(page)).grid.width).toBeGreaterThan(180)
+  })
+})
+
+test('offline: one online visit caches the AI worker, and the archive still answers offline', async ({ page, context }) => {
+  await page.goto('./')
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout: 15_000 })
+  /* The page warms the search worker once the service worker controls it. */
+  await expect
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          for (const key of await caches.keys()) {
+            const cache = await caches.open(key)
+            if ((await cache.keys()).some((r) => /aiSearch\.worker/.test(r.url))) return true
+          }
+          return false
+        }),
+      { timeout: 15_000 },
+    )
+    .toBe(true)
+
+  await context.setOffline(true)
+  await page.reload()
+  await page.locator('#btn-duel').click()
+  await page.locator('.duel-row').first().click()
+  await page.locator('#btn-start-duel').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  for (const [from, to] of [['e2', 'e4'], ['g1', 'f3'], ['f1', 'c4'], ['d2', 'd3'], ['h2', 'h3']] as const) {
+    if (!(await playIfLegal(page, from, to))) continue
+    /* Out-of-book replies come from the cached worker, not a stalled fallback. */
+    await expect(page.locator('.chess-grid')).not.toHaveClass(/chess-grid--locked/, { timeout: 4_000 })
+  }
+  /* The archive's replies are sampled, so a scripted move may become illegal
+     (e.g. after a check); three answered moves prove offline play. */
+  await expect(page.locator('#move-ledger')).toContainText(/3\.\s*\S+\s+\S+/)
+  await context.setOffline(false)
 })

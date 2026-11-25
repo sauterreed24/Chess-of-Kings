@@ -20,8 +20,9 @@
  *   inflated long games once grading became engine-truthful.)
  * - Turning point prefers the largest eval swing toward the player when
  *   a trace aligned with the SAN log is available (>= 60cp to qualify);
- *   otherwise the first 'brilliant', then the first 'good', then the
- *   final move played; falls back to '...' SAN when the log is empty.
+ *   otherwise the first 'brilliant', then the first 'blunder', then the
+ *   first 'mistake', then the first 'good', then the final move played;
+ *   falls back to '...' SAN when the log is empty.
  */
 import type { MoveQuality } from '../gameFlow'
 
@@ -96,6 +97,10 @@ export function turningPointLine(p: RecapPayload): string {
   const swingIdx = largestSwingIndex(p)
   if (swingIdx >= 0) return formatSanAt(p, swingIdx)
   let idx = p.sanQuality.findIndex((q) => q === 'brilliant')
+  /* Without a trace (resumed sessions drop it), the first blunder or mistake
+     is where the game swung. "First good move" alone usually names 1. e4. */
+  if (idx < 0) idx = p.sanQuality.findIndex((q) => q === 'blunder')
+  if (idx < 0) idx = p.sanQuality.findIndex((q) => q === 'mistake')
   if (idx < 0) idx = p.sanQuality.findIndex((q) => q === 'good')
   if (idx < 0) idx = Math.max(0, p.sanLog.length - 1)
   return formatSanAt(p, idx)

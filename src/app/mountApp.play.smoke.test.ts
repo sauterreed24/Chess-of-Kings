@@ -320,7 +320,7 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
     }
   })
 
-  it('anchors the board reveal on compact viewports to the board stage', async () => {
+  it('sizes the compact board, then reveals the marble rather than the whole stage', async () => {
     const originalScroll = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
     const originalMatchMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia')
     const scrollIntoView = vi.fn()
@@ -346,13 +346,12 @@ describe('mounted app play smoke (maximum-effort flows)', () => {
       const next = app.querySelector<HTMLButtonElement>('#btn-next')!
       for (let i = 0; i < 5; i++) next.click()
       next.click()
-      await new Promise((resolve) => window.requestAnimationFrame(resolve))
-      await new Promise((resolve) => window.requestAnimationFrame(resolve))
-      const boardStage = app.querySelector<HTMLElement>('#board-stage')!
+      for (let i = 0; i < 3; i++) await new Promise((resolve) => window.requestAnimationFrame(resolve))
+      const boardBrass = app.querySelector<HTMLElement>('#board-stage .board-brass')!
       expect(scrollIntoView).toHaveBeenCalled()
       const boardCalls = scrollIntoView.mock.calls.filter((args) => {
         const el = scrollIntoView.mock.contexts[scrollIntoView.mock.calls.indexOf(args)] as Element | undefined
-        return el === boardStage
+        return el === boardBrass
       })
       expect(boardCalls.some((args) => args[0]?.block === 'nearest')).toBe(true)
     } finally {

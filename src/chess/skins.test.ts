@@ -2,6 +2,21 @@ import { describe, expect, it } from 'vitest'
 import { carveGlyph, glyphForSkin, pieceStrokeStyleAttr, pieceStrokeTone } from './skins'
 
 describe('carveGlyph', () => {
+  it('clips the lit result to the piece so no rectangular plate is drawn over the square', () => {
+    const raw = '<svg class="svg-piece" viewBox="0 0 45 45"><path fill="var(--piece-fill)" d="M1"/></svg>'
+    for (const color of ['w', 'b'] as const) {
+      const host = document.createElement('div')
+      host.innerHTML = carveGlyph(raw, color)
+      const primitives = [...host.querySelectorAll('filter > *')]
+      const last = primitives.at(-1)
+      /* Lighting maps are opaque over the whole filter region; the final
+         primitive must keep only pixels inside the piece's alpha. */
+      expect(last?.tagName.toLowerCase()).toBe('fecomposite')
+      expect(last?.getAttribute('operator')).toBe('in')
+      expect(last?.getAttribute('in2')).toBe('SourceAlpha')
+    }
+  })
+
   it('plants a foot shadow, crown sheen, and lamp-lit body on a raw Staunton svg', () => {
     const raw = '<svg class="svg-piece" viewBox="0 0 45 45"><path fill="var(--piece-fill)" d="M1"/></svg>'
     const carved = carveGlyph(raw, 'w')

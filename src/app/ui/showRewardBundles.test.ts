@@ -84,7 +84,21 @@ describe('showRewardBundles html', () => {
 
     expect(html).toContain('Next seal:')
     expect(html).toContain('Apprentice Analyst')
-    expect(html).toContain('in 140 RP')
+    expect(html).toContain('140 RP to go (140 RP)')
     expect(html).toContain('the next seal')
+  })
+
+  it('states the next seal once and exposes the bar as a labelled progressbar', () => {
+    const flow = createRewardFlowWithoutHistory()
+    const html = buildRewardOverlayHtml(flow, [], null)
+    expect(html.match(/Next seal:/g)).toHaveLength(1)
+    const root = document.createElement('div')
+    root.innerHTML = html
+    const bar = root.querySelector('.reward-progress__bar')
+    expect(bar?.getAttribute('role')).toBe('progressbar')
+    expect(bar?.getAttribute('aria-valuemax')).toBe('140')
+    expect(bar?.getAttribute('aria-valuenow')).toBe('0')
+    const labelId = bar?.getAttribute('aria-labelledby') ?? ''
+    expect(root.querySelector(`#${labelId}`)?.textContent).toMatch(/Apprentice Analyst/)
   })
 })

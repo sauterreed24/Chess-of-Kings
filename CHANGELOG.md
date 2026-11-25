@@ -11,6 +11,63 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.141] — 2026-11-25
+
+Pass 149 — hear the rival's move:
+
+- **Screen readers** — the opponent's reply was never announced: live regions said only "Thinking…" and "White to move.", so a screen-reader player had to explore the board square by square after every move. The rival's (or Archive's) move is now spoken through the live announcer, e.g. "Black pawn d7 to d5.", "White bishop c4 takes pawn on f7, check.", "Black castles queenside." A move that ends the game is folded into the single outcome announcement so it is not overwritten. The player's own moves are not repeated.
+- **Tests** — `moveSpeech.test.ts` (quiet, capture, check, castling, en passant, promotion, mate) and two `applyChessUi` cases (reply spoken once, own move silent; mating reply folded into the outcome) that fail without the hook.
+- Docs: [`docs/PASS149_SPOKEN_REPLIES.md`](docs/PASS149_SPOKEN_REPLIES.md).
+
+## [0.5.140] — 2026-11-25
+
+Pass 148 — offline after one visit:
+
+- **First-visit offline** — the hashed scripts, styles, and fonts load before the service worker takes control, so they were never cached; an installed app opened offline after a single visit showed an empty page. Once in control, the page now posts the URLs it already loaded and the worker caches any that are missing (`cok-static-v7`).
+- **Vary-safe asset matches** — module scripts are CORS requests with `Origin`; on hosts that answer `Vary: Origin`, entries cached without it never matched. Static (hashed) assets now match with `ignoreVary`.
+- **AI worker cached ahead of play** — the search worker starts at idle once the service worker controls the page, so its script is cached before the player goes offline.
+- **No more 5–13 s stalls when the worker dies** — a worker that failed to load or crashed was kept; the next search posted into it and waited for the whole watchdog before falling back. It is now discarded and the session searches on the main thread.
+- **Tests** — aiAsync failure/warm tests with an unloadable fake worker (the stall test fails on the old code at 4.7 s), service-worker policy checks, and a Playwright test that visits once, goes offline, reloads, and plays the archive.
+- Docs: [`docs/PASS148_OFFLINE_FIRST_VISIT.md`](docs/PASS148_OFFLINE_FIRST_VISIT.md).
+
+## [0.5.139] — 2026-11-25
+
+Pass 147 — pieces on the marble, readable labels:
+
+- **Pieces** — every carved piece, on the board and in the title row, was drawn on a translucent rectangular plate (grey behind Black, cream behind White) that hid the rank marks. The lamp filter's diffuse term added the opaque lighting map over the whole filter region; the lit result is now clipped to the piece's alpha. Piece shading is unchanged.
+- **Text tokens** — `--gold-dim` #7d6a38 → #a38b56 and `--muted` #8a8275 → #9d9686: kickers, chapter indices, era labels, ledger and story-beat labels, captions, and speaker names go from ~3–3.8:1 to ≥4.5:1 on the panels while staying dimmer than `--gold`. Text below AA in a two-device scan of title, chapters, scene, board, and duel dropped from 121 elements to 30, mostly locked/sealed states.
+- **Dialogue** — speaker names and seals are lifted toward white (with a dark text-shadow on the names) so they read over their own voice tint; the Archive voice uses the new muted tone.
+- **Title** — the kicker is bright gold with a dark lift over the hero glow (1.1–1.8:1 → legible).
+- **Duel Archive** — rival rows stack their stamp under the text, so names and era kickers no longer wrap into three or four lines; selects render at 1rem (readable, and iOS no longer zooms on focus).
+- **Tests** — carveGlyph's final primitive must clip to `SourceAlpha`; `textContrastCss.test.ts` checks the text tokens at AA on `--ink`/`--panel`/`--panel-elevated` and pins the label, row, and select rules.
+- Docs: [`docs/PASS147_PIECES_ON_MARBLE.md`](docs/PASS147_PIECES_ON_MARBLE.md).
+
+## [0.5.138] — 2026-11-25
+
+Pass 146 — honest puzzles, truthful recap, landscape board:
+
+- **Story / puzzles** — four teaching puzzles taught something the board contradicted:
+  - *The hanging knight* (Chapter I's first puzzle): after Bxd4+ the king on e5 simply took back, leaving king vs king. The king now starts on f6, so the capture really is free; the lesson and Reed's line now say why.
+  - *Diagonal battery* (IV): claimed a queen-and-bishop battery, but Qc8# was a plain back-rank mate with the bishop idle. Rebuilt so Qf3xb7# is mate only because the g2-bishop guards b7.
+  - *Notarized finish* (VIII): Qc8# also mated, bypassing the lesson; a black rook on d8 leaves Qxg7# as the only mate.
+  - *Fork the compiled queen* (IX): the c7 pawn captured the forking knight (cxd6). The pawn now stands on c6.
+- **Validation** — every advantage puzzle must keep its threshold after the opponent's best reply, and no piece-placement puzzle may leave the placed piece capturable. Both locks fail on the old data.
+- **Recap** — "Next seal" appears once, with RP to go and the target, and the bar is a labelled `progressbar`. When the eval trace is unavailable (resumed games), the turning point names the first blunder or mistake instead of the first "good" move (usually 1. e4).
+- **Landscape phones** — the board takes the left column at the full visible height, with the guide, ledger, and tools beside it (calibration 146 → 203px; duel no longer clipped behind the lab bar). Compact board fit now measures the visible scroll band at rest (ignoring the lab slide-in transform), sizes the board before revealing it, and reveals the marble rather than the whole stage.
+- **Bundle** — `duelRoster` and `rewards` (pure data) join the preloaded `game-data` chunk: index JS 101,374 → 94,606 gzip. Fourteen unused palette tokens removed: CSS 18,327 / 18,400.
+- **Tests** — puzzle invariants, recap progressbar and turning-point cases, scroll-band fit, and Playwright landscape tests for calibration and duel.
+- Docs: [`docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md`](docs/PASS146_HONEST_PUZZLES_LANDSCAPE.md).
+
+## [0.5.137] — 2026-11-25
+
+Pass 145 — full board on touch phones:
+
+- **Board fit** — on touch phones the global 2.6rem button floor no longer applies to board squares. At a 390×664 Safari viewport it had made each square 44px tall in a 265px grid, so ranks 7–8 (or, after a tap scrolled the grid, ranks 1–2) were cut off.
+- **Square marble** — compact board height now uses the same measured `--mobile-board-max` as its width, instead of a fixed 42vh that left a 317×265 board.
+- **Calibration rail** — the "n / 4 inscribed" label sits on an ink chip in bright gold. It had measured ~1.0–1.6:1 against the brass glow; the text now reads at ~12.5:1. Its board-scene overrides fold into the base rules, so CSS gzip drops 12 bytes (18,383 / 18,400).
+- **Tests** — `src/app/boardFitCss.test.ts` locks the three CSS rules. A Playwright touch-phone test at 390×664 asserts a square grid with a8 and h1 inside it, before and after a tapped move.
+- Docs: [`docs/PASS145_TOUCH_BOARD_FIT.md`](docs/PASS145_TOUCH_BOARD_FIT.md).
+
 ## [0.5.136] — 2026-11-15
 
 Pass 144 — archive hint square:

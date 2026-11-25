@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cok-static-v6'
+const CACHE_NAME = 'cok-static-v7'
 const APP_SHELL = [
   './',
   './index.html',
@@ -29,7 +29,10 @@ async function networkFirst(request) {
 }
 
 async function staleWhileRevalidate(request) {
-  const cached = await caches.match(request)
+  /* Module scripts are CORS requests carrying Origin; hosts that answer with
+     "Vary: Origin" would never match entries cached without it. Hashed assets
+     are immutable, so ignore Vary. */
+  const cached = await caches.match(request, { ignoreVary: true })
   const network = fetch(request).then(async (response) => {
     await cacheResponse(request, response)
     return response
@@ -56,6 +59,24 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) =>
       Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))),
     ).then(() => self.clients.claim()),
+  )
+})
+
+/* First visit: the page's scripts, styles, and fonts load before this worker
+   controls it, so they never pass through the fetch handler. Once in control,
+   the page posts the URLs it already loaded; cache any that are missing so the
+   installed app can start offline after a single visit. */
+self.addEventListener('message', (event) => {
+  const urls = event.data && event.data.type === 'cache-urls' ? event.data.urls : null
+  if (!Array.isArray(urls)) return
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) =>
+      Promise.all(
+        urls
+          .filter((url) => typeof url === 'string' && new URL(url, self.location.href).origin === self.location.origin)
+          .map((url) => cache.match(url).then((hit) => hit || cache.add(url).catch(() => {}))),
+      ),
+    ),
   )
 })
 
