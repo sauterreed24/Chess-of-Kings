@@ -956,10 +956,19 @@ html.force-reduced-motion .title-hero__plate { backdrop-filter: none; }
 }
 
 /* Calibration track */
-.calibration-rail { margin-bottom: 0.85rem; }
+/* The rail only shows on board scenes, so these carry the board-scene layout. */
+.calibration-rail {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.55rem;
+}
 .calibration-rail__label {
-  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--gold-dim); display: block; margin-bottom: 0.4rem;
+  font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase;
+  /* Ink chip: the label sits on the brass glow, where gold-dim read ~1:1. */
+  color: var(--gold-bright); background: var(--ink);
+  padding: 0.15em 0.6em; border-radius: 1em;
 }
 .calibration-rail__track { display: flex; gap: 0.45rem; flex-wrap: wrap; }
 .cal-dot {
@@ -2727,20 +2736,6 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   padding: 0.24rem 0.48rem;
 }
 
-.screen-play--board-scene .calibration-rail {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 0.4rem;
-  margin-bottom: 0.55rem;
-}
-
-.screen-play--board-scene .calibration-rail__label {
-  margin-bottom: 0;
-  font-size: 0.5rem;
-  letter-spacing: 0.18em;
-}
-
 .screen-play--board-scene .recovery-controls {
   margin-top: 0;
 }
@@ -3475,7 +3470,9 @@ html.perf-lean :is(.chapters-wrap,.duel-panel,.manuscript-panel,.reward-sheet)::
   margin-bottom: 0.3rem;
 }
 
-.coarse-pointer button {
+/* Board squares are sized by the grid, not the touch floor: a 44px floor
+   on 64 cells overflows the marble on short phones and clips whole ranks. */
+.coarse-pointer button:not(.sq) {
   min-height: 2.6rem;
 }
 
@@ -3844,7 +3841,7 @@ html.perf-lean :is(.status-pill--thinking,.primary--ready,.board-stage--victory 
 
   .screen-play--board-scene :is(.board-brass, .board-wrap) {
     max-width: var(--mobile-board-max, 42vh);
-    max-height: 42vh;
+    max-height: var(--mobile-board-max, 42vh);
     margin-inline: auto;
   }
 }

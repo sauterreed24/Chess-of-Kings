@@ -11,6 +11,16 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.137] — 2026-11-25
+
+Pass 145 — full board on touch phones:
+
+- **Board fit** — on touch phones the global 2.6rem button floor no longer applies to board squares. At a 390×664 Safari viewport it had made each square 44px tall in a 265px grid, so ranks 7–8 (or, after a tap scrolled the grid, ranks 1–2) were cut off.
+- **Square marble** — compact board height now uses the same measured `--mobile-board-max` as its width, instead of a fixed 42vh that left a 317×265 board.
+- **Calibration rail** — the "n / 4 inscribed" label sits on an ink chip in bright gold. It had measured ~1.0–1.6:1 against the brass glow; the text now reads at ~12.5:1. Its board-scene overrides fold into the base rules, so CSS gzip drops 12 bytes (18,383 / 18,400).
+- **Tests** — `src/app/boardFitCss.test.ts` locks the three CSS rules. A Playwright touch-phone test at 390×664 asserts a square grid with a8 and h1 inside it, before and after a tapped move.
+- Docs: [`docs/PASS145_TOUCH_BOARD_FIT.md`](docs/PASS145_TOUCH_BOARD_FIT.md).
+
 ## [0.5.136] — 2026-11-15
 
 Pass 144 — archive hint square:

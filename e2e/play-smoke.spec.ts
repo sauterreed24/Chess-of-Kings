@@ -5536,3 +5536,35 @@ test('hint marks one archive square and phone chrome stays readable', async ({ p
   await marked.click()
   await expect(page.locator('#move-ledger')).not.toContainText('No moves yet')
 })
+
+test.describe('touch phone at Safari height', () => {
+  test.use({ viewport: { width: 390, height: 664 }, hasTouch: true, isMobile: true })
+
+  test('calibration board stays square with all eight ranks on the marble', async ({ page }) => {
+    await page.goto('./')
+    await page.locator('#btn-enter-archive').click()
+    await page.locator('.chapter-btn').first().click()
+    await page.locator('#btn-skip-ahead').click()
+    await expect(page.locator('[data-square="e2"]')).toBeVisible()
+    await expect(page.locator('html')).toHaveClass(/coarse-pointer/)
+    const fit = async () =>
+      page.evaluate(() => {
+        const grid = document.querySelector('.chess-grid')!.getBoundingClientRect()
+        const a8 = document.querySelector('[data-square="a8"]')!.getBoundingClientRect()
+        const h1 = document.querySelector('[data-square="h1"]')!.getBoundingClientRect()
+        return { grid, a8, h1 }
+      })
+    await expect.poll(async () => Math.round((await fit()).a8.width)).toBeGreaterThan(30)
+    const { grid, a8, h1 } = await fit()
+    expect(Math.abs(grid.width - grid.height)).toBeLessThanOrEqual(1)
+    expect(Math.abs(a8.width - a8.height)).toBeLessThanOrEqual(1)
+    expect(a8.top).toBeGreaterThanOrEqual(grid.top - 1)
+    expect(h1.bottom).toBeLessThanOrEqual(grid.bottom + 1)
+    await expect(page.locator('.calibration-rail__label')).toBeVisible()
+    await page.locator('[data-square="e2"]').tap()
+    await page.locator('[data-square="e4"]').tap()
+    await expect(page.locator('#move-ledger')).toContainText('e4')
+    const after = await fit()
+    expect(after.a8.top).toBeGreaterThanOrEqual(after.grid.top - 1)
+  })
+})

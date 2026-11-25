@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.136)
+## What's new in this release (v0.5.137)
+
+**Pass 145 — full board on touch phones** — on a real phone-height Safari viewport the board is square again and shows all eight ranks; the touch-target floor for buttons no longer stretches the 64 board squares past the marble. The calibration "inscribed" counter is readable on its brass backdrop. See [`docs/PASS145_TOUCH_BOARD_FIT.md`](docs/PASS145_TOUCH_BOARD_FIT.md).
+
+## Previous release (v0.5.136)
 
 **Pass 144 — archive hint square** — Hint marks the one square the archive would play, instead of every legal square of that piece, and plays the advance cue rather than the Take back tone. Hint / Target kickers, phone Title / Chapters / Duel labels, and Sound / Move Guard toggles render at 0.7rem. See [`docs/PASS144_HINT_SQUARE.md`](docs/PASS144_HINT_SQUARE.md).
 
