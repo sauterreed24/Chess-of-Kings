@@ -3,6 +3,7 @@ import type { Color, Move, Square, PieceSymbol } from 'chess.js'
 import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
+import { applyRematchRelief, rematchRelief, rematchReliefNote, reliefLossStreak } from './ai/rematchRelief'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
 import { findCostliestMoment, plyMoveLabel } from './recap/costliestMoment'
@@ -327,6 +328,8 @@ export class GameFlow {
   }
   private readonly duels = new DuelManager()
   private matchHistory: MatchHistoryEntry[] = []
+  /** Rematch-relief streak in effect for the current campaign match. */
+  private matchReliefStreak = 0
   private lastResolvedOutcomeKey: string | null = null
   private rivalMemory: Record<string, RivalMemoryEntry> = {}
   private ladder: LadderRating = defaultLadderRating()
@@ -887,6 +890,9 @@ export class GameFlow {
     } else if (sc.type === 'match') {
       this.mode = 'match'
       this.matchScene = sc
+      /* Fixed for the whole game: a loss followed by undo must not ease the
+         rival mid-game; the next attempt picks the new streak up. */
+      this.matchReliefStreak = this.reliefStreakFor(sc.id)
       this.playerColor = sc.playerColor
       this.chess.load(sc.fen ?? DEFAULT_POSITION)
       this.history = [this.chess.fen()]
@@ -1073,8 +1079,14 @@ export class GameFlow {
     if (this.mode === 'match' && this.matchScene) {
       const base = resolveProfileByMatchId(this.matchScene.id)
       const phase = detectGamePhase(this.chess)
-      const tuned = this.tuneProfileForMatch(adaptProfileToPhase(base, phase, this.tendencies), this.matchScene)
-      return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}`
+      const adapted = adaptProfileToPhase(base, phase, this.tendencies)
+      const tuned = this.tuneProfileForMatch(adapted, this.matchScene)
+      const authored = this.tuneProfileForMatch(adapted, this.matchScene, false)
+      const relief = rematchReliefNote(
+        rematchRelief(this.matchReliefStreak),
+        tuned.searchDepth < authored.searchDepth,
+      )
+      return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}${relief ? ` (${relief})` : ''}`
     }
     return null
   }
@@ -1232,7 +1244,7 @@ export class GameFlow {
     return null
   }
 
-  private tuneProfileForMatch(base: AiProfile, match: MatchScene): AiProfile {
+  private tuneProfileForMatch(base: AiProfile, match: MatchScene, withRelief = true): AiProfile {
     const diff = Math.max(1, match.difficulty ?? 1)
     const chapterRamp = this.currentChapter().index * 0.04
     const diffRamp = (diff - 1) * 0.06 + chapterRamp
@@ -1247,9 +1259,11 @@ export class GameFlow {
     const momentumHarden = mem && mem.wins - mem.losses >= 2 ? Math.min(0.1, (mem.wins - mem.losses) * 0.03) : 0
     const tiltStreak = this.recentLossStreak(match.id)
     const antiTiltRelief = tiltStreak >= 2 ? Math.min(tiltStreak >= 4 ? 0.22 : 0.18, tiltStreak * 0.045) : 0
-    return {
+    const tuned: AiProfile = {
       ...base,
-      searchDepth: Math.min(7, base.searchDepth + Math.floor((diff - 1) / 2)),
+      /* The scene's authored depth is a floor for the as-authored rival;
+         rematch relief (below) may step beneath it. */
+      searchDepth: Math.max(Math.min(7, base.searchDepth + Math.floor((diff - 1) / 2)), match.aiDepth),
       thinkTimeMs: Math.round(
         base.thinkTimeMs * (1 + (totalRamp - fairnessSoften + momentumHarden - antiTiltRelief) * 0.6),
       ),
@@ -1275,6 +1289,12 @@ export class GameFlow {
         prophylactic: Math.min(1, base.weights.prophylactic + totalRamp * 0.6),
       },
     }
+    return withRelief ? applyRematchRelief(tuned, rematchRelief(this.matchReliefStreak)) : tuned
+  }
+
+  /** Relief streak for a campaign match, read from the recorded history. */
+  private reliefStreakFor(matchId: string): number {
+    return reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
   }
 
   private tuneProfileForDuel(
@@ -2253,6 +2273,7 @@ export class GameFlow {
       this.chess.load(sc.fen)
     } else if (sc.type === 'match') {
       this.chess.load(sc.fen ?? DEFAULT_POSITION)
+      this.matchReliefStreak = this.reliefStreakFor(sc.id)
     } else if (sc.type === 'calibration') {
       this.chess.load(DEFAULT_POSITION)
       this.calibrationMoves = 0

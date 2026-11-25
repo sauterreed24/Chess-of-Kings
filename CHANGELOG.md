@@ -11,6 +11,16 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.142] — 2026-11-25
+
+Pass 150 — rematch relief:
+
+- **Persistence gets you through** — only a win advances a campaign match, and a new seeded evaluator found 14 of 21 pre-finale rivals beat a club-strength bot three times running. Each straight loss to a campaign rival now steps that rival down (relief I–III: shallower search, a few more bounded misses, apex rivals leave best-move mode). A win clears it; a draw neither adds nor clears it. First attempts, ratings and duels are unchanged. Walls 14 → 1, comeback rate 0.28 → 0.35.
+- **Visible handicap** — the court dossier names the step and what changed ("rematch relief II: calculates shallower" / "plays looser"). The step is fixed when a game starts, so undoing a loss does not ease the game in progress.
+- **Copy** — the Counterpart's note no longer suggests a dead draw seals the era.
+- **Evaluator** — `npm run eval` plays the real campaign with seeded novice/club/skilled bots on a node-proportional virtual clock and prints an 8-check scorecard (see `IMPROVE.md`, `eval/README.md`).
+- Docs: [`docs/PASS150_REMATCH_RELIEF.md`](docs/PASS150_REMATCH_RELIEF.md).
+
 ## [0.5.141] — 2026-11-25
 
 Pass 149 — hear the rival's move:

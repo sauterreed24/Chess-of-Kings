@@ -289,7 +289,8 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
           host.chess,
           {
             ...profile,
-            searchDepth: Math.max(profile.searchDepth, m.aiDepth),
+            /* tuneProfileForMatch already folds in the scene's aiDepth floor
+               (and any rematch relief beneath it). */
             style: m.aiStyle ?? profile.style,
           },
           host.profileMoveOpts(profile),
