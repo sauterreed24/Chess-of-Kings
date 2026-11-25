@@ -53,7 +53,9 @@ Holdout baseline was measured before the club-bot technique fix; on tune that fi
 1. **Device-independent rival strength.** Rival think budgets are wall-clock, so a desktop
    (~350 nodes/ms here) gets ~2.3× the search of the eval's reference phone: same rival, different
    difficulty per device. Try node budgets derived from `thinkTimeMs` (worker keeps a time cap as a
-   safety). Measure C1 at 150 vs 350 nodes/ms before/after.
+   safety). Measured: with relief, club-bot walls are 1 at 150 nodes/ms but **4 at 350**
+   (tune; `round1-relief-desktop350-club-tune.json`). Choosing the node rate is choosing difficulty,
+   so propose the reference rate with numbers. Measure C1 at 150 vs 350 before/after.
 2. `c7-match-soren` stays a wall even at relief III on tune seeds; holdout adds Demetrios, Nysa,
    Voss. Diagnose per-rival (persona depth, book, opening script) before touching relief numbers.
 3. "Punished tendency" memory (`memoryRamp`) makes a rival stronger after it beats you; the old
