@@ -11,6 +11,17 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.140] — 2026-11-25
+
+Pass 148 — offline after one visit:
+
+- **First-visit offline** — the hashed scripts, styles, and fonts load before the service worker takes control, so they were never cached; an installed app opened offline after a single visit showed an empty page. Once in control, the page now posts the URLs it already loaded and the worker caches any that are missing (`cok-static-v7`).
+- **Vary-safe asset matches** — module scripts are CORS requests with `Origin`; on hosts that answer `Vary: Origin`, entries cached without it never matched. Static (hashed) assets now match with `ignoreVary`.
+- **AI worker cached ahead of play** — the search worker starts at idle once the service worker controls the page, so its script is cached before the player goes offline.
+- **No more 5–13 s stalls when the worker dies** — a worker that failed to load or crashed was kept; the next search posted into it and waited for the whole watchdog before falling back. It is now discarded and the session searches on the main thread.
+- **Tests** — aiAsync failure/warm tests with an unloadable fake worker (the stall test fails on the old code at 4.7 s), service-worker policy checks, and a Playwright test that visits once, goes offline, reloads, and plays the archive.
+- Docs: [`docs/PASS148_OFFLINE_FIRST_VISIT.md`](docs/PASS148_OFFLINE_FIRST_VISIT.md).
+
 ## [0.5.139] — 2026-11-25
 
 Pass 147 — pieces on the marble, readable labels:

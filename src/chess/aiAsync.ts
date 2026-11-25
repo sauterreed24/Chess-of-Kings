@@ -28,6 +28,8 @@ export type AiSearchSurface = 'main' | 'worker' | 'auto'
 const WORKER_PREF_KEY = 'cok-ai-worker'
 
 let worker: Worker | null = null
+/** Set once the worker errors: it will not answer again this session. */
+let workerBroken = false
 let seq = 0
 const pending = new Map<
   number,
@@ -35,7 +37,7 @@ const pending = new Map<
 >()
 
 function ensureWorker(): Worker | null {
-  if (typeof Worker === 'undefined') return null
+  if (workerBroken || typeof Worker === 'undefined') return null
   if (!worker) {
     try {
       worker = new Worker(new URL('./workers/aiSearch.worker.ts', import.meta.url), {
@@ -64,8 +66,12 @@ function ensureWorker(): Worker | null {
       }
     }
     worker.onerror = () => {
-      for (const [, entry] of pending) entry.resolve(null)
-      pending.clear()
+      /* A worker that failed to load (offline before its script was cached)
+         or crashed never answers again. Keeping it meant the next search
+         posted into it and stalled for the whole watchdog (5-13s) before
+         falling back; drop it and search on the main thread from now on. */
+      workerBroken = true
+      terminateAiSearchWorker()
     }
   }
   return worker
@@ -232,6 +238,16 @@ export async function findBestMoveWithProfileAsync(
     if (chess.fen() !== fen) return null /* position changed: drop, do not fall back */
   }
   return findBestMoveWithProfile(chess, profile, enriched)
+}
+
+/**
+ * Start the search worker ahead of the first AI move so its script is fetched
+ * (and cached by the service worker) while the player is still online. No-op
+ * when the player chose main-thread search or Worker is unavailable.
+ */
+export function warmAiSearchWorker(): boolean {
+  if (getAiSearchSurface() !== 'worker') return false
+  return ensureWorker() !== null
 }
 
 export function terminateAiSearchWorker(): void {

@@ -5611,3 +5611,38 @@ test.describe('touch phone in landscape', () => {
     expect((await boardInsideBand(page)).grid.width).toBeGreaterThan(180)
   })
 })
+
+test('offline: one online visit caches the AI worker, and the archive still answers offline', async ({ page, context }) => {
+  await page.goto('./')
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout: 15_000 })
+  /* The page warms the search worker once the service worker controls it. */
+  await expect
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          for (const key of await caches.keys()) {
+            const cache = await caches.open(key)
+            if ((await cache.keys()).some((r) => /aiSearch\.worker/.test(r.url))) return true
+          }
+          return false
+        }),
+      { timeout: 15_000 },
+    )
+    .toBe(true)
+
+  await context.setOffline(true)
+  await page.reload()
+  await page.locator('#btn-duel').click()
+  await page.locator('.duel-row').first().click()
+  await page.locator('#btn-start-duel').click()
+  await expect(page.locator('[data-square="e2"]')).toBeVisible()
+  for (const [from, to] of [['e2', 'e4'], ['g1', 'f3'], ['f1', 'c4'], ['d2', 'd3'], ['h2', 'h3']] as const) {
+    if (!(await playIfLegal(page, from, to))) continue
+    /* Out-of-book replies come from the cached worker, not a stalled fallback. */
+    await expect(page.locator('.chess-grid')).not.toHaveClass(/chess-grid--locked/, { timeout: 4_000 })
+  }
+  /* The archive's replies are sampled, so a scripted move may become illegal
+     (e.g. after a check); three answered moves prove offline play. */
+  await expect(page.locator('#move-ledger')).toContainText(/3\.\s*\S+\s+\S+/)
+  await context.setOffline(false)
+})

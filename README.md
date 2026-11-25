@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.139)
+## What's new in this release (v0.5.140)
+
+**Pass 148 — offline after one visit** — the installed app now starts offline after a single online visit (previously the first visit cached only the HTML), the AI search worker is cached ahead of play, and a failed worker no longer stalls every other AI move for several seconds. See [`docs/PASS148_OFFLINE_FIRST_VISIT.md`](docs/PASS148_OFFLINE_FIRST_VISIT.md).
+
+## Previous release (v0.5.139)
 
 **Pass 147 — pieces on the marble, readable labels** — the carved pieces no longer sit on rectangular plates (the lamp filter painted its whole region), dim gold and muted labels now meet WCAG AA on the panels, dialogue speaker names read over their voice tint, and the Duel Archive rows and selects are easier to read. See [`docs/PASS147_PIECES_ON_MARBLE.md`](docs/PASS147_PIECES_ON_MARBLE.md).
 
