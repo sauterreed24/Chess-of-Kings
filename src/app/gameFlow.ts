@@ -1,6 +1,6 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
 import type { Color, Move, Square, PieceSymbol } from 'chess.js'
-import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
+import { APEX_CONVERSION_STRICTNESS, materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
 import {
@@ -1290,6 +1290,15 @@ export class GameFlow {
     const momentumHarden = mem && mem.wins - mem.losses >= 2 ? Math.min(0.1, (mem.wins - mem.losses) * 0.03) : 0
     const tiltStreak = asAuthored ? 0 : this.recentLossStreak(match.id)
     const antiTiltRelief = tiltStreak >= 2 ? Math.min(tiltStreak >= 4 ? 0.22 : 0.18, tiltStreak * 0.045) : 0
+    /* Chapter/difficulty ramps sharpen a rival but must not turn a veteran
+       persona into an apex best-move engine (that drops its style, its
+       near-equal choices and its bounded misses). A chapter's boss — or a
+       rival authored at apex strictness — may play the court's best line. */
+    const mayPlayApex =
+      resolveProfileByMatchId(match.id).conversionStrictness >= APEX_CONVERSION_STRICTNESS ||
+      match.ladderTier === 'boss' ||
+      match.ladderTier === 'counterpart'
+    const apexCeiling = mayPlayApex ? 1 : APEX_CONVERSION_STRICTNESS - 0.01
     const tuned: AiProfile = {
       ...base,
       /* The scene's authored depth is a floor for the as-authored rival;
@@ -1305,7 +1314,7 @@ export class GameFlow {
       ),
       openingDiscipline: Math.min(1, base.openingDiscipline + totalRamp * 0.8),
       conversionStrictness: Math.min(
-        1,
+        apexCeiling,
         Math.max(0.2, base.conversionStrictness + totalRamp + endgameRamp - fairnessSoften - antiTiltRelief),
       ),
       kingSafetyUrgency: Math.min(1, base.kingSafetyUrgency + totalRamp * 0.7),

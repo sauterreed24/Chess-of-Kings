@@ -105,6 +105,10 @@ export function findBestMove(
 
 /* ─── Persona model ──────────────────────────────────────────────────── */
 
+/** Personas at or above this conversion strictness play the engine's best
+    move outright (no sampling, no misses): the authored apex tier. */
+export const APEX_CONVERSION_STRICTNESS = 0.95
+
 /** Reference device: nodes a persona may search per ms of think time
     (a mid-range phone; desktops reach ~350). The playtest evaluator
     (eval/) uses the same rate. */
@@ -207,7 +211,7 @@ export function findBestMoveWithProfile(
     : null
 
   /* Apex-tier personas simply play the engine's best move. */
-  if (profile.conversionStrictness >= 0.95) {
+  if (profile.conversionStrictness >= APEX_CONVERSION_STRICTNESS) {
     const result = searchFen(fen, {
       maxDepth: depth,
       maxTimeMs: remainingMs(),
