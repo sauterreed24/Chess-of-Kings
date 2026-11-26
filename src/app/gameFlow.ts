@@ -452,6 +452,7 @@ export class GameFlow {
       scriptedMoveIndex: this.scriptedMoveIndex,
       sceneTendencies: this.sceneTendencies,
       rivalResigned: this.rivalHasResigned(),
+      reliefStreak: this.mode === 'match' ? this.matchReliefStreak : undefined,
       duel:
         this.mode === 'duel' && this.duelSession
           ? {
@@ -520,6 +521,9 @@ export class GameFlow {
     this.sanQuality = recovery.sanQuality
     this.evalTrace = [] /* session-only; recap falls back gracefully */
     this.rivalResignedFen = snap.rivalResigned && snap.mode === 'match' ? snap.fen : null
+    /* Keep the attempt's frozen relief step: a loss recorded and then undone
+       before the reload must not ease this same game. */
+    if (snap.mode === 'match' && typeof snap.reliefStreak === 'number') this.matchReliefStreak = snap.reliefStreak
     this.calibrationMoves = snap.calibrationMoves
     this.scriptedMoveIndex = snap.scriptedMoveIndex
     this.sceneTendencies = { ...snap.sceneTendencies }

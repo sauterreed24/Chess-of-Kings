@@ -308,6 +308,8 @@ export interface InProgressSnapshot {
   duel?: InProgressDuelSnapshot
   /** The rival resigned the snapshot's final position (match/duel). */
   rivalResigned?: true
+  /** Rematch-relief streak frozen for this campaign attempt (match only). */
+  reliefStreak?: number
 }
 
 export interface DuelVariant {

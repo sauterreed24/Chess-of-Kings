@@ -31,6 +31,8 @@ vi.mock('../chess/openings', async (importOriginal) => {
 
 import { GameFlow } from './gameFlow'
 import type { ChessUiPayload } from './gameFlow'
+import { buildInProgressSnapshot } from './persistence/SnapshotManager'
+import type { SnapshotBuildContext } from './persistence/SnapshotManager'
 
 type Outcome = 'win' | 'loss' | 'draw'
 
@@ -123,6 +125,36 @@ describe('rematch relief in the campaign', () => {
       expect(persona()).toMatch(/rematch relief I:/)
       flow.resetChessScene()
       expect(persona()).toMatch(/rematch relief II:/)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('a reload keeps the attempt\'s relief step even if a loss was recorded and undone', async () => {
+    vi.useFakeTimers()
+    try {
+      const { flow, history, persona } = flowAt('c1-match-edred', ['loss'])
+      const mv = flow.chess.moves({ verbose: true })[0]!
+      flow.tryPlayerMove(mv.from, mv.to, mv.promotion)
+      await vi.advanceTimersByTimeAsync(1000)
+      expect(persona()).toMatch(/rematch relief I:/)
+      /* Loss recorded mid-attempt (mate, then undo), then the app reloads. */
+      history.push(entry('c1-match-edred', 'loss', 9))
+      const snap = buildInProgressSnapshot(
+        (flow as unknown as { snapshotBuildContext(): SnapshotBuildContext }).snapshotBuildContext(),
+      )
+      expect(snap?.reliefStreak).toBe(1)
+      const again = flowAt('c1-match-edred', ['loss', 'loss'])
+      const internals = again.flow as unknown as {
+        snapshots: { setPendingSnapshot(s: unknown): void }
+        refreshScene(): void
+      }
+      internals.snapshots.setPendingSnapshot(JSON.parse(JSON.stringify(snap)))
+      internals.refreshScene()
+      expect(again.flow.chess.fen()).toBe(snap!.fen)
+      expect(again.persona()).toMatch(/rematch relief I:/)
+      again.flow.resetChessScene()
+      expect(again.persona()).toMatch(/rematch relief II:/)
     } finally {
       vi.useRealTimers()
     }
