@@ -95,6 +95,7 @@ async function settleAi(flow: GameFlow, playerColor: 'w' | 'b'): Promise<number>
   const v0 = performance.now()
   for (let guard = 0; guard < 40; guard++) {
     if (flow.chess.turn() === playerColor && !internals.aiThinking) break
+    if (!internals.aiThinking && (flow as unknown as { computeMatchOutcome(): unknown }).computeMatchOutcome()) break
     if (flow.chess.moves().length === 0 && !internals.aiThinking) break
     await vi.advanceTimersByTimeAsync(700)
   }

@@ -3,6 +3,7 @@ import type { Color, Move, Square, PieceSymbol } from 'chess.js'
 import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
+import { rivalShouldResign } from './ai/resignation'
 import { applyRematchRelief, rematchRelief, rematchReliefNote, reliefLossStreak } from './ai/rematchRelief'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
@@ -330,6 +331,8 @@ export class GameFlow {
   private matchHistory: MatchHistoryEntry[] = []
   /** Rematch-relief streak in effect for the current campaign match. */
   private matchReliefStreak = 0
+  /** Position (FEN) in which the rival resigned; any undo/reset voids it. */
+  private rivalResignedFen: string | null = null
   private lastResolvedOutcomeKey: string | null = null
   private rivalMemory: Record<string, RivalMemoryEntry> = {}
   private ladder: LadderRating = defaultLadderRating()
@@ -893,6 +896,7 @@ export class GameFlow {
       /* Fixed for the whole game: a loss followed by undo must not ease the
          rival mid-game; the next attempt picks the new streak up. */
       this.matchReliefStreak = this.reliefStreakFor(sc.id)
+      this.rivalResignedFen = null
       this.playerColor = sc.playerColor
       this.chess.load(sc.fen ?? DEFAULT_POSITION)
       this.history = [this.chess.fen()]
@@ -1749,8 +1753,41 @@ export class GameFlow {
     return atkMat - defMat >= 800
   }
 
+  private rivalHasResigned(): boolean {
+    return this.rivalResignedFen !== null && this.rivalResignedFen === this.chess.fen()
+  }
+
+  /**
+   * Rival's turn, match/duel: resign if hopeless (see ai/resignation.ts).
+   * Uses the eval trace the UI already keeps — no extra search.
+   */
+  private rivalResignsNow(): boolean {
+    if (this.mode !== 'match' && this.mode !== 'duel') return false
+    if (this.chess.turn() === this.playerColor) return false
+    const rival = this.playerColor === 'w' ? 'b' : 'w'
+    const sign = rival === 'w' ? 1 : -1
+    const rivalToMoveEvals: number[] = []
+    /* evalTrace[i] is the eval after ply i, i.e. of history[i + 1]. */
+    for (let i = 0; i < this.evalTrace.length; i++) {
+      const fen = this.history[i + 1]
+      if (fen && fen.split(' ')[1] === rival) rivalToMoveEvals.push(sign * this.evalTrace[i]!)
+    }
+    const materialBalanceCp =
+      this.sideMaterialCpExcludingKing(rival) - this.sideMaterialCpExcludingKing(this.playerColor)
+    const piecesExcludingKings = this.chess
+      .board()
+      .flat()
+      .filter((p) => p && p.type !== 'k').length
+    if (!rivalShouldResign({ rivalToMoveEvals, materialBalanceCp, piecesExcludingKings })) return false
+    this.rivalResignedFen = this.chess.fen()
+    const name = this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'The rival'
+    this.lastTacticalPulse = `${name} resigns.`
+    return true
+  }
+
   private isTerminalMatchPosition(): boolean {
     return (
+      this.rivalHasResigned() ||
       this.chess.isCheckmate() ||
       this.isBareKingLockmate() ||
       this.isDominanceSealedStalemate() ||
@@ -1766,6 +1803,7 @@ export class GameFlow {
 
   private computeMatchOutcome(): MatchOutcome {
     if (this.mode !== 'match' && this.mode !== 'duel') return null
+    if (this.rivalHasResigned()) return 'win'
     if (this.chess.isCheckmate()) {
       return this.chess.turn() !== this.playerColor ? 'win' : 'loss'
     }
@@ -1781,13 +1819,16 @@ export class GameFlow {
 
   private statusLine(scene: Scene = this.currentScene()): string {
     if (this.mode !== 'duel' && !this.sceneUsesBoard(scene)) return ''
+    if ((this.mode === 'match' || this.mode === 'duel') && this.rivalHasResigned()) {
+      return 'Resigned — the rival concedes a lost position.'
+    }
     if (this.isBareKingLockmate()) return 'Checkmate — lone king sealed.'
     if (this.isDominanceSealedStalemate()) return 'Victory — field sealed; decision goes to the stronger force.'
     if (this.chess.isCheckmate()) return 'Checkmate.'
     if (this.mode === 'match' || this.mode === 'duel') {
       if (this.chess.isInsufficientMaterial()) return 'Stalemate — insufficient force to mate.'
       if (this.chess.isStalemate()) return 'Stalemate — a dead lock.'
-      if (this.chess.isDraw()) return 'No move cap — continue until mate or dead draw.'
+      if (this.chess.isDraw()) return 'No move cap — continue until mate, resignation, or dead draw.'
     }
     if (this.mode === 'puzzle' || this.mode === 'calibration') {
       /* Marble already says Proof sealed. Draw. after Bxd4 is a rules
@@ -2162,6 +2203,7 @@ export class GameFlow {
       currentScene: () => this.currentScene(),
       isSceneTerminal: () => this.isSceneTerminalForCurrentMode(),
       computeMatchOutcome: () => this.computeMatchOutcome(),
+      rivalResigns: () => this.rivalResignsNow(),
       puzzleSolved: () => this.puzzleSolved(),
       commitEngineMove: (result, drawPick) => {
         if (epoch !== this.aiTurnEpoch) {
@@ -2265,6 +2307,7 @@ export class GameFlow {
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
+    this.rivalResignedFen = null
 
     const sc = this.currentScene()
     if (this.mode === 'duel' && this.duelSession) {
@@ -2421,6 +2464,7 @@ export class GameFlow {
       isInsufficientMaterial: this.chess.isInsufficientMaterial(),
       isBareKingLockmate: this.isBareKingLockmate(),
       isDominanceSealedStalemate: this.isDominanceSealedStalemate(),
+      rivalResigned: this.rivalHasResigned(),
     })
   }
 

@@ -1160,7 +1160,7 @@ export function mountApp(app: HTMLDivElement) {
         <p class="opponent-note dossier-quote">"${escapeHtml(rival.quote)}"</p>
         <p class="opponent-note">${escapeHtml(variant.bio)}</p>
         ${variantProfile ? aiTraitBars(variantProfile) : ''}
-        <p class="match-mandate">No move cap. Play until checkmate or a true dead draw.</p>
+        <p class="match-mandate">No move cap. Play until checkmate, a resignation, or a true dead draw.</p>
         <div class="reward-card">
           <h4>Counter-Prep Briefing</h4>
           <ul>

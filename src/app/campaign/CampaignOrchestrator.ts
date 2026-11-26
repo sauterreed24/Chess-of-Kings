@@ -37,6 +37,8 @@ export type BoardAdvanceContext = {
   isInsufficientMaterial: boolean
   isBareKingLockmate: boolean
   isDominanceSealedStalemate: boolean
+  /** The rival resigned the current position (always a player win). */
+  rivalResigned?: boolean
 }
 
 export function defaultCampaignProgress(): CampaignProgress {
@@ -118,6 +120,7 @@ export function canAdvanceBoardScene(ctx: BoardAdvanceContext): boolean {
   if (sc.type === 'calibration') return ctx.calibrationSolved
   if (sc.type === 'puzzle') return ctx.puzzleSolved
   if (sc.type === 'match') {
+    if (ctx.rivalResigned) return true
     if (ctx.isCheckmate) return ctx.chessTurn !== ctx.playerColor
     if (ctx.isBareKingLockmate) return ctx.chessTurn !== ctx.playerColor
     if (ctx.isDominanceSealedStalemate) return ctx.chessTurn !== ctx.playerColor

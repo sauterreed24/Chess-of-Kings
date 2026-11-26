@@ -894,7 +894,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         title: 'Encounter 6 of 6 — The Counterpart',
         opponentName: 'Composite Court Scholar',
         opponentNote:
-          'The court distilled — every important game of the ancient era. Plays precise development with no weaknesses. Only a win seals the era — mate, or a sealed king; a dead draw earns a rematch.',
+          'The court distilled — every important game of the ancient era. Plays precise development with no weaknesses. Only a win seals the era — mate, a sealed king, or its resignation; a dead draw earns a rematch.',
         storyBeat: {
           label: 'Era verdict',
           title: 'Play the court itself',

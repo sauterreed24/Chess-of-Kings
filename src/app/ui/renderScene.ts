@@ -220,7 +220,7 @@ export function renderScene(
         ${storyBeatBlock(scene.storyBeat)}
         <p class="opponent-note">${escapeHtml(scene.opponentNote)}</p>
         ${aiTraitBars(aiProfile)}
-        <p class="match-mandate">No move cap. Play until checkmate or a true dead draw. You command the White pieces.</p>
+        <p class="match-mandate">No move cap. Play until checkmate, a resignation, or a true dead draw. You command the White pieces.</p>
       </div>`
     dom.lessonNote.textContent =
       scene.aiStyle === 'romantic'
