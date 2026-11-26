@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.142)
+## What's new in this release (v0.5.143)
+
+**Pass 151 — fair endings** — rivals are the same opponent on phone and desktop, a hopeless rival resigns in the endgame instead of leaving you to hunt a mate forever, and Chapter I's finale stays inside the chapter's difficulty band. See [`docs/PASS151_FAIR_ENDINGS.md`](docs/PASS151_FAIR_ENDINGS.md).
+
+## Previous release (v0.5.142)
 
 **Pass 150 — rematch relief** — lose to a campaign rival and the rematch eases a step (shown in the court dossier) until you win; first attempts are unchanged. Measured with the new seeded playtest evaluator (`npm run eval`). See [`docs/PASS150_REMATCH_RELIEF.md`](docs/PASS150_REMATCH_RELIEF.md).
 

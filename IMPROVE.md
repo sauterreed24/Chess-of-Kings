@@ -32,53 +32,56 @@ sample differs). See `eval/README.md`.
 - AGENTS.md: lint + typecheck + relevant tests before any PR; docs for gameplay changes in `docs/`.
 
 ## Scorecard
-Measured by `npm run eval` (2 series × 3 attempts per match×bot). Noise between seed sets
-(baseline tune vs holdout): walls ±2, ramp ±0.15, comebacks ±0.05, skill gap ±0.03, unfinished ±1
-game. Smaller moves are noise. Result files: `eval/results/round1-*.json`.
+Measured by `npm run eval` (2 series × 3 attempts per match×bot). Noise between seed sets:
+walls ±2, ramp ±0.15, comebacks ±0.05, skill gap ±0.03, unfinished ±1 game. Result files:
+`eval/results/round1-*.json`, `r2*-tune.json`, `r2-final-holdout.json`.
 
-| # | Check (kind) | Target | Baseline tune / holdout | After round 1 tune / holdout |
-|---|---|---|---|---|
-| C1 | Walls: pre-finale matches the club bot fails to clear in 3 tries (fairness, progression) | 0 | 14 / 12 | **1 / 4** (measured) |
-| C2 | Skill gap: skilled − novice first-try score (skill matters) | ≥ 0.50 | 0.77 / 0.80 | 0.77 / 0.80 |
-| C3 | Ramp: Spearman(campaign order, first-try difficulty) (challenge pacing) | ≥ 0.50 | 0.33 / 0.48 | 0.33 / 0.48 ✗ |
-| C4 | Comebacks: decisive club/skilled games won from ≥1.5 pawns down (tension) | 0.20–0.50 | 0.28 / 0.23 | 0.35 / 0.28 |
-| C5 | Unfinished: no result in 300 plies (no draw rule → player must Reset) | 0 | 7/310 / 8/307 | 7/298 / 8/299 ✗ |
-| C6 | Puzzles: clear rate skilled / club / novice (solvable as written) | 1.00 / ≥0.80 | 1/1/1 | 1/1/1 (regression guard) |
-| C7 | Pacing: presses & words to first rival; club match plies p50 | p50 40–140 | 16 / 1419 w; 66 | 16 / 1419 w; 76 / 93 |
-| C8 | Rival wait p95, virtual ms on a 150 nodes/ms device (responsiveness) | ≤ 2000 | 1768 | 1632 |
+| # | Check (kind) | Target | Baseline tune / holdout | Round 1 | Round 2 (now) |
+|---|---|---|---|---|---|
+| C1 | Walls: pre-finale matches the club bot fails to clear in 3 tries (fairness) | 0 | 14 / 12 | 1 / 4 | **2 / 2** ✗ |
+| C2 | Skill gap: skilled − novice first-try score (skill matters) | ≥ 0.50 | 0.77 / 0.80 | 0.77 / 0.80 | 0.78 / 0.76 |
+| C3 | Ramp: Spearman(order, first-try difficulty) (challenge pacing) | ≥ 0.50 | 0.33 / 0.48 | 0.33 / 0.48 | 0.37 / 0.42 ✗ (check too coarse, see Backlog 1) |
+| C4 | Comebacks: decisive club/skilled games won from ≥1.5 pawns down (tension) | 0.20–0.50 | 0.28 / 0.23 | 0.35 / 0.28 | 0.32 / 0.27 |
+| C5 | Unfinished: no result in 300 plies | 0 | 7 / 8 | 7 / 8 | **1 / 0** |
+| C6 | Puzzles: clear rate skilled / club / novice | 1.00 / ≥0.80 | 1/1/1 | 1/1/1 | 1/1/1 (guard) |
+| C7 | Pacing: words to first rival; club match plies p50 | p50 40–140 | 1419 w; 66 | 76 / 93 | 80 / 83 |
+| C8 | Rival wait p95, virtual ms (150 nodes/ms) | ≤ 2000 | 1768 | 1632 | 1638 |
+| C9 | Device gap: club walls at 350 nodes/ms minus at 150 (fairness across devices) | ≤ noise | — | +3 (4 vs 1) | −1 (2 vs 3) |
 
-Holdout baseline was measured before the club-bot technique fix; on tune that fix changed no check.
+All measured by bots. Rival budgets are now node budgets at `PERSONA_NODES_PER_MS` = 150 in the game
+itself; the evaluator's clock rate only affects the UI eval probe and the slow-device time cap.
 
 ## Backlog (top first)
-1. **Device-independent rival strength.** Rival think budgets are wall-clock, so a desktop
-   (~350 nodes/ms here) gets ~2.3× the search of the eval's reference phone: same rival, different
-   difficulty per device. Try node budgets derived from `thinkTimeMs` (worker keeps a time cap as a
-   safety). Measured: with relief, club-bot walls are 1 at 150 nodes/ms but **4 at 350**
-   (tune; `round1-relief-desktop350-club-tune.json`). Choosing the node rate is choosing difficulty,
-   so propose the reference rate with numbers. Measure C1 at 150 vs 350 before/after.
-2. `c7-match-soren` stays a wall even at relief III on tune seeds; holdout adds Demetrios, Nysa,
-   Voss. Diagnose per-rival (persona depth, book, opening script) before touching relief numbers.
+1. **Refine C3 (ramp).** First-try outcomes are win/loss for most rivals (15/22 read
+   novice 0 / club 0 / skilled 1), so capping Chapter I's finale did not register. Use a graded
+   first-try measure — club-bot plies survived and eval at move 30 — prove it on a broken version
+   (e.g. swap two rivals), then re-measure old and new. Evidence the cap works: club first-game
+   survival vs Demetrios ~59 → 93 plies, Counterpart ~59 → 79.
+2. Remaining walls: Gage and Helia (tune), Helia and Soren (holdout) survive relief III. Diagnose
+   per rival (persona depth after relief, book/script, chapter ramp) before touching relief numbers.
 3. "Punished tendency" memory (`memoryRamp`) makes a rival stronger after it beats you; the old
    anti-tilt softening still reads the live streak. Fold both into one rule.
-4. Add a readability check: in losses, does the recap's "costliest move" match a ≥1.5-pawn drop a
-   deeper search confirms?
-5. Main-thread work per player move (two 12 ms eval searches + motif/hanging scans): measure on a
-   phone; container p95 is ~8 ms.
-6. Raise the bar once C1 = 0: club clears in ≤ 2 tries; add a "novice clears Chapter I rivals
-   1–2" check.
+4. Readability check: does the recap's "costliest move" match a ≥1.5-pawn drop a deeper search confirms?
+5. Main-thread work per player move (two 12 ms eval searches + scans): measure on a phone.
+6. Raise the bar once C1 = 0: club clears in ≤ 2 tries; novice clears Chapter I rivals 1–2.
 
 ## Alternatives (strong versions that lost)
 - Relief v1 (blunder *floor* only, no add): walls 14→1 tune / 12→6 holdout, but rivals whose own
   rate beat the floor (Amara, Lukas) got no relief at all and the label was untrue; v2 kept.
-- Not tried this round: simply enlarging the old anti-tilt constants. It cannot leave apex
+- Resignation without the endgame condition: rivals resigned middlegames after dropping a queen to
+  a beginner (skill gap 0.78 → 0.58; novice beat Iota and Wren first try). Endgame-only kept.
+- Not tried: simply enlarging the old anti-tilt constants. It cannot leave apex
   best-move mode and was cancelled by the `aiDepth` floor, so it was dominated by design.
 
 ## Strategy (kinds of change → hit rate)
-- Evaluator correctness (repetition, history, goal-reading, bot technique): 4/4 needed; each one
-  changed conclusions. Always smoke-test the evaluator on hard cases first.
-- Difficulty/DDA tuning of the persona layer: 1/1 kept (big gain on C1). Pays off here because
-  "win to advance" makes progression the dominant player-experience risk.
-- Copy/consistency fixes found by reading rules vs text: 1/1 (cheap).
+- Evaluator correctness (repetition, history, goal-reading, bot technique): 4/4 needed; each changed
+  conclusions. Always smoke-test the evaluator on hard cases first.
+- Difficulty/fairness in the persona layer (relief, device-independent budgets, finale cap): 3/3
+  kept. Highest-value area here because "win to advance" makes progression the main risk.
+- Rule changes at the edges of a match (resignation): 1/1 kept, but the first version regressed a
+  check — rules that end games early need a skill-gap guard.
+- Copy/consistency fixes: 2/2 (cheap; do them alongside rule changes).
+- Prediction accuracy: 4/5 (the cap's ramp prediction missed because the check was too coarse).
 
 ## Playbook (provisional unless marked)
 - Before a full 12-min run, smoke one hard rival per bot: `EVAL_ONLY=c5-match-helia EVAL_SERIES=1
@@ -90,6 +93,12 @@ Holdout baseline was measured before the club-bot technique fix; on tune that fi
 - First attempts must stay byte-identical when changing retry-only behaviour: C2/C3 identical is a
   free sanity check that the refactor didn't leak.
 - C1 depends on attempts 2+, C2/C3 on attempt 1 only; C4/C5 on all games.
+- Any rule that ends a game early (resignation, adjudication) must be checked against the
+  skill gap: novice bots exploit generosity first. (confirmed once)
+- Before predicting a move in a check, look at its resolution on the scenes you're changing
+  (C3 ties at 0/0/1 for most rivals). (provisional)
+- Playwright here needs the pre-installed Chromium: a throwaway config with
+  `launchOptions.executablePath: '/opt/pw-browsers/chromium-1243/chrome-linux64/chrome'`.
 
 ## Log
 ### Session 1 (2026-11-25) — evaluator + round 1 (total gain: walls 14→1 tune, 12→4 holdout)
@@ -112,17 +121,23 @@ Holdout baseline was measured before the club-bot technique fix; on tune that fi
 - Process failures: harness bugs found only after a full run (no smoke step) → Playbook line;
   stash/background race → worktree line; vacuous test → sabotage line.
 
+### Session 2 (2026-11-26) — round 2: the three approved decisions (gain: unfinished 7→1/8→0, device gap +3→−1, walls 4→2 holdout)
+- KEPT: node-budget rival strength (`PERSONA_NODES_PER_MS` = 150, `targetNodes` soft/hard limit,
+  2× wall-clock safety). Prediction "desktop walls ≈ phone walls": met (2 vs 3; was 4 vs 1). Phone
+  walls 1 → 3 inside noise (budgets now exact). Unit test proves identical moves/nodes at 150 vs 350.
+- KEPT: endgame-only rival resignation. Prediction "unfinished → ~0": met (1 tune, 0 holdout).
+  REJECTED first version (no endgame condition): skill gap 0.78 → 0.58.
+- KEPT: Chapter I finale capped to Marius (`strengthCapSceneId`), difficulty shown 3/5. Prediction
+  "ramp ≥ 0.50": MISSED (0.37) — check too coarse; walls 3 → 2 and club survival longer.
+- Verification: 1,062 unit tests, quality gate, 107 Playwright smoke tests pass. Independent review
+  this round: none (self-review only — say so).
+- Process failure: a backgrounded `a && b && (eval) &` chain put the whole chain in the background;
+  harmless here, but check the commit landed before relying on it.
+
 ## Decisions for me
-1. **Stuck won games (C5).** Matches have no repetition/50-move result and rivals never resign, so a
-   player who is winning but can't mate must press Reset (2–3% of bot games). Recommendation: let a
-   hopeless rival *resign* (e.g. ≥ a queen down in an endgame for 3 of its moves) — counts as a win,
-   fits the story ("Thirty years. I concede."). Alternative: claimable draw on threefold/50-move that
-   enables Run it back. This changes how matches end, so it's your call.
-2. **First-try ramp (C3 0.33/0.48).** Chapter I ends on its two hardest first-try rivals
-   (Demetrios = Advisor Boss, Counterpart = apex best-move) and Chapter II restarts at an
-   "initiate" Rowan who is still a club-bot wall on try 1. Recommendation: leave the authored order
-   but cap Chapter I's finale at veteran strength for the first try (relief already handles
-   retries). This changes the authored difficulty curve, so it's your call.
+- (Resolved 2026-11-26) Resignation, Chapter I finale cap, and device reference rate (150
+  nodes/ms) — owner approved the recommendations; shipped in pass 151.
+- None open.
 
 ## Checks for me (need a human or a real device)
 - Real phone engine speed (nodes/ms in the worker) — the eval assumes 150.

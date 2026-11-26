@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.143] — 2026-11-26
+
+Pass 151 — same rival everywhere, honest endings, a fair Chapter I finale:
+
+- **Same rival on every device** — rival think time was wall-clock, so desktops faced ~2.3× stronger rivals than phones. Rivals now search a fixed node budget (`thinkTimeMs × 150`) via a new `targetNodes` search limit; wall-clock time is only a slow-device safety net. Desktop-speed walls 4 → 2.
+- **Hopeless rivals resign** — in an endgame, a rival a queen or more down whose position the game has scored as lost for three straight turns resigns; it counts as a win and undo voids it. Unfinished games 7 → 1 across this pass and the last.
+- **Chapter I finale** — Demetrios and the Counterpart play no stronger than Marius on the first try (`MatchScene.strengthCapSceneId`), keeping their own style and lines; difficulty shown as 3/5. Demetrios is no longer a wall.
+- Docs: [`docs/PASS151_FAIR_ENDINGS.md`](docs/PASS151_FAIR_ENDINGS.md).
+
 ## [0.5.142] — 2026-11-25
 
 Pass 150 — rematch relief:
