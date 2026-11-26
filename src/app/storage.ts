@@ -218,6 +218,7 @@ function sanitizeInProgress(v: unknown): InProgressSnapshot | null {
     sanQuality,
     playerColor: x.playerColor === 'b' ? 'b' : 'w',
     calibrationMoves: typeof x.calibrationMoves === 'number' ? Math.max(0, Math.floor(x.calibrationMoves)) : 0,
+    ...(x.rivalResigned === true && (x.mode === 'match' || x.mode === 'duel') ? { rivalResigned: true as const } : {}),
     scriptedMoveIndex: typeof x.scriptedMoveIndex === 'number' ? Math.max(0, Math.floor(x.scriptedMoveIndex)) : 0,
     sceneTendencies,
     duel,

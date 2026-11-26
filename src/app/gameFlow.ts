@@ -3,7 +3,12 @@ import type { Color, Move, Square, PieceSymbol } from 'chess.js'
 import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
-import { rivalShouldResign } from './ai/resignation'
+import {
+  RESIGN_CONFIRM_NODES,
+  materialBalanceFromFen,
+  piecesFromFen,
+  rivalShouldResign,
+} from './ai/resignation'
 import {
   applyRematchRelief,
   capProfileStrength,
@@ -446,6 +451,7 @@ export class GameFlow {
       calibrationMoves: this.calibrationMoves,
       scriptedMoveIndex: this.scriptedMoveIndex,
       sceneTendencies: this.sceneTendencies,
+      rivalResigned: this.rivalHasResigned(),
       duel:
         this.mode === 'duel' && this.duelSession
           ? {
@@ -497,6 +503,7 @@ export class GameFlow {
       this.sanLog = recovery.sanLog
       this.sanQuality = recovery.sanQuality
       this.evalTrace = [] /* session-only; recap falls back gracefully */
+      this.rivalResignedFen = snap.rivalResigned ? snap.fen : null
       this.sceneTendencies = { ...snap.sceneTendencies }
       this.lastCoachTip = 'Restored'
       this.sessionRecoveredNotice = true
@@ -512,6 +519,7 @@ export class GameFlow {
     this.sanLog = recovery.sanLog
     this.sanQuality = recovery.sanQuality
     this.evalTrace = [] /* session-only; recap falls back gracefully */
+    this.rivalResignedFen = snap.rivalResigned && snap.mode === 'match' ? snap.fen : null
     this.calibrationMoves = snap.calibrationMoves
     this.scriptedMoveIndex = snap.scriptedMoveIndex
     this.sceneTendencies = { ...snap.sceneTendencies }
@@ -960,7 +968,11 @@ export class GameFlow {
     const sc = this.currentScene()
     const chessy = this.mode === 'duel' || this.sceneUsesBoard(sc)
     const canUndo =
-      chessy && this.history.length > 1 && (this.mode !== 'calibration') && !this.aiThinking
+      chessy &&
+      this.history.length > 1 &&
+      this.mode !== 'calibration' &&
+      !this.aiThinking &&
+      !this.rivalHasResigned()
     const calibration =
       this.mode === 'calibration' && this.calibrationScene
         ? { current: this.calibrationMoves, target: this.calibrationScene.minMovesByPlayer }
@@ -1254,12 +1266,17 @@ export class GameFlow {
     return null
   }
 
-  private tuneProfileForMatch(base: AiProfile, match: MatchScene, withRelief = true): AiProfile {
+  /**
+   * `asAuthored` ignores this player's history with the rival (memory,
+   * rivalry, tilt) — used for strength caps, which must not drift with how
+   * the player has fared against the cap rival.
+   */
+  private tuneProfileForMatch(base: AiProfile, match: MatchScene, withRelief = true, asAuthored = false): AiProfile {
     const diff = Math.max(1, match.difficulty ?? 1)
     const chapterRamp = this.currentChapter().index * 0.04
     const diffRamp = (diff - 1) * 0.06 + chapterRamp
     const endgameRamp = this.sanLog.length >= 24 ? 0.06 : 0
-    const mem = this.rivalMemory[match.id]
+    const mem = asAuthored ? undefined : this.rivalMemory[match.id]
     const memoryRamp = mem
       ? Math.min(0.16, (mem.punishedFlankPushes + mem.punishedEarlyQueen + mem.punishedCheckSpam) * 0.006)
       : 0
@@ -1267,7 +1284,7 @@ export class GameFlow {
     const rivalryPressure = mem ? mem.losses - mem.wins : 0
     const fairnessSoften = rivalryPressure >= 2 ? Math.min(0.18, rivalryPressure * 0.05) : 0
     const momentumHarden = mem && mem.wins - mem.losses >= 2 ? Math.min(0.1, (mem.wins - mem.losses) * 0.03) : 0
-    const tiltStreak = this.recentLossStreak(match.id)
+    const tiltStreak = asAuthored ? 0 : this.recentLossStreak(match.id)
     const antiTiltRelief = tiltStreak >= 2 ? Math.min(tiltStreak >= 4 ? 0.22 : 0.18, tiltStreak * 0.045) : 0
     const tuned: AiProfile = {
       ...base,
@@ -1318,7 +1335,7 @@ export class GameFlow {
     const capScene = this.strengthCapScene(match)
     if (!capScene || capScene.strengthCapSceneId) return tuned
     const capBase = adaptProfileToPhase(resolveProfileByMatchId(capScene.id), detectGamePhase(this.chess), this.tendencies)
-    return capProfileStrength(tuned, this.tuneProfileForMatch(capBase, capScene, false))
+    return capProfileStrength(tuned, this.tuneProfileForMatch(capBase, capScene, false, true))
   }
 
   /** Relief streak for a campaign match, read from the recorded history. */
@@ -1790,27 +1807,22 @@ export class GameFlow {
 
   /**
    * Rival's turn, match/duel: resign if hopeless (see ai/resignation.ts).
-   * Uses the eval trace the UI already keeps — no extra search.
+   * Device-independent: material is read from the recorded positions and
+   * the confirming search is a fixed node budget with no wall clock.
    */
   private rivalResignsNow(): boolean {
     if (this.mode !== 'match' && this.mode !== 'duel') return false
     if (this.chess.turn() === this.playerColor) return false
     const rival = this.playerColor === 'w' ? 'b' : 'w'
-    const sign = rival === 'w' ? 1 : -1
-    const rivalToMoveEvals: number[] = []
-    /* evalTrace[i] is the eval after ply i, i.e. of history[i + 1]. */
-    for (let i = 0; i < this.evalTrace.length; i++) {
-      const fen = this.history[i + 1]
-      if (fen && fen.split(' ')[1] === rival) rivalToMoveEvals.push(sign * this.evalTrace[i]!)
-    }
-    const materialBalanceCp =
-      this.sideMaterialCpExcludingKing(rival) - this.sideMaterialCpExcludingKing(this.playerColor)
-    const piecesExcludingKings = this.chess
-      .board()
-      .flat()
-      .filter((p) => p && p.type !== 'k').length
-    if (!rivalShouldResign({ rivalToMoveEvals, materialBalanceCp, piecesExcludingKings })) return false
-    this.rivalResignedFen = this.chess.fen()
+    const fen = this.chess.fen()
+    const positions = [...this.history.slice(0, -1), fen].filter((f) => f.split(' ')[1] === rival)
+    const rivalToMoveMaterial = positions.map((f) => materialBalanceFromFen(f, rival))
+    const piecesExcludingKings = piecesFromFen(fen)
+    const cheap = { rivalToMoveMaterial, piecesExcludingKings, confirmEvalCp: -Infinity }
+    if (!rivalShouldResign(cheap)) return false
+    const confirm = searchFen(fen, { targetNodes: RESIGN_CONFIRM_NODES, maxTimeMs: 60_000 })
+    if (!rivalShouldResign({ ...cheap, confirmEvalCp: confirm.score })) return false
+    this.rivalResignedFen = fen
     const name = this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'The rival'
     this.lastTacticalPulse = `${name} resigns.`
     return true
@@ -2378,6 +2390,9 @@ export class GameFlow {
     const sc = this.currentScene()
     if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return
     if (this.history.length <= 1) return
+    /* A resignation is final, as over the board (and undoing into the
+       rival's turn would leave nobody to move). Reset / Run it back remain. */
+    if (this.rivalHasResigned()) return
 
     this.cancelAiTimer()
     this.lastCoachTip = null

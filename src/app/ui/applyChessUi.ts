@@ -60,6 +60,8 @@ export function applyChessUi(
   const calibrationComplete = !!calibration && calibration.current >= calibration.target
 
   const sealedQuiet = isGameOver && !p.matchOutcome
+  /* GameFlow's status line names a resignation; say so wherever the win shows. */
+  const resigned = p.matchOutcome === 'win' && p.status.startsWith('Resigned')
   dom.turnPulseEl.textContent = p.matchOutcome
     ? p.matchOutcome === 'win'
       ? 'Victory sealed'
@@ -99,7 +101,7 @@ export function applyChessUi(
     )
     dom.boardStatus.classList.add('status-pill--thinking')
   } else if (p.matchOutcome === 'win') {
-    dom.boardStatus.textContent = STATUS_LABELS.win
+    dom.boardStatus.textContent = resigned ? 'Rival resigned' : STATUS_LABELS.win
     dom.boardStatus.classList.remove('status-pill--check', 'status-pill--thinking')
     dom.boardStatus.classList.add('status-pill--win')
     dom.boardStatus.classList.remove('status-pill--loss', 'status-pill--draw')
@@ -313,7 +315,8 @@ export function applyChessUi(
             ? ANNOUNCE_TEMPLATES.matchLoss
             : ANNOUNCE_TEMPLATES.matchDraw
       /* One message: a second say() in the same render replaces the first. */
-      announcer.say(`${spokenMove ? `${spokenMove} ` : ''}${tmpl} ${rival}.`)
+      const why = resigned ? 'The rival resigns. ' : ''
+      announcer.say(`${spokenMove ? `${spokenMove} ` : ''}${why}${tmpl} ${rival}.`)
       spokenMove = ''
     }
   } else if (sealedQuiet) {

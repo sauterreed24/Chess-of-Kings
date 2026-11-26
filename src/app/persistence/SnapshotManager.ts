@@ -24,6 +24,8 @@ export type SnapshotBuildContext = {
   calibrationMoves: number
   scriptedMoveIndex: number
   sceneTendencies: PlayerTendencyProfile
+  /** The rival resigned the current position. */
+  rivalResigned?: boolean
   duel?: {
     opponentId: string
     variantId: string
@@ -148,6 +150,7 @@ export function buildInProgressSnapshot(ctx: SnapshotBuildContext): InProgressSn
     sceneTendencies: { ...ctx.sceneTendencies },
     duel: undefined,
   }
+  if (ctx.rivalResigned && (ctx.mode === 'match' || ctx.mode === 'duel')) snap.rivalResigned = true
 
   if (ctx.mode === 'duel' && ctx.duel) {
     snap.duel = {

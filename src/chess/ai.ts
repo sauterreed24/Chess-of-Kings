@@ -110,7 +110,7 @@ export function findBestMove(
     (eval/) uses the same rate. */
 export const PERSONA_NODES_PER_MS = 150
 /** Wall-clock cap as a multiple of think time (slow-device safety net). */
-const PERSONA_TIME_SAFETY = 2
+const PERSONA_TIME_SAFETY = 1.5
 /** Floor for any persona search so it always finishes a shallow pass. */
 const MIN_PERSONA_NODES = 2000
 

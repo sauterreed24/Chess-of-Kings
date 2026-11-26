@@ -252,6 +252,30 @@ describe('applyChessUi', () => {
     expect(announcer.say.mock.calls[0]![0]).toMatch(/^Black queen d8 to h4, checkmate\. .*Amara\.$/)
   })
 
+  it('names a resignation on the status pill and in the outcome announcement', () => {
+    const chess = new Chess('7k/8/8/8/4K3/8/8/R2Q4 b - - 5 42')
+    const dom = refs()
+    const announcer = { say: vi.fn(), clear: vi.fn() }
+    const play = createMountPlayState()
+    play.prevSanLen = 1
+    applyChessUi(
+      {
+        ...payload(chess),
+        playerColor: 'w',
+        calibration: undefined,
+        sanLog: ['Ke4'],
+        status: 'Resigned — the rival concedes a lost position.',
+        matchOutcome: 'win',
+        aiPersona: 'Amara (rematch relief I: plays looser)',
+      },
+      { dom, play, getFlow: () => null, sfx: createSfxController({ enabled: false }), announcer },
+      { showRewardBundles: vi.fn(), maybeShowPendingChapterPrompt: vi.fn(), revealBoardScene: vi.fn() },
+    )
+    expect(dom.boardStatus.textContent).toBe('Rival resigned')
+    expect(announcer.say).toHaveBeenCalledTimes(1)
+    expect(announcer.say.mock.calls[0]![0]).toMatch(/The rival resigns\. .*Amara\.$/)
+  })
+
   it('keeps check and thinking on the status pill', () => {
     const chess = new Chess()
     const dom = refs()

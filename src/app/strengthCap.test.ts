@@ -63,6 +63,22 @@ describe('strength caps', () => {
     expect(tunedFor('c1-boss').style).toBe(resolveProfileByMatchId('c1-boss').style)
   })
 
+  it("the cap is Marius as authored, whatever the player's record against him", () => {
+    const plain = tunedFor('c1-boss')
+    const flow = flowAt('c1-boss')
+    ;(flow as unknown as { rivalMemory: Record<string, unknown> }).rivalMemory['c1-match-marius'] = {
+      games: 6, wins: 6, losses: 0, draws: 0, avgMoves: 40,
+      punishedFlankPushes: 20, punishedEarlyQueen: 20, punishedCheckSpam: 20, calibrationRating: 1500,
+    }
+    const scene = flow.currentScene() as MatchScene
+    const internals = flow as unknown as {
+      tuneProfileForMatch(base: AiProfile, m: MatchScene): AiProfile
+      tendencies: { flankPawnPushes: number; earlyQueenMoves: number; repeatedChecksWithoutGain: number }
+    }
+    const base = adaptProfileToPhase(resolveProfileByMatchId(scene.id), detectGamePhase(flow.chess), internals.tendencies)
+    expect(internals.tuneProfileForMatch(base, scene)).toEqual(plain)
+  })
+
   it('uncapped rivals are unaffected', () => {
     const vega = tunedFor('c2-match-vega')
     expect(vega.searchDepth).toBeGreaterThanOrEqual(4)

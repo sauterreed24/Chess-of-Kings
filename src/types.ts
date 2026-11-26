@@ -306,6 +306,8 @@ export interface InProgressSnapshot {
   scriptedMoveIndex: number
   sceneTendencies: PlayerTendencyProfile
   duel?: InProgressDuelSnapshot
+  /** The rival resigned the snapshot's final position (match/duel). */
+  rivalResigned?: true
 }
 
 export interface DuelVariant {
