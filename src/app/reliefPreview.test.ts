@@ -50,18 +50,24 @@ describe('after a campaign loss the player learns the rematch will ease', () => 
     flow.tryPlayerMove('g2', 'g4')
     await vi.advanceTimersByTimeAsync(3000)
     expect(last().matchOutcome).toBe('loss')
-    expect(last().mentorInsight).toMatch(/Next attempt — rematch relief I: calculates shallower\.$/)
+    expect(last().mentorInsight).toMatch(/ Rematch: rematch relief I: calculates shallower\.$/)
   })
 
   it('names the next step after repeated losses, and says nothing at the top step', async () => {
     const second = lose(1)
     second.flow.tryPlayerMove('g2', 'g4')
     await vi.advanceTimersByTimeAsync(3000)
-    expect(second.last().mentorInsight).toMatch(/Next attempt — rematch relief II:/)
+    /* Relief II cuts no more depth than relief I did, so it says what does change. */
+    expect(second.last().mentorInsight).toMatch(/ Rematch: rematch relief II: plays looser\.$/)
+    const third = lose(2)
+    third.flow.tryPlayerMove('g2', 'g4')
+    await vi.advanceTimersByTimeAsync(3000)
+    /* Edred is already on the depth floor at relief II. */
+    expect(third.last().mentorInsight).toMatch(/ Rematch: rematch relief III: plays looser\.$/)
     const top = lose(3)
     top.flow.tryPlayerMove('g2', 'g4')
     await vi.advanceTimersByTimeAsync(3000)
     expect(top.last().matchOutcome).toBe('loss')
-    expect(top.last().mentorInsight ?? '').not.toMatch(/Next attempt/)
+    expect(top.last().mentorInsight ?? '').not.toMatch(/Rematch:/)
   })
 })

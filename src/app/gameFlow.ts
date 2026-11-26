@@ -1293,7 +1293,8 @@ export class GameFlow {
     /* Chapter/difficulty ramps sharpen a rival but must not turn a veteran
        persona into an apex best-move engine (that drops its style, its
        near-equal choices and its bounded misses). A chapter's boss — or a
-       rival authored at apex strictness — may play the court's best line. */
+       rival authored at apex strictness — may play the court's best line,
+       unless a strength cap (Chapter I finale → Marius) holds it lower. */
     const mayPlayApex =
       resolveProfileByMatchId(match.id).conversionStrictness >= APEX_CONVERSION_STRICTNESS ||
       match.ladderTier === 'boss' ||
@@ -1363,7 +1364,9 @@ export class GameFlow {
     if (next.step <= rematchRelief(this.matchReliefStreak).step) return null
     const base = adaptProfileToPhase(resolveProfileByMatchId(match.id), 'opening', this.tendencies)
     const authored = this.tuneProfileForMatch(base, match, false)
-    return rematchReliefNote(next, applyRematchRelief(authored, next).searchDepth < authored.searchDepth)
+    /* Compare with THIS game's step: relief II searches no shallower than I. */
+    const nowDepth = applyRematchRelief(authored, rematchRelief(this.matchReliefStreak)).searchDepth
+    return rematchReliefNote(next, applyRematchRelief(authored, next).searchDepth < nowDepth)
   }
 
   /** Relief streak for a campaign match, read from the recorded history. */
@@ -1456,7 +1459,7 @@ export class GameFlow {
           moveCount: this.sanLog.length,
         })
         const preview = this.mode === 'match' ? this.nextAttemptReliefNote() : null
-        return preview ? `${line} Next attempt — ${preview}.` : line
+        return preview ? `${line} Rematch: ${preview}.` : line
       }
     }
     const tilt = this.recentLossStreak()
