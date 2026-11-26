@@ -1351,6 +1351,21 @@ export class GameFlow {
     return capProfileStrength(tuned, this.tuneProfileForMatch(capBase, capScene, false, true))
   }
 
+  /**
+   * After a campaign loss: what the rematch will ease, if anything more than
+   * this game did (so the player knows retrying is worth it). Null at the top
+   * step or when nothing changes.
+   */
+  private nextAttemptReliefNote(): string | null {
+    const match = this.matchScene
+    if (!match) return null
+    const next = rematchRelief(this.reliefStreakFor(match.id))
+    if (next.step <= rematchRelief(this.matchReliefStreak).step) return null
+    const base = adaptProfileToPhase(resolveProfileByMatchId(match.id), 'opening', this.tendencies)
+    const authored = this.tuneProfileForMatch(base, match, false)
+    return rematchReliefNote(next, applyRematchRelief(authored, next).searchDepth < authored.searchDepth)
+  }
+
   /** Relief streak for a campaign match, read from the recorded history. */
   private reliefStreakFor(matchId: string): number {
     return reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
@@ -1433,13 +1448,15 @@ export class GameFlow {
     if (this.mode === 'match' || this.mode === 'duel') {
       if (this.computeMatchOutcome() === 'loss') {
         const oid = this.mode === 'duel' ? this.duelSession?.roster.opponentId : this.matchScene?.id
-        return lossRecoveryMentorLine({
+        const line = lossRecoveryMentorLine({
           lossStreakVsOpponent: this.recentLossStreak(oid),
           sceneTendencies: this.sceneTendencies,
           blunderCount: this.countQuality('blunder'),
           mistakeCount: this.countQuality('mistake'),
           moveCount: this.sanLog.length,
         })
+        const preview = this.mode === 'match' ? this.nextAttemptReliefNote() : null
+        return preview ? `${line} Next attempt — ${preview}.` : line
       }
     }
     const tilt = this.recentLossStreak()
