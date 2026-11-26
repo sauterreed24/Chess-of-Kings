@@ -4,7 +4,13 @@ import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
 import { rivalShouldResign } from './ai/resignation'
-import { applyRematchRelief, rematchRelief, rematchReliefNote, reliefLossStreak } from './ai/rematchRelief'
+import {
+  applyRematchRelief,
+  capProfileStrength,
+  rematchRelief,
+  rematchReliefNote,
+  reliefLossStreak,
+} from './ai/rematchRelief'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
 import { findCostliestMoment, plyMoveLabel } from './recap/costliestMoment'
@@ -1293,7 +1299,26 @@ export class GameFlow {
         prophylactic: Math.min(1, base.weights.prophylactic + totalRamp * 0.6),
       },
     }
-    return withRelief ? applyRematchRelief(tuned, rematchRelief(this.matchReliefStreak)) : tuned
+    const capped = this.applyStrengthCap(tuned, match)
+    return withRelief ? applyRematchRelief(capped, rematchRelief(this.matchReliefStreak)) : capped
+  }
+
+  /** The match scene a capped rival may not out-play (see MatchScene.strengthCapSceneId). */
+  private strengthCapScene(match: MatchScene): MatchScene | null {
+    if (!match.strengthCapSceneId) return null
+    for (const chapter of this.chapters) {
+      for (const scene of chapter.scenes) {
+        if (scene.type === 'match' && scene.id === match.strengthCapSceneId && scene.id !== match.id) return scene
+      }
+    }
+    return null
+  }
+
+  private applyStrengthCap(tuned: AiProfile, match: MatchScene): AiProfile {
+    const capScene = this.strengthCapScene(match)
+    if (!capScene || capScene.strengthCapSceneId) return tuned
+    const capBase = adaptProfileToPhase(resolveProfileByMatchId(capScene.id), detectGamePhase(this.chess), this.tendencies)
+    return capProfileStrength(tuned, this.tuneProfileForMatch(capBase, capScene, false))
   }
 
   /** Relief streak for a campaign match, read from the recorded history. */
@@ -1669,11 +1694,17 @@ export class GameFlow {
       )
     }
     if (this.mode === 'match' && this.matchScene) {
-      const base = resolveProfileByMatchId(this.matchScene.id)
-      const aiDepth = this.matchScene.aiDepth ?? base.searchDepth
-      const depthOffset = Math.max(0, aiDepth - base.searchDepth) * 80
-      const diffOffset = (Math.max(1, this.matchScene.difficulty ?? 1) - 1) * 40
-      return opponentRatingFromProfile(base, depthOffset + diffOffset)
+      const ratingFor = (scene: MatchScene): number => {
+        const base = resolveProfileByMatchId(scene.id)
+        const aiDepth = scene.aiDepth ?? base.searchDepth
+        const depthOffset = Math.max(0, aiDepth - base.searchDepth) * 80
+        const diffOffset = (Math.max(1, scene.difficulty ?? 1) - 1) * 40
+        return opponentRatingFromProfile(base, depthOffset + diffOffset)
+      }
+      /* A capped rival is rated no higher than the rival it is capped to. */
+      const capScene = this.strengthCapScene(this.matchScene)
+      const own = ratingFor(this.matchScene)
+      return capScene ? Math.min(own, ratingFor(capScene)) : own
     }
     return BASE_RATING
   }

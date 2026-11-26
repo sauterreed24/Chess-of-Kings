@@ -149,7 +149,8 @@ describe('rematch relief in the campaign', () => {
   it('eases the profile and leaves apex mode, but only after losses', () => {
     const tuned = (outcomes: Outcome[]) => {
       const { flow } = flowAt('c1-boss', outcomes)
-      const scene = flow.currentScene() as MatchScene
+      /* Uncapped copy: this checks relief on an apex rival, not the Chapter I cap. */
+      const scene = { ...(flow.currentScene() as MatchScene), strengthCapSceneId: undefined }
       const tune = (flow as unknown as { tuneProfileForMatch: Tune }).tuneProfileForMatch.bind(flow)
       return { profile: tune(AI_PROFILES.counterpart_apex!, scene), scene }
     }

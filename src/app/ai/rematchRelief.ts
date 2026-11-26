@@ -86,3 +86,18 @@ export function reliefLossStreak(outcomes: ReadonlyArray<'win' | 'loss' | 'draw'
   }
   return streak
 }
+
+/**
+ * Clamp a tuned profile so it is no stronger than `cap` on every axis that
+ * sets playing strength. Style, book, weights and risk stay the rival's own.
+ */
+export function capProfileStrength(profile: AiProfile, cap: AiProfile): AiProfile {
+  return {
+    ...profile,
+    searchDepth: Math.min(profile.searchDepth, cap.searchDepth),
+    thinkTimeMs: Math.min(profile.thinkTimeMs, cap.thinkTimeMs),
+    blunderRate: Math.max(profile.blunderRate, cap.blunderRate),
+    tacticalAlertness: Math.min(profile.tacticalAlertness, cap.tacticalAlertness),
+    conversionStrictness: Math.min(profile.conversionStrictness, cap.conversionStrictness),
+  }
+}
