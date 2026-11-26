@@ -4,6 +4,12 @@
 const FINALE = 'c9-match-bram'
 
 const pts = (o) => (o === 'win' ? 1 : o === 'draw' ? 0.5 : 0)
+/* Graded first-try score: a loss earns partial credit for how long the bot
+   held out (0.5 at >= GRADED_PLIES), so it stays below a draw but separates
+   "crushed in 20 plies" from "lost a long game". Draw 0.5, win 1. */
+export const GRADED_PLIES = 150
+export const graded = (g) =>
+  g.outcome === 'win' ? 1 : g.outcome === 'draw' ? 0.5 : 0.5 * Math.min(1, g.plies / GRADED_PLIES)
 const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : NaN)
 const pct = (xs, p) => {
   if (!xs.length) return NaN
@@ -61,6 +67,7 @@ export function scoreRun(records) {
       for (const [bot, seriesList] of Object.entries(m.bots)) {
         out[bot] = {
           first: round(mean(seriesList.map((g) => pts(g[0].outcome)))),
+          graded: round(mean(seriesList.map((g) => graded(g[0])))),
           clear: round(mean(seriesList.map((g) => (g.some((x) => x.outcome === 'win') ? 1 : 0)))),
           tries: round(mean(seriesList.map((g) => g.findIndex((x) => x.outcome === 'win') + 1 || g.length + 1)), 1),
         }
@@ -81,6 +88,12 @@ export function scoreRun(records) {
   /* C3 ramp: campaign order vs difficulty (1 - mean first-attempt score of all bots). */
   const diff = perMatch.map((m) => 1 - mean(['novice', 'club', 'skilled'].filter((b) => m[b]).map((b) => m[b].first)))
   const ramp = perMatch.length > 2 ? spearman(perMatch.map((m) => m.order), diff) : NaN
+  /* C3 (graded): same, with graded first-try scores — resolves the many
+     rivals whose raw first-try outcomes tie at novice 0 / club 0 / skilled 1. */
+  const gradedDiff = perMatch.map(
+    (m) => 1 - mean(['novice', 'club', 'skilled'].filter((b) => m[b]).map((b) => m[b].graded)),
+  )
+  const rampGraded = perMatch.length > 2 ? spearman(perMatch.map((m) => m.order), gradedDiff) : NaN
 
   /* C4 tension: decisive club/skilled games where the eventual winner trailed by >= 1.5 pawns. */
   const decisive = allGames.filter((g) => g.bot !== 'novice' && (g.outcome === 'win' || g.outcome === 'loss'))
@@ -115,7 +128,7 @@ export function scoreRun(records) {
     checks: {
       walls: { value: walls.length, target: '0', list: walls },
       skillGap: { value: round(mean(gaps)), min: round(Math.min(...gaps)), target: '>= 0.50' },
-      ramp: { value: round(ramp), target: '>= 0.50' },
+      ramp: { value: round(rampGraded), legacy: round(ramp), target: '>= 0.50' },
       comebackRate: { value: round(comebacks.length / Math.max(1, decisive.length)), n: decisive.length, target: '0.20-0.50' },
       unfinishedRate: { value: round(unfinished.length / Math.max(1, allGames.length), 3), n: unfinished.length, of: allGames.length, target: '0' },
       puzzles: {
@@ -151,7 +164,7 @@ export function formatScorecard(sc) {
   lines.push('SCORECARD')
   lines.push(`  C1 walls (club can't clear in 3 tries) : ${c.walls.value}  [${c.walls.target}] ${c.walls.list.join(', ')}`)
   lines.push(`  C2 skill gap (skilled-novice, 1st try)  : ${c.skillGap.value} (min ${c.skillGap.min})  [${c.skillGap.target}]`)
-  lines.push(`  C3 difficulty ramp (Spearman)           : ${c.ramp.value}  [${c.ramp.target}]`)
+  lines.push(`  C3 difficulty ramp (Spearman, graded)   : ${c.ramp.value} (legacy win/loss ${c.ramp.legacy ?? '-'})  [${c.ramp.target}]`)
   lines.push(`  C4 comeback rate (decisive club/skilled): ${c.comebackRate.value} of ${c.comebackRate.n}  [${c.comebackRate.target}]`)
   lines.push(`  C5 unfinished games                      : ${c.unfinishedRate.value} (${c.unfinishedRate.n}/${c.unfinishedRate.of})  [${c.unfinishedRate.target}]`)
   lines.push(`  C6 puzzles skilled/club/novice clear     : ${c.puzzles.skilledClear}/${c.puzzles.clubClear}/${c.puzzles.noviceClear}  [${c.puzzles.target}] broken: ${c.puzzles.broken.join(', ') || 'none'}`)
