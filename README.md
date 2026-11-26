@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.143)
+## What's new in this release (v0.5.144)
+
+**Pass 152 — personas stay personas** — veteran rivals keep their own styles instead of turning into best-move engines in later chapters, and a lost campaign game tells you what the rematch will ease. See [`docs/PASS152_PERSONAS_STAY_PERSONAS.md`](docs/PASS152_PERSONAS_STAY_PERSONAS.md).
+
+## Previous release (v0.5.143)
 
 **Pass 151 — fair endings** — rivals are the same opponent on phone and desktop, a hopeless rival resigns in the endgame instead of leaving you to hunt a mate forever, and Chapter I's finale stays inside the chapter's difficulty band. See [`docs/PASS151_FAIR_ENDINGS.md`](docs/PASS151_FAIR_ENDINGS.md).
 

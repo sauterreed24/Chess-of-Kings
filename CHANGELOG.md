@@ -11,6 +11,15 @@ level (the save format has its own version field — see
 
 ## [Unreleased]
 
+## [0.5.144] — 2026-11-26
+
+Pass 152 — personas stay personas:
+
+- **Veterans keep their personalities** — chapter/difficulty ramps had pushed 14 of 16 rivals from Chapter II on into best-move mode (no style, no near-equal choices, no bounded misses), making veterans like Gage and Prax harder than their chapter's boss. Ramps now stop just below that mode unless the rival is a boss or authored at apex. Skill gap 0.78 → 0.86 (tune) / 0.76 → 0.89 (holdout).
+- **The rematch is announced** — after a campaign loss the mentor line says what the next attempt eases ("Rematch: rematch relief I: calculates shallower.").
+- **Evaluator** — graded difficulty-ramp check.
+- Docs: [`docs/PASS152_PERSONAS_STAY_PERSONAS.md`](docs/PASS152_PERSONAS_STAY_PERSONAS.md).
+
 ## [0.5.143] — 2026-11-26
 
 Pass 151 — same rival everywhere, honest endings, a fair Chapter I finale:
