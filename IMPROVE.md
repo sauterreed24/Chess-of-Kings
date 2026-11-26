@@ -95,6 +95,8 @@ itself; the evaluator's clock rate only affects the UI eval probe and the slow-d
 - C1 depends on attempts 2+, C2/C3 on attempt 1 only; C4/C5 on all games.
 - Any rule that ends a game early (resignation, adjudication) must be checked against the
   skill gap: novice bots exploit generosity first. (confirmed once)
+- Assert on side effects (match history, rewards), not just the end state, when testing
+  persistence: a restore bug can reproduce the right board by re-running the logic. (provisional)
 - Before predicting a move in a check, look at its resolution on the scenes you're changing
   (C3 ties at 0/0/1 for most rivals). (provisional)
 - Playwright here needs the pre-installed Chromium: a throwaway config with
@@ -129,8 +131,15 @@ itself; the evaluator's clock rate only affects the UI eval probe and the slow-d
   REJECTED first version (no endgame condition): skill gap 0.78 → 0.58.
 - KEPT: Chapter I finale capped to Marius (`strengthCapSceneId`), difficulty shown 3/5. Prediction
   "ramp ≥ 0.50": MISSED (0.37) — check too coarse; walls 3 → 2 and club survival longer.
-- Verification: 1,062 unit tests, quality gate, 107 Playwright smoke tests pass. Independent review
-  this round: none (self-review only — say so).
+- Independent review (fresh agent, code only) found 2 bugs + risks, all fixed in their own commit:
+  resignation lost on reload (would double-record the win and rank points) → saved in the snapshot;
+  undo after resignation froze the board / allowed farming → resignation is final; resign decision
+  read the device-dependent UI eval → now material from history + fixed 4000-node confirm; wall-clock
+  safety 2× → 1.5×; cap now Marius *as authored*; capped trait bars and "Rival resigned" label.
+  Re-measured: identical scorecard on tune and holdout.
+- Verification: 1,065 unit tests, quality gate, 107 Playwright smoke tests pass.
+- Lesson (provisional): a sabotage test can pass for the wrong reason — the reload test passed with
+  the fix removed because the rival simply resigned again; assert on side effects (history, rewards).
 - Process failure: a backgrounded `a && b && (eval) &` chain put the whole chain in the background;
   harmless here, but check the commit landed before relying on it.
 

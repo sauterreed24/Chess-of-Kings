@@ -50,7 +50,7 @@
     "aiWaitP50": 737,
     "aiWaitP95": 1597,
     "aiWaitMax": 2328,
-    "inputLatencyRealP95": 9,
+    "inputLatencyRealP95": 7.3,
     "target": "aiWait p95 <= 2000 virtual ms"
    }
   },
