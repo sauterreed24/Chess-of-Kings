@@ -1,3 +1,5 @@
+import { PERSONA_NODES_PER_MS } from '../src/chess/ai'
+
 /* Seeded randomness and a node-proportional virtual clock.
 
    The engine's search is time-budgeted (performance.now every 1024 nodes),
@@ -32,11 +34,11 @@ export function seedRandom(key: string): () => number {
   return rng
 }
 
-/** Reference device: engine nodes searched per millisecond of think budget.
-    This container measures ~320-410 nodes/ms (Node 22). Phones run the
-    worker several times slower; 150 is a mid-range phone assumption that a
-    real device should confirm (see IMPROVE.md "Checks for me"). */
-export const DEFAULT_NODES_PER_MS = Number(process.env.EVAL_NODES_PER_MS ?? 150)
+/** Reference device: engine nodes searched per millisecond. Rival budgets
+    are node budgets at the game's PERSONA_NODES_PER_MS, so this mostly
+    affects the UI eval probe and the slow-device time cap. Override with
+    EVAL_NODES_PER_MS (this container measures ~320-410 real nodes/ms). */
+export const DEFAULT_NODES_PER_MS = Number(process.env.EVAL_NODES_PER_MS ?? PERSONA_NODES_PER_MS)
 
 let virtualNow = 0
 const realNow = performance.now.bind(performance)

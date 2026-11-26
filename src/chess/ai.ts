@@ -105,6 +105,15 @@ export function findBestMove(
 
 /* ─── Persona model ──────────────────────────────────────────────────── */
 
+/** Reference device: nodes a persona may search per ms of think time
+    (a mid-range phone; desktops reach ~350). The playtest evaluator
+    (eval/) uses the same rate. */
+export const PERSONA_NODES_PER_MS = 150
+/** Wall-clock cap as a multiple of think time (slow-device safety net). */
+const PERSONA_TIME_SAFETY = 2
+/** Floor for any persona search so it always finishes a shallow pass. */
+const MIN_PERSONA_NODES = 2000
+
 /** Legacy profile depths (2–5) map onto real engine plies (2–10). */
 function personaDepth(profile: AiProfile): number {
   const base = Math.max(2, Math.min(10, profile.searchDepth * 2 - 2))
@@ -176,9 +185,15 @@ export function findBestMoveWithProfile(
   const avoid = opts?.avoidMoveKey ?? null
   const depth = personaDepth(profile)
   const budgetMs = Math.max(30, Math.min(4000, profile.thinkTimeMs))
-  /* One shared deadline bounds every search this call may stack
-     (apex fall-through, miss episode, conversion re-search). */
-  const deadline = performance.now() + budgetMs
+  /* Strength is a node budget (think time on the reference device), so a
+     rival is the same opponent on a fast desktop and a mid-range phone.
+     The wall-clock deadline is only a safety net for very slow devices.
+     Both are shared by every search this call may stack (apex
+     fall-through, miss episode, conversion re-search). */
+  const nodeTarget = Math.round(budgetMs * PERSONA_NODES_PER_MS)
+  let nodesUsed = 0
+  const remainingNodes = (): number => Math.max(MIN_PERSONA_NODES, nodeTarget - nodesUsed)
+  const deadline = performance.now() + budgetMs * PERSONA_TIME_SAFETY
   const remainingMs = (): number => Math.max(30, deadline - performance.now())
 
   /* One verbose-history pass serves both repetition awareness and the
@@ -193,8 +208,14 @@ export function findBestMoveWithProfile(
 
   /* Apex-tier personas simply play the engine's best move. */
   if (profile.conversionStrictness >= 0.95) {
-    const result = searchFen(fen, { maxDepth: depth, maxTimeMs: budgetMs, historyFens })
+    const result = searchFen(fen, {
+      maxDepth: depth,
+      maxTimeMs: remainingMs(),
+      targetNodes: remainingNodes(),
+      historyFens,
+    })
     lastNodes = result.nodes
+    nodesUsed += result.nodes
     const best = result.move ? oracleMove(legal, result.move.uci) : null
     if (best && moveKey(best) !== avoid) return best
     /* Avoided or unresolved: fall through to a quick spectrum pick. */
@@ -206,10 +227,12 @@ export function findBestMoveWithProfile(
   let result: EngineSearchResult = searchFen(fen, {
     maxDepth: spectrumDepth,
     maxTimeMs: missed ? Math.max(30, remainingMs() / 2) : remainingMs(),
+    targetNodes: missed ? Math.max(MIN_PERSONA_NODES, Math.round(remainingNodes() / 2)) : remainingNodes(),
     spectrum: true,
     historyFens,
   })
   lastNodes = result.nodes
+  nodesUsed += result.nodes
   /* search() guarantees depth >= 1 with scored root moves. */
   if (result.rootMoves.length === 0) return legal[0]!
 
@@ -224,10 +247,12 @@ export function findBestMoveWithProfile(
     const deeper = searchFen(fen, {
       maxDepth: 6,
       maxTimeMs: remainingMs(),
+      targetNodes: remainingNodes(),
       spectrum: true,
       historyFens,
     })
     lastNodes += deeper.nodes
+    nodesUsed += deeper.nodes
     if (deeper.rootMoves.length > 0 && deeper.depth > result.depth) result = deeper
   }
 

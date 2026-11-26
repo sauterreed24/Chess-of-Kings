@@ -42,6 +42,8 @@ export interface EngineSearchOptions {
   maxDepth?: number
   maxTimeMs?: number
   maxNodes?: number
+  /** Soft+hard node budget (see SearchLimits.targetNodes). */
+  targetNodes?: number
   /** Score every root move exactly (used by the persona/difficulty layer). */
   spectrum?: boolean
   /** Clear the transposition table first (reproducible test runs). */
@@ -95,6 +97,7 @@ export function searchFen(fen: string, options: EngineSearchOptions = {}): Engin
     maxDepth: options.maxDepth,
     maxTimeMs: options.maxTimeMs,
     maxNodes: options.maxNodes,
+    targetNodes: options.targetNodes,
     spectrum: options.spectrum,
   }
   const outcome = search(pos, limits)

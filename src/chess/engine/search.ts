@@ -33,6 +33,12 @@ export interface SearchLimits {
   maxDepth?: number
   maxTimeMs?: number
   maxNodes?: number
+  /**
+   * Node budget with the same soft/hard semantics as maxTimeMs: no new
+   * iteration once it is mostly spent, abort at the full amount. Makes a
+   * persona's strength independent of device speed.
+   */
+  targetNodes?: number
   /** Collect exact scores for every root move (costlier; used by personas). */
   spectrum?: boolean
 }
@@ -407,7 +413,8 @@ export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome 
   const spectrum = limits.spectrum === true
   const start = performance.now()
   hardDeadline = start + maxTimeMs
-  nodeBudget = limits.maxNodes ?? Infinity
+  const targetNodes = limits.targetNodes ?? Infinity
+  nodeBudget = Math.min(limits.maxNodes ?? Infinity, targetNodes)
   nodes = 0
   aborted = false
   ttGeneration = (ttGeneration + 1) & 0x3f
@@ -440,8 +447,9 @@ export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome 
     const elapsed = performance.now() - start
     /* Soft limit: do not start an iteration we cannot plausibly finish.
        An unstable best move earns a longer leash (criticality extension). */
-    const softBudget = maxTimeMs * (bestMoveChanged ? 0.78 : 0.55)
-    if (depth > 1 && elapsed >= softBudget) break
+    const softShare = bestMoveChanged ? 0.78 : 0.55
+    if (depth > 1 && elapsed >= maxTimeMs * softShare) break
+    if (depth > 1 && nodes >= targetNodes * softShare) break
 
     let iterBestIdx = -1
     let iterBestScore = -INF
