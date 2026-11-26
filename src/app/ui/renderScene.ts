@@ -18,6 +18,7 @@ import {
 import { buildChapterRail, buildLadderTrack } from '../play/chapterRail'
 import { prosePeekSkipIndex } from '../play/skipAhead'
 import { resolveProfileByMatchId } from '../../chess/aiProfiles'
+import { capProfileStrength } from '../ai/rematchRelief'
 import type { GameFlow } from '../gameFlow'
 import type { MountDomRefs, MountPlayState } from '../mountContext'
 import { syncPhoneDossierFolds, syncPhoneHitTarget, syncPhonePuzzleLesson } from '../labModal'
@@ -193,7 +194,11 @@ export function renderScene(
     const tier = scene.ladderTier ? tierLabel(scene.ladderTier) : ''
     const tierClass = scene.ladderTier ?? ''
     const ladderTrack = buildLadderTrack(chapter, scene.id, flow.completedSceneIds)
-    const aiProfile = resolveProfileByMatchId(scene.id)
+    /* Capped rivals show the strength they actually play at. */
+    const ownProfile = resolveProfileByMatchId(scene.id)
+    const aiProfile = scene.strengthCapSceneId
+      ? capProfileStrength(ownProfile, resolveProfileByMatchId(scene.strengthCapSceneId))
+      : ownProfile
     dom.sceneTag.textContent = scene.title
   
     /* Count match number and total */
@@ -220,7 +225,7 @@ export function renderScene(
         ${storyBeatBlock(scene.storyBeat)}
         <p class="opponent-note">${escapeHtml(scene.opponentNote)}</p>
         ${aiTraitBars(aiProfile)}
-        <p class="match-mandate">No move cap. Play until checkmate or a true dead draw. You command the White pieces.</p>
+        <p class="match-mandate">No move cap. Play until checkmate, a resignation, or a true dead draw. You command the White pieces.</p>
       </div>`
     dom.lessonNote.textContent =
       scene.aiStyle === 'romantic'

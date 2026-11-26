@@ -24,6 +24,10 @@ export type SnapshotBuildContext = {
   calibrationMoves: number
   scriptedMoveIndex: number
   sceneTendencies: PlayerTendencyProfile
+  /** The rival resigned the current position. */
+  rivalResigned?: boolean
+  /** Rematch-relief streak frozen for the current campaign attempt. */
+  reliefStreak?: number
   duel?: {
     opponentId: string
     variantId: string
@@ -148,6 +152,13 @@ export function buildInProgressSnapshot(ctx: SnapshotBuildContext): InProgressSn
     sceneTendencies: { ...ctx.sceneTendencies },
     duel: undefined,
   }
+  /* Only when the saved position IS the resigned one (long games are
+     truncated to IN_PROGRESS_PLY_LIMIT plies). */
+  const savedFinalPosition = history.length === ctx.history.length
+  if (ctx.rivalResigned && savedFinalPosition && (ctx.mode === 'match' || ctx.mode === 'duel')) {
+    snap.rivalResigned = true
+  }
+  if (ctx.mode === 'match' && typeof ctx.reliefStreak === 'number') snap.reliefStreak = ctx.reliefStreak
 
   if (ctx.mode === 'duel' && ctx.duel) {
     snap.duel = {

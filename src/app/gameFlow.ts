@@ -3,6 +3,19 @@ import type { Color, Move, Square, PieceSymbol } from 'chess.js'
 import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
+import {
+  RESIGN_CONFIRM_NODES,
+  materialBalanceFromFen,
+  piecesFromFen,
+  rivalShouldResign,
+} from './ai/resignation'
+import {
+  applyRematchRelief,
+  capProfileStrength,
+  rematchRelief,
+  rematchReliefNote,
+  reliefLossStreak,
+} from './ai/rematchRelief'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
 import { findCostliestMoment, plyMoveLabel } from './recap/costliestMoment'
@@ -327,6 +340,10 @@ export class GameFlow {
   }
   private readonly duels = new DuelManager()
   private matchHistory: MatchHistoryEntry[] = []
+  /** Rematch-relief streak in effect for the current campaign match. */
+  private matchReliefStreak = 0
+  /** Position (FEN) in which the rival resigned; any undo/reset voids it. */
+  private rivalResignedFen: string | null = null
   private lastResolvedOutcomeKey: string | null = null
   private rivalMemory: Record<string, RivalMemoryEntry> = {}
   private ladder: LadderRating = defaultLadderRating()
@@ -434,6 +451,8 @@ export class GameFlow {
       calibrationMoves: this.calibrationMoves,
       scriptedMoveIndex: this.scriptedMoveIndex,
       sceneTendencies: this.sceneTendencies,
+      rivalResigned: this.rivalHasResigned(),
+      reliefStreak: this.mode === 'match' ? this.matchReliefStreak : undefined,
       duel:
         this.mode === 'duel' && this.duelSession
           ? {
@@ -485,6 +504,7 @@ export class GameFlow {
       this.sanLog = recovery.sanLog
       this.sanQuality = recovery.sanQuality
       this.evalTrace = [] /* session-only; recap falls back gracefully */
+      this.rivalResignedFen = snap.rivalResigned ? snap.fen : null
       this.sceneTendencies = { ...snap.sceneTendencies }
       this.lastCoachTip = 'Restored'
       this.sessionRecoveredNotice = true
@@ -500,6 +520,10 @@ export class GameFlow {
     this.sanLog = recovery.sanLog
     this.sanQuality = recovery.sanQuality
     this.evalTrace = [] /* session-only; recap falls back gracefully */
+    this.rivalResignedFen = snap.rivalResigned && snap.mode === 'match' ? snap.fen : null
+    /* Keep the attempt's frozen relief step: a loss recorded and then undone
+       before the reload must not ease this same game. */
+    if (snap.mode === 'match' && typeof snap.reliefStreak === 'number') this.matchReliefStreak = snap.reliefStreak
     this.calibrationMoves = snap.calibrationMoves
     this.scriptedMoveIndex = snap.scriptedMoveIndex
     this.sceneTendencies = { ...snap.sceneTendencies }
@@ -887,6 +911,10 @@ export class GameFlow {
     } else if (sc.type === 'match') {
       this.mode = 'match'
       this.matchScene = sc
+      /* Fixed for the whole game: a loss followed by undo must not ease the
+         rival mid-game; the next attempt picks the new streak up. */
+      this.matchReliefStreak = this.reliefStreakFor(sc.id)
+      this.rivalResignedFen = null
       this.playerColor = sc.playerColor
       this.chess.load(sc.fen ?? DEFAULT_POSITION)
       this.history = [this.chess.fen()]
@@ -944,7 +972,11 @@ export class GameFlow {
     const sc = this.currentScene()
     const chessy = this.mode === 'duel' || this.sceneUsesBoard(sc)
     const canUndo =
-      chessy && this.history.length > 1 && (this.mode !== 'calibration') && !this.aiThinking
+      chessy &&
+      this.history.length > 1 &&
+      this.mode !== 'calibration' &&
+      !this.aiThinking &&
+      !this.rivalHasResigned()
     const calibration =
       this.mode === 'calibration' && this.calibrationScene
         ? { current: this.calibrationMoves, target: this.calibrationScene.minMovesByPlayer }
@@ -1073,8 +1105,14 @@ export class GameFlow {
     if (this.mode === 'match' && this.matchScene) {
       const base = resolveProfileByMatchId(this.matchScene.id)
       const phase = detectGamePhase(this.chess)
-      const tuned = this.tuneProfileForMatch(adaptProfileToPhase(base, phase, this.tendencies), this.matchScene)
-      return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}`
+      const adapted = adaptProfileToPhase(base, phase, this.tendencies)
+      const tuned = this.tuneProfileForMatch(adapted, this.matchScene)
+      const authored = this.tuneProfileForMatch(adapted, this.matchScene, false)
+      const relief = rematchReliefNote(
+        rematchRelief(this.matchReliefStreak),
+        tuned.searchDepth < authored.searchDepth,
+      )
+      return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}${relief ? ` (${relief})` : ''}`
     }
     return null
   }
@@ -1232,12 +1270,17 @@ export class GameFlow {
     return null
   }
 
-  private tuneProfileForMatch(base: AiProfile, match: MatchScene): AiProfile {
+  /**
+   * `asAuthored` ignores this player's history with the rival (memory,
+   * rivalry, tilt) — used for strength caps, which must not drift with how
+   * the player has fared against the cap rival.
+   */
+  private tuneProfileForMatch(base: AiProfile, match: MatchScene, withRelief = true, asAuthored = false): AiProfile {
     const diff = Math.max(1, match.difficulty ?? 1)
     const chapterRamp = this.currentChapter().index * 0.04
     const diffRamp = (diff - 1) * 0.06 + chapterRamp
     const endgameRamp = this.sanLog.length >= 24 ? 0.06 : 0
-    const mem = this.rivalMemory[match.id]
+    const mem = asAuthored ? undefined : this.rivalMemory[match.id]
     const memoryRamp = mem
       ? Math.min(0.16, (mem.punishedFlankPushes + mem.punishedEarlyQueen + mem.punishedCheckSpam) * 0.006)
       : 0
@@ -1245,11 +1288,13 @@ export class GameFlow {
     const rivalryPressure = mem ? mem.losses - mem.wins : 0
     const fairnessSoften = rivalryPressure >= 2 ? Math.min(0.18, rivalryPressure * 0.05) : 0
     const momentumHarden = mem && mem.wins - mem.losses >= 2 ? Math.min(0.1, (mem.wins - mem.losses) * 0.03) : 0
-    const tiltStreak = this.recentLossStreak(match.id)
+    const tiltStreak = asAuthored ? 0 : this.recentLossStreak(match.id)
     const antiTiltRelief = tiltStreak >= 2 ? Math.min(tiltStreak >= 4 ? 0.22 : 0.18, tiltStreak * 0.045) : 0
-    return {
+    const tuned: AiProfile = {
       ...base,
-      searchDepth: Math.min(7, base.searchDepth + Math.floor((diff - 1) / 2)),
+      /* The scene's authored depth is a floor for the as-authored rival;
+         rematch relief (below) may step beneath it. */
+      searchDepth: Math.max(Math.min(7, base.searchDepth + Math.floor((diff - 1) / 2)), match.aiDepth),
       thinkTimeMs: Math.round(
         base.thinkTimeMs * (1 + (totalRamp - fairnessSoften + momentumHarden - antiTiltRelief) * 0.6),
       ),
@@ -1275,6 +1320,31 @@ export class GameFlow {
         prophylactic: Math.min(1, base.weights.prophylactic + totalRamp * 0.6),
       },
     }
+    const capped = this.applyStrengthCap(tuned, match)
+    return withRelief ? applyRematchRelief(capped, rematchRelief(this.matchReliefStreak)) : capped
+  }
+
+  /** The match scene a capped rival may not out-play (see MatchScene.strengthCapSceneId). */
+  private strengthCapScene(match: MatchScene): MatchScene | null {
+    if (!match.strengthCapSceneId) return null
+    for (const chapter of this.chapters) {
+      for (const scene of chapter.scenes) {
+        if (scene.type === 'match' && scene.id === match.strengthCapSceneId && scene.id !== match.id) return scene
+      }
+    }
+    return null
+  }
+
+  private applyStrengthCap(tuned: AiProfile, match: MatchScene): AiProfile {
+    const capScene = this.strengthCapScene(match)
+    if (!capScene || capScene.strengthCapSceneId) return tuned
+    const capBase = adaptProfileToPhase(resolveProfileByMatchId(capScene.id), detectGamePhase(this.chess), this.tendencies)
+    return capProfileStrength(tuned, this.tuneProfileForMatch(capBase, capScene, false, true))
+  }
+
+  /** Relief streak for a campaign match, read from the recorded history. */
+  private reliefStreakFor(matchId: string): number {
+    return reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
   }
 
   private tuneProfileForDuel(
@@ -1645,11 +1715,17 @@ export class GameFlow {
       )
     }
     if (this.mode === 'match' && this.matchScene) {
-      const base = resolveProfileByMatchId(this.matchScene.id)
-      const aiDepth = this.matchScene.aiDepth ?? base.searchDepth
-      const depthOffset = Math.max(0, aiDepth - base.searchDepth) * 80
-      const diffOffset = (Math.max(1, this.matchScene.difficulty ?? 1) - 1) * 40
-      return opponentRatingFromProfile(base, depthOffset + diffOffset)
+      const ratingFor = (scene: MatchScene): number => {
+        const base = resolveProfileByMatchId(scene.id)
+        const aiDepth = scene.aiDepth ?? base.searchDepth
+        const depthOffset = Math.max(0, aiDepth - base.searchDepth) * 80
+        const diffOffset = (Math.max(1, scene.difficulty ?? 1) - 1) * 40
+        return opponentRatingFromProfile(base, depthOffset + diffOffset)
+      }
+      /* A capped rival is rated no higher than the rival it is capped to. */
+      const capScene = this.strengthCapScene(this.matchScene)
+      const own = ratingFor(this.matchScene)
+      return capScene ? Math.min(own, ratingFor(capScene)) : own
     }
     return BASE_RATING
   }
@@ -1729,8 +1805,36 @@ export class GameFlow {
     return atkMat - defMat >= 800
   }
 
+  private rivalHasResigned(): boolean {
+    return this.rivalResignedFen !== null && this.rivalResignedFen === this.chess.fen()
+  }
+
+  /**
+   * Rival's turn, match/duel: resign if hopeless (see ai/resignation.ts).
+   * Device-independent: material is read from the recorded positions and
+   * the confirming search is a fixed node budget with no wall clock.
+   */
+  private rivalResignsNow(): boolean {
+    if (this.mode !== 'match' && this.mode !== 'duel') return false
+    if (this.chess.turn() === this.playerColor) return false
+    const rival = this.playerColor === 'w' ? 'b' : 'w'
+    const fen = this.chess.fen()
+    const positions = [...this.history.slice(0, -1), fen].filter((f) => f.split(' ')[1] === rival)
+    const rivalToMoveMaterial = positions.map((f) => materialBalanceFromFen(f, rival))
+    const piecesExcludingKings = piecesFromFen(fen)
+    const cheap = { rivalToMoveMaterial, piecesExcludingKings, confirmEvalCp: -Infinity }
+    if (!rivalShouldResign(cheap)) return false
+    const confirm = searchFen(fen, { targetNodes: RESIGN_CONFIRM_NODES, maxTimeMs: 60_000 })
+    if (!rivalShouldResign({ ...cheap, confirmEvalCp: confirm.score })) return false
+    this.rivalResignedFen = fen
+    const name = this.duelSession?.roster.opponentName ?? this.matchScene?.opponentName ?? 'The rival'
+    this.lastTacticalPulse = `${name} resigns.`
+    return true
+  }
+
   private isTerminalMatchPosition(): boolean {
     return (
+      this.rivalHasResigned() ||
       this.chess.isCheckmate() ||
       this.isBareKingLockmate() ||
       this.isDominanceSealedStalemate() ||
@@ -1746,6 +1850,7 @@ export class GameFlow {
 
   private computeMatchOutcome(): MatchOutcome {
     if (this.mode !== 'match' && this.mode !== 'duel') return null
+    if (this.rivalHasResigned()) return 'win'
     if (this.chess.isCheckmate()) {
       return this.chess.turn() !== this.playerColor ? 'win' : 'loss'
     }
@@ -1761,13 +1866,16 @@ export class GameFlow {
 
   private statusLine(scene: Scene = this.currentScene()): string {
     if (this.mode !== 'duel' && !this.sceneUsesBoard(scene)) return ''
+    if ((this.mode === 'match' || this.mode === 'duel') && this.rivalHasResigned()) {
+      return 'Resigned — the rival concedes a lost position.'
+    }
     if (this.isBareKingLockmate()) return 'Checkmate — lone king sealed.'
     if (this.isDominanceSealedStalemate()) return 'Victory — field sealed; decision goes to the stronger force.'
     if (this.chess.isCheckmate()) return 'Checkmate.'
     if (this.mode === 'match' || this.mode === 'duel') {
       if (this.chess.isInsufficientMaterial()) return 'Stalemate — insufficient force to mate.'
       if (this.chess.isStalemate()) return 'Stalemate — a dead lock.'
-      if (this.chess.isDraw()) return 'No move cap — continue until mate or dead draw.'
+      if (this.chess.isDraw()) return 'No move cap — continue until mate, resignation, or dead draw.'
     }
     if (this.mode === 'puzzle' || this.mode === 'calibration') {
       /* Marble already says Proof sealed. Draw. after Bxd4 is a rules
@@ -2142,6 +2250,7 @@ export class GameFlow {
       currentScene: () => this.currentScene(),
       isSceneTerminal: () => this.isSceneTerminalForCurrentMode(),
       computeMatchOutcome: () => this.computeMatchOutcome(),
+      rivalResigns: () => this.rivalResignsNow(),
       puzzleSolved: () => this.puzzleSolved(),
       commitEngineMove: (result, drawPick) => {
         if (epoch !== this.aiTurnEpoch) {
@@ -2245,6 +2354,7 @@ export class GameFlow {
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
     this.sceneTendencies = { flankPawnPushes: 0, earlyQueenMoves: 0, repeatedChecksWithoutGain: 0 }
+    this.rivalResignedFen = null
 
     const sc = this.currentScene()
     if (this.mode === 'duel' && this.duelSession) {
@@ -2253,6 +2363,7 @@ export class GameFlow {
       this.chess.load(sc.fen)
     } else if (sc.type === 'match') {
       this.chess.load(sc.fen ?? DEFAULT_POSITION)
+      this.matchReliefStreak = this.reliefStreakFor(sc.id)
     } else if (sc.type === 'calibration') {
       this.chess.load(DEFAULT_POSITION)
       this.calibrationMoves = 0
@@ -2283,6 +2394,9 @@ export class GameFlow {
     const sc = this.currentScene()
     if (this.mode !== 'duel' && !this.sceneUsesBoard(sc)) return
     if (this.history.length <= 1) return
+    /* A resignation is final, as over the board (and undoing into the
+       rival's turn would leave nobody to move). Reset / Run it back remain. */
+    if (this.rivalHasResigned()) return
 
     this.cancelAiTimer()
     this.lastCoachTip = null
@@ -2400,6 +2514,7 @@ export class GameFlow {
       isInsufficientMaterial: this.chess.isInsufficientMaterial(),
       isBareKingLockmate: this.isBareKingLockmate(),
       isDominanceSealedStalemate: this.isDominanceSealedStalemate(),
+      rivalResigned: this.rivalHasResigned(),
     })
   }
 

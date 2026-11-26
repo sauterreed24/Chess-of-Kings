@@ -838,7 +838,9 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
           'e5', 'Nc6', 'Bc5', 'Nf6', 'd6', 'O-O', 'a6', 'Ba7', 'Be6', 'Qe7', 'Rfd8',
         ],
         ladderTier: 'boss',
-        difficulty: 4,
+        difficulty: 3,
+        /* Chapter I finale stays in the chapter's band (rematch relief handles retries). */
+        strengthCapSceneId: 'c1-match-marius',
       },
       {
         type: 'dialogue',
@@ -894,7 +896,7 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         title: 'Encounter 6 of 6 — The Counterpart',
         opponentName: 'Composite Court Scholar',
         opponentNote:
-          'The court distilled — every important game of the ancient era. Plays precise development with no weaknesses. Win by checkmate, or force a true dead draw if no side can still mate.',
+          'The court distilled — every important game of the ancient era. Plays precise development with no weaknesses. Only a win seals the era — mate, a sealed king, or its resignation; a dead draw earns a rematch.',
         storyBeat: {
           label: 'Era verdict',
           title: 'Play the court itself',
@@ -907,7 +909,8 @@ export const PLAYABLE_CHAPTERS: Chapter[] = [
         aiStyle: 'apotheosis',
         scriptedBlackSans: ['Nc6', 'Nf6', 'Bc5', 'O-O', 'd6', 'Be6', 'Qd7', 'Rad8'],
         ladderTier: 'counterpart',
-        difficulty: 5,
+        difficulty: 3,
+        strengthCapSceneId: 'c1-match-marius',
       },
 
       /* ── Reflection ───────────────────────────────────────────── */

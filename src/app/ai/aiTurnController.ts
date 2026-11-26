@@ -46,6 +46,8 @@ export type AiTurnHost = {
   currentScene(): Scene
   isSceneTerminal(): boolean
   computeMatchOutcome(): MatchOutcome
+  /** Rival's turn: resign now if the position is hopeless (match/duel). */
+  rivalResigns?: () => boolean
   puzzleSolved(): boolean
 
   commitEngineMove(
@@ -151,6 +153,15 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
   }
   if (host.chess.turn() === host.playerColor) {
     host.setBoardInteraction(true)
+    host.emitChess()
+    return
+  }
+
+  if ((host.mode === 'match' || host.mode === 'duel') && host.rivalResigns?.()) {
+    host.setBoardInteraction(false)
+    host.recordResolvedOutcomeIfNeeded()
+    if (host.computeMatchOutcome() === 'win') host.grantVictoryRewards()
+    host.persist()
     host.emitChess()
     return
   }
@@ -289,7 +300,8 @@ export async function runAiTurn(host: AiTurnHost): Promise<void> {
           host.chess,
           {
             ...profile,
-            searchDepth: Math.max(profile.searchDepth, m.aiDepth),
+            /* tuneProfileForMatch already folds in the scene's aiDepth floor
+               (and any rematch relief beneath it). */
             style: m.aiStyle ?? profile.style,
           },
           host.profileMoveOpts(profile),

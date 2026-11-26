@@ -1,8 +1,8 @@
 {
   "name": "chess-of-kings",
   "private": true,
-  "version": "0.5.141",
-  "description": "The Calculus of Kings — alt-history narrative chess RPG (TypeScript, Vite, PWA).",
+  "version": "0.5.143",
+  "description": "The Calculus of Kings \u2014 alt-history narrative chess RPG (TypeScript, Vite, PWA).",
   "homepage": "https://sauterreed24.github.io/Chess-of-Kings/",
   "repository": {
     "type": "git",
@@ -44,7 +44,8 @@
     "report:bundle-gzip": "node scripts/report-bundle-gzip.mjs",
     "assert:pages-build": "node scripts/assert-pages-build.mjs",
     "test:e2e": "playwright test",
-    "quality:gate": "node scripts/quality-gate.mjs"
+    "quality:gate": "node scripts/quality-gate.mjs",
+    "eval": "node eval/run.mjs"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

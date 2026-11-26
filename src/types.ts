@@ -82,6 +82,13 @@ export interface MatchScene {
   ladderTier?: LadderTier
   /** 1 (easy) – 5 (expert) for difficulty display */
   difficulty?: 1 | 2 | 3 | 4 | 5
+  /**
+   * Strength cap: this rival plays no stronger than the named match scene's
+   * rival as authored (search depth, think time, alertness, conversion),
+   * keeping its own style, book and script. Used to keep a chapter's
+   * finale inside the chapter's difficulty band.
+   */
+  strengthCapSceneId?: string
   storyBeat?: StoryBeat
 }
 
@@ -299,6 +306,10 @@ export interface InProgressSnapshot {
   scriptedMoveIndex: number
   sceneTendencies: PlayerTendencyProfile
   duel?: InProgressDuelSnapshot
+  /** The rival resigned the snapshot's final position (match/duel). */
+  rivalResigned?: true
+  /** Rematch-relief streak frozen for this campaign attempt (match only). */
+  reliefStreak?: number
 }
 
 export interface DuelVariant {
