@@ -4,7 +4,11 @@ function focusFirstOverlayControl(root: HTMLElement) {
   const sel =
     'button:not([disabled]), [href], input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
   const el = root.querySelector<HTMLElement>(sel)
-  if (el) el.focus()
+  if (!el) return
+  /* A sticky action row is always in view, so focusing it must not scroll a
+     tall verdict sheet to its foot: the recap (arc, lesson) opens first. */
+  if (el.closest('.reward-actions')) el.focus({ preventScroll: true })
+  else el.focus()
 }
 
 export type RewardOverlayController = {

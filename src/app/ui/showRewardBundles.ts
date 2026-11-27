@@ -120,7 +120,7 @@ export function buildRewardOverlayHtml(
           <div class="reward-progress__label" id="reward-progress-label">Next seal: <strong>${escapeHtml(next.nextLabel)}</strong> · ${rpToNext} RP to go (${next.next} RP)</div>
           <div class="reward-progress__bar" role="progressbar" aria-labelledby="reward-progress-label" aria-valuemin="${next.currentFloor}" aria-valuemax="${next.next}" aria-valuenow="${Math.min(rp, next.next)}"><div class="reward-progress__fill" style="width:${progress.toFixed(1)}%"></div></div>
         </div>
-        <div class="echo-controls">
+        <div class="echo-controls reward-actions">
           ${canQuickRematch ? '<button type="button" class="ghost" id="btn-reward-rematch">Quick Rematch</button>' : ''}
           <button type="button" class="primary" id="btn-reward-close">Advance</button>
         </div>

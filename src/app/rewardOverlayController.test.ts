@@ -28,6 +28,24 @@ describe('createRewardOverlayController', () => {
     el.remove()
   })
 
+  it('focuses a pinned verdict action without scrolling the recap away', async () => {
+    const el = document.createElement('div')
+    el.classList.add('hidden')
+    document.body.appendChild(el)
+    const focus = vi.spyOn(HTMLElement.prototype, 'focus')
+    const c = createRewardOverlayController(el)
+    c.open('<div class="reward-sheet"><p>recap</p><div class="echo-controls reward-actions"><button type="button" id="adv">Advance</button></div></div>')
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('adv'))
+    expect(focus).toHaveBeenLastCalledWith({ preventScroll: true })
+    c.close()
+    c.open('<div class="reward-sheet"><button type="button" id="plain">Close</button></div>')
+    await vi.waitFor(() => expect(document.activeElement?.id).toBe('plain'))
+    expect(focus).toHaveBeenLastCalledWith()
+    focus.mockRestore()
+    c.close()
+    el.remove()
+  })
+
   it('open runs cleanup from previous open before replacing content', () => {
     const el = document.createElement('div')
     el.classList.add('hidden')
