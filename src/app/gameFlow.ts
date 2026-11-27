@@ -1,6 +1,6 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
 import type { Color, Move, Square, PieceSymbol } from 'chess.js'
-import { materialAdvantage, moveKey, PERSONA_NODES_PER_MS, PIECE_VALUES } from '../chess/ai'
+import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
 import {
@@ -19,7 +19,7 @@ import {
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
 import { costliestLessonLine, verifyCostliestMoment } from './recap/costliestMoment'
-import type { LessonEngine } from './recap/costliestMoment'
+import { createLessonEngine, RECAP_VERIFY_CANDIDATES } from './recap/lessonEngine'
 import { activeTrials, type TrialId } from './trials'
 import { describeHint } from './play/hintReason'
 import { materialAndPst } from '../chess/evaluate'
@@ -166,43 +166,7 @@ export type ChessUiPayload = {
   boardGuide: string
 }
 
-/** Lesson re-check: candidates and a fixed node budget per search (device-independent). */
-const RECAP_VERIFY_CANDIDATES = 4
-const RECAP_VERIFY_NODES = 6000
-
-function recapSearch(fen: string, spectrum: boolean) {
-  return searchFen(fen, {
-    maxDepth: 64,
-    targetNodes: RECAP_VERIFY_NODES,
-    /* Wall-clock only as a safety net on very slow devices. */
-    maxTimeMs: Math.ceil((RECAP_VERIFY_NODES / PERSONA_NODES_PER_MS) * 1.5),
-    spectrum,
-    freshTable: true,
-  })
-}
-
-const recapLessonEngine: LessonEngine = {
-  scoreRoots(fen) {
-    try {
-      const probe = new Chess(fen)
-      return recapSearch(fen, true).rootMoves.map((r) => {
-        const played = probe.move({ from: r.from, to: r.to, promotion: r.promotion })
-        probe.undo()
-        return { san: played.san, score: r.score }
-      })
-    } catch {
-      return null
-    }
-  },
-  scorePosition(fen) {
-    try {
-      if (new Chess(fen).isGameOver()) return null
-      return recapSearch(fen, false).score
-    } catch {
-      return null
-    }
-  },
-}
+const recapLessonEngine = createLessonEngine()
 
 /** Conversion persona, spoken as the court would file it. */
 function conversionSchoolNoun(persona: string): string {
@@ -364,7 +328,7 @@ export class GameFlow {
   private lastCostliestLine: string | null = null
   /** Ply of that lesson, so the recap arc marks the same move (session-only). */
   private lastCostliestPly: number | null = null
-  /** Finished game awaiting its lesson; verified on first read (off the final move's frame). */
+  /** Finished game awaiting its lesson; verified on first read (the recap reads it after opening). */
   private pendingCostliest: { sanLog: string[]; evalTrace: number[]; history: string[]; playerColor: 'w' | 'b' } | null = null
   private sanQuality: MoveQuality[] = []
   /** White-positive engine eval after each ply (session-only; consumers
@@ -1162,7 +1126,7 @@ export class GameFlow {
       const tuned = this.tuneProfileForMatch(adapted, this.matchScene)
       const authored = this.tuneProfileForMatch(adapted, this.matchScene, false)
       const relief = rematchReliefNote(
-        rematchRelief(this.matchReliefStreak),
+        rematchRelief(this.effectiveReliefStreak()),
         tuned.searchDepth < authored.searchDepth,
         this.trials.has('early-relief') ? 'early relief (trial)' : undefined,
       )
@@ -1375,7 +1339,7 @@ export class GameFlow {
       },
     }
     const capped = this.applyStrengthCap(tuned, match)
-    return withRelief ? applyRematchRelief(capped, rematchRelief(this.matchReliefStreak)) : capped
+    return withRelief ? applyRematchRelief(capped, rematchRelief(this.effectiveReliefStreak())) : capped
   }
 
   /** The match scene a capped rival may not out-play (see MatchScene.strengthCapSceneId). */
@@ -1396,11 +1360,15 @@ export class GameFlow {
     return capProfileStrength(tuned, this.tuneProfileForMatch(capBase, capScene, false, true))
   }
 
-  /** Relief streak for a campaign match, read from the recorded history.
-      Trial `early-relief`: relief arrives one loss earlier (first meeting at I). */
+  /** Relief streak for a campaign match, read from the recorded history. */
   private reliefStreakFor(matchId: string): number {
-    const losses = reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
-    return this.trials.has('early-relief') ? losses + 1 : losses
+    return reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
+  }
+
+  /** The streak the rival plays at. Trial `early-relief` adds one here, at
+      read time only, so the snapshot keeps the real loss streak. */
+  private effectiveReliefStreak(): number {
+    return this.trials.has('early-relief') ? this.matchReliefStreak + 1 : this.matchReliefStreak
   }
 
   private tuneProfileForDuel(
@@ -1719,6 +1687,11 @@ export class GameFlow {
   getCostliestMomentLine(): string | null {
     this.resolvePendingCostliest()
     return this.lastCostliestLine
+  }
+
+  /** True until the finished game's lesson has been verified (the recap fills it in after opening). */
+  costliestLessonPending(): boolean {
+    return this.pendingCostliest !== null
   }
 
   /** Ply index of the recap lesson's move, or null (the arc marks it). */

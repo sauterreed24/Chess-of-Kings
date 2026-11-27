@@ -146,7 +146,8 @@ export function syncPhonePuzzleLesson(narrativeBody: HTMLElement | null | undefi
   const sfx = scope.querySelector<HTMLButtonElement>('#btn-sfx')
   const moveGuard = scope.querySelector<HTMLButtonElement>('#btn-move-guard')
   const idleTools = !scope.querySelector('#move-ledger .ledger-row')
-  if (reset) reset.hidden = idleTools || (phone && puzzle)
+  /* A spent proof (board over without it) keeps Reset: it is the only way on. */
+  if (reset) reset.hidden = idleTools || (phone && puzzle && reset.dataset.puzzleSpent !== 'true')
   if (hintBtn && calibration) hintBtn.hidden = phone || hintBtn.disabled
   const togglesOn = !scope.querySelector('.instrument-toggles')?.classList.contains('hidden')
   stylePhoneHitTarget(sfx, phone && togglesOn)

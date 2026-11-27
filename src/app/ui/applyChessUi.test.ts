@@ -454,6 +454,7 @@ describe('applyChessUi', () => {
       cbs,
     )
     expect(dom.btnReset.hidden).toBe(false)
+    expect(dom.btnReset.dataset.puzzleSpent).toBe('true')
   })
 
   it('hides Reset on a docked puzzle so Advance and Take back share one row', () => {

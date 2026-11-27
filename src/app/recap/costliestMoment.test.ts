@@ -76,12 +76,13 @@ describe('costlyCandidates (shallow pass)', () => {
 
 describe('verifyCostliestMoment', () => {
   const sanLog = ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6', 'Ba4', 'Nf6']
-  const fens = sanLog.map((_, i) => `fen${i}`).concat('fen8')
+  /* Stand-in FENs: only the side-to-move field is read here. */
+  const fens = sanLog.map((_, i) => `fen${i} ${i % 2 === 0 ? 'w' : 'b'}`).concat('fen8 w')
   /* Shallow trace: ply 2 looks worst (-300), ply 4 a smaller dip, ply 6 flat. */
   const trace = [25, 20, -300, 30, -150, -140, -130, -135]
   const engine = (roots: Record<string, Array<{ san: string; score: number }>>, positions: Record<string, number> = {}) => ({
-    scoreRoots: (fen: string) => roots[fen] ?? null,
-    scorePosition: (fen: string) => positions[fen] ?? null,
+    scoreRoots: (fen: string) => roots[fen.split(' ')[0]!] ?? null,
+    scorePosition: (fen: string) => positions[fen.split(' ')[0]!] ?? null,
   })
 
   it('drops a trace dip on the archive\'s own best move and teaches the real one', () => {
@@ -103,6 +104,21 @@ describe('verifyCostliestMoment', () => {
     ))
     expect(m?.ply).toBe(2)
     expect(m?.dropCp).toBe(440)
+  })
+
+  it('skips positions where the player was not on move', () => {
+    const blackToMove = fens.map((f) => f.replace(/ [wb]$/, ' b'))
+    expect(verifyCostliestMoment(sanLog, trace, blackToMove, 'w', engine({
+      fen2: [{ san: 'd4', score: 40 }, { san: 'Nf3', score: -400 }],
+    }))).toBeNull()
+  })
+
+  it('a mate that lands after the rival\'s reply reads as an allowed mate', () => {
+    const m = verifyCostliestMoment(sanLog, trace, fens, 'w', engine(
+      { fen2: [{ san: 'd4', score: 40 }, { san: 'Nf3', score: 0 }] },
+      { fen4: -29_995 },
+    ))
+    expect(m?.allowedMate).toBe(true)
   })
 
   it('never blames the archive\'s own best move for a fall that was already coming', () => {

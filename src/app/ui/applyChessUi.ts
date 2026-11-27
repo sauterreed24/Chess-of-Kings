@@ -197,6 +197,7 @@ export function applyChessUi(
   const puzzleDocked = nextDocked && !calibration
   dom.btnHint.disabled = !p.canHint
   dom.btnHint.hidden = !p.canHint || (nextDocked && !!calibration)
+  dom.btnReset.dataset.puzzleSpent = String(p.puzzleSpent) /* read again on phone resize (labModal) */
   dom.btnReset.hidden = idleTools || (puzzleDocked && !p.puzzleSpent)
   syncPhoneHitTarget(dom.btnHint, !dom.btnHint.hidden)
   syncPhoneHitTarget(dom.btnReset, !dom.btnReset.hidden)

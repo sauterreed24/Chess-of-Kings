@@ -199,6 +199,28 @@ describe('setTopBarInertForLab', () => {
     expect(document.querySelector('#btn-next')?.parentElement?.classList.contains('narrative-actions')).toBe(true)
   })
 
+  it('keeps Reset on a phone puzzle whose proof is spent when the viewport resizes', () => {
+    stubPhoneLabNav(true)
+    document.body.innerHTML = `
+      <div id="app">
+        <article id="manuscript-panel">
+          <div id="narrative-body" data-puzzle-lesson></div>
+          <div class="narrative-actions"><button id="btn-next">Advance</button></div>
+        </article>
+        <div class="move-ledger-wrap"><div id="move-ledger"><div class="ledger-row">1. Ba5</div></div></div>
+        <div class="board-tools">
+          <button id="btn-hint">Hint</button>
+          <button id="btn-undo">Take back</button>
+          <button id="btn-reset" data-puzzle-spent="true">Reset</button>
+        </div>
+      </div>`
+    const body = document.querySelector<HTMLElement>('#narrative-body')!
+    const reset = document.querySelector<HTMLButtonElement>('#btn-reset')!
+    reset.hidden = false
+    syncPhonePuzzleLesson(body)
+    expect(reset.hidden).toBe(false)
+  })
+
   it('hides Hint on phone calibration so Prove can share a row with Reset', () => {
     stubPhoneLabNav(true)
     document.body.innerHTML = `

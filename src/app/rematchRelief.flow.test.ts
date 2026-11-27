@@ -172,6 +172,32 @@ describe('rematch relief in the campaign', () => {
     }
   })
 
+  it('trial early-relief never reaches the save: a reload with the trial off plays as authored', async () => {
+    vi.useFakeTimers()
+    try {
+      const { flow, persona } = flowAt('c1-match-edred', [], ['early-relief'])
+      const mv = flow.chess.moves({ verbose: true })[0]!
+      flow.tryPlayerMove(mv.from, mv.to, mv.promotion)
+      await vi.advanceTimersByTimeAsync(1000)
+      expect(persona()).toMatch(/early relief \(trial\) I:/)
+      const snap = buildInProgressSnapshot(
+        (flow as unknown as { snapshotBuildContext(): SnapshotBuildContext }).snapshotBuildContext(),
+      )
+      expect(snap?.reliefStreak).toBe(0)
+      const again = flowAt('c1-match-edred', [])
+      const internals = again.flow as unknown as {
+        snapshots: { setPendingSnapshot(s: unknown): void }
+        refreshScene(): void
+      }
+      internals.snapshots.setPendingSnapshot(JSON.parse(JSON.stringify(snap)))
+      internals.refreshScene()
+      expect(again.flow.chess.fen()).toBe(snap!.fen)
+      expect(again.persona()).not.toMatch(/relief/)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('the rival searches with the eased depth, below the scene floor', async () => {
     vi.useFakeTimers()
     try {

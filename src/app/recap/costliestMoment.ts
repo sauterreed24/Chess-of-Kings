@@ -64,7 +64,9 @@ export interface VerifiedMoment extends CostliestMoment {
  * Engine access, injected so this module stays pure and testable. Scores
  * are centipawns from the side to move (±mate encoded as the engine does).
  * `scoreRoots`: every legal move from one position searched to the same
- * depth, best first. `scorePosition`: one position's score.
+ * depth, best first. `scorePosition`: one position's score at the same
+ * node budget. (Capping that search two plies below the root depth was
+ * tried: more accurate but silent on more real blunders — IMPROVE.md.)
  */
 export interface LessonEngine {
   scoreRoots(fen: string): Array<{ san: string; score: number }> | null
@@ -93,17 +95,22 @@ export function verifyCostliestMoment(
   let best: VerifiedMoment | null = null
   for (const cand of costlyCandidates(sanLog, evalTrace, playerColor).slice(0, candidates)) {
     const fen = fensBefore[cand.ply]
-    if (!fen) continue
+    /* Only grade positions where the player was on move (custom start FENs). */
+    if (!fen || fen.split(' ')[1] !== playerColor) continue
     const roots = engine.scoreRoots(fen)
     if (!roots || roots.length === 0) continue
     const top = roots[0]!
     const mine = roots.find((r) => r.san === cand.san)
     if (!mine || mine.san === top.san) continue
     let drop = clip(top.score) - clip(mine.score)
+    let mateAfterReply = false
     const afterReply = fensBefore[cand.ply + 2]
     if (afterReply) {
       const score = engine.scorePosition(afterReply)
-      if (score !== null) drop = Math.max(drop, clip(top.score) - clip(score))
+      if (score !== null) {
+        drop = Math.max(drop, clip(top.score) - clip(score))
+        mateAfterReply = score <= -mateBound && top.score > -mateBound
+      }
     }
     if (drop < minDropCp) continue
     if (best && drop <= best.dropCp) continue
@@ -112,7 +119,7 @@ export function verifyCostliestMoment(
       san: cand.san,
       dropCp: Math.round(drop),
       preferredSan: top.san,
-      allowedMate: mine.score <= -mateBound && top.score > -mateBound,
+      allowedMate: (mine.score <= -mateBound && top.score > -mateBound) || mateAfterReply,
       missedMate: top.score >= mateBound && mine.score < mateBound,
     }
   }
