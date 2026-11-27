@@ -3,12 +3,12 @@
  * the game plays exactly as before until the owner turns one on to compare.
  *
  * Turn on from any device with a URL flag, e.g. `?try=early-relief`
- * (comma-separate several, `?try=early-relief,true-marks`); `?try=off` clears them all. The choice is kept
+ * (comma-separate several); `?try=off` clears them all. The choice is kept
  * under its own storage key — never inside the save — so a trial cannot
  * touch saved progress and survives the home-screen PWA dropping the query.
  */
 
-export const TRIAL_IDS = ['early-relief', 'true-marks'] as const
+export const TRIAL_IDS = ['early-relief'] as const
 export type TrialId = (typeof TRIAL_IDS)[number]
 
 export const TRIALS_STORAGE_KEY = 'calculus-of-kings-trials-v1'
