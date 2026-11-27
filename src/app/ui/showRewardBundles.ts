@@ -48,11 +48,16 @@ export function buildRewardOverlayHtml(
       return `<div class="reward-card"><h4>${escapeHtml(b.sourceLabel)}</h4><ul>${rows}</ul></div>`
     })
     .join('')
+  /* The lesson costs a few engine searches: when it is not verified yet,
+     the sheet opens without it and `fillRecapLesson` adds it a moment later. */
+  const lessonPending = flow.costliestLessonPending?.() ?? false
+  const studyLine = latestResolvedForRecap && !lessonPending ? flow.getCostliestMomentLine() : null
   const evalArc = latestResolvedForRecap
     ? buildEvalArcSvg({
         sanLog: latestResolvedForRecap.sanLog,
         evalTrace: latestResolvedForRecap.evalTrace,
         playerColor: latestResolvedForRecap.playerColor,
+        markPly: lessonPending ? null : flow.getCostliestMomentPly(),
       })
     : null
   const recap = latestResolvedForRecap
@@ -64,7 +69,7 @@ export function buildRewardOverlayHtml(
             <li><strong>Turning point:</strong> ${escapeHtml(turningPointLine(latestResolvedForRecap))}</li>
             <li><strong>Result:</strong> ${escapeHtml(latestResolvedForRecap.status)}</li>
             ${flow.getLastRivalRemark() ? `<li><strong>Rival:</strong> ${escapeHtml(flow.getLastRivalRemark()!)}</li>` : ''}
-            ${flow.getCostliestMomentLine() ? `<li><strong>Study this:</strong> ${escapeHtml(flow.getCostliestMomentLine()!)}</li>` : ''}
+            <li class="recap-study"${studyLine ? '' : ' hidden'}><strong>Study this:</strong> <span class="recap-study__line">${escapeHtml(studyLine ?? '')}</span></li>
           </ul>
         </div>`
     : ''
@@ -119,11 +124,34 @@ export function buildRewardOverlayHtml(
           <div class="reward-progress__label" id="reward-progress-label">Next seal: <strong>${escapeHtml(next.nextLabel)}</strong> · ${rpToNext} RP to go (${next.next} RP)</div>
           <div class="reward-progress__bar" role="progressbar" aria-labelledby="reward-progress-label" aria-valuemin="${next.currentFloor}" aria-valuemax="${next.next}" aria-valuenow="${Math.min(rp, next.next)}"><div class="reward-progress__fill" style="width:${progress.toFixed(1)}%"></div></div>
         </div>
-        <div class="echo-controls">
+        <div class="echo-controls reward-actions">
           ${canQuickRematch ? '<button type="button" class="ghost" id="btn-reward-rematch">Quick Rematch</button>' : ''}
           <button type="button" class="primary" id="btn-reward-close">Advance</button>
         </div>
       </div>`
+}
+
+/**
+ * Verify the finished game's lesson (engine work) after the sheet has
+ * painted, then show it and mark the same move on the arc.
+ */
+export function fillRecapLesson(root: HTMLElement, flow: GameFlow, recap: ChessUiPayload | null): void {
+  const line = flow.getCostliestMomentLine()
+  const item = root.querySelector<HTMLElement>('.recap-study')
+  if (!item || !line) return
+  const text = item.querySelector('.recap-study__line')
+  if (text) text.textContent = line
+  item.hidden = false
+  const arc = root.querySelector('.eval-arc')
+  if (arc && recap) {
+    const svg = buildEvalArcSvg({
+      sanLog: recap.sanLog,
+      evalTrace: recap.evalTrace,
+      playerColor: recap.playerColor,
+      markPly: flow.getCostliestMomentPly(),
+    })
+    if (svg) arc.outerHTML = svg
+  }
 }
 
 export type ShowRewardBundlesCallbacks = {
@@ -153,6 +181,9 @@ export function showRewardBundles(
   /* Loss/draw recaps: outcome was already announced in applyChessUi with the rival name. */
   const overlayHtml = buildRewardOverlayHtml(flow, bundles, latestResolvedForRecap)
   callbacks.openRewardOverlay(overlayHtml, (root) => {
+    if (flow.costliestLessonPending?.()) {
+      window.setTimeout(() => fillRecapLesson(root, flow, latestResolvedForRecap), 60)
+    }
     root.querySelector<HTMLButtonElement>('#btn-reward-rematch')?.addEventListener('click', () => {
       const ok = flow.rematchLastDuel()
       if (ok) {

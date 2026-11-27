@@ -1,0 +1,855 @@
+{
+ "seedset": "tune",
+ "series": "2",
+ "attempts": "3",
+ "trials": "early-relief",
+ "scorecard": {
+  "checks": {
+   "walls": {
+    "value": 1,
+    "target": "0",
+    "list": [
+     "c5-match-gage"
+    ]
+   },
+   "skillGap": {
+    "value": 0.95,
+    "min": 0.5,
+    "target": ">= 0.50"
+   },
+   "ramp": {
+    "value": 0.68,
+    "target": ">= 0.50"
+   },
+   "comebackRate": {
+    "value": 0.24,
+    "n": 139,
+    "target": "0.20-0.50"
+   },
+   "unfinishedRate": {
+    "value": 0,
+    "n": 0,
+    "of": 264,
+    "target": "0"
+   },
+   "puzzles": {
+    "skilledClear": 1,
+    "clubClear": 1,
+    "noviceClear": 1,
+    "broken": [],
+    "target": "skilled 1.00, club >= 0.80"
+   },
+   "pacing": {
+    "pressesToFirstRival": 16,
+    "wordsBeforeFirstRival": 1419,
+    "clubMedianPlies": 89,
+    "clubP90Plies": 139,
+    "target": "median club match 40-140 plies"
+   },
+   "responsiveness": {
+    "aiWaitP50": 391,
+    "aiWaitP95": 1263,
+    "aiWaitMax": 1724,
+    "inputLatencyRealP95": 40.8,
+    "target": "aiWait p95 <= 2000 virtual ms"
+   },
+   "recapTruth": {
+    "accurate": 0.93,
+    "top": 0.76,
+    "shown": 46,
+    "missed": 2,
+    "n": 48,
+    "wrong": [
+     "c5-match-gage:club#0.2 23. Ra5 allowed a forced mate — the archive preferred Rxa7. (true 0cp)",
+     "c3-match-demetrios-return:club#1.0 57. Ke5 cost about 6.3 pawns — the archive preferred Ke4. (true 46cp)",
+     "c8-match-voss:club#0.0 43. Kd8 cost about 2.7 pawns — the archive preferred Kd7. (true -231cp)"
+    ],
+    "target": "accurate >= 0.90, top >= 0.70, missed 0"
+   },
+   "ledger": {
+    "blunderPrecision": 0.92,
+    "mistakePrecision": 0.84,
+    "recall": 0.72,
+    "falseAlarm": 0.01,
+    "counts": {
+     "blunder": 78,
+     "blunderTrue": 72,
+     "mistake": 155,
+     "mistakeTrue": 130,
+     "big": 74,
+     "bigMarked": 53,
+     "quiet": 373,
+     "quietMarked": 5
+    },
+    "target": "precision >= 0.80, recall >= 0.55, false alarms <= 0.03"
+   }
+  },
+  "perMatch": [
+   {
+    "id": "c1-match-amara",
+    "order": 108,
+    "novice": {
+     "first": 0.5,
+     "clear": 0.5,
+     "tries": 2.5
+    },
+    "club": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c1-match-lukas",
+    "order": 111,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c1-match-edred",
+    "order": 114,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0.5,
+     "clear": 1,
+     "tries": 1.5
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c1-match-marius",
+    "order": 117,
+    "novice": {
+     "first": 0.5,
+     "clear": 0.5,
+     "tries": 2.5
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c1-match-demetrios",
+    "order": 120,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c1-boss",
+    "order": 122,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0.5,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c2-match-rowan",
+    "order": 205,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 0.5,
+     "clear": 1,
+     "tries": 1.5
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c2-match-vega",
+    "order": 208,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0.5,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c3-match-demetrios-return",
+    "order": 305,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 2.5
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c3-match-kallistos",
+    "order": 308,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c4-match-nysa",
+    "order": 407,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c4-match-cassian",
+    "order": 410,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0.5,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c5-match-gage",
+    "order": 507,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c5-match-helia",
+    "order": 510,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 2.5
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c6-match-prax",
+    "order": 607,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c6-match-iota",
+    "order": 610,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 3
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c7-match-mira",
+    "order": 707,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0.5,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c7-match-soren",
+    "order": 710,
+    "novice": {
+     "first": 0,
+     "clear": 0,
+     "tries": 4
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 2.5
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c8-match-voss",
+    "order": 807,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 3
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c8-match-elara",
+    "order": 810,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3.5
+    },
+    "club": {
+     "first": 0,
+     "clear": 1,
+     "tries": 2
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c9-match-wren",
+    "order": 907,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3
+    },
+    "club": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   },
+   {
+    "id": "c9-match-bram",
+    "order": 910,
+    "novice": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3
+    },
+    "club": {
+     "first": 0,
+     "clear": 0.5,
+     "tries": 3
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1,
+     "tries": 1
+    }
+   }
+  ],
+  "perPuzzle": [
+   {
+    "id": "c1-tutorial-hanging",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c1-tutorial-castle",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c1-puzzle-mate",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c2-puzzle-king-hunt",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c3-puzzle-prophylaxis",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c4-puzzle-fianchetto",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c4-puzzle-overreach",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c4-puzzle-battery",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c5-puzzle-luft",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c5-puzzle-conversion",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c5-puzzle-squeeze",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c6-puzzle-outpost",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c6-puzzle-precision",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c6-puzzle-backrank",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c7-puzzle-switch",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c7-puzzle-wing",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c7-puzzle-smother",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c8-puzzle-exchange",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c8-puzzle-fork",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c8-puzzle-file",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c9-puzzle-census",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c9-puzzle-compile",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   },
+   {
+    "id": "c9-puzzle-last-rank",
+    "novice": {
+     "first": 1,
+     "clear": 1
+    },
+    "club": {
+     "first": 1,
+     "clear": 1
+    },
+    "skilled": {
+     "first": 1,
+     "clear": 1
+    }
+   }
+  ]
+ }
+}

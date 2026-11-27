@@ -173,30 +173,65 @@ describe('GameFlow depth systems', () => {
       history: string[]
       recordResolvedOutcomeIfNeeded: () => void
     }
-    /* White (the player) threw away ~3 pawns on move 2 (Qh5), recovered,
-       and still mated. The recap must surface the blunder, not the win. */
+    /* White (the player) gives the queen away on move 3 (Qxf7+?? Kxf7).
+       The recap must surface that move, re-checked by the archive. */
     flow.chess.load('7k/6Q1/6K1/8/8/8/8/8 b - - 0 1')
     f.mode = 'match'
     f.playerColor = 'w'
     f.matchScene = { id: 'c1-match-test', opponentName: 'Test Rival' }
-    f.sanLog = ['e4', 'e5', 'Qh5', 'Nc6', 'Qg7#']
-    f.sanQuality = ['good', null, 'blunder', null, 'good']
-    f.evalTrace = [25, 20, -300, -290, 30000]
-    f.history = [
-      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-      'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
-      'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
-      'rnbqkbnr/pppp1ppp/8/4p2Q/4P3/8/PPPP1PPP/RNB1KBNR b KQkq - 1 2',
-      '8/8/8/8/8/8/8/8 w - - 0 1',
-    ]
+    const game = new Chess()
+    f.history = [game.fen()]
+    f.sanLog = []
+    for (const san of ['e4', 'e5', 'Qh5', 'Nc6', 'Qxf7+', 'Kxf7']) {
+      f.sanLog.push(game.move(san).san)
+      f.history.push(game.fen())
+    }
+    f.sanQuality = ['good', null, 'good', null, 'blunder', null]
+    f.evalTrace = [25, 20, 30, 25, -700, -760]
     f.recordResolvedOutcomeIfNeeded()
 
     const line = flow.getCostliestMomentLine()
     expect(line).not.toBeNull()
-    expect(line).toContain('Qh5')
-    expect(line).toContain('2.')
-    expect(line).toMatch(/cost about \d+\.\d+ pawns/)
-    expect(line).toContain('preferred') /* engine offers a real alternative */
+    expect(line).toContain('3. Qxf7+')
+    expect(line).toMatch(/cost about \d+\.\d+ pawns — the archive preferred \S+\./)
+    expect(line).not.toContain('preferred Qxf7+')
+    expect(flow.getCostliestMomentPly()).toBe(4)
+  })
+
+  it('does not teach a trace dip the archive cannot confirm (a sound move)', () => {
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate: vi.fn(),
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    const f = flow as unknown as {
+      mode: 'match'
+      playerColor: 'w' | 'b'
+      matchScene: { id: string; opponentName: string } | null
+      sanLog: string[]
+      sanQuality: Array<'good' | null>
+      evalTrace: number[]
+      history: string[]
+      recordResolvedOutcomeIfNeeded: () => void
+    }
+    flow.chess.load('7k/6Q1/6K1/8/8/8/8/8 b - - 0 1')
+    f.mode = 'match'
+    f.playerColor = 'w'
+    f.matchScene = { id: 'c1-match-test', opponentName: 'Test Rival' }
+    const game = new Chess()
+    f.history = [game.fen()]
+    f.sanLog = []
+    for (const san of ['e4', 'e5', 'Nf3', 'Nc6']) {
+      f.sanLog.push(game.move(san).san)
+      f.history.push(game.fen())
+    }
+    f.sanQuality = ['good', null, 'good', null]
+    /* A noisy probe claims 2. Nf3 lost three pawns; it did not. */
+    f.evalTrace = [25, 20, -300, 30]
+    f.recordResolvedOutcomeIfNeeded()
+    expect(flow.getCostliestMomentLine()).toBeNull()
+    expect(flow.getCostliestMomentPly()).toBeNull()
   })
 
   it('reports no costliest move for a clean game', () => {

@@ -7,13 +7,15 @@
  * is nothing meaningful to draw.
  */
 import { escapeHtml } from '../htmlEscape'
-import { findCostliestMoment, plyMoveLabel } from './costliestMoment'
+import { plyMoveLabel } from './costliestMoment'
 
 export interface EvalArcInput {
   sanLog: readonly string[]
   /** White-positive engine eval after each ply (1:1 with sanLog). */
   evalTrace: readonly number[]
   playerColor: 'w' | 'b'
+  /** Ply of the recap's verified "Study this" move (null: no marker). */
+  markPly?: number | null
 }
 
 const W = 300
@@ -43,11 +45,11 @@ export function buildEvalArcSvg(input: EvalArcInput): string | null {
   const line = pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ')
   const area = `0,${mid} ${line} ${W},${mid}`
 
-  const moment = findCostliestMoment(sanLog, evalTrace, playerColor)
+  const markPly = input.markPly ?? null
   let marker = ''
-  if (moment) {
-    const [mx, my] = xy(moment.ply, evalTrace[moment.ply]!)
-    const tip = `Costliest: ${plyMoveLabel(moment.ply)} ${moment.san}`
+  if (markPly !== null && markPly >= 0 && markPly < n) {
+    const [mx, my] = xy(markPly, evalTrace[markPly]!)
+    const tip = `Costliest: ${plyMoveLabel(markPly)} ${sanLog[markPly]}`
     marker =
       `<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="3.6" fill="#d4583a" stroke="#1a120b" stroke-width="1">` +
       `<title>${escapeHtml(tip)}</title></circle>`

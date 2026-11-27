@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { PLAYABLE_CHAPTERS } from '../../data/chapters'
 import { GameFlow } from '../gameFlow'
-import { buildRatingSummaryLine, buildRewardOverlayHtml } from './showRewardBundles'
+import type { ChessUiPayload } from '../gameFlow'
+import { buildRatingSummaryLine, buildRewardOverlayHtml, fillRecapLesson } from './showRewardBundles'
 
 function createFlow(): GameFlow {
   return new GameFlow(PLAYABLE_CHAPTERS, {
@@ -70,6 +71,7 @@ describe('showRewardBundles html', () => {
       getMatchHistory: () => [],
       getLastRivalRemark: () => null,
       getCostliestMomentLine: () => null,
+      getCostliestMomentPly: () => null,
     } as unknown as GameFlow
     const html = buildRewardOverlayHtml(flow, [], null)
     expect(html).toContain('Result Inscribed')
@@ -100,5 +102,37 @@ describe('showRewardBundles html', () => {
     expect(bar?.getAttribute('aria-valuenow')).toBe('0')
     const labelId = bar?.getAttribute('aria-labelledby') ?? ''
     expect(root.querySelector(`#${labelId}`)?.textContent).toMatch(/Apprentice Analyst/)
+  })
+
+  it('opens before the lesson is verified, then fills it in and marks the arc', () => {
+    let pending = true
+    const lessonFlow = {
+      ...createRewardFlowWithoutHistory(),
+      getLastRivalRemark: () => null,
+      costliestLessonPending: () => pending,
+      getCostliestMomentLine: () => {
+        pending = false
+        return '4. Qf3 cost about 3.1 pawns — the archive preferred Nf3.'
+      },
+      getCostliestMomentPly: () => (pending ? null : 6),
+    } as unknown as GameFlow
+    const recap = {
+      sanLog: ['e4', 'e5', 'Nf3', 'Nc6', 'Qh5', 'Nf6', 'Qf3', 'd6'],
+      evalTrace: [25, 20, 30, 25, -300, -290, -280, -285],
+      playerColor: 'w',
+      sanQuality: [null, null, null, null, null, null, null, null],
+      status: 'Checkmate.',
+    } as unknown as ChessUiPayload
+    const root = document.createElement('div')
+    root.innerHTML = buildRewardOverlayHtml(lessonFlow, [], recap)
+    expect(pending).toBe(true) /* building the sheet did not run the engine */
+    const item = root.querySelector<HTMLElement>('.recap-study')!
+    expect(item.hidden).toBe(true)
+    expect(root.querySelector('.eval-arc circle')).toBeNull()
+
+    fillRecapLesson(root, lessonFlow, recap)
+    expect(item.hidden).toBe(false)
+    expect(item.textContent).toContain('4. Qf3 cost about 3.1 pawns')
+    expect(root.querySelector('.eval-arc title')?.textContent).toBe('Costliest: 4. Qf3')
   })
 })

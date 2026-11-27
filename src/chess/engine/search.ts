@@ -149,6 +149,8 @@ function scoreMove(move: number, ttMove: number, side: number, ply: number): num
 /* ─── Search state ───────────────────────────────────────────────────── */
 
 let nodes = 0
+/** Nodes searched by finished searches (see `engineNodesSearched`). */
+let lifetimeNodes = 0
 let hardDeadline = Infinity
 let nodeBudget = Infinity
 let aborted = false
@@ -407,6 +409,15 @@ function extractPv(pos: Position, firstMove: number, maxLen: number): string[] {
   return pv
 }
 
+/**
+ * Every node this engine instance has searched, including the search in
+ * progress. Lets the playtest evaluator run a clock that advances with
+ * work done (eval/determinism.ts) instead of per clock read.
+ */
+export function engineNodesSearched(): number {
+  return lifetimeNodes + nodes
+}
+
 export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome {
   const maxDepth = Math.max(1, Math.min(63, limits.maxDepth ?? 63))
   const maxTimeMs = limits.maxTimeMs ?? 2000
@@ -543,6 +554,7 @@ export function search(pos: Position, limits: SearchLimits = {}): SearchOutcome 
 
   const bestEntry = root[bestIdx]!
   const timeMs = performance.now() - start
+  lifetimeNodes += nodes
   return {
     move: bestEntry.move,
     uci: moveToUci(bestEntry.move),

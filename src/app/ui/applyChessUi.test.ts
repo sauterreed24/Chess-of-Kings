@@ -98,6 +98,7 @@ function payload(chess: Chess): ChessUiPayload {
     evalScore: 0,
     canRetry: false,
     canHint: false,
+    puzzleSpent: false,
     mentorInsight: null,
     aiPersona: null,
     aiFlavor: null,
@@ -418,6 +419,42 @@ describe('applyChessUi', () => {
     expect(dom.btnHint.hidden).toBe(true)
     expect(dom.btnHint.disabled).toBe(true)
     expect(tools.classList.contains('hidden')).toBe(false)
+  })
+
+  it('shows Reset on a docked puzzle once the proof is spent (no dead end)', () => {
+    const chess = new Chess('8/8/8/8/5n2/5k2/3K4/8 w - - 0 40')
+    const tools = document.createElement('div')
+    tools.className = 'board-tools'
+    const dom = refs()
+    tools.append(dom.btnHint, dom.btnNext, dom.btnUndo, dom.btnRunBack, dom.btnReset)
+    const rt = {
+      dom,
+      play: createMountPlayState(),
+      getFlow: () => null,
+      sfx: createSfxController({ enabled: false }),
+      announcer: createAnnouncer(node()),
+    }
+    const cbs = {
+      showRewardBundles: vi.fn(),
+      maybeShowPendingChapterPrompt: vi.fn(),
+      revealBoardScene: vi.fn(),
+    }
+    applyChessUi(
+      {
+        ...payload(chess),
+        calibration: undefined,
+        status: '',
+        canUndo: true,
+        sanLog: ['Kd2'],
+        sanQuality: [null],
+        canHint: false,
+        puzzleSpent: true,
+      },
+      rt,
+      cbs,
+    )
+    expect(dom.btnReset.hidden).toBe(false)
+    expect(dom.btnReset.dataset.puzzleSpent).toBe('true')
   })
 
   it('hides Reset on a docked puzzle so Advance and Take back share one row', () => {

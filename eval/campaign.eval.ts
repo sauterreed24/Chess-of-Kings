@@ -23,6 +23,7 @@ import type { MatchScene, PuzzleScene } from '../src/types'
 import { BOTS, botMove, goalMove } from './bots'
 import type { BotId } from './bots'
 import { installVirtualClock, seedRandom, wallClockMs } from './determinism'
+import type { TrialId } from '../src/app/trials'
 
 const SEEDSET = process.env.EVAL_SEEDSET ?? 'tune'
 const [SHARD_I, SHARD_N] = (process.env.EVAL_SHARD ?? '0/1').split('/').map(Number) as [number, number]
@@ -32,6 +33,8 @@ const ATTEMPTS = Number(process.env.EVAL_ATTEMPTS ?? 3)
 const PLY_CAP = Number(process.env.EVAL_PLY_CAP ?? 300)
 const ONLY = process.env.EVAL_ONLY ?? ''
 const ONLY_BOTS = (process.env.EVAL_BOTS ?? '').split(',').filter(Boolean) as BotId[]
+/** Playtest trials to switch on (`?try=` ids), e.g. EVAL_TRY=early-relief. */
+const TRY = (process.env.EVAL_TRY ?? '').split(',').filter(Boolean) as TrialId[]
 
 type Job =
   | { kind: 'match'; ch: number; sc: number; id: string; bot: BotId; series: number }
@@ -87,6 +90,7 @@ function makeFlow(): { flow: GameFlow; last: () => ChessUiPayload | null } {
     onCampaignFinished: () => {},
   })
   ;(flow as unknown as { board: unknown }).board = mockBoard()
+  flow.trials = new Set(TRY)
   return { flow, last: () => latest }
 }
 
@@ -113,6 +117,13 @@ export type GameRecord = {
   aiWaitVirtualMs: number[]
   inputLatencyRealMs: number[]
   costliest: string | null
+  /** Player-POV UI eval after each ply (the recap's own trace). */
+  trace: number[]
+  /** Game start position and SAN moves, so checks can replay it with a deeper engine. */
+  startFen: string
+  sans: string[]
+  /** Ledger marks the player saw (payload.sanQuality, 1:1 with sans). */
+  marks: (string | null)[]
 }
 
 async function playGame(
@@ -171,7 +182,11 @@ async function playGame(
     mistakes: quality.filter((q) => q === 'mistake').length,
     aiWaitVirtualMs: aiWait,
     inputLatencyRealMs: latency,
-    costliest: (flow as unknown as { lastCostliestLine: string | null }).lastCostliestLine ?? null,
+    costliest: flow.getCostliestMomentLine(),
+    trace: trace.map((v) => Math.round(v)),
+    startFen: (flow as unknown as { history: string[] }).history[0] ?? '',
+    sans: [...internals.sanLog],
+    marks: [...(payload?.sanQuality ?? [])],
   }
 }
 

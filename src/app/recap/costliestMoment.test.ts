@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { findCostliestMoment, plyMoveLabel } from './costliestMoment'
+import { costliestLessonLine, costlyCandidates, plyMoveLabel, verifyCostliestMoment } from './costliestMoment'
 
-describe('findCostliestMoment', () => {
+/** The shallow pass alone: the largest candidate, or null. */
+const findCostliestMoment = (...args: Parameters<typeof costlyCandidates>) => costlyCandidates(...args)[0] ?? null
+
+describe('costlyCandidates (shallow pass)', () => {
   it('finds the White player\'s worst move (largest own-eval drop)', () => {
     /* White plays plies 0,2,4. White-positive trace: ply 2 drops 30 -> -260
        (a 290cp blunder); ply 4 only slips 10cp. */
@@ -68,5 +71,86 @@ describe('findCostliestMoment', () => {
     expect(plyMoveLabel(1)).toBe('1...')
     expect(plyMoveLabel(8)).toBe('5.')
     expect(plyMoveLabel(9)).toBe('5...')
+  })
+})
+
+describe('verifyCostliestMoment', () => {
+  const sanLog = ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6', 'Ba4', 'Nf6']
+  /* Stand-in FENs: only the side-to-move field is read here. */
+  const fens = sanLog.map((_, i) => `fen${i} ${i % 2 === 0 ? 'w' : 'b'}`).concat('fen8 w')
+  /* Shallow trace: ply 2 looks worst (-300), ply 4 a smaller dip, ply 6 flat. */
+  const trace = [25, 20, -300, 30, -150, -140, -130, -135]
+  const engine = (roots: Record<string, Array<{ san: string; score: number }>>, positions: Record<string, number> = {}) => ({
+    scoreRoots: (fen: string) => roots[fen.split(' ')[0]!] ?? null,
+    scorePosition: (fen: string) => positions[fen.split(' ')[0]!] ?? null,
+  })
+
+  it('drops a trace dip on the archive\'s own best move and teaches the real one', () => {
+    const m = verifyCostliestMoment(sanLog, trace, fens, 'w', engine({
+      fen2: [{ san: 'Nf3', score: 30 }, { san: 'd4', score: 25 }],
+      fen4: [{ san: 'd4', score: 40 }, { san: 'Bb5', score: -210 }],
+    }))
+    expect(m).not.toBeNull()
+    expect(m!.ply).toBe(4)
+    expect(m!.preferredSan).toBe('d4')
+    expect(m!.dropCp).toBe(250)
+    expect(costliestLessonLine(m!)).toBe('3. Bb5 cost about 2.5 pawns — the archive preferred d4.')
+  })
+
+  it('counts the fall after the rival\'s actual reply when the spectrum misses it', () => {
+    const m = verifyCostliestMoment(sanLog, trace, fens, 'w', engine(
+      { fen2: [{ san: 'd4', score: 40 }, { san: 'Nf3', score: 20 }] },
+      { fen4: -400 },
+    ))
+    expect(m?.ply).toBe(2)
+    expect(m?.dropCp).toBe(440)
+  })
+
+  it('skips positions where the player was not on move', () => {
+    const blackToMove = fens.map((f) => f.replace(/ [wb]$/, ' b'))
+    expect(verifyCostliestMoment(sanLog, trace, blackToMove, 'w', engine({
+      fen2: [{ san: 'd4', score: 40 }, { san: 'Nf3', score: -400 }],
+    }))).toBeNull()
+  })
+
+  it('a mate that lands after the rival\'s reply reads as an allowed mate', () => {
+    const m = verifyCostliestMoment(sanLog, trace, fens, 'w', engine(
+      { fen2: [{ san: 'd4', score: 40 }, { san: 'Nf3', score: 0 }] },
+      { fen4: -29_995 },
+    ))
+    expect(m?.allowedMate).toBe(true)
+  })
+
+  it('never blames the archive\'s own best move for a fall that was already coming', () => {
+    /* "38. Kh2 cost about 9.3 pawns": the only good move, in a lost position. */
+    expect(verifyCostliestMoment(sanLog, trace, fens, 'w', engine(
+      { fen2: [{ san: 'Nf3', score: -500 }, { san: 'd4', score: -900 }] },
+      { fen4: -1200 },
+    ))).toBeNull()
+  })
+
+  it('stays silent when nothing truly cost a pawn', () => {
+    expect(verifyCostliestMoment(sanLog, trace, fens, 'w', engine({
+      fen2: [{ san: 'd4', score: 40 }, { san: 'Nf3', score: 0 }],
+      fen4: [{ san: 'd4', score: 40 }, { san: 'Bb5', score: -20 }],
+    }))).toBeNull()
+    expect(verifyCostliestMoment(sanLog, trace, fens, 'w', engine({}))).toBeNull()
+  })
+
+  it('names allowed and missed mates instead of a pawn count', () => {
+    const allowed = verifyCostliestMoment(sanLog, trace, fens, 'w', engine({
+      fen2: [{ san: 'd4', score: 10 }, { san: 'Nf3', score: -29_990 }],
+    }))
+    expect(allowed?.allowedMate).toBe(true)
+    expect(costliestLessonLine(allowed!)).toBe('2. Nf3 allowed a forced mate — the archive preferred d4.')
+    const missed = verifyCostliestMoment(sanLog, trace, fens, 'w', engine({
+      fen2: [{ san: 'Qxf7#', score: 29_999 }, { san: 'Nf3', score: 50 }],
+    }))
+    expect(costliestLessonLine(missed!)).toBe('2. Nf3 missed a forced mate — Qxf7# was the finish.')
+  })
+
+  it('ranks candidates by the dip after the move or after the reply', () => {
+    /* Ply 2 is flat on its own but the reply exposes it. */
+    expect(costlyCandidates(['e4', 'e5', 'Nf3', 'Nc6'], [25, 20, 15, -400], 'w')[0]?.ply).toBe(2)
   })
 })

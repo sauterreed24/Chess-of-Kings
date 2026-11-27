@@ -33,6 +33,7 @@ import { GameFlow } from './gameFlow'
 import type { ChessUiPayload } from './gameFlow'
 import { buildInProgressSnapshot } from './persistence/SnapshotManager'
 import type { SnapshotBuildContext } from './persistence/SnapshotManager'
+import type { TrialId } from './trials'
 
 type Outcome = 'win' | 'loss' | 'draw'
 
@@ -51,7 +52,7 @@ function entry(sceneId: string, outcome: Outcome, i: number): MatchHistoryEntry 
   }
 }
 
-function flowAt(sceneId: string, outcomes: Outcome[]) {
+function flowAt(sceneId: string, outcomes: Outcome[], trials: TrialId[] = []) {
   const updates: ChessUiPayload[] = []
   const flow = new GameFlow(PLAYABLE_CHAPTERS, {
     onSceneChange: vi.fn(),
@@ -71,6 +72,7 @@ function flowAt(sceneId: string, outcomes: Outcome[]) {
   } as unknown as BoardView
   const history = outcomes.map((o, i) => entry(sceneId, o, i))
   ;(flow as unknown as { matchHistory: MatchHistoryEntry[] }).matchHistory = history
+  flow.trials = new Set(trials)
   const ch = PLAYABLE_CHAPTERS.findIndex((c) => c.scenes.some((s) => s.id === sceneId))
   const sc = PLAYABLE_CHAPTERS[ch]!.scenes.findIndex((s) => s.id === sceneId)
   flow.highestUnlockedChapter = ch
@@ -103,6 +105,16 @@ describe('rematch relief in the campaign', () => {
   it('a rival already on the depth floor is labelled honestly', () => {
     const { persona } = flowAt('c1-match-amara', ['loss'])
     expect(persona()).toMatch(/\(rematch relief I: plays looser\)$/)
+  })
+
+  it('trial early-relief: the first meeting is already at step I, labelled as the trial', () => {
+    const before = searched.length
+    expect(flowAt('c1-match-edred', [], ['early-relief']).persona()).toMatch(
+      /\(early relief \(trial\) I: calculates shallower\)$/,
+    )
+    expect(flowAt('c1-match-edred', ['loss', 'loss'], ['early-relief']).persona()).toMatch(/early relief \(trial\) III:/)
+    expect(flowAt('c1-match-edred', ['loss', 'win'], ['early-relief']).persona()).toMatch(/early relief \(trial\) I:/)
+    expect(searched.length).toBe(before)
   })
 
   it('a win ends the streak; a draw does not', () => {
@@ -155,6 +167,32 @@ describe('rematch relief in the campaign', () => {
       expect(again.persona()).toMatch(/rematch relief I:/)
       again.flow.resetChessScene()
       expect(again.persona()).toMatch(/rematch relief II:/)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('trial early-relief never reaches the save: a reload with the trial off plays as authored', async () => {
+    vi.useFakeTimers()
+    try {
+      const { flow, persona } = flowAt('c1-match-edred', [], ['early-relief'])
+      const mv = flow.chess.moves({ verbose: true })[0]!
+      flow.tryPlayerMove(mv.from, mv.to, mv.promotion)
+      await vi.advanceTimersByTimeAsync(1000)
+      expect(persona()).toMatch(/early relief \(trial\) I:/)
+      const snap = buildInProgressSnapshot(
+        (flow as unknown as { snapshotBuildContext(): SnapshotBuildContext }).snapshotBuildContext(),
+      )
+      expect(snap?.reliefStreak).toBe(0)
+      const again = flowAt('c1-match-edred', [])
+      const internals = again.flow as unknown as {
+        snapshots: { setPendingSnapshot(s: unknown): void }
+        refreshScene(): void
+      }
+      internals.snapshots.setPendingSnapshot(JSON.parse(JSON.stringify(snap)))
+      internals.refreshScene()
+      expect(again.flow.chess.fen()).toBe(snap!.fen)
+      expect(again.persona()).not.toMatch(/relief/)
     } finally {
       vi.useRealTimers()
     }

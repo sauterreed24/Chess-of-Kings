@@ -145,6 +145,43 @@ export function scoreRun(records) {
   }
 }
 
+/* C10 recap truth over rows from recapTruth.eval.ts (deep-engine drops, player POV cp).
+   accurate: the lesson names a move that truly cost >= 1 pawn.
+   top: it names the game's truly costliest move (within 1 pawn of it).
+   missed: no lesson although some move truly cost >= 3 pawns. */
+export function scoreRecap(rows) {
+  const shown = rows.filter((r) => r.lesson)
+  const accurate = shown.filter((r) => r.namedDrop !== null && r.namedDrop >= 100)
+  const top = shown.filter((r) => r.namedDrop !== null && r.namedDrop >= r.worstDrop - 100)
+  const missed = rows.filter((r) => !r.lesson && r.worstDrop >= 300)
+  return {
+    accurate: round(accurate.length / Math.max(1, shown.length)),
+    top: round(top.length / Math.max(1, shown.length)),
+    shown: shown.length,
+    missed: missed.length,
+    n: rows.length,
+    wrong: shown.filter((r) => !(r.namedDrop >= 100)).map((r) => `${r.key} ${r.lesson} (true ${r.namedDrop}cp)`),
+    target: 'accurate >= 0.90, top >= 0.70, missed 0',
+  }
+}
+
+/* C11 ledger marks over the same replayed losses (positions not already decided):
+   blunder marks that truly cost >= 1.5 pawns, mistake marks that cost >= 0.6,
+   >= 3-pawn moves marked mistake/blunder (recall), and quiet moves (<= 0.2) so marked. */
+export function scoreLedger(rows) {
+  const t = { blunder: 0, blunderTrue: 0, mistake: 0, mistakeTrue: 0, big: 0, bigMarked: 0, quiet: 0, quietMarked: 0 }
+  for (const r of rows) for (const k of Object.keys(t)) t[k] += r.ledger?.[k] ?? 0
+  const ratio = (a, b) => round(a / Math.max(1, b))
+  return {
+    blunderPrecision: ratio(t.blunderTrue, t.blunder),
+    mistakePrecision: ratio(t.mistakeTrue, t.mistake),
+    recall: ratio(t.bigMarked, t.big),
+    falseAlarm: ratio(t.quietMarked, t.quiet),
+    counts: t,
+    target: 'precision >= 0.80, recall >= 0.55, false alarms <= 0.03',
+  }
+}
+
 export function formatScorecard(sc) {
   const c = sc.checks
   const lines = []
@@ -157,6 +194,14 @@ export function formatScorecard(sc) {
   lines.push(`  C6 puzzles skilled/club/novice clear     : ${c.puzzles.skilledClear}/${c.puzzles.clubClear}/${c.puzzles.noviceClear}  [${c.puzzles.target}] broken: ${c.puzzles.broken.join(', ') || 'none'}`)
   lines.push(`  C7 pacing                                : ${c.pacing.pressesToFirstRival} presses / ${c.pacing.wordsBeforeFirstRival} words to first rival; club plies p50 ${c.pacing.clubMedianPlies} p90 ${c.pacing.clubP90Plies}`)
   lines.push(`  C8 rival wait p50/p95/max (virtual ms)   : ${c.responsiveness.aiWaitP50}/${c.responsiveness.aiWaitP95}/${c.responsiveness.aiWaitMax}; input latency p95 ${c.responsiveness.inputLatencyRealP95} ms real (container)`)
+  if (c.recapTruth) {
+    const r = c.recapTruth
+    lines.push(`  C10 recap lesson accurate / top / missed : ${r.accurate} / ${r.top} / ${r.missed}  (${r.shown} lessons in ${r.n} sampled losses)  [${r.target}]`)
+  }
+  if (c.ledger && c.ledger.counts.blunder + c.ledger.counts.mistake > 0) {
+    const l = c.ledger
+    lines.push(`  C11 ledger marks blunder/mistake precision, recall, false alarms: ${l.blunderPrecision} / ${l.mistakePrecision}, ${l.recall}, ${l.falseAlarm}  (${l.counts.blunder} blunder, ${l.counts.mistake} mistake marks)  [${l.target}]`)
+  }
   lines.push('')
   lines.push('PER MATCH (first-try score / clear rate within attempts / mean tries)')
   for (const m of sc.perMatch) {
@@ -182,6 +227,13 @@ export function compareRuns(a, b) {
     ['puzzles.skilled', a.checks.puzzles.skilledClear, b.checks.puzzles.skilledClear],
     ['clubMedianPlies', a.checks.pacing.clubMedianPlies, b.checks.pacing.clubMedianPlies],
     ['aiWaitP95', a.checks.responsiveness.aiWaitP95, b.checks.responsiveness.aiWaitP95],
+    ['recap.accurate', a.checks.recapTruth?.accurate, b.checks.recapTruth?.accurate],
+    ['recap.top', a.checks.recapTruth?.top, b.checks.recapTruth?.top],
+    ['recap.missed', a.checks.recapTruth?.missed, b.checks.recapTruth?.missed],
+    ['ledger.blunderPrec', a.checks.ledger?.blunderPrecision, b.checks.ledger?.blunderPrecision],
+    ['ledger.mistakePrec', a.checks.ledger?.mistakePrecision, b.checks.ledger?.mistakePrecision],
+    ['ledger.recall', a.checks.ledger?.recall, b.checks.ledger?.recall],
+    ['ledger.falseAlarm', a.checks.ledger?.falseAlarm, b.checks.ledger?.falseAlarm],
   ]
   return rows.map(([k, x, y]) => `${k.padEnd(18)} ${String(x).padStart(8)} -> ${String(y).padStart(8)}`).join('\n')
 }

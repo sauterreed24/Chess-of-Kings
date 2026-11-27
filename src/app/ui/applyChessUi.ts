@@ -185,8 +185,9 @@ export function applyChessUi(
   dom.btnRunBack.hidden = !p.canRetry
   /* Take back / Reset occupy a second phone row before any ply exists.
      Phone puzzles already dock Prove; Reset wraps full-width under Advance
-     after a seal. Take back retries the one-move proof. Phone calibration
-     hides Hint so Prove|Reset stay on one row after the first ply. */
+     after a seal. Take back retries the one-move proof — but a spent proof
+     (the board ended without it) needs Reset, or a phone player is stuck.
+     Phone calibration hides Hint so Prove|Reset stay on one row after the first ply. */
   const tools = dom.btnUndo.closest('.board-tools')
   const nextDocked =
     tools instanceof HTMLElement &&
@@ -196,7 +197,8 @@ export function applyChessUi(
   const puzzleDocked = nextDocked && !calibration
   dom.btnHint.disabled = !p.canHint
   dom.btnHint.hidden = !p.canHint || (nextDocked && !!calibration)
-  dom.btnReset.hidden = idleTools || puzzleDocked
+  dom.btnReset.dataset.puzzleSpent = String(p.puzzleSpent) /* read again on phone resize (labModal) */
+  dom.btnReset.hidden = idleTools || (puzzleDocked && !p.puzzleSpent)
   syncPhoneHitTarget(dom.btnHint, !dom.btnHint.hidden)
   syncPhoneHitTarget(dom.btnReset, !dom.btnReset.hidden)
   syncPhoneHitTarget(dom.btnUndo, !dom.btnUndo.hidden)

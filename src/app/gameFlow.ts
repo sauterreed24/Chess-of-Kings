@@ -18,7 +18,9 @@ import {
 } from './ai/rematchRelief'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
-import { findCostliestMoment, plyMoveLabel } from './recap/costliestMoment'
+import { costliestLessonLine, verifyCostliestMoment } from './recap/costliestMoment'
+import { createLessonEngine, RECAP_VERIFY_CANDIDATES } from './recap/lessonEngine'
+import { activeTrials, type TrialId } from './trials'
 import { describeHint } from './play/hintReason'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
@@ -158,9 +160,13 @@ export type ChessUiPayload = {
   canRetry: boolean
   /** Show the on-demand learning hint (player's turn on a live board). */
   canHint: boolean
+  /** Puzzle board is over (mate, stalemate, dead draw) without the proof: only Reset helps. */
+  puzzleSpent: boolean
   /** Short hint tied to turn / mode — shown as `aria-describedby` for the board. */
   boardGuide: string
 }
+
+const recapLessonEngine = createLessonEngine()
 
 /** Conversion persona, spoken as the court would file it. */
 function conversionSchoolNoun(persona: string): string {
@@ -320,6 +326,10 @@ export class GameFlow {
   private lastRivalRemark: string | null = null
   /** The just-finished game's costliest-move lesson (session-only). */
   private lastCostliestLine: string | null = null
+  /** Ply of that lesson, so the recap arc marks the same move (session-only). */
+  private lastCostliestPly: number | null = null
+  /** Finished game awaiting its lesson; verified on first read (the recap reads it after opening). */
+  private pendingCostliest: { sanLog: string[]; evalTrace: number[]; history: string[]; playerColor: 'w' | 'b' } | null = null
   private sanQuality: MoveQuality[] = []
   /** White-positive engine eval after each ply (session-only; consumers
       must ignore it whenever its length drifts from `sanLog`). */
@@ -342,6 +352,8 @@ export class GameFlow {
   private matchHistory: MatchHistoryEntry[] = []
   /** Rematch-relief streak in effect for the current campaign match. */
   private matchReliefStreak = 0
+  /** Playtest trials switched on for this page (`?try=`); never saved with progress. */
+  trials: ReadonlySet<TrialId> = activeTrials()
   /** Position (FEN) in which the rival resigned; any undo/reset voids it. */
   private rivalResignedFen: string | null = null
   private lastResolvedOutcomeKey: string | null = null
@@ -793,6 +805,8 @@ export class GameFlow {
     resetAiGameContext()
     this.lastRivalRemark = null
     this.lastCostliestLine = null
+    this.lastCostliestPly = null
+    this.pendingCostliest = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
@@ -877,6 +891,8 @@ export class GameFlow {
     resetAiGameContext()
     this.lastRivalRemark = null
     this.lastCostliestLine = null
+    this.lastCostliestPly = null
+    this.pendingCostliest = null
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
@@ -1024,6 +1040,7 @@ export class GameFlow {
         !this.isSceneTerminalForCurrentMode() &&
         this.chess.turn() === this.playerColor &&
         !(this.mode === 'calibration' && this.calibrationSolved()),
+      puzzleSpent: this.isPuzzleSpent(),
       boardGuide: this.boardGuideText(sc),
     })
   }
@@ -1109,8 +1126,9 @@ export class GameFlow {
       const tuned = this.tuneProfileForMatch(adapted, this.matchScene)
       const authored = this.tuneProfileForMatch(adapted, this.matchScene, false)
       const relief = rematchReliefNote(
-        rematchRelief(this.matchReliefStreak),
+        rematchRelief(this.effectiveReliefStreak()),
         tuned.searchDepth < authored.searchDepth,
+        this.trials.has('early-relief') ? 'early relief (trial)' : undefined,
       )
       return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}${relief ? ` (${relief})` : ''}`
     }
@@ -1321,7 +1339,7 @@ export class GameFlow {
       },
     }
     const capped = this.applyStrengthCap(tuned, match)
-    return withRelief ? applyRematchRelief(capped, rematchRelief(this.matchReliefStreak)) : capped
+    return withRelief ? applyRematchRelief(capped, rematchRelief(this.effectiveReliefStreak())) : capped
   }
 
   /** The match scene a capped rival may not out-play (see MatchScene.strengthCapSceneId). */
@@ -1345,6 +1363,12 @@ export class GameFlow {
   /** Relief streak for a campaign match, read from the recorded history. */
   private reliefStreakFor(matchId: string): number {
     return reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
+  }
+
+  /** The streak the rival plays at. Trial `early-relief` adds one here, at
+      read time only, so the snapshot keeps the real loss streak. */
+  private effectiveReliefStreak(): number {
+    return this.trials.has('early-relief') ? this.matchReliefStreak + 1 : this.matchReliefStreak
   }
 
   private tuneProfileForDuel(
@@ -1596,7 +1620,14 @@ export class GameFlow {
       }
     }
 
-    this.lastCostliestLine = this.buildCostliestMomentLine()
+    this.lastCostliestLine = null
+    this.lastCostliestPly = null
+    this.pendingCostliest = {
+      sanLog: [...this.sanLog],
+      evalTrace: [...this.evalTrace],
+      history: [...this.history],
+      playerColor: this.playerColor,
+    }
 
     this.persist()
   }
@@ -1654,33 +1685,35 @@ export class GameFlow {
    * from the per-ply eval trace captured during play. Session-only.
    */
   getCostliestMomentLine(): string | null {
+    this.resolvePendingCostliest()
     return this.lastCostliestLine
   }
 
-  private buildCostliestMomentLine(): string | null {
-    const moment = findCostliestMoment(this.sanLog, this.evalTrace, this.playerColor)
-    if (!moment) return null
-    const fenBefore = this.history[moment.ply]
-    let preferred: string | null = null
-    if (fenBefore) {
-      try {
-        const result = searchFen(fenBefore, { maxDepth: 6, maxTimeMs: 60, freshTable: true })
-        if (result.move) {
-          const probe = new Chess(fenBefore)
-          const played = probe.move({
-            from: result.move.from,
-            to: result.move.to,
-            promotion: result.move.promotion,
-          })
-          if (played && played.san !== moment.san) preferred = played.san
-        }
-      } catch {
-        preferred = null
-      }
-    }
-    const pawns = (moment.dropCp / 100).toFixed(1)
-    const head = `${plyMoveLabel(moment.ply)} ${moment.san} cost about ${pawns} pawns`
-    return preferred ? `${head} — the archive preferred ${preferred}.` : `${head}.`
+  /** True until the finished game's lesson has been verified (the recap fills it in after opening). */
+  costliestLessonPending(): boolean {
+    return this.pendingCostliest !== null
+  }
+
+  /** Ply index of the recap lesson's move, or null (the arc marks it). */
+  getCostliestMomentPly(): number | null {
+    this.resolvePendingCostliest()
+    return this.lastCostliestPly
+  }
+
+  private resolvePendingCostliest(): void {
+    const game = this.pendingCostliest
+    if (!game) return
+    this.pendingCostliest = null
+    const moment = verifyCostliestMoment(
+      game.sanLog,
+      game.evalTrace,
+      game.history,
+      game.playerColor,
+      recapLessonEngine,
+      { candidates: RECAP_VERIFY_CANDIDATES },
+    )
+    this.lastCostliestPly = moment ? moment.ply : null
+    this.lastCostliestLine = moment ? costliestLessonLine(moment) : null
   }
 
   /**
@@ -1694,7 +1727,9 @@ export class GameFlow {
     if (this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'calibration') {
       this.snapshots.clearPendingSnapshot()
       this.lastRivalRemark = null
-    this.lastCostliestLine = null
+      this.lastCostliestLine = null
+      this.lastCostliestPly = null
+      this.pendingCostliest = null
       this.refreshScene()
       return true
     }
@@ -1905,6 +1940,9 @@ export class GameFlow {
       'Select piece. Targets glow; captures bronze, check crimson.'
     const chessy = this.mode === 'duel' || this.sceneUsesBoard(scene)
     if (!chessy) return defaultGuide
+    if (this.isPuzzleSpent()) {
+      return 'Proof spent — no proof from this position. Reset to try again.'
+    }
     if (this.isSceneTerminalForCurrentMode() || this.chess.isGameOver()) {
       return 'Proof sealed. Continue when Advance appears.'
     }
@@ -2331,6 +2369,11 @@ export class GameFlow {
     const c = this.calibrationScene
     if (!c) return false
     return this.calibrationMoves >= c.minMovesByPlayer
+  }
+
+  /** The puzzle board ended (mate, stalemate, dead draw) without the proof. */
+  private isPuzzleSpent(): boolean {
+    return this.mode === 'puzzle' && !!this.puzzleScene && this.chess.isGameOver() && !this.puzzleSolved()
   }
 
   private puzzleSolved(): boolean {

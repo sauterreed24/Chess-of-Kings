@@ -1938,6 +1938,16 @@ button:disabled { opacity: 0.46; cursor: not-allowed; box-shadow: none !importan
   from { opacity: 0; transform: translateY(8px) scale(0.992); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
+/* Verdict sheet: the actions ride the bottom edge so the sheet can open at
+   its top (recap first) without hiding Advance. The shadow covers the
+   sheet's bottom padding (safe area on phones) under the row. */
+.reward-actions {
+  position: sticky;
+  bottom: 0;
+  padding-top: 0.7rem;
+  background: linear-gradient(#0000, #050403 40%);
+  box-shadow: 0 3rem #050403;
+}
 @keyframes reward-rise {
   from { opacity: 0; transform: translateY(8px) scale(0.985); }
   to { opacity: 1; transform: none; }
