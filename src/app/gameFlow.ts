@@ -1083,11 +1083,12 @@ export class GameFlow {
    * mixes search parities, which marks sound moves as mistakes (measured:
    * 6–7% of quiet moves; blunder marks right ~62% of the time).
    */
-  private parityMatchedGrade(povBefore: number, depthBefore: number, offeredGain: number): NonNullable<MoveQuality> {
+  private parityMatchedGrade(povBefore: number, depthBefore: number, offeredGain: number): MoveQuality {
     const clip = (v: number) => Math.max(-1200, Math.min(1200, v))
     let povAfter: number
     if (this.chess.isCheckmate()) povAfter = 1200
-    else if (this.chess.isGameOver()) povAfter = 0
+    /* Only real dead ends: campaign games play on through threefold / fifty moves. */
+    else if (this.chess.isStalemate() || this.chess.isInsufficientMaterial()) povAfter = 0
     else {
       try {
         const result = searchFen(this.chess.fen(), {
@@ -1097,7 +1098,7 @@ export class GameFlow {
         })
         povAfter = clip(-result.score)
       } catch {
-        return gradeMoveByEval({ povBefore, povAfter: povBefore, offeredGain })
+        return null /* no trial mark: the saved grading shows */
       }
     }
     return gradeMoveByEval({ povBefore, povAfter, offeredGain })
@@ -1110,8 +1111,8 @@ export class GameFlow {
   private shownQualities(): MoveQuality[] {
     if (!this.trials.has('true-marks')) return this.sanQuality
     return this.sanQuality.map((q, i) => {
-      const key = `${this.history[i]}|${this.sanLog[i]}`
-      return this.trialMarks.has(key) ? this.trialMarks.get(key)! : q
+      if (q === null) return null /* unmarked plies (rival, calibration, free play) stay unmarked */
+      return this.trialMarks.get(`${this.history[i]}|${this.sanLog[i]}`) ?? q
     })
   }
 
@@ -1483,9 +1484,10 @@ export class GameFlow {
     return streak
   }
 
+  /** Display count (Mentor Insight): the marks the player sees. */
   private countQuality(q: MoveQuality): number {
     let n = 0
-    for (const x of this.sanQuality) if (x === q) n++
+    for (const x of this.shownQualities()) if (x === q) n++
     return n
   }
 
@@ -2172,8 +2174,12 @@ export class GameFlow {
       playerQuality = quality
       if (this.trials.has('true-marks') && depthBefore > 0) {
         /* Display only: the saved quality above still drives accuracy and rating. */
-        playerQuality = this.parityMatchedGrade(sign * whiteEvalBefore, depthBefore, threat?.oppGain ?? 0)
-        this.trialMarks.set(`${fenBefore}|${last.san}`, playerQuality)
+        const shown = this.parityMatchedGrade(sign * whiteEvalBefore, depthBefore, threat?.oppGain ?? 0)
+        if (shown) {
+          if (this.trialMarks.size > 2000) this.trialMarks.clear()
+          this.trialMarks.set(`${fenBefore}|${last.san}`, shown)
+          playerQuality = shown
+        }
       }
     } else {
       this.sanQuality.push(null)
