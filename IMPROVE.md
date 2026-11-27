@@ -54,8 +54,8 @@ scores 0.03, so it discriminates.
 
 ## Backlog (top first)
 1. **Walls**: Gage, Helia (tune) / Helia, Soren (holdout) survive relief III. Trial
-   `early-relief` is the current attempt (see Trials); if it is dropped, diagnose per rival
-   (persona depth after relief, book/script) before touching relief numbers.
+   `early-relief` clears them (1 / 0) but raises unfinished games; if kept, fix those next (look at
+   the 5 tune games: likely eased rivals in long endgames). If dropped, diagnose per rival.
 2. **Ramp is genuinely flat** (C3 0.37/0.42): the club bot loses the first try to 18/22 rivals
    from Edred (3rd) on; skilled-bot losses cluster in Chapters IV–VII, VIII–IX are easier. A
    content/tuning job: re-order or re-tier rivals; needs a trial (balance).
@@ -108,7 +108,7 @@ scores 0.03, so it discriminates.
 ## Trials (built behind a switch, waiting for the owner's verdict)
 | Trial | Switch | What changes | Measured on / off |
 |---|---|---|---|
-| early-relief | `?try=early-relief` (off: `?try=off`) | Rematch relief one loss earlier: first meeting with a campaign rival at step I, 3rd try at III. Dossier says "early relief (trial)". Wins count normally (no marker). | see Log, session 3 |
+| early-relief | `?try=early-relief` (off: `?try=off`) | Rematch relief one loss earlier: first meeting with a campaign rival at step I, 3rd try at III. Dossier says "early relief (trial)". Wins count normally (no marker). | Off → on, tune / holdout: walls 2→1 / 2→0; club first-try 0.14→0.27 / 0.14→0.33; club tries per rival 2.8→2.3 / 2.9→2.1; skill gap 0.78→0.95 / 0.76→0.98; ramp 0.37→0.60 / 0.42→0.49; comebacks 0.32→0.23 / 0.27→0.22 (in band, near floor); **unfinished 1→5 / 0→2 (worse)**; rival wait p95 1632→1331. Compare: does Chapter I–III feel fair on the first try, or too soft? |
 
 ## Decisions for me
 - None open.
@@ -136,7 +136,10 @@ session-2 decisions.
   Chapter I's first puzzle wrong; two moves lose the bishop to a dead draw).
 - KEPT: verdict sheet opens at its top with Advance pinned (found by playing: the lesson was
   scrolled off-screen after every loss on phones).
-- TRIAL: early-relief (results below).
+- TRIAL: early-relief. Prediction "walls ≤1 both sets, club first-try up, skill gap ≥0.50": met
+  (walls 1 / 0, club first-try ≈ doubled, skill gap up to 0.95 because the skilled bot now wins
+  every first try). Costs: unfinished games 1→5 tune / 0→2 holdout (eased rivals drift into long
+  endgames the club bot can't convert), comebacks down to 0.22–0.23. Genuine trade-off → owner's call.
 - REJECTED: graded C3 variants (eval at move 30, survival): 0.29–0.37, split-half r ≈ 0.85 — last
   session's "C3 is too coarse" was a misdiagnosis; check left unchanged.
 - Independent review (fresh agent, code only): 4 confirmed issues — trial leaked into the snapshot,

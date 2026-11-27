@@ -71,6 +71,19 @@ campaign rival is already at step I, the second at II, the third at III. The dos
 "early relief (trial)". Turn it on with `?try=early-relief`, off with `?try=off`; the choice is kept
 under its own storage key (`calculus-of-kings-trials-v1`), never in the save.
 
+| Check (off → on) | Tune | Held-out |
+| --- | --- | --- |
+| Walls (club can't clear in 3 tries) | 2 → 1 | 2 → 0 |
+| Club first-try score (mean over 22 rivals) | 0.14 → 0.27 | 0.14 → 0.33 |
+| Club tries per rival | 2.8 → 2.3 | 2.9 → 2.1 |
+| Skill gap (first try) | 0.78 → 0.95 | 0.76 → 0.98 |
+| Difficulty ramp | 0.37 → 0.60 | 0.42 → 0.49 |
+| Comeback rate | 0.32 → 0.23 | 0.27 → 0.22 |
+| Unfinished games | 1 → 5 | 0 → 2 |
+
+A genuine trade-off: far fewer walls and gentler first meetings, but more games that drift into
+long endgames, and fewer comebacks. Left for the owner to try.
+
 ## Independent review
 
 A fresh agent reviewed the commits from code alone and found: the trial leaked its eased step into
