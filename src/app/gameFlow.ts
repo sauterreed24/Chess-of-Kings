@@ -999,7 +999,8 @@ export class GameFlow {
         : undefined
     const matchOutcome = this.computeMatchOutcome()
     const fen = this.chess.fen()
-    const ledgerFp = ledgerContentFingerprint(this.sanLog, this.sanQuality)
+    const shownQuality = this.shownQualities()
+    const ledgerFp = ledgerContentFingerprint(this.sanLog, shownQuality)
     const evalScore = chessy ? this.evalScoreForUi(fen) : 0
     this.handlers.onChessUpdate({
       chess: this.chess,
@@ -1007,7 +1008,7 @@ export class GameFlow {
       status: this.statusLine(sc),
       canUndo,
       sanLog: [...this.sanLog],
-      sanQuality: [...this.sanQuality],
+      sanQuality: [...shownQuality],
       ledgerFp,
       calibration,
       inCheck: chessy && this.chess.inCheck() && !this.isSceneTerminalForCurrentMode(),
@@ -1054,20 +1055,64 @@ export class GameFlow {
    */
   private evalUiFen = ''
   private evalUiScore = 0
+  /** Depth the memoized probe reached (0 = static fallback). */
+  private evalUiDepth = 0
 
   private evalScoreForUi(fen: string): number {
     if (fen === this.evalUiFen) return this.evalUiScore
     let score: number
+    let depth = 0
     try {
       const result = searchFen(fen, { maxDepth: 3, maxTimeMs: 12, maxNodes: 9000 })
       const whitePov = this.chess.turn() === 'w' ? result.score : -result.score
       score = Math.max(-1200, Math.min(1200, whitePov))
+      depth = result.depth
     } catch {
       score = materialAndPst(this.chess, 'w')
     }
     this.evalUiFen = fen
     this.evalUiScore = score
+    this.evalUiDepth = depth
     return score
+  }
+
+  /**
+   * Trial `true-marks`: grade the player's move against the "before" probe
+   * with the position after it searched one ply shallower, so both sides of
+   * the comparison end on the same side's move. The plain before/after pair
+   * mixes search parities, which marks sound moves as mistakes (measured:
+   * 6–7% of quiet moves; blunder marks right ~62% of the time).
+   */
+  private parityMatchedGrade(povBefore: number, depthBefore: number, offeredGain: number): NonNullable<MoveQuality> {
+    const clip = (v: number) => Math.max(-1200, Math.min(1200, v))
+    let povAfter: number
+    if (this.chess.isCheckmate()) povAfter = 1200
+    else if (this.chess.isGameOver()) povAfter = 0
+    else {
+      try {
+        const result = searchFen(this.chess.fen(), {
+          maxDepth: Math.max(1, depthBefore - 1),
+          maxTimeMs: 12,
+          maxNodes: 9000,
+        })
+        povAfter = clip(-result.score)
+      } catch {
+        return gradeMoveByEval({ povBefore, povAfter: povBefore, offeredGain })
+      }
+    }
+    return gradeMoveByEval({ povBefore, povAfter, offeredGain })
+  }
+
+  /** Session-only marks from the `true-marks` trial, keyed by position + move; never saved. */
+  private trialMarks = new Map<string, MoveQuality>()
+
+  /** Marks the player sees: the trial's when it is on, else the graded ones (which the rating uses). */
+  private shownQualities(): MoveQuality[] {
+    if (!this.trials.has('true-marks')) return this.sanQuality
+    return this.sanQuality.map((q, i) => {
+      const key = `${this.history[i]}|${this.sanLog[i]}`
+      return this.trialMarks.has(key) ? this.trialMarks.get(key)! : q
+    })
   }
 
   dismissSessionRecoveredNotice() {
@@ -2076,7 +2121,9 @@ export class GameFlow {
     /* Engine eval before the move (White-positive, memoized — normally a
        cache hit from the last UI emit). */
     const gradedMode = this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'duel'
-    const whiteEvalBefore = gradedMode ? this.evalScoreForUi(this.chess.fen()) : 0
+    const fenBefore = this.chess.fen()
+    const whiteEvalBefore = gradedMode ? this.evalScoreForUi(fenBefore) : 0
+    const depthBefore = this.evalUiDepth
 
     const last = this.chess.move({ from, to, promotion: promotion ?? match.promotion })
     if (!last) {
@@ -2123,6 +2170,11 @@ export class GameFlow {
       })
       this.sanQuality.push(quality)
       playerQuality = quality
+      if (this.trials.has('true-marks') && depthBefore > 0) {
+        /* Display only: the saved quality above still drives accuracy and rating. */
+        playerQuality = this.parityMatchedGrade(sign * whiteEvalBefore, depthBefore, threat?.oppGain ?? 0)
+        this.trialMarks.set(`${fenBefore}|${last.san}`, playerQuality)
+      }
     } else {
       this.sanQuality.push(null)
     }

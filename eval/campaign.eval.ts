@@ -122,6 +122,8 @@ export type GameRecord = {
   /** Game start position and SAN moves, so checks can replay it with a deeper engine. */
   startFen: string
   sans: string[]
+  /** Ledger marks the player saw (payload.sanQuality, 1:1 with sans). */
+  marks: (string | null)[]
 }
 
 async function playGame(
@@ -184,6 +186,7 @@ async function playGame(
     trace: trace.map((v) => Math.round(v)),
     startFen: (flow as unknown as { history: string[] }).history[0] ?? '',
     sans: [...internals.sanLog],
+    marks: [...(payload?.sanQuality ?? [])],
   }
 }
 

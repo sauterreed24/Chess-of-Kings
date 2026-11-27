@@ -21,7 +21,7 @@ const SAMPLE = Number(process.env.EVAL_RECAP_SAMPLE ?? 48)
 const NODES = Number(process.env.EVAL_RECAP_NODES ?? 30_000)
 const CLIP = 1200
 
-type Game = { outcome: string; costliest: string | null; startFen: string; sans: string[] }
+type Game = { outcome: string; costliest: string | null; startFen: string; sans: string[]; marks?: (string | null)[] }
 type Series = { kind: string; id: string; bot: string; series: number; games: Game[] }
 
 /** "37." -> ply 72, "5..." -> ply 9 (inverse of plyMoveLabel). */
@@ -79,6 +79,19 @@ describe('recap truth', () => {
         /* before: player to move (their POV); after: rival to move (negate). */
         drops.push({ ply: i, drop: evals[i]! - -evals[i + 1]! })
       }
+      /* C11: the ledger marks on the same plies (positions not already decided). */
+      const ledger = { blunder: 0, blunderTrue: 0, mistake: 0, mistakeTrue: 0, big: 0, bigMarked: 0, quiet: 0, quietMarked: 0 }
+      if (game.marks && game.marks.length === game.sans.length) {
+        for (const d of drops) {
+          if (Math.abs(evals[d.ply]!) >= 900) continue
+          const mark = game.marks[d.ply]
+          const flagged = mark === 'blunder' || mark === 'mistake'
+          if (mark === 'blunder') { ledger.blunder++; if (d.drop >= 150) ledger.blunderTrue++ }
+          if (mark === 'mistake') { ledger.mistake++; if (d.drop >= 60) ledger.mistakeTrue++ }
+          if (d.drop >= 300) { ledger.big++; if (flagged) ledger.bigMarked++ }
+          if (d.drop <= 20) { ledger.quiet++; if (flagged) ledger.quietMarked++ }
+        }
+      }
       const worst = drops.reduce((a, b) => (b.drop > a.drop ? b : a), { ply: -1, drop: -Infinity })
       const namedPly = game.costliest ? plyFromLabel(game.costliest) : null
       const named = namedPly === null ? null : (drops.find((d) => d.ply === namedPly) ?? null)
@@ -89,6 +102,7 @@ describe('recap truth', () => {
         namedDrop: named ? Math.round(named.drop) : null,
         worstPly: worst.ply,
         worstDrop: Math.round(worst.drop),
+        ledger,
       })
       process.stdout.write(`[recap ${SHARD_I}] ${key}: named ${named?.drop.toFixed(0) ?? '-'} worst ${worst.drop.toFixed(0)}\n`)
     }

@@ -7,7 +7,7 @@
 import { spawn } from 'node:child_process'
 import { mkdirSync, readFileSync, rmSync, writeFileSync, existsSync } from 'node:fs'
 import { cpus } from 'node:os'
-import { scoreRun, scoreRecap, formatScorecard, compareRuns } from './score.mjs'
+import { scoreRun, scoreRecap, scoreLedger, formatScorecard, compareRuns } from './score.mjs'
 
 const args = process.argv.slice(2)
 const flag = (name, fallback) => {
@@ -84,6 +84,7 @@ writeFileSync(`eval/out/${label}-recap.json`, JSON.stringify(recap))
 
 const scorecard = scoreRun(records)
 scorecard.checks.recapTruth = scoreRecap(recap)
+scorecard.checks.ledger = scoreLedger(recap)
 mkdirSync('eval/results', { recursive: true })
 const resultFile = `eval/results/${label}.json`
 writeFileSync(resultFile, JSON.stringify({ ...meta, scorecard }, null, 1))

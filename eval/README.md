@@ -22,6 +22,12 @@ got no lesson (*missed*). The judge is stable: 0.44 accurate at both 30k and 90k
 same games; a random-move "lesson" scores 0.03. Records now carry each game's start FEN, moves and
 player-POV trace so any check can replay games without re-playing them.
 
+## C11 ledger marks (readability)
+The same replay scores the move ledger's live marks (`marks` in each record = what the player saw)
+on positions not already decided (|deep eval| < 9 pawns): blunder marks that truly cost ≥ 1.5 pawns,
+mistake marks that cost ≥ 0.6, recall of ≥ 3-pawn moves, and quiet moves (≤ 0.2) marked
+mistake/blunder (false alarms).
+
 ## Determinism
 - `Math.random` is reseeded per job from `<seedset>:<scene>:<bot>:<series>`.
 - `performance.now` is a virtual clock that advances 1024/150 ms per call; the engine checks
