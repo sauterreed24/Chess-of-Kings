@@ -66,9 +66,13 @@ const ROMAN = ['', 'I', 'II', 'III']
  * actually changed: shallower calculation only when the depth really fell
  * (the weakest rivals already sit on the depth floor).
  */
-export function rematchReliefNote(relief: RematchRelief, depthReduced: boolean): string | null {
+export function rematchReliefNote(
+  relief: RematchRelief,
+  depthReduced: boolean,
+  label = 'rematch relief',
+): string | null {
   if (relief.step === 0) return null
-  return `rematch relief ${ROMAN[relief.step]}: ${depthReduced ? 'calculates shallower' : 'plays looser'}`
+  return `${label} ${ROMAN[relief.step]}: ${depthReduced ? 'calculates shallower' : 'plays looser'}`
 }
 
 /**

@@ -20,6 +20,7 @@ import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
 import { costliestLessonLine, verifyCostliestMoment } from './recap/costliestMoment'
 import type { LessonEngine } from './recap/costliestMoment'
+import { activeTrials, type TrialId } from './trials'
 import { describeHint } from './play/hintReason'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
@@ -387,6 +388,8 @@ export class GameFlow {
   private matchHistory: MatchHistoryEntry[] = []
   /** Rematch-relief streak in effect for the current campaign match. */
   private matchReliefStreak = 0
+  /** Playtest trials switched on for this page (`?try=`); never saved with progress. */
+  trials: ReadonlySet<TrialId> = activeTrials()
   /** Position (FEN) in which the rival resigned; any undo/reset voids it. */
   private rivalResignedFen: string | null = null
   private lastResolvedOutcomeKey: string | null = null
@@ -1161,6 +1164,7 @@ export class GameFlow {
       const relief = rematchReliefNote(
         rematchRelief(this.matchReliefStreak),
         tuned.searchDepth < authored.searchDepth,
+        this.trials.has('early-relief') ? 'early relief (trial)' : undefined,
       )
       return `${this.matchScene.opponentName} · ${base.label} · ${conversionSchoolNoun(tuned.conversionPersona)}${relief ? ` (${relief})` : ''}`
     }
@@ -1392,9 +1396,11 @@ export class GameFlow {
     return capProfileStrength(tuned, this.tuneProfileForMatch(capBase, capScene, false, true))
   }
 
-  /** Relief streak for a campaign match, read from the recorded history. */
+  /** Relief streak for a campaign match, read from the recorded history.
+      Trial `early-relief`: relief arrives one loss earlier (first meeting at I). */
   private reliefStreakFor(matchId: string): number {
-    return reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
+    const losses = reliefLossStreak(this.matchHistory.filter((h) => h.opponentId === matchId).map((h) => h.outcome))
+    return this.trials.has('early-relief') ? losses + 1 : losses
   }
 
   private tuneProfileForDuel(

@@ -33,6 +33,7 @@ import { GameFlow } from './gameFlow'
 import type { ChessUiPayload } from './gameFlow'
 import { buildInProgressSnapshot } from './persistence/SnapshotManager'
 import type { SnapshotBuildContext } from './persistence/SnapshotManager'
+import type { TrialId } from './trials'
 
 type Outcome = 'win' | 'loss' | 'draw'
 
@@ -51,7 +52,7 @@ function entry(sceneId: string, outcome: Outcome, i: number): MatchHistoryEntry 
   }
 }
 
-function flowAt(sceneId: string, outcomes: Outcome[]) {
+function flowAt(sceneId: string, outcomes: Outcome[], trials: TrialId[] = []) {
   const updates: ChessUiPayload[] = []
   const flow = new GameFlow(PLAYABLE_CHAPTERS, {
     onSceneChange: vi.fn(),
@@ -71,6 +72,7 @@ function flowAt(sceneId: string, outcomes: Outcome[]) {
   } as unknown as BoardView
   const history = outcomes.map((o, i) => entry(sceneId, o, i))
   ;(flow as unknown as { matchHistory: MatchHistoryEntry[] }).matchHistory = history
+  flow.trials = new Set(trials)
   const ch = PLAYABLE_CHAPTERS.findIndex((c) => c.scenes.some((s) => s.id === sceneId))
   const sc = PLAYABLE_CHAPTERS[ch]!.scenes.findIndex((s) => s.id === sceneId)
   flow.highestUnlockedChapter = ch
@@ -103,6 +105,16 @@ describe('rematch relief in the campaign', () => {
   it('a rival already on the depth floor is labelled honestly', () => {
     const { persona } = flowAt('c1-match-amara', ['loss'])
     expect(persona()).toMatch(/\(rematch relief I: plays looser\)$/)
+  })
+
+  it('trial early-relief: the first meeting is already at step I, labelled as the trial', () => {
+    const before = searched.length
+    expect(flowAt('c1-match-edred', [], ['early-relief']).persona()).toMatch(
+      /\(early relief \(trial\) I: calculates shallower\)$/,
+    )
+    expect(flowAt('c1-match-edred', ['loss', 'loss'], ['early-relief']).persona()).toMatch(/early relief \(trial\) III:/)
+    expect(flowAt('c1-match-edred', ['loss', 'win'], ['early-relief']).persona()).toMatch(/early relief \(trial\) I:/)
+    expect(searched.length).toBe(before)
   })
 
   it('a win ends the streak; a draw does not', () => {

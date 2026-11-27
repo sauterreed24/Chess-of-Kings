@@ -56,7 +56,7 @@ const runShard = (i, file = 'eval/campaign.eval.ts', extraEnv = {}) =>
 const recapOnly = args.includes('--recap-only')
 const recordsFile = `eval/out/${label}-records.json`
 let records
-let meta = { seedset, series: env.EVAL_SERIES, attempts: env.EVAL_ATTEMPTS }
+let meta = { seedset, series: env.EVAL_SERIES, attempts: env.EVAL_ATTEMPTS, trials: process.env.EVAL_TRY ?? '' }
 if (recapOnly) {
   ;({ records, ...meta } = JSON.parse(readFileSync(recordsFile, 'utf8')))
 } else {
