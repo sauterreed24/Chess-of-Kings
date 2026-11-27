@@ -94,6 +94,32 @@ describe('GameFlow AI / puzzles', () => {
     expect(latest?.boardGuide).toMatch(/proof sealed/i)
   })
 
+  it('a spent puzzle (dead draw without the proof) points to Reset, not a missing Advance', () => {
+    const onChessUpdate = vi.fn()
+    const flow = new GameFlow(PLAYABLE_CHAPTERS, {
+      onSceneChange: vi.fn(),
+      onChessUpdate,
+      onChapterComplete: vi.fn(),
+      onCampaignFinished: vi.fn(),
+    })
+    flow.board = mockBoard() as unknown as BoardView
+    flow.highestUnlockedChapter = 1
+    flow.jumpToScene(1, 2)
+    expect(flow.currentScene().id).toBe('c1-tutorial-hanging')
+    /* The first-puzzle novice line: the bishop wanders, the knight takes it. */
+    flow.chess.load('8/8/8/8/5n2/5k2/3K4/8 w - - 0 40')
+    ;(flow as unknown as { emitChess(): void }).emitChess()
+    const spent = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(flow.canAdvance()).toBe(false)
+    expect(spent?.puzzleSpent).toBe(true)
+    expect(spent?.boardGuide).toMatch(/Reset to try again/)
+    expect(spent?.boardGuide).not.toMatch(/Advance appears/)
+
+    flow.resetChessScene()
+    const fresh = onChessUpdate.mock.calls.at(-1)?.[0]
+    expect(fresh?.puzzleSpent).toBe(false)
+  })
+
   it('still files an explicit Hint line on teaching puzzles', () => {
     const onChessUpdate = vi.fn()
     const flow = new GameFlow(PLAYABLE_CHAPTERS, {

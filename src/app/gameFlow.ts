@@ -158,6 +158,8 @@ export type ChessUiPayload = {
   canRetry: boolean
   /** Show the on-demand learning hint (player's turn on a live board). */
   canHint: boolean
+  /** Puzzle board is over (mate, stalemate, dead draw) without the proof: only Reset helps. */
+  puzzleSpent: boolean
   /** Short hint tied to turn / mode — shown as `aria-describedby` for the board. */
   boardGuide: string
 }
@@ -1024,6 +1026,7 @@ export class GameFlow {
         !this.isSceneTerminalForCurrentMode() &&
         this.chess.turn() === this.playerColor &&
         !(this.mode === 'calibration' && this.calibrationSolved()),
+      puzzleSpent: this.isPuzzleSpent(),
       boardGuide: this.boardGuideText(sc),
     })
   }
@@ -1905,6 +1908,9 @@ export class GameFlow {
       'Select piece. Targets glow; captures bronze, check crimson.'
     const chessy = this.mode === 'duel' || this.sceneUsesBoard(scene)
     if (!chessy) return defaultGuide
+    if (this.isPuzzleSpent()) {
+      return 'Proof spent — no proof from this position. Reset to try again.'
+    }
     if (this.isSceneTerminalForCurrentMode() || this.chess.isGameOver()) {
       return 'Proof sealed. Continue when Advance appears.'
     }
@@ -2331,6 +2337,11 @@ export class GameFlow {
     const c = this.calibrationScene
     if (!c) return false
     return this.calibrationMoves >= c.minMovesByPlayer
+  }
+
+  /** The puzzle board ended (mate, stalemate, dead draw) without the proof. */
+  private isPuzzleSpent(): boolean {
+    return this.mode === 'puzzle' && !!this.puzzleScene && this.chess.isGameOver() && !this.puzzleSolved()
   }
 
   private puzzleSolved(): boolean {
