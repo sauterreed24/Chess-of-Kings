@@ -13,6 +13,15 @@ scorecard from `IMPROVE.md`.
 All bots see the game history (repetition-aware) and, in puzzles, read the goal: if one move
 achieves a "castle / piece on square / mate" goal they play it, as a player reading the card would.
 
+## C10 recap truth (readability)
+After the games, `recapTruth.eval.ts` replays a fixed, evenly spaced sample of novice/club losses
+(48; 16 with `--quick`) with a deeper engine (30k nodes per position, fresh table, no clock) and
+asks whether the recap's "Study this" lesson names a move that truly cost >= 1 pawn (*accurate*),
+the game's truly costliest move within 1 pawn (*top*), and how many losses with a >= 3-pawn mistake
+got no lesson (*missed*). The judge is stable: 0.44 accurate at both 30k and 90k nodes on the
+same games; a random-move "lesson" scores 0.03. Records now carry each game's start FEN, moves and
+player-POV trace so any check can replay games without re-playing them.
+
 ## Determinism
 - `Math.random` is reseeded per job from `<seedset>:<scene>:<bot>:<series>`.
 - `performance.now` is a virtual clock that advances 1024/150 ms per call; the engine checks
@@ -28,6 +37,8 @@ achieves a "castle / piece on square / mate" goal they play it, as a player read
   `EVAL_SERIES`, `EVAL_VERBOSE=1` (per-series lines).
 - `node eval/run.mjs --compare eval/results/a.json eval/results/b.json`.
 - `node eval/rescore.mjs <label> [newLabel]` — re-score saved records after fixing a check.
+- `node eval/run.mjs --label <label> --recap-only` — re-run only the C10 replay on saved records
+  (`EVAL_RECAP_SAMPLE`, `EVAL_RECAP_NODES` to vary sample size and judge depth).
 
 ## Not covered (needs a human or device)
 Feel, look, sound, touch controls, real phone engine speed, and whether a rival *feels* fair.

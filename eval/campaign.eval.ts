@@ -113,6 +113,11 @@ export type GameRecord = {
   aiWaitVirtualMs: number[]
   inputLatencyRealMs: number[]
   costliest: string | null
+  /** Player-POV UI eval after each ply (the recap's own trace). */
+  trace: number[]
+  /** Game start position and SAN moves, so checks can replay it with a deeper engine. */
+  startFen: string
+  sans: string[]
 }
 
 async function playGame(
@@ -171,7 +176,10 @@ async function playGame(
     mistakes: quality.filter((q) => q === 'mistake').length,
     aiWaitVirtualMs: aiWait,
     inputLatencyRealMs: latency,
-    costliest: (flow as unknown as { lastCostliestLine: string | null }).lastCostliestLine ?? null,
+    costliest: flow.getCostliestMomentLine(),
+    trace: trace.map((v) => Math.round(v)),
+    startFen: (flow as unknown as { history: string[] }).history[0] ?? '',
+    sans: [...internals.sanLog],
   }
 }
 
