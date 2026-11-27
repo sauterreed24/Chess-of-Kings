@@ -24,18 +24,24 @@ rival's actual reply). The four largest are re-checked from their own positions 
 A move is taught only if the archive preferred a different move and it truly cost ≥ 1 pawn;
 otherwise the recap stays silent. Mates read "allowed a forced mate — the archive preferred X" /
 "missed a forced mate — X was the finish". The eval arc's red marker is the same move. The check runs
-once, when the recap is first read (~30k nodes, no wall clock, the same on every device).
+once, just after the verdict sheet opens (~30k nodes in all, ≈0.2 s on the reference phone; the
+wall-clock cap is 4× that budget so the verdict is the same on every ordinary device). Engine glue:
+`src/app/recap/lessonEngine.ts`; pure logic: `src/app/recap/costliestMoment.ts`.
 
 Six pickers were compared offline on 60 recorded losses before choosing (accurate / costliest /
 big mistakes left unnamed): current 0.48 / 0.33 / 0; parity-matched trace 0.58 / 0.43 / 0;
 verify top-3 at 8k nodes 0.81 / 0.60 / 13; parity + verify 0.85 / 0.66 / 14; **verify + rival's
 reply (shipped) 0.89 / 0.65 / 5**.
 
-| C10 (tune, same 48 games) | Before | After |
-| --- | --- | --- |
-| Lesson names a move that cost ≥ 1 pawn | 0.44 | 0.88 |
-| …the game's costliest move (within 1 pawn) | 0.35 | 0.70 |
-| Losses with a ≥ 3-pawn mistake and no lesson | 0 | 3 (all 3 previously got a wrong lesson) |
+| C10 (48 sampled losses; same games before/after) | Tune before | Tune after | Held-out before | Held-out after |
+| --- | --- | --- | --- | --- |
+| Lesson names a move that cost ≥ 1 pawn | 0.44 | 0.88 | 0.38 | 0.80 |
+| …the game's costliest move (within 1 pawn) | 0.35 | 0.70 | 0.26 | 0.71 |
+| Losses with a ≥ 3-pawn mistake and no lesson | 0 | 3 | 1 | 5 |
+
+On tune seeds all three newly silent games had received a wrong lesson before. Silence was chosen
+over a guess: a version that caps the after-reply search to the root depth (suggested by the review)
+is more accurate but silent more often (held-out 0.82 / 6 missed at 10k nodes, 0.95 / 11 at 14k).
 
 Every game check (walls, skill gap, ramp, comebacks, unfinished, puzzles, pacing, rival wait) is
 identical before and after.
@@ -65,6 +71,16 @@ campaign rival is already at step I, the second at II, the third at III. The dos
 "early relief (trial)". Turn it on with `?try=early-relief`, off with `?try=off`; the choice is kept
 under its own storage key (`calculus-of-kings-trials-v1`), never in the save.
 
+## Independent review
+
+A fresh agent reviewed the commits from code alone and found: the trial leaked its eased step into
+the in-progress snapshot (fixed: the snapshot keeps the real loss streak, the trial applies at read
+time); a phone resize re-hid Reset on a spent puzzle (fixed); the lesson's searches ran in the frame
+that paints the final move (fixed: filled in after the sheet opens); a 1.5× wall-clock cap that bound
+on slow phones (now 4×); grading a position where the player was not on move (guarded); a mate after
+the reply reading as "12.0 pawns" (now "allowed a forced mate"). Open: results won with the trial on
+are recorded like any other (no marker in history or rating).
+
 ## Also measured: the difficulty-ramp check was not the problem
 
 Last session guessed the ramp check (C3, 0.37) was too coarse. Three graded versions (eval at move
@@ -77,4 +93,6 @@ from the third rival on, the club bot loses most first tries. The check was left
 silence, mate wording), `gameFlow.depth.test.ts` (real engine: 3. Qxf7+?? taught; a sound move with
 a fake trace dip is not), `evalArc.test.ts`, `gameFlow.ai.test.ts` and `applyChessUi.test.ts` (spent
 puzzle), `rewardOverlayController.test.ts` (no-scroll focus), `trials.test.ts`,
-`rematchRelief.flow.test.ts` (trial). Each new test was checked to fail with its fix removed.
+`rematchRelief.flow.test.ts` (trial, trial never reaches the snapshot), `labModal.test.ts` (Reset
+survives a resize), `showRewardBundles.test.ts` (sheet opens before the lesson, then fills it). Each
+new test was checked to fail with its fix removed.

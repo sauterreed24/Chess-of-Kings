@@ -109,7 +109,11 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ---
 
-## What's new in this release (v0.5.143)
+## What's new in this release (v0.5.144)
+
+**Pass 152 — an honest recap** — the post-game "Study this" lesson now names a move that really cost you (it was right under half the time; now ~8 in 10), the verdict sheet opens on that lesson with Advance pinned below, and a failed teaching puzzle offers Reset instead of waiting for an Advance that never comes. Also: an off-by-default playtest trial, `?try=early-relief`. See [`docs/PASS152_HONEST_RECAP.md`](docs/PASS152_HONEST_RECAP.md).
+
+## Previous release (v0.5.143)
 
 **Pass 151 — fair endings** — rivals are the same opponent on phone and desktop, a hopeless rival resigns in the endgame instead of leaving you to hunt a mate forever, and Chapter I's finale stays inside the chapter's difficulty band. See [`docs/PASS151_FAIR_ENDINGS.md`](docs/PASS151_FAIR_ENDINGS.md).
 
