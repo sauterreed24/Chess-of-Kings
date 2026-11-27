@@ -25,15 +25,17 @@ describe('buildEvalArcSvg', () => {
     expect(svg).toContain('aria-label=')
   })
 
-  it('marks the costliest moment when one exists', () => {
-    /* White drops ~3 pawns on ply 4 (Qh5-style blunder). */
-    const svg = buildEvalArcSvg({
+  it('marks the recap lesson\'s move (the verified one), not the raw trace drop', () => {
+    const input = {
       sanLog: ['e4', 'e5', 'Nf3', 'Nc6', 'Qh5', 'Nf6', 'Qf3', 'd6'],
       evalTrace: [25, 20, 30, 25, -300, -290, -280, -285],
-      playerColor: 'w',
-    })!
+      playerColor: 'w' as const,
+    }
+    const svg = buildEvalArcSvg({ ...input, markPly: 6 })!
     expect(svg).toContain('<circle')
-    expect(svg).toContain('Costliest:')
+    expect(svg).toContain('Costliest: 4. Qf3')
+    /* No verified lesson: no marker, even though the trace dips at ply 4. */
+    expect(buildEvalArcSvg({ ...input, markPly: null })).not.toContain('<circle')
   })
 
   it('reads the trace from black\'s perspective (sign flip)', () => {

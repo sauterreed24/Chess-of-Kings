@@ -53,6 +53,7 @@ export function buildRewardOverlayHtml(
         sanLog: latestResolvedForRecap.sanLog,
         evalTrace: latestResolvedForRecap.evalTrace,
         playerColor: latestResolvedForRecap.playerColor,
+        markPly: flow.getCostliestMomentPly(),
       })
     : null
   const recap = latestResolvedForRecap

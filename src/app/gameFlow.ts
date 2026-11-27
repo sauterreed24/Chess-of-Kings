@@ -1,6 +1,6 @@
 import { Chess, DEFAULT_POSITION } from 'chess.js'
 import type { Color, Move, Square, PieceSymbol } from 'chess.js'
-import { materialAdvantage, moveKey, PIECE_VALUES } from '../chess/ai'
+import { materialAdvantage, moveKey, PERSONA_NODES_PER_MS, PIECE_VALUES } from '../chess/ai'
 import type { ProfileMoveOptions } from '../chess/ai'
 import { resetAiGameContext } from '../chess/aiAsync'
 import {
@@ -18,7 +18,8 @@ import {
 } from './ai/rematchRelief'
 import { searchFen } from '../chess/engine'
 import { gradeMoveByEval } from './moveGrading'
-import { findCostliestMoment, plyMoveLabel } from './recap/costliestMoment'
+import { costliestLessonLine, verifyCostliestMoment } from './recap/costliestMoment'
+import type { LessonEngine } from './recap/costliestMoment'
 import { describeHint } from './play/hintReason'
 import { materialAndPst } from '../chess/evaluate'
 import { BoardView } from '../chess/boardView'
@@ -162,6 +163,44 @@ export type ChessUiPayload = {
   puzzleSpent: boolean
   /** Short hint tied to turn / mode — shown as `aria-describedby` for the board. */
   boardGuide: string
+}
+
+/** Lesson re-check: candidates and a fixed node budget per search (device-independent). */
+const RECAP_VERIFY_CANDIDATES = 4
+const RECAP_VERIFY_NODES = 6000
+
+function recapSearch(fen: string, spectrum: boolean) {
+  return searchFen(fen, {
+    maxDepth: 64,
+    targetNodes: RECAP_VERIFY_NODES,
+    /* Wall-clock only as a safety net on very slow devices. */
+    maxTimeMs: Math.ceil((RECAP_VERIFY_NODES / PERSONA_NODES_PER_MS) * 1.5),
+    spectrum,
+    freshTable: true,
+  })
+}
+
+const recapLessonEngine: LessonEngine = {
+  scoreRoots(fen) {
+    try {
+      const probe = new Chess(fen)
+      return recapSearch(fen, true).rootMoves.map((r) => {
+        const played = probe.move({ from: r.from, to: r.to, promotion: r.promotion })
+        probe.undo()
+        return { san: played.san, score: r.score }
+      })
+    } catch {
+      return null
+    }
+  },
+  scorePosition(fen) {
+    try {
+      if (new Chess(fen).isGameOver()) return null
+      return recapSearch(fen, false).score
+    } catch {
+      return null
+    }
+  },
 }
 
 /** Conversion persona, spoken as the court would file it. */
@@ -322,6 +361,10 @@ export class GameFlow {
   private lastRivalRemark: string | null = null
   /** The just-finished game's costliest-move lesson (session-only). */
   private lastCostliestLine: string | null = null
+  /** Ply of that lesson, so the recap arc marks the same move (session-only). */
+  private lastCostliestPly: number | null = null
+  /** Finished game awaiting its lesson; verified on first read (off the final move's frame). */
+  private pendingCostliest: { sanLog: string[]; evalTrace: number[]; history: string[]; playerColor: 'w' | 'b' } | null = null
   private sanQuality: MoveQuality[] = []
   /** White-positive engine eval after each ply (session-only; consumers
       must ignore it whenever its length drifts from `sanLog`). */
@@ -795,6 +838,8 @@ export class GameFlow {
     resetAiGameContext()
     this.lastRivalRemark = null
     this.lastCostliestLine = null
+    this.lastCostliestPly = null
+    this.pendingCostliest = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
     this.boardSelection = emptyBoardSelection()
@@ -879,6 +924,8 @@ export class GameFlow {
     resetAiGameContext()
     this.lastRivalRemark = null
     this.lastCostliestLine = null
+    this.lastCostliestPly = null
+    this.pendingCostliest = null
     this.lastCoachTip = null
     this.lastResolvedOutcomeKey = null
     this.lastTacticalPulse = null
@@ -1599,7 +1646,14 @@ export class GameFlow {
       }
     }
 
-    this.lastCostliestLine = this.buildCostliestMomentLine()
+    this.lastCostliestLine = null
+    this.lastCostliestPly = null
+    this.pendingCostliest = {
+      sanLog: [...this.sanLog],
+      evalTrace: [...this.evalTrace],
+      history: [...this.history],
+      playerColor: this.playerColor,
+    }
 
     this.persist()
   }
@@ -1657,33 +1711,30 @@ export class GameFlow {
    * from the per-ply eval trace captured during play. Session-only.
    */
   getCostliestMomentLine(): string | null {
+    this.resolvePendingCostliest()
     return this.lastCostliestLine
   }
 
-  private buildCostliestMomentLine(): string | null {
-    const moment = findCostliestMoment(this.sanLog, this.evalTrace, this.playerColor)
-    if (!moment) return null
-    const fenBefore = this.history[moment.ply]
-    let preferred: string | null = null
-    if (fenBefore) {
-      try {
-        const result = searchFen(fenBefore, { maxDepth: 6, maxTimeMs: 60, freshTable: true })
-        if (result.move) {
-          const probe = new Chess(fenBefore)
-          const played = probe.move({
-            from: result.move.from,
-            to: result.move.to,
-            promotion: result.move.promotion,
-          })
-          if (played && played.san !== moment.san) preferred = played.san
-        }
-      } catch {
-        preferred = null
-      }
-    }
-    const pawns = (moment.dropCp / 100).toFixed(1)
-    const head = `${plyMoveLabel(moment.ply)} ${moment.san} cost about ${pawns} pawns`
-    return preferred ? `${head} — the archive preferred ${preferred}.` : `${head}.`
+  /** Ply index of the recap lesson's move, or null (the arc marks it). */
+  getCostliestMomentPly(): number | null {
+    this.resolvePendingCostliest()
+    return this.lastCostliestPly
+  }
+
+  private resolvePendingCostliest(): void {
+    const game = this.pendingCostliest
+    if (!game) return
+    this.pendingCostliest = null
+    const moment = verifyCostliestMoment(
+      game.sanLog,
+      game.evalTrace,
+      game.history,
+      game.playerColor,
+      recapLessonEngine,
+      { candidates: RECAP_VERIFY_CANDIDATES },
+    )
+    this.lastCostliestPly = moment ? moment.ply : null
+    this.lastCostliestLine = moment ? costliestLessonLine(moment) : null
   }
 
   /**
@@ -1697,7 +1748,9 @@ export class GameFlow {
     if (this.mode === 'match' || this.mode === 'puzzle' || this.mode === 'calibration') {
       this.snapshots.clearPendingSnapshot()
       this.lastRivalRemark = null
-    this.lastCostliestLine = null
+      this.lastCostliestLine = null
+      this.lastCostliestPly = null
+      this.pendingCostliest = null
       this.refreshScene()
       return true
     }

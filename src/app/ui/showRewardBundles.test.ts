@@ -70,6 +70,7 @@ describe('showRewardBundles html', () => {
       getMatchHistory: () => [],
       getLastRivalRemark: () => null,
       getCostliestMomentLine: () => null,
+      getCostliestMomentPly: () => null,
     } as unknown as GameFlow
     const html = buildRewardOverlayHtml(flow, [], null)
     expect(html).toContain('Result Inscribed')
