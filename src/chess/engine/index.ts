@@ -8,11 +8,11 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 import { Position, moveFrom, moveTo, movePromotion, squareName } from './position'
-import { MATE, MATE_BOUND, clearTranspositionTable, search } from './search'
+import { MATE, MATE_BOUND, clearTranspositionTable, engineNodesSearched, search } from './search'
 import type { SearchLimits } from './search'
 import { evaluate } from './evaluate'
 
-export { MATE, MATE_BOUND, clearTranspositionTable }
+export { MATE, MATE_BOUND, clearTranspositionTable, engineNodesSearched }
 export { perftFen } from './perft'
 
 export interface EngineMove {

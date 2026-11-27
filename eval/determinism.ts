@@ -1,12 +1,17 @@
 import { PERSONA_NODES_PER_MS } from '../src/chess/ai'
+import { engineNodesSearched } from '../src/chess/engine'
 
 /* Seeded randomness and a node-proportional virtual clock.
 
-   The engine's search is time-budgeted (performance.now every 1024 nodes),
-   so wall-clock time makes rival strength depend on machine load. The
-   virtual clock advances a fixed tick per performance.now() call, which
-   turns every time budget into a node budget for a reference device:
-   tick = 1024 / nodesPerMs. Same seed + same code => same games. */
+   The engine's search is time-budgeted, so wall-clock time makes rival
+   strength depend on machine load. The virtual clock reads the engine's
+   own node counter: virtual ms = nodes searched / nodesPerMs (plus a tiny
+   per-read step so time always moves), which turns every time budget into
+   a node budget on a reference device. Same seed + same code => same games.
+
+   (Until session 3 it advanced 1024/nodesPerMs per *read*. Searches read
+   the clock at every iteration boundary too, so a 12 ms budget stopped
+   after depth 1 — the UI eval probe never reached the depth a phone gets.) */
 
 export function hashString(input: string): number {
   let hash = 2166136261
@@ -40,15 +45,14 @@ export function seedRandom(key: string): () => number {
     EVAL_NODES_PER_MS (this container measures ~320-410 real nodes/ms). */
 export const DEFAULT_NODES_PER_MS = Number(process.env.EVAL_NODES_PER_MS ?? PERSONA_NODES_PER_MS)
 
-let virtualNow = 0
 const realNow = performance.now.bind(performance)
 
 export function installVirtualClock(nodesPerMs = DEFAULT_NODES_PER_MS): void {
-  const tick = 1024 / nodesPerMs
-  virtualNow = 0
+  const base = engineNodesSearched()
+  let reads = 0
   performance.now = () => {
-    virtualNow += tick
-    return virtualNow
+    reads++
+    return (engineNodesSearched() - base) / nodesPerMs + reads * 0.001
   }
 }
 
