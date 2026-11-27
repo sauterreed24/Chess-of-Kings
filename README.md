@@ -111,7 +111,7 @@ The demo is a **single static bundle** served from GitHub Pages. There is no ser
 
 ## What's new in this release (v0.5.144)
 
-**Pass 152 — an honest recap** — the post-game "Study this" lesson now names a move that really cost you (it was right under half the time; now ~8 in 10), the verdict sheet opens on that lesson with Advance pinned below, and a failed teaching puzzle offers Reset instead of waiting for an Advance that never comes. Also: an off-by-default playtest trial, `?try=early-relief`. See [`docs/PASS152_HONEST_RECAP.md`](docs/PASS152_HONEST_RECAP.md).
+**Pass 152 — an honest recap** — the post-game "Study this" lesson now names a move that really cost you (about one in five lessons used to blame a move that cost nothing; now almost none do), the verdict sheet opens on that lesson with Advance pinned below, and a failed teaching puzzle offers Reset instead of waiting for an Advance that never comes. Also: an off-by-default playtest trial, `?try=early-relief`. See [`docs/PASS152_HONEST_RECAP.md`](docs/PASS152_HONEST_RECAP.md).
 
 ## Previous release (v0.5.143)
 

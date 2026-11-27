@@ -18,7 +18,7 @@ After the games, `recapTruth.eval.ts` replays a fixed, evenly spaced sample of n
 (48; 16 with `--quick`) with a deeper engine (30k nodes per position, fresh table, no clock) and
 asks whether the recap's "Study this" lesson names a move that truly cost >= 1 pawn (*accurate*),
 the game's truly costliest move within 1 pawn (*top*), and how many losses with a >= 3-pawn mistake
-got no lesson (*missed*). The judge is stable: 0.44 accurate at both 30k and 90k nodes on the
+got no lesson (*missed*). The judge is stable: the same accuracy at 30k and 90k nodes on the
 same games; a random-move "lesson" scores 0.03. Records now carry each game's start FEN, moves and
 player-POV trace so any check can replay games without re-playing them.
 
@@ -30,8 +30,10 @@ mistake/blunder (false alarms).
 
 ## Determinism
 - `Math.random` is reseeded per job from `<seedset>:<scene>:<bot>:<series>`.
-- `performance.now` is a virtual clock that advances 1024/150 ms per call; the engine checks
-  time every 1024 nodes, so every think-time budget becomes "nodes on a 150 nodes/ms device".
+- `performance.now` is a virtual clock that reads the engine's node counter
+  (`engineNodesSearched`): virtual ms = nodes / 150, plus 0.001 ms per read. Every think-time budget
+  becomes "nodes on a 150 nodes/ms device". (Before session 3 it advanced per *read*, which stopped
+  the 12 ms UI probe at depth 1 — results from before `s3c-*` used that clock.)
   Override with `EVAL_NODES_PER_MS` (this container: ~350 real nodes/ms).
 - Two runs with the same seed set produce identical records except `inputLatencyRealMs`.
 

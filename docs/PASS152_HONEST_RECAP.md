@@ -11,9 +11,10 @@ player meets in the first minutes, and one balance idea shipped as an off-by-def
 
 **Found by a new evaluator check (C10).** After the bots' games, `eval/recapTruth.eval.ts` replays a
 fixed sample of 48 novice/club losses with a deeper engine (30k nodes per position) and asks whether
-the recap's lesson names a move that truly lost at least a pawn. Only **44%** did. Some blamed the
-engine's own best move ("38. Kh2 cost about 9.3 pawns."). The judge is stable (44% at 90k nodes
-too) and a random-move "lesson" scores 3%.
+the recap's lesson names a move that truly lost at least a pawn. About **one in five did not**
+(0.81 tune / 0.83 held-out on the corrected evaluator clock — see "Evaluator clock" below; the
+first, broken-clock measurement said 0.44). Some blamed the engine's own best move ("38. Kh2 cost
+about 9.3 pawns."). The judge is stable across depths and a random-move "lesson" scores 0.03.
 
 **Root cause.** The lesson was the largest dip in the game's eval trace — a 12 ms, depth-3 probe that
 swings 40–100 cp with search parity and misses anything deeper than a few plies.
@@ -28,18 +29,19 @@ once, just after the verdict sheet opens (~30k nodes in all, ≈0.2 s on the ref
 wall-clock cap is 4× that budget so the verdict is the same on every ordinary device). Engine glue:
 `src/app/recap/lessonEngine.ts`; pure logic: `src/app/recap/costliestMoment.ts`.
 
-Six pickers were compared offline on 60 recorded losses before choosing (accurate / costliest /
+Six pickers were compared offline on 60 recorded losses (broken-clock traces, so the absolute
+numbers are pessimistic; the ranking held on the corrected clock) before choosing (accurate / costliest /
 big mistakes left unnamed): current 0.48 / 0.33 / 0; parity-matched trace 0.58 / 0.43 / 0;
 verify top-3 at 8k nodes 0.81 / 0.60 / 13; parity + verify 0.85 / 0.66 / 14; **verify + rival's
 reply (shipped) 0.89 / 0.65 / 5**.
 
-| C10 (48 sampled losses; same games before/after) | Tune before | Tune after | Held-out before | Held-out after |
+| C10 (48 sampled losses; same games before/after; corrected clock) | Tune before | Tune after | Held-out before | Held-out after |
 | --- | --- | --- | --- | --- |
-| Lesson names a move that cost ≥ 1 pawn | 0.44 | 0.88 | 0.38 | 0.80 |
-| …the game's costliest move (within 1 pawn) | 0.35 | 0.70 | 0.26 | 0.71 |
-| Losses with a ≥ 3-pawn mistake and no lesson | 0 | 3 | 1 | 5 |
+| Lesson names a move that cost ≥ 1 pawn | 0.81 | 0.98 | 0.83 | 1.00 |
+| …the game's costliest move (within 1 pawn) | 0.70 | 0.77 | 0.72 | 0.81 |
+| Losses with a ≥ 3-pawn mistake and no lesson | 1 | 3 | 1 | 4 |
 
-On tune seeds all three newly silent games had received a wrong lesson before. Silence was chosen
+(Broken clock, same code: 0.44 → 0.88 and 0.38 → 0.80.) Silence was chosen
 over a guess: a version that caps the after-reply search to the root depth (suggested by the review)
 is more accurate but silent more often (held-out 0.82 / 6 missed at 10k nodes, 0.95 / 11 at 14k).
 
@@ -65,24 +67,25 @@ novice on a phone viewport.
 
 ## 4. Trial (off by default): `?try=early-relief`
 
-The evaluator shows a club-strength player losing the first try to 18 of 22 rivals; rematch relief
-then gets them through. With the trial on, relief arrives one loss earlier: the first meeting with a
+The evaluator shows a club-strength player losing the first try to most rivals from the third on
+(mean first-try score 0.14); rematch relief then gets them through. With the trial on, relief arrives one loss earlier: the first meeting with a
 campaign rival is already at step I, the second at II, the third at III. The dossier labels it
 "early relief (trial)". Turn it on with `?try=early-relief`, off with `?try=off`; the choice is kept
 under its own storage key (`calculus-of-kings-trials-v1`), never in the save.
 
-| Check (off → on) | Tune | Held-out |
-| --- | --- | --- |
-| Walls (club can't clear in 3 tries) | 2 → 1 | 2 → 0 |
-| Club first-try score (mean over 22 rivals) | 0.14 → 0.27 | 0.14 → 0.33 |
-| Club tries per rival | 2.8 → 2.3 | 2.9 → 2.1 |
-| Skill gap (first try) | 0.78 → 0.95 | 0.76 → 0.98 |
-| Difficulty ramp | 0.37 → 0.60 | 0.42 → 0.49 |
-| Comeback rate | 0.32 → 0.23 | 0.27 → 0.22 |
-| Unfinished games | 1 → 5 | 0 → 2 |
+| Check (off → on), corrected clock, tune seeds | |
+| --- | --- |
+| Walls (club can't clear in 3 tries) | 2 → 1 |
+| Club first-try score (mean over 22 rivals) | 0.14 → 0.23 |
+| Club tries per rival | 2.6 → 2.3 |
+| Skill gap (first try) | 0.85 → 0.95 |
+| Difficulty ramp | 0.22 → 0.68 |
+| Comeback rate | 0.27 → 0.24 |
+| Unfinished games | 0 → 0 |
 
-A genuine trade-off: far fewer walls and gentler first meetings, but more games that drift into
-long endgames, and fewer comebacks. Left for the owner to try.
+On the broken clock it also cleared held-out walls (2 → 0) but showed more unfinished games
+(1 → 5); that cost did not reproduce on the corrected clock. Held-out has not been re-run on it.
+Left for the owner to try.
 
 ## Independent review
 
@@ -94,9 +97,23 @@ on slow phones (now 4×); grading a position where the player was not on move (g
 the reply reading as "12.0 pawns" (now "allowed a forced mate"). Open: results won with the trial on
 are recorded like any other (no marker in history or rating).
 
+## Evaluator clock (found by the second review)
+
+The evaluator's virtual clock advanced 1024/150 ms per `performance.now()` *read*. Searches also read
+the clock at each iteration, so the game's 12 ms eval probe never got past depth 1 in any evaluation
+since the evaluator was built, and per-read overhead roughly tripled rivals' measured time. The clock
+now reads a new engine node counter (`engineNodesSearched`): virtual ms = nodes / 150. The session's
+old and new code were re-measured on it (old: the session's start commit with only the harness and
+counter grafted on). Game checks are identical old vs new; the numbers above are from that run.
+
+A second trial, `true-marks` (parity-matched ledger marks), was built from a lab that compared against
+depth-1 traces; on the corrected clock the existing ledger marks already meet the new C11 check
+(blunder marks right 0.89 / 0.96, mistake marks 0.84 / 0.79, recall 0.87 / 0.84, false alarms 0.02),
+so its code was removed.
+
 ## Also measured: the difficulty-ramp check was not the problem
 
-Last session guessed the ramp check (C3, 0.37) was too coarse. Three graded versions (eval at move
+Last session guessed the ramp check (C3, then 0.37 on the old clock) was too coarse. Three graded versions (eval at move
 30, survival length) all read 0.29–0.37 with split-half reliability ≈ 0.85, so the flat ramp is real:
 from the third rival on, the club bot loses most first tries. The check was left unchanged.
 
